@@ -6,7 +6,6 @@ import { QuestionsDto } from "@/dto/questions.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions/`,
-  timeout: secondsToMilliSeconds(30),
 });
 
 export const QuestionsService = createApi({
@@ -29,6 +28,7 @@ export const QuestionsService = createApi({
               id: res.id,
               options: res.options,
               question: res.question,
+              correctAnswerId: res.correctAnswerId
             };
           });
       },

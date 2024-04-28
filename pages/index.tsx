@@ -65,12 +65,12 @@ export default function Home() {
             }}
           />
         ) : (
-          <MCQContainer
-            data={mockQuestions.map((d) => ({
-              answerId: d.correctAnswerId,
-              ...d,
-            }))}
-          />
+          questions && (
+            <MCQContainer
+              data={questions}
+              handeGenerateNewQuestions={() => setIsFormView(true)}
+            />
+          )
         )}
       </div>
     </>

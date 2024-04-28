@@ -44,7 +44,7 @@ export const generateScoreDescription = (percentage: number) => {
     case percentage >= 30 && percentage < 50:
       return {
         image: "/30-49.jpeg",
-        message: "Hmm, nobody knows tomorrow sha!",
+        message: "Boss, sit up o!",
         scoreColor: 'red'
       };
     default:

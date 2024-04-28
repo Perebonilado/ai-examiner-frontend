@@ -54,6 +54,7 @@ export default function Home() {
       )}
       <AppHead />
       <div>
+        <h1 className="text-center py-8 text-2xl font-bold text-blue-600">AI Examiner</h1>
         {isFormView ? (
           <GenerateMCQFormContainer
             file={file}

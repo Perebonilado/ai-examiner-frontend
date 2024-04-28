@@ -14,6 +14,8 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
     boolean
   > | null>(null);
 
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
 
@@ -44,6 +46,7 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
               key={question.id}
               questionNumber={idx + 1}
               handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
+              submitted={isSubmitted}
             />
           ))}
         </div>

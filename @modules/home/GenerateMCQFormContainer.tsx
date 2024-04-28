@@ -43,7 +43,7 @@ const GenerateMCQFormContainer: FC<Props> = ({
     <section>
       <Container className="py-10">
         <div className="p-5 max-md:p-3 bg-white mx-auto w-full max-w-[550px] rounded-md">
-          <h1 className="text-2xl font-bold text-center">Generate MCQ Form</h1>
+          <h1 className="text-2xl font-bold text-center text-black">Generate MCQ Form</h1>
 
           <FormikProvider value={formik}>
             <Form>

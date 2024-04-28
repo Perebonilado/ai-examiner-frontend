@@ -12,7 +12,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
 const Checkbox: FC<Props> = ({
   label,
   customBorderColor = "",
-  customLabelColor = "",
+  customLabelColor = "black",
   ...props
 }) => {
   const checkInputStyles = cn(

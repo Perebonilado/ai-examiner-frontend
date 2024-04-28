@@ -1,13 +1,15 @@
 import React, { FC, useEffect, useState } from "react";
 import MCQItemContainer from "./MCQItemContainer";
-import { mockQuestions } from "@/constants";
+import { QuestionsModel } from "@/models/questions.model";
 
-const MCQContainer: FC = () => {
+interface Props {
+  data: QuestionsModel[];
+}
+
+const MCQContainer: FC<Props> = ({ data }) => {
   return (
     <section>
-      <MCQItemContainer
-        data={mockQuestions.map((d) => ({ answerId: d.correctAnswerId, ...d }))}
-      />
+      <MCQItemContainer data={data} />
     </section>
   );
 };

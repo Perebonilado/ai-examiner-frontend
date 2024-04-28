@@ -4,7 +4,7 @@ import Container from "@/@shared/ui/Container";
 import { GenerateMCQValidation } from "@/validation-schemas/GenerateMCQValidation";
 import TextField from "@/@shared/ui/Input/TextField";
 import Button from "@/@shared/ui/Button";
-import FileUpload from "@/@shared/components/FileUpload";
+import FileUpload from "@/@shared/components/FileUpload/FileUpload";
 import { toast } from "react-toastify";
 
 const initialValues = {

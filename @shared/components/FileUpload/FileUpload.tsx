@@ -2,7 +2,7 @@ import { TrashIcon } from "@/icons/TrashIcon";
 import React, { FC } from "react";
 import { FileUploader } from "react-drag-drop-files";
 import { toast } from "react-toastify";
-import { MIMEType } from "util";
+import s from './styles.module.css'
 
 interface Props {
   file: File | null;
@@ -29,22 +29,24 @@ const FileUpload: FC<Props> = ({
               handleChange(null);
             }}
           >
-            <TrashIcon fill="red"/>
+            <TrashIcon fill="red" />
           </button>
         </div>
       )}
 
       {!file && (
-        <FileUploader
-          handleChange={handleChange}
-          name="file"
-          types={allowedTypes}
-          maxSize={maxFileSizeMB}
-          label=" Upload"
-          onSizeError={() => {
-            toast.error("Maximum File size allowed is 10mb");
-          }}
-        />
+        <div className={s.fileUploadContainer}>
+          <FileUploader
+            handleChange={handleChange}
+            name="file"
+            types={allowedTypes}
+            maxSize={maxFileSizeMB}
+            label=" Upload"
+            onSizeError={() => {
+              toast.error("Maximum File size allowed is 10mb");
+            }}
+          />
+        </div>
       )}
     </div>
   );

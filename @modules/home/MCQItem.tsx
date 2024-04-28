@@ -1,5 +1,5 @@
 import { QuestionOption, QuestionsModel } from "@/models/questions.model";
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import MCQOption from "./MCQOption";
 import cn from "classnames";
 
@@ -7,10 +7,10 @@ interface Props extends QuestionsModel {
   questionNumber: number;
   handleSetQuestionAnswer: (id: string, value: boolean) => void;
   submitted: boolean;
+  isResetSelection: boolean;
 }
 
 const MCQItem: FC<Props> = ({
-  answerId,
   explanation,
   id,
   options,
@@ -18,6 +18,7 @@ const MCQItem: FC<Props> = ({
   questionNumber,
   correctAnswerId,
   submitted,
+  isResetSelection,
   handleSetQuestionAnswer,
 }) => {
   const [selectedOption, setSelectedOption] = useState<QuestionOption | null>(
@@ -30,6 +31,11 @@ const MCQItem: FC<Props> = ({
     [`text-green-600`]: isCorrect,
     [`text-rose-600`]: !isCorrect,
   });
+
+  useEffect(() => {
+    // reset it as long as this state changes
+    setSelectedOption(null);
+  }, [isResetSelection]);
 
   return (
     <div className="w-full bg-white px-4 py-8 rounded-xl max-w-[600px] mx-auto shadow-md">
@@ -52,7 +58,7 @@ const MCQItem: FC<Props> = ({
               isRightOption={correctAnswerId === opt.id}
               handleChecked={(option) => {
                 setSelectedOption(option);
-                
+
                 if (correctAnswerId === option.id) {
                   handleSetQuestionAnswer(id, true);
                   setIsCorrect(true);

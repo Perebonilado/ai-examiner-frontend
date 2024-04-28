@@ -20,6 +20,8 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  const [resetAllSelectionsTrigger, setResetAllSelectionsTrigger] = useState(false);
+
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
 
@@ -56,6 +58,16 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
     return 0;
   };
 
+  const handleResetAnswers = () => {
+    const questionAnswerMapCopy = { ...questionAnswerMap };
+    for (const key in questionAnswerMapCopy) {
+      questionAnswerMapCopy[key] = false;
+    }
+    setQuestionAnswerMap(questionAnswerMapCopy);
+    setIsSubmitted(false);
+    setResetAllSelectionsTrigger(!resetAllSelectionsTrigger);
+  };
+
   return (
     <section>
       <Container className="py-10">
@@ -67,21 +79,37 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
               questionNumber={idx + 1}
               handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
               submitted={isSubmitted}
+              isResetSelection={resetAllSelectionsTrigger}
             />
           ))}
         </div>
 
-        <div className="flex justify-end w-full max-w-[600px] mx-auto py-8">
-          <Button
-            title="Submit"
-            size="large"
-            onClick={() => {
-              setIsSubmitted(true);
-              setModalContent(
-                <SubmissionModal scorePercentage={calculateScorePercentage()} />
-              );
-            }}
-          />
+        <div className="flex justify-end gap-4 w-full max-w-[600px] mx-auto py-8">
+          {!isSubmitted ? (
+            <Button
+              title="Submit"
+              size="large"
+              onClick={() => {
+                setIsSubmitted(true);
+                setModalContent(
+                  <SubmissionModal
+                    scorePercentage={calculateScorePercentage()}
+                  />
+                );
+              }}
+            />
+          ) : (
+            <>
+              <Button
+                title="Reset Answers"
+                variant="outlined"
+                onClick={() => {
+                  handleResetAnswers();
+                }}
+              />
+              <Button title="Generate New Questions" />
+            </>
+          )}
         </div>
       </Container>
     </section>

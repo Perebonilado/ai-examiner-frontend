@@ -1,3 +1,7 @@
 .fileUploadContainer label {
-    min-width: none !important;
+    min-width: unset !important;
+}
+
+.fileUploadContainer input {
+    display: none !important;
 }

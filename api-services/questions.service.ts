@@ -1,6 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../constants";
-import { secondsToMilliSeconds } from "../utils";
 import { QuestionsModel } from "@/models/questions.model";
 import { QuestionsDto } from "@/dto/questions.dto";
 

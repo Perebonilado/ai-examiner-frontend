@@ -89,18 +89,25 @@ const MCQItemContainer: FC<Props> = ({ data, handeGenerateNewQuestions }) => {
 
         <div className="flex justify-end gap-4 w-full max-w-[600px] mx-auto py-8">
           {!isSubmitted ? (
-            <Button
-              title="Submit"
-              size="large"
-              onClick={() => {
-                setIsSubmitted(true);
-                setModalContent(
-                  <SubmissionModal
-                    scorePercentage={calculateScorePercentage()}
-                  />
-                );
-              }}
-            />
+            <>
+              <Button
+                title="Generate New Questions"
+                onClick={handeGenerateNewQuestions}
+                variant="outlined"
+              />
+              <Button
+                title="Submit"
+                size="large"
+                onClick={() => {
+                  setIsSubmitted(true);
+                  setModalContent(
+                    <SubmissionModal
+                      scorePercentage={calculateScorePercentage()}
+                    />
+                  );
+                }}
+              />
+            </>
           ) : (
             <>
               <Button

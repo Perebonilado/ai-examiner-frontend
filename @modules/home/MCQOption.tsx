@@ -1,13 +1,25 @@
-import React, { FC } from 'react'
+import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
+import { QuestionOption } from "@/models/questions.model";
+import React, { FC, useEffect, useState } from "react";
 
 interface Props {
-    checked: boolean;
+  option: QuestionOption;
+  isChecked: boolean;
+  handleChecked: (option: QuestionOption) => void;
 }
 
-const MCQOption:FC = () => {
+const MCQOption: FC<Props> = ({ option, isChecked, handleChecked }) => {
   return (
-    <div>MCQOption</div>
-  )
-}
+    <div>
+      <Checkbox
+        checked={isChecked}
+        onChange={() => {
+          handleChecked(option);
+        }}
+        label={option.value}
+      />
+    </div>
+  );
+};
 
-export default MCQOption
+export default MCQOption;

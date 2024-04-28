@@ -5,6 +5,7 @@ import MCQItem from "./MCQItem";
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
 import SubmissionModal from "./SubmissionModal";
+import { toast } from "react-toastify";
 
 interface Props {
   data: QuestionsModel[];
@@ -20,7 +21,8 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const [resetAllSelectionsTrigger, setResetAllSelectionsTrigger] = useState(false);
+  const [resetAllSelectionsTrigger, setResetAllSelectionsTrigger] =
+    useState(false);
 
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
@@ -105,6 +107,7 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
                 variant="outlined"
                 onClick={() => {
                   handleResetAnswers();
+                  toast.success("Answers Reset Successfully!");
                 }}
               />
               <Button title="Generate New Questions" />

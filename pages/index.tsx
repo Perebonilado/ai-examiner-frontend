@@ -50,7 +50,7 @@ export default function Home() {
   return (
     <>
       {isLoading && (
-        <AppLoader loaderMessage="Just a minute, we are generating your questions ..." />
+        <AppLoader loaderMessage="Just a moment, we are generating your questions ..." />
       )}
       <AppHead />
       <div>

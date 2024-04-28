@@ -68,6 +68,7 @@ const GenerateMCQFormContainer: FC<Props> = ({
               </div>
             </Form>
           </FormikProvider>
+          <p className="text-xs text-rose-600 font-semibold">Note: Files with images typically take longer to process</p>
         </div>
       </Container>
     </section>

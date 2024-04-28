@@ -40,7 +40,7 @@ const FileUpload: FC<Props> = ({
           name="file"
           types={allowedTypes}
           maxSize={maxFileSizeMB}
-          label="File Upload"
+          label=" Upload"
           onSizeError={() => {
             toast.error("Maximum File size allowed is 10mb");
           }}

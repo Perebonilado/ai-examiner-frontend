@@ -51,6 +51,10 @@ const GenerateMCQFormContainer: FC<Props> = ({
                 <TextField
                   label="Course"
                   placeholder="Enter your course eg Medicine, Mathematics, Engineering ..."
+                  {...formik.getFieldProps("category")}
+                  error={
+                    formik.touched.category ? formik.errors.category : undefined
+                  }
                 />
                 <FileUpload
                   handleChange={handleFile}
@@ -59,7 +63,7 @@ const GenerateMCQFormContainer: FC<Props> = ({
                   file={file}
                 />
                 <div className="flex items-center justify-end">
-                  <Button title="Generate Questions" />
+                  <Button title="Generate Questions" type="submit" />
                 </div>
               </div>
             </Form>

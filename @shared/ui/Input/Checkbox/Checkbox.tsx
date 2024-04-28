@@ -19,7 +19,7 @@ const Checkbox: FC<Props> = ({ label, ...props }) => {
   return (
     <div className="flex items-center gap-2">
       <div className=" relative">
-        <div className="w-[30px] h-[30px] bg-white rounded-md"></div>
+        <div className="w-[25px] h-[25px] bg-white rounded-md border border-blue-400"></div>
         <input {...props} type="checkbox" className={checkInputStyles} />
         <span className={checkIconStyles}>
           <CheckIcon />

@@ -1,9 +1,16 @@
-import React, { FC } from 'react'
+import React, { FC } from "react";
+import MCQItemContainer from "./MCQItemContainer";
+import { mockQuestions } from "@/constants";
+import { generateAlphabets } from "@/utils";
 
-const MCQContainer:FC = () => {
+const MCQContainer: FC = () => {
   return (
-    <div>MCQContainer</div>
-  )
-}
+    <section>
+      <MCQItemContainer
+        data={mockQuestions.map((d) => ({ answerId: d.correctAnswerId, ...d }))}
+      />
+    </section>
+  );
+};
 
-export default MCQContainer
+export default MCQContainer;

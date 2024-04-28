@@ -4,6 +4,7 @@ import MCQOption from "./MCQOption";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
+  handleSetQuestionAnswer: (id: string, value: boolean) => void;
 }
 
 const MCQItem: FC<Props> = ({
@@ -13,6 +14,8 @@ const MCQItem: FC<Props> = ({
   options,
   question,
   questionNumber,
+  correctAnswerId,
+  handleSetQuestionAnswer,
 }) => {
   const [selectedOption, setSelectedOption] = useState<QuestionOption | null>(
     null
@@ -32,6 +35,12 @@ const MCQItem: FC<Props> = ({
               isChecked={!selectedOption ? false : selectedOption.id === opt.id}
               handleChecked={(option) => {
                 setSelectedOption(option);
+
+                if (correctAnswerId === option.id) {
+                  handleSetQuestionAnswer(id, true);
+                } else {
+                  handleSetQuestionAnswer(id, false);
+                }
               }}
             />
           );

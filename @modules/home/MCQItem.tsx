@@ -1,4 +1,3 @@
-import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
 import { QuestionOption, QuestionsModel } from "@/models/questions.model";
 import React, { FC, useState } from "react";
 import MCQOption from "./MCQOption";

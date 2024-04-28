@@ -1,6 +1,6 @@
 import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
 import { QuestionOption } from "@/models/questions.model";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC } from "react";
 
 interface Props {
   option: QuestionOption;

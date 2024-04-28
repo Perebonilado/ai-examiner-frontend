@@ -1,0 +1,27 @@
+.root {
+  @apply font-medium;
+}
+
+.contained {
+  @apply text-white border border-[#324fa5] bg-[#324fa5] rounded-lg;
+}
+
+.outlined {
+  @apply bg-[#FFFFFF] text-[#324fa5] border border-[#324fa5] rounded-lg;
+}
+
+.text {
+  @apply text-[#324fa5] border-none bg-transparent !p-0;
+}
+
+.small {
+  @apply text-sm px-2 py-1;
+}
+
+.medium {
+  @apply text-base px-3 py-1;
+}
+
+.large {
+  @apply text-lg px-8 py-3;
+}

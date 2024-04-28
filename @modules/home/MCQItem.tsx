@@ -24,7 +24,7 @@ const MCQItem: FC<Props> = ({
     null
   );
 
-  const [isCorrect, setIsCorrect] = useState(true);
+  const [isCorrect, setIsCorrect] = useState(false);
 
   const correctAnswerMarkerStyling = cn(`font-bold pb-4`, {
     [`text-green-600`]: isCorrect,
@@ -64,7 +64,7 @@ const MCQItem: FC<Props> = ({
         })}
       </div>
       {submitted && (
-        <p className="text-sm font-semibold text-rose-600">
+        <p className="text-sm font-semibold text-blue-600">
           Explanation: {explanation}
         </p>
       )}

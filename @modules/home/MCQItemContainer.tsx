@@ -36,6 +36,41 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
     setQuestionAnswerMap(newMap);
   };
 
+  const generateScoreDescription = (percentage: number) => {
+    switch (true) {
+      case percentage > 90:
+        return {
+          image: "/90up.jpeg",
+          message: "The emperor, the conqueror, the champion, the lion is here !!!",
+        };
+      case percentage >= 80 && percentage < 90:
+        return {
+          image: "/80-90.jpeg",
+          message: "Clear road for who sabi !!!",
+        };
+      case percentage >= 70 && percentage < 80:
+        return {
+          image: "/70-80.jpeg",
+          message: `Repeat after me, "I am doing well!"`,
+        };
+      case percentage >= 50 && percentage < 70:
+        return {
+          image: "/50-69.jpeg",
+          message: "I no go gree for anybody !!!",
+        };
+      case percentage >= 30 && percentage < 50:
+        return {
+          image: "/30-49.jpeg",
+          message: "Hmm, nobody knows tomorrow sha!",
+        };
+      default:
+        return {
+          image: "30 below.jpeg",
+          message: "Eweeeee !",
+        };
+    }
+  };
+
   return (
     <section>
       <Container className="py-10">
@@ -52,7 +87,11 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
         </div>
 
         <div className="flex justify-end w-full max-w-[600px] mx-auto py-8">
-          <Button title="Submit" size="large" />
+          <Button
+            title="Submit"
+            size="large"
+            onClick={() => setIsSubmitted(true)}
+          />
         </div>
       </Container>
     </section>

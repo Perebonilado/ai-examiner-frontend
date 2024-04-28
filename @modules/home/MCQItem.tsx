@@ -48,9 +48,11 @@ const MCQItem: FC<Props> = ({
               option={opt}
               key={idx}
               isChecked={!selectedOption ? false : selectedOption.id === opt.id}
+              submitted={submitted}
+              isRightOption={correctAnswerId === opt.id}
               handleChecked={(option) => {
                 setSelectedOption(option);
-
+                
                 if (correctAnswerId === option.id) {
                   handleSetQuestionAnswer(id, true);
                   setIsCorrect(true);

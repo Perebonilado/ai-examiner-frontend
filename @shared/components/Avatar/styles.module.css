@@ -1,0 +1,28 @@
+
+.root {
+    @apply relative  overflow-hidden flex items-center justify-center 
+}
+
+.slateBg {
+    @apply bg-slate-300
+}
+
+.round {
+    @apply rounded-full
+}
+
+.square {
+    @apply rounded-lg
+}
+
+.sm {
+    @apply w-10 h-10
+}
+
+.md {
+    @apply w-14 h-14
+}
+
+.lg {
+    @apply w-[250px] h-[250px]
+}

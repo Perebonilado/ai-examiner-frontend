@@ -5,9 +5,16 @@ import s from "./styles.module.css";
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
+  customBorderColor?: string;
+  customLabelColor?: string;
 }
 
-const Checkbox: FC<Props> = ({ label, ...props }) => {
+const Checkbox: FC<Props> = ({
+  label,
+  customBorderColor = "",
+  customLabelColor = "",
+  ...props
+}) => {
   const checkInputStyles = cn(
     `w-[30px] h-[30px] absolute top-0 opacity-0 z-[40] !cursor-pointer`,
     s["check-input"]
@@ -19,13 +26,18 @@ const Checkbox: FC<Props> = ({ label, ...props }) => {
   return (
     <div className="flex items-center gap-2">
       <div className=" relative">
-        <div className="w-[25px] h-[25px] bg-white rounded-md border border-blue-400"></div>
+        <div
+          className="w-[25px] h-[25px] bg-white rounded-md border border-blue-400"
+          style={{ borderColor: customBorderColor }}
+        ></div>
         <input {...props} type="checkbox" className={checkInputStyles} />
         <span className={checkIconStyles}>
           <CheckIcon />
         </span>
       </div>
-      <label className="text-black text-sm">{label}</label>
+      <label className="text-black text-sm" style={{ color: customLabelColor }}>
+        {label}
+      </label>
     </div>
   );
 };

@@ -3,6 +3,8 @@ import { QuestionsModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
 import MCQItem from "./MCQItem";
 import Button from "@/@shared/ui/Button";
+import { useModalContext } from "@/contexts/ModalContext";
+import SubmissionModal from "./SubmissionModal";
 
 interface Props {
   data: QuestionsModel[];
@@ -13,6 +15,8 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
     string,
     boolean
   > | null>(null);
+
+  const { setModalContent } = useModalContext();
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -36,39 +40,20 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
     setQuestionAnswerMap(newMap);
   };
 
-  const generateScoreDescription = (percentage: number) => {
-    switch (true) {
-      case percentage > 90:
-        return {
-          image: "/90up.jpeg",
-          message: "The emperor, the conqueror, the champion, the lion is here !!!",
-        };
-      case percentage >= 80 && percentage < 90:
-        return {
-          image: "/80-90.jpeg",
-          message: "Clear road for who sabi !!!",
-        };
-      case percentage >= 70 && percentage < 80:
-        return {
-          image: "/70-80.jpeg",
-          message: `Repeat after me, "I am doing well!"`,
-        };
-      case percentage >= 50 && percentage < 70:
-        return {
-          image: "/50-69.jpeg",
-          message: "I no go gree for anybody !!!",
-        };
-      case percentage >= 30 && percentage < 50:
-        return {
-          image: "/30-49.jpeg",
-          message: "Hmm, nobody knows tomorrow sha!",
-        };
-      default:
-        return {
-          image: "30 below.jpeg",
-          message: "Eweeeee !",
-        };
+  const calculateScorePercentage = () => {
+    if (questionAnswerMap) {
+      const answersArr = Object.values(questionAnswerMap);
+
+      const totalQuestions = answersArr.length;
+
+      const totalCorrectAnswers = answersArr.filter((ans) => ans).length;
+
+      const scorePercentage = (totalCorrectAnswers / totalQuestions) * 100;
+
+      return scorePercentage;
     }
+
+    return 0;
   };
 
   return (
@@ -90,7 +75,12 @@ const MCQItemContainer: FC<Props> = ({ data }) => {
           <Button
             title="Submit"
             size="large"
-            onClick={() => setIsSubmitted(true)}
+            onClick={() => {
+              setIsSubmitted(true);
+              setModalContent(
+                <SubmissionModal scorePercentage={calculateScorePercentage()} />
+              );
+            }}
           />
         </div>
       </Container>

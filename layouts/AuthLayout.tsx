@@ -18,7 +18,7 @@ const AuthLayout: FC<PropsWithChildren> = ({ children }) => {
         </p>
       </section>
       <section className="flex justify-center items-center w-7/12 p-2 max-lg:w-full bg-blue-100">
-        <div className="shadow-md bg-white border min-h-[600px] py-10 w-full rounded-lg max-w-[650px] p-1 max-sm:max-w-full">
+        <div className="shadow-md bg-white border min-h-[600px] py-2 w-full rounded-lg max-w-[650px] p-1 max-sm:max-w-full">
           <FadeIn>{children}</FadeIn>
         </div>
       </section>

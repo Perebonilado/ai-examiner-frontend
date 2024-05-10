@@ -5,3 +5,11 @@ export interface LoginDto {
   };
   message: string;
 }
+
+export interface SignUpDto {
+  status: number;
+  data: {
+    token: string;
+  };
+  message: string;
+}

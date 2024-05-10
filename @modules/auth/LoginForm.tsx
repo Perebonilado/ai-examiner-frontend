@@ -54,14 +54,14 @@ const LoginForm: FC = () => {
   useEffect(() => {
     if (data) {
       Cookies.set(accessToken, data.data.token);
-      router.push('/')
+      router.push("/");
     }
   }, [data]);
 
   return (
     <div className="w-full max-w-[70%] mx-auto py-6 px-2 max-sm:max-w-full">
       <div className="mx-auto mb-6">
-        <h2 className="text-center text-xl font-semibold">AI Examiner</h2>
+        <h2 className="text-center text-xl font-semibold">Login</h2>
       </div>
 
       <FormikProvider value={formik}>
@@ -93,6 +93,12 @@ const LoginForm: FC = () => {
 
             <div className="!mt-8">
               <Button title="Login" type="submit" fullWidth />
+            </div>
+            <div className="flex gap-1 items-center justify-center">
+              <p> Don't have an account?</p>{" "}
+              <Button type="button" title="Sign up" variant="text" onClick={()=>{
+                router.push('/auth/signup')
+              }}/>
             </div>
           </div>
         </Form>

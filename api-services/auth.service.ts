@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../constants";
-import { LoginDto } from "@/dto/auth.dto";
-import { LoginPayload } from "@/models/auth.model";
+import { LoginDto, SignUpDto } from "@/dto/auth.dto";
+import { LoginPayload, SignUpPayload } from "@/models/auth.model";
 import { secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
@@ -20,7 +20,14 @@ export const AuthService = createApi({
         body,
       }),
     }),
+    signUp: build.mutation<SignUpDto, SignUpPayload>({
+      query: (body) => ({
+        url: "sign-up",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation } = AuthService;
+export const { useLoginMutation, useSignUpMutation } = AuthService;

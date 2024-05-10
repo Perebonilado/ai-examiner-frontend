@@ -2,10 +2,11 @@ import React, { ButtonHTMLAttributes, HTMLAttributes, forwardRef } from "react";
 import s from "./styles.module.css";
 import cn from "classnames";
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "contained" | "outlined" | "text";
   size?: "large" | "medium" | "small";
   title: string;
+  fullWidth?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, Props>(
@@ -17,6 +18,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(
       [s.large]: size === "large",
       [s.medium]: size === "medium",
       [s.small]: size === "small",
+      ["w-full"]: props.fullWidth,
     });
 
     return (

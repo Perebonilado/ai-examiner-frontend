@@ -16,10 +16,6 @@
   }
 }
 
-body {
-  background: lightblue;
-}
-
 @layer utilities {
   .text-balance {
     text-wrap: balance;

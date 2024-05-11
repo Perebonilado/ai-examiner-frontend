@@ -4,6 +4,7 @@ import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useGenerateMCQsMutation } from "@/api-services/questions.service";
 import { mockQuestions } from "@/constants";
+import AppLayout from "@/layouts/AppLayout";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -48,13 +49,13 @@ export default function Home() {
   }, [isSuccess]);
 
   return (
-    <>
+    <AppLayout>
       {isLoading && (
         <AppLoader loaderMessage="Just a moment, we are generating your questions ..." />
       )}
       <AppHead />
       <div>
-        <h1 className="text-center py-8 text-2xl font-bold text-blue-600">AI Examiner</h1>
+        <h1 className="text-center py-8 pt-0 text-2xl font-bold text-blue-600">AI Examiner</h1>
         {isFormView ? (
           <GenerateMCQFormContainer
             file={file}
@@ -74,6 +75,6 @@ export default function Home() {
           )
         )}
       </div>
-    </>
+    </AppLayout>
   );
 }

@@ -1,5 +1,5 @@
 .root {
-  @apply font-medium;
+  @apply font-medium flex items-center gap-3;
 }
 
 .contained {

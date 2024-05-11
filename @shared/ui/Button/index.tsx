@@ -7,10 +7,22 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   size?: "large" | "medium" | "small";
   title: string;
   fullWidth?: boolean;
+  starticon?: React.ReactNode;
+  endicon?: React.ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, Props>(
-  ({ variant = "contained", size = "medium", title, ...props }, ref) => {
+  (
+    {
+      variant = "contained",
+      size = "medium",
+      title,
+      starticon,
+      endicon,
+      ...props
+    },
+    ref
+  ) => {
     const rootClassName = cn(`${s.root}`, {
       [s.contained]: variant === "contained",
       [s.outlined]: variant === "outlined",
@@ -23,7 +35,9 @@ const Button = forwardRef<HTMLButtonElement, Props>(
 
     return (
       <button ref={ref} {...props} className={rootClassName}>
+        {starticon}
         {title}
+        {endicon}
       </button>
     );
   }

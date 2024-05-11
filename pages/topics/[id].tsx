@@ -1,6 +1,7 @@
 import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import Button from "@/@shared/ui/Button";
+import DropDown from "@/@shared/ui/Input/DropDown";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import React from "react";
@@ -10,7 +11,12 @@ const Topic: NextPage = () => {
     <AppLayout>
       <div className="flex items-center justify-between w-full pb-10">
         <h2 className="text-2xl font-bold">Zoo 101 Topics</h2>
-        <Button title="Add Topic" />
+        <DropDown
+          options={[
+            { label: "Zoo 101", value: "123" },
+            { label: "Anthropology 101", value: "234" },
+          ]}
+        />
       </div>
       <EnhancedTable
         maxWidth="100%"

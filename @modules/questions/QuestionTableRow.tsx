@@ -3,30 +3,24 @@ import Link from "next/link";
 import React, { FC } from "react";
 
 interface Props {
-  title: string;
-  questionCount: number;
-  documentLink: string;
+  count: number;
   createdAt: Date;
+  type: string;
+  id: number;
 }
 
-const TopicsTableRow: FC<Props> = ({
-  createdAt,
-  questionCount,
-  title,
-  documentLink,
-}) => {
+const QuestionTableRow: FC<Props> = ({ count, createdAt, type, id }) => {
   return (
     <div className="flex items-center text-sm  text-gray-700 w-full gap-6 border-b border-b-gray-200 px-3 py-4">
       <div style={{ flex: 1 }}>
-        <Link href={"/questions/view-questions/4"}>
-          <p className="text-[#007bff] underline">{title}</p>
+        <Link href={"/questions/practise-questions/4"}>
+          <p className="text-[#007bff] underline">{id}</p>
         </Link>
       </div>
-      <div style={{ flex: 1 }}>{questionCount}</div>
+      <div style={{ flex: 1 }}>{type}</div>
       <div style={{ flex: 1 }}>{createdAt.toDateString()}</div>
+      <div style={{ flex: 1 }}>{count}</div>
       <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
-        <Button title="View Document" size="small" variant="outlined" />
-        <Button title="Edit" size="small" />
         <Button
           title="Delete"
           size="small"
@@ -37,4 +31,4 @@ const TopicsTableRow: FC<Props> = ({
   );
 };
 
-export default TopicsTableRow;
+export default QuestionTableRow;

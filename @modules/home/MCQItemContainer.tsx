@@ -97,7 +97,6 @@ const MCQItemContainer: FC<Props> = ({ data, handeGenerateNewQuestions }) => {
               />
               <Button
                 title="Submit"
-                size="large"
                 onClick={() => {
                   setIsSubmitted(true);
                   setModalContent(

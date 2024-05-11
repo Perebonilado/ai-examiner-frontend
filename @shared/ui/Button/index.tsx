@@ -31,7 +31,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(
       [s.medium]: size === "medium",
       [s.small]: size === "small",
       ["w-full"]: props.fullWidth,
-    });
+    }, `${props.className}`);
 
     return (
       <button ref={ref} {...props} className={rootClassName}>

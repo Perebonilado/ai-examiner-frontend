@@ -5,46 +5,73 @@ import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import ExpandableSidebarItem from "../ExpandableSidebarItem/ExpandableSidebarItem";
 import Button from "@/@shared/ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
+import ToggleMenuIcon from "@/icons/ToggleMenuIcon";
+import { useState } from "react";
+import cn from "classnames";
 
 const Sidebar: FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const sideBarContainerStyling = cn(
+    `w-full max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2`,
+    {
+      "max-md:-translate-x-0": isOpen,
+      "max-md:-translate-x-full": !isOpen,
+    }
+  );
+
   return (
-    <aside className="relative  w-full max-w-[300px] h-full p-2 max-md:hidden flex flex-col">
-      <div className="absolute h-[95%] w-[90%] px-4 shadow-sm top-0 left-1/2 -translate-x-1/2 rounded-xl bg-white">
-        <div className="h-[80px] flex items-center">
-          <p className="text-center font-bold text-lg ">AI Examiner</p>
+    <>
+      {(
+        <div className="absolute z-50 left-6 bottom-8 md:hidden">
+          <Button
+            title=""
+            starticon={<ToggleMenuIcon />}
+            className="!w-[45px] h-[45px] !bg-black"
+            onClick={() => setIsOpen(!isOpen)}
+          />
         </div>
-        <div className="h-[calc(100%-80px)]">
-          <div className="h-[calc(100%-100px)]">
-            <div className="flex flex-col gap-3 border-b border-b-gray-400 pb-10">
-              <SidebarItem
-                icon={<CourseIcon />}
-                isActive={false}
-                title="All Courses"
-                link=""
-              />
-              <SidebarItem
-                icon={<CourseDocumentIcon />}
-                isActive={true}
-                title="All Lecture Documents"
-                link=""
-              />
+      )}
+      <aside className={sideBarContainerStyling}>
+        <div className="h-full relative p-2">
+          <div className="absolute h-[95%] w-[90%] px-4 shadow-sm max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2 rounded-xl bg-white">
+            <div className="h-[80px] flex items-center">
+              <p className="text-center font-bold text-lg ">AI Examiner</p>
             </div>
+            <div className="h-[calc(100%-80px)]">
+              <div className="h-[calc(100%-100px)]">
+                <div className="flex flex-col gap-3 border-b border-b-gray-400 pb-10">
+                  <SidebarItem
+                    icon={<CourseIcon />}
+                    isActive={false}
+                    title="All Courses"
+                    link=""
+                  />
+                  <SidebarItem
+                    icon={<CourseDocumentIcon />}
+                    isActive={true}
+                    title="All Lecture Files"
+                    link=""
+                  />
+                </div>
 
-            <div className="pt-10">
-              <ExpandableSidebarItem title="Recent Lecture Documents" />
+                <div className="pt-10">
+                  <ExpandableSidebarItem title="Recent Lecture Files" />
+                </div>
+              </div>
+
+              <div className="h-[100px] flex items-end justify-end py-4">
+                <Button
+                  title="Logout"
+                  variant="outlined"
+                  endicon={<LogoutIcon />}
+                />
+              </div>
             </div>
           </div>
-
-          <div className="h-[100px] flex items-end py-4">
-            <Button
-              title="Logout"
-              variant="outlined"
-              endicon={<LogoutIcon />}
-            />
-          </div>
         </div>
-      </div>
-    </aside>
+      </aside>
+    </>
   );
 };
 

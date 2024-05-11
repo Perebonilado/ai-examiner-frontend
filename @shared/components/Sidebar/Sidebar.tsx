@@ -50,13 +50,13 @@ const Sidebar: FC = () => {
                   <SidebarItem
                     icon={<CourseDocumentIcon />}
                     isActive={false}
-                    title="All Lecture Files"
+                    title="All Topics"
                     link=""
                   />
                 </div>
 
                 <div className="pt-10">
-                  <ExpandableSidebarItem title="Recent Lecture Files" />
+                  <ExpandableSidebarItem title="Recent Topics" />
                 </div>
               </div>
 

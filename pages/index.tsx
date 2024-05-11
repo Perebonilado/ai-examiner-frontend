@@ -62,7 +62,7 @@ export default function Home() {
         headCellData={[
           { title: "Title", flex: 1 },
           { title: "Description", flex: 2 },
-          { title: "Lecture File Count", flex: 1 },
+          { title: "Topic Count", flex: 1 },
           { title: "Created At", flex: 1 },
           { title: "Actions", flex: 1 },
         ]}

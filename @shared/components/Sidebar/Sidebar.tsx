@@ -13,7 +13,7 @@ const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const sideBarContainerStyling = cn(
-    `w-full max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2`,
+    `w-full max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2 pt-[2rem]`,
     {
       "max-md:-translate-x-0": isOpen,
       "max-md:-translate-x-full": !isOpen,

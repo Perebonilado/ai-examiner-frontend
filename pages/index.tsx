@@ -1,3 +1,4 @@
+import CourseTableRow from "@/@modules/home/CourseTableRow";
 import GenerateMCQFormContainer from "@/@modules/home/GenerateMCQFormContainer";
 import MCQContainer from "@/@modules/home/MCQContainer";
 import AppHead from "@/@shared/components/AppHead";
@@ -55,7 +56,7 @@ export default function Home() {
     <AppLayout>
       <div className="flex items-center justify-between w-full pb-10">
         <h2 className="text-2xl font-bold">Courses</h2>
-        <Button  title="Create Course"/>
+        <Button title="Create Course" />
       </div>
       <EnhancedTable
         maxWidth="100%"
@@ -67,7 +68,8 @@ export default function Home() {
           { title: "Actions", flex: 1 },
         ]}
         generic={true}
-        rowData={[]}
+        rowData={mock}
+        rowComponent={(rows: (typeof mock)[0]) => <CourseTableRow {...rows} />}
       />
 
       {/* {isLoading && (
@@ -99,3 +101,31 @@ export default function Home() {
     </AppLayout>
   );
 }
+
+const mock = [
+  {
+    title: "Zoo 101",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem, asperiores",
+    topicCount: 4,
+    createdAt: new Date(),
+  },
+  {
+    title: "Chem 115",
+    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
+    topicCount: 4,
+    createdAt: new Date(),
+  },
+  {
+    title: "Zoo 113",
+    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
+    topicCount: 4,
+    createdAt: new Date(),
+  },
+  {
+    title: "GES 101",
+    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
+    topicCount: 4,
+    createdAt: new Date(),
+  },
+];

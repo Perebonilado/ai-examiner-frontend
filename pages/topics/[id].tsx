@@ -1,5 +1,6 @@
 import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
+import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
@@ -23,6 +24,13 @@ const Topic: NextPage = () => {
         generic={true}
         rowData={mock}
         rowComponent={(rows: (typeof mock)[0]) => <TopicsTableRow {...rows} />}
+      />
+      <Pagination
+        className=""
+        currentPage={1}
+        pageSize={5}
+        totalCount={10}
+        onPageChange={(p) => {}}
       />
     </AppLayout>
   );

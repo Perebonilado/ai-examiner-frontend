@@ -5,6 +5,7 @@ import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import Avatar from "@/@shared/components/Avatar";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
+import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import { useGenerateMCQsMutation } from "@/api-services/questions.service";
 import { mockQuestions } from "@/constants";
@@ -71,6 +72,13 @@ export default function Home() {
         rowData={mock}
         rowComponent={(rows: (typeof mock)[0]) => <CourseTableRow {...rows} />}
       />
+      <Pagination
+        className=""
+        currentPage={1}
+        pageSize={5}
+        totalCount={10}
+        onPageChange={(p) => {}}
+      />
 
       {/* {isLoading && (
         <AppLoader loaderMessage="Just a moment, we are generating your questions ..." />
@@ -112,7 +120,8 @@ const mock = [
   },
   {
     title: "Chem 115",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
     topicCount: 4,
     createdAt: new Date(),
   },
@@ -124,7 +133,8 @@ const mock = [
   },
   {
     title: "GES 101",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
+    description:
+      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
     topicCount: 4,
     createdAt: new Date(),
   },

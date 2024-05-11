@@ -1,5 +1,6 @@
 import QuestionTableRow from "@/@modules/questions/QuestionTableRow";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
+import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
@@ -26,6 +27,13 @@ const ViewQuestions: NextPage = () => {
         rowComponent={(rows: (typeof mock)[0]) => (
           <QuestionTableRow {...rows} />
         )}
+      />
+      <Pagination
+        className=""
+        currentPage={1}
+        pageSize={5}
+        totalCount={10}
+        onPageChange={(p) => {}}
       />
     </AppLayout>
   );

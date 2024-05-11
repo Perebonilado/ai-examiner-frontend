@@ -45,7 +45,7 @@ const Sidebar: FC = () => {
                     icon={<CourseIcon />}
                     isActive={true}
                     title="All Courses"
-                    link=""
+                    link="/"
                   />
                   <SidebarItem
                     icon={<CourseDocumentIcon />}

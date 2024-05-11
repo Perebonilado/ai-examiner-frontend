@@ -16,7 +16,6 @@ const Topic: NextPage = () => {
         maxWidth="100%"
         headCellData={[
           { title: "Title", flex: 1 },
-        //   { title: "Document Link", flex: 2 },
           { title: "Question Count", flex: 1 },
           { title: "Created At", flex: 1 },
           { title: "Actions", flex: 1 },

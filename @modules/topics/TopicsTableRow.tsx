@@ -22,10 +22,9 @@ const TopicsTableRow: FC<Props> = ({
           <p className="text-[#007bff] underline">{title}</p>
         </Link>
       </div>
-      {/* <div style={{ flex: 2 }}>{documentLink}</div> */}
       <div style={{ flex: 1 }}>{questionCount}</div>
       <div style={{ flex: 1 }}>{createdAt.toDateString()}</div>
-      <div style={{ flex: 1 }} className="flex items-center gap-3">
+      <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
         <Button title="View Document" size="small" variant="outlined" />
         <Button title="Edit" size="small" />
         <Button

@@ -40,7 +40,7 @@ const DropDown: FC<Props> = ({
   const mainInputRef = useRef<ElementRef<"input">>(null);
 
   const inputStyleBasedOnVariant = cn(
-    `min-h-[20px] w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-blue-300 transition-all`
+    `min-h-[20px] cursor-pointer w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-blue-300 transition-all`
   );
 
   const onSelect = (val: {
@@ -82,11 +82,11 @@ const DropDown: FC<Props> = ({
   return (
     <>
       {label && (
-        <label className="text-base font-semibold ">
+        <label className="text-base font-semibold">
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}
-      <div className={`w-full relative`} ref={dropDownRef}>
+      <div className={`w-full relative mt-1`} ref={dropDownRef}>
         <input
           ref={mirrorInputRef}
           className={inputStyleBasedOnVariant}

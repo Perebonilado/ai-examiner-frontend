@@ -1,3 +1,5 @@
+import { MetaDto } from "./meta.dto";
+
 export interface QuestionsDto {
   id: string;
   question: string;
@@ -16,4 +18,5 @@ export interface QuestionSummaryDto {
 export interface AllQuestionSummaryDto {
   data: QuestionSummaryDto[];
   status: number;
+  meta: MetaDto
 }

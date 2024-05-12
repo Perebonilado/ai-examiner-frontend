@@ -16,9 +16,9 @@ const ViewQuestions: NextPage = () => {
       <EnhancedTable
         maxWidth="100%"
         headCellData={[
-            { title: "id", flex: 1 },
-            { title: "type", flex: 1 },
-            { title: "Created At", flex: 1 },
+          { title: "id", flex: 1 },
+          { title: "type", flex: 1 },
+          { title: "Created At", flex: 1 },
           { title: "Count", flex: 1 },
           { title: "Actions", flex: 1 },
         ]}

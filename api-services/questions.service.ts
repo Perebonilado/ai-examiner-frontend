@@ -1,7 +1,12 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../constants";
-import { QuestionsModel } from "@/models/questions.model";
-import { QuestionsDto } from "@/dto/questions.dto";
+import {
+  GetQuestionSummaryModel,
+  GetQuestionsQueryModel,
+  QuestionSummaryModel,
+  QuestionsModel,
+} from "@/models/questions.model";
+import { AllQuestionSummaryDto, QuestionsDto } from "@/dto/questions.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions/`,
@@ -10,6 +15,7 @@ const baseQuery = fetchBaseQuery({
 export const QuestionsService = createApi({
   reducerPath: "questions",
   baseQuery,
+  tagTypes: ["question-summary"],
   endpoints: (build) => ({
     generateMCQs: build.mutation<QuestionsModel[], FormData>({
       query: (body) => ({
@@ -27,12 +33,38 @@ export const QuestionsService = createApi({
               id: res.id,
               options: res.options,
               question: res.question,
-              correctAnswerId: res.correctAnswerId
+              correctAnswerId: res.correctAnswerId,
             };
           });
+      },
+    }),
+    getQuestionSummaries: build.query<
+      GetQuestionSummaryModel,
+      GetQuestionsQueryModel
+    >({
+      query: (query) => ({
+        url: ``,
+        method: "GET",
+        params: { ...query },
+      }),
+      providesTags: ["question-summary"],
+      transformResponse: (res: AllQuestionSummaryDto) => {
+        if (!res) return <GetQuestionSummaryModel>{};
+
+        return {
+          meta: res.meta,
+          questions: res.data.map((d) => ({
+            id: d.id,
+            type: "Multiple Choice",
+            createdAt: d.createdOn,
+            count: d.count,
+            documentId: d.courseDocumentId,
+          })),
+        };
       },
     }),
   }),
 });
 
-export const { useGenerateMCQsMutation } = QuestionsService;
+export const { useGenerateMCQsMutation, useGetQuestionSummariesQuery } =
+  QuestionsService;

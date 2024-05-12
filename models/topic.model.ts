@@ -5,6 +5,7 @@ export interface AllTopicsQueryModel {
   title: string;
   page: number;
   pageSize: number;
+  id: string
 }
 
 export interface AllTopicsModel {

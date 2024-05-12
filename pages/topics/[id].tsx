@@ -20,7 +20,7 @@ const Topic: NextPage = () => {
   const params = useParams();
 
   const { data, isLoading, error, refetch } = useGetAllUserTopicsQuery(
-    { courseId: courseId || "", page, pageSize: 10, title },
+    { courseId: courseId || "", page, pageSize: 10, title, id: '' },
     { refetchOnMountOrArgChange: true, skip: !courseId }
   );
 

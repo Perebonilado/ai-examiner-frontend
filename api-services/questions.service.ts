@@ -1,25 +1,57 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { API_BASE_URL } from "../constants";
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  createApi,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
+import { API_BASE_URL, accessToken } from "../constants";
 import {
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
   QuestionSummaryModel,
   QuestionsModel,
 } from "@/models/questions.model";
+import Cookies from "js-cookie";
 import { AllQuestionSummaryDto, QuestionsDto } from "@/dto/questions.dto";
+import { logout, secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: `${API_BASE_URL}/questions/`,
+  baseUrl: `${API_BASE_URL}/questions`,
+  timeout: secondsToMilliSeconds(30),
+  prepareHeaders(headers) {
+    const token = Cookies.get(accessToken);
+
+    if (token) {
+      headers.set("authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
 });
+
+const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError
+> = async (args, api, extraOptions) => {
+  let result = await baseQuery(args, api, extraOptions);
+  if (result.error && result.error.status === 401) {
+    logout(() => {
+      window.location.pathname = "/auth/login";
+    });
+  }
+  return result;
+};
 
 export const QuestionsService = createApi({
   reducerPath: "questions",
-  baseQuery,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration,
   tagTypes: ["question-summary"],
   endpoints: (build) => ({
     generateMCQs: build.mutation<QuestionsModel[], FormData>({
       query: (body) => ({
-        url: "generate-mcq",
+        url: "/generate-mcq",
         method: "POST",
         body,
       }),

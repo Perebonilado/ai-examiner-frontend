@@ -26,7 +26,7 @@ const AllTopics: NextPage = () => {
     }[]
   >([]);
   const { data, isLoading, error, refetch } = useGetAllUserTopicsQuery(
-    { courseId: courseId || "", page, pageSize: 10, title },
+    { courseId: courseId || "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true }
   );
   const { data: courses } = useGetAllUserCoursesQuery(
@@ -69,8 +69,8 @@ const AllTopics: NextPage = () => {
           <DropDown
             options={courseOptions}
             label="Filter by Course"
-            onChange={(e)=>{
-              setCourseId(e.target.value)
+            onChange={(e) => {
+              setCourseId(e.target.value);
             }}
           />
         </div>

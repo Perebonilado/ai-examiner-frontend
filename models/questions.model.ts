@@ -9,6 +9,11 @@ export interface QuestionsModel {
   correctAnswerId: string;
 }
 
+export interface GetQuestionByIdModel {
+  data: QuestionsModel[];
+  topicTitle: string;
+}
+
 export interface QuestionOption {
   value: string;
   id: string;

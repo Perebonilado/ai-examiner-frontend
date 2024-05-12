@@ -8,6 +8,13 @@ export interface QuestionsDto {
   explanation: string;
 }
 
+export interface GetQuestionsByIdDto {
+  id: string;
+  topicTitle: string;
+  createdOn: Date;
+  questions: QuestionsDto[]
+}
+
 export interface QuestionSummaryDto {
   courseDocumentId: string;
   createdOn: Date;

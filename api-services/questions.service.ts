@@ -7,13 +7,17 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
+  GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
-  QuestionSummaryModel,
   QuestionsModel,
 } from "@/models/questions.model";
 import Cookies from "js-cookie";
-import { AllQuestionSummaryDto, QuestionsDto } from "@/dto/questions.dto";
+import {
+  AllQuestionSummaryDto,
+  GetQuestionsByIdDto,
+  QuestionsDto,
+} from "@/dto/questions.dto";
 import { logout, secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
@@ -47,27 +51,29 @@ const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
 export const QuestionsService = createApi({
   reducerPath: "questions",
   baseQuery: baseQueryWithLogoutOnTokenExpiration,
-  tagTypes: ["question-summary"],
+  tagTypes: ["question-summary", "single-question"],
   endpoints: (build) => ({
-    generateMCQs: build.mutation<QuestionsModel[], FormData>({
-      query: (body) => ({
-        url: "/generate-mcq",
-        method: "POST",
-        body,
+    getQuestionsById: build.query<GetQuestionByIdModel, string>({
+      query: (id) => ({
+        url: `/${id}`,
+        method: "GET",
       }),
-      transformResponse: (res: QuestionsDto[]) => {
-        if (!res) return <QuestionsModel[]>[];
-        else
-          return res.map((res) => {
-            return {
-              answerId: res.correctAnswerId,
-              explanation: res.explanation,
-              id: res.id,
-              options: res.options,
-              question: res.question,
-              correctAnswerId: res.correctAnswerId,
-            };
-          });
+      providesTags: ["single-question"],
+      transformResponse: (res: GetQuestionsByIdDto) => {
+        if (!res) return <GetQuestionByIdModel>{};
+        else {
+          return {
+            data: res.questions.map((q) => ({
+              answerId: q.correctAnswerId,
+              explanation: q.explanation,
+              id: q.id,
+              options: q.options,
+              question: q.question,
+              correctAnswerId: q.correctAnswerId,
+            })),
+            topicTitle: res.topicTitle,
+          };
+        }
       },
     }),
     getQuestionSummaries: build.query<
@@ -98,5 +104,5 @@ export const QuestionsService = createApi({
   }),
 });
 
-export const { useGenerateMCQsMutation, useGetQuestionSummariesQuery } =
+export const { useGetQuestionsByIdQuery, useGetQuestionSummariesQuery } =
   QuestionsService;

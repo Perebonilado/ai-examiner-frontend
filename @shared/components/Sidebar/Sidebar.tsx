@@ -22,6 +22,7 @@ const Sidebar: FC = () => {
     page: 1,
     pageSize: 5,
     title: "",
+    id: ""
   });
 
   const sideBarContainerStyling = cn(

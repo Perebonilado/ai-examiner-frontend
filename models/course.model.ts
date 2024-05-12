@@ -1,3 +1,5 @@
+import { MetaModel } from "./meta.model";
+
 export interface AllCoursesQueryModel {
   page: number;
   pageSize: number;
@@ -7,6 +9,11 @@ export interface AllCoursesQueryModel {
 export interface AllCoursesModel {
   id: string;
   title: string;
-  questionCount: number;
+  topicCount: number;
   createdAt: Date;
+}
+
+export interface GetAllCoursesModel {
+  courses: AllCoursesModel[];
+  meta: MetaModel;
 }

@@ -61,7 +61,8 @@ export const TopicService = createApi({
           return <AllTopicsModel>{
             createdAt: topic.createdOn,
             id: topic.id,
-            type: "Multiple Choice Questions",
+            title: topic.title,
+            questionSetCount: topic.questionCount
           };
         });
 

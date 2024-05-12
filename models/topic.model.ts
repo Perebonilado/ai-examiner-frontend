@@ -9,8 +9,9 @@ export interface AllTopicsQueryModel {
 
 export interface AllTopicsModel {
   id: string;
-  type: string;
   createdAt: Date;
+  title: string
+  questionSetCount: number
 }
 
 export interface GetAllTopicsModel {

@@ -10,11 +10,12 @@ const CourseTableRow: FC<Props> = ({
   description,
   title,
   topicCount,
+  id
 }) => {
   return (
     <div className="flex items-center text-sm  text-gray-700 w-full gap-6 border-b border-b-gray-200 px-3 py-4">
       <div style={{ flex: 1 }}>
-        <Link href={"/topics/3"}>
+        <Link href={`/topics/${id}`}>
           <p className="text-[#007bff] underline">{title}</p>
         </Link>
       </div>

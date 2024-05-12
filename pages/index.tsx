@@ -3,6 +3,7 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetAllUserCoursesQuery } from "@/api-services/couse.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -41,6 +42,12 @@ export default function Home() {
         <h2 className="text-2xl font-bold">Courses</h2>
         <Button title="Create Course" />
       </div>
+      {!data && error && (
+        <div className="flex flex-col gap-4 justify-center items-center py-8">
+          <ErrorMessage message="Something went wrong while trying to get your courses" />
+          <Button title="Reload courses" onClick={refetch} />
+        </div>
+      )}
       <EnhancedTable
         maxWidth="100%"
         headCellData={[

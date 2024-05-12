@@ -78,7 +78,7 @@ const AllTopics: NextPage = () => {
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">
           <ErrorMessage message="Something went wrong while trying to get your topics" />
-          <Button title="Reload courses" onClick={refetch} />
+          <Button title="Reload topics" onClick={refetch} />
         </div>
       )}
       <EnhancedTable

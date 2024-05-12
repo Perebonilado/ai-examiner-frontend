@@ -68,8 +68,8 @@ const ViewQuestions: NextPage = () => {
       </div>
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get questions for this topic" />
-          <Button title="Reload courses" onClick={refetch} />
+          <ErrorMessage message="Something went wrong while trying to get question summaries for this topic" />
+          <Button title="Reload Question Summaries" onClick={refetch} />
         </div>
       )}
       <EnhancedTable

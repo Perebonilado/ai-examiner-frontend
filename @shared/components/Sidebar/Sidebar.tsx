@@ -8,9 +8,21 @@ import LogoutIcon from "@/icons/LogoutIcon";
 import ToggleMenuIcon from "@/icons/ToggleMenuIcon";
 import { useState } from "react";
 import cn from "classnames";
+import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
 
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const {
+    data: recentTopics,
+    isLoading,
+    error,
+    refetch,
+  } = useGetAllUserTopicsQuery({
+    courseId: "",
+    page: 1,
+    pageSize: 5,
+    title: "",
+  });
 
   const sideBarContainerStyling = cn(
     `w-full pl-4 max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2 pt-[2rem]`,
@@ -22,7 +34,7 @@ const Sidebar: FC = () => {
 
   return (
     <>
-      {(
+      {
         <div className="absolute z-50 left-6 bottom-8 md:hidden">
           <Button
             title=""
@@ -31,7 +43,7 @@ const Sidebar: FC = () => {
             onClick={() => setIsOpen(!isOpen)}
           />
         </div>
-      )}
+      }
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
           <div className="absolute shadow-xl h-[95%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2 rounded-xl bg-white">
@@ -56,7 +68,13 @@ const Sidebar: FC = () => {
                 </div>
 
                 <div className="pt-10">
-                  <ExpandableSidebarItem title="Recent Topics" />
+                  <ExpandableSidebarItem
+                    title="Recent Topics"
+                    data={recentTopics?.topics.map((t) => ({
+                      link: `/questions/view-questions/${t.id}`,
+                      title: t.title,
+                    }))}
+                  />
                 </div>
               </div>
 

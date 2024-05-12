@@ -3,6 +3,7 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetCourseByIdQuery } from "@/api-services/couse.service";
 import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
 import { useModalContext } from "@/contexts/ModalContext";
@@ -59,6 +60,12 @@ const Topic: NextPage = () => {
         {course && <h2 className="text-2xl font-bold">{course.title} Topics</h2>}
         <Button title="Add Topic" />
       </div>
+      {!data && error && (
+        <div className="flex flex-col gap-4 justify-center items-center py-8">
+          <ErrorMessage message="Something went wrong while trying to get topics for this course" />
+          <Button title="Reload courses" onClick={refetch} />
+        </div>
+      )}
       <EnhancedTable
         maxWidth="100%"
         headCellData={[

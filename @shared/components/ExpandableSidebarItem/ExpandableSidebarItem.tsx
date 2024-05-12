@@ -2,12 +2,17 @@ import React, { FC, useEffect, useState } from "react";
 import cn from "classnames";
 import ChevronRight from "@/icons/ChevronRight";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
+import Link from "next/link";
 
 interface Props {
   title: string;
+  data?: {
+    title: string;
+    link: string;
+  }[];
 }
 
-const ExpandableSidebarItem: FC<Props> = ({ title }) => {
+const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const expandBoxStyling = cn(
@@ -25,10 +30,6 @@ const ExpandableSidebarItem: FC<Props> = ({ title }) => {
     }
   );
 
-  useEffect(() => {
-    console.log(isOpen);
-  }, [isOpen]);
-
   return (
     <div>
       <div
@@ -42,10 +43,15 @@ const ExpandableSidebarItem: FC<Props> = ({ title }) => {
       </div>
 
       <div className={expandBoxStyling}>
-        {["test", "test2", "test4"].map((t) => (
-          <div className="flex items-center gap-3 pl-8 cursor-pointer">
+        {data?.map((t, idx) => (
+          <div
+            className="flex items-center gap-3 pl-8 cursor-pointer"
+            key={idx}
+          >
             <CourseDocumentIcon />
-            <p className="py-1">{t}</p>
+            <Link href={t.link}>
+              <p className="py-1">{t.title}</p>
+            </Link>
           </div>
         ))}
       </div>

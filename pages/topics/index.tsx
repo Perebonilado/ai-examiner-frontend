@@ -3,6 +3,7 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import DropDown from "@/@shared/ui/Input/DropDown";
 import { useGetAllUserCoursesQuery } from "@/api-services/couse.service";
 import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
@@ -74,6 +75,12 @@ const AllTopics: NextPage = () => {
           />
         </div>
       </div>
+      {!data && error && (
+        <div className="flex flex-col gap-4 justify-center items-center py-8">
+          <ErrorMessage message="Something went wrong while trying to get your topics" />
+          <Button title="Reload courses" onClick={refetch} />
+        </div>
+      )}
       <EnhancedTable
         maxWidth="100%"
         headCellData={[

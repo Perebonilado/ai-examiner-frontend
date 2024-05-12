@@ -64,6 +64,7 @@ export const CourseService = createApi({
               id: course.id,
               topicCount: course.topicCount,
               title: course.title,
+              description: course.description
             };
           });
 

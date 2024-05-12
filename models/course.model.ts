@@ -9,6 +9,7 @@ export interface AllCoursesQueryModel {
 export interface AllCoursesModel {
   id: string;
   title: string;
+  description: string;
   topicCount: number;
   createdAt: Date;
 }

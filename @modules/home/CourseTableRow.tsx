@@ -1,13 +1,9 @@
 import Button from "@/@shared/ui/Button";
+import { AllCoursesModel } from "@/models/course.model";
 import Link from "next/link";
 import React, { FC } from "react";
 
-interface Props {
-  title: string;
-  description: string;
-  topicCount: number;
-  createdAt: Date;
-}
+interface Props extends AllCoursesModel {}
 
 const CourseTableRow: FC<Props> = ({
   createdAt,
@@ -24,7 +20,7 @@ const CourseTableRow: FC<Props> = ({
       </div>
       <div style={{ flex: 2 }}>{description}</div>
       <div style={{ flex: 1 }}>{topicCount}</div>
-      <div style={{ flex: 1 }}>{createdAt.toDateString()}</div>
+      <div style={{ flex: 1 }}>{new Date(createdAt).toDateString()}</div>
       <div style={{ flex: 1 }} className="flex items-center gap-3">
         <Button title="Edit" size="small" />
         <Button

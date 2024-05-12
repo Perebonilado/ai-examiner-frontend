@@ -1,57 +1,39 @@
 import CourseTableRow from "@/@modules/home/CourseTableRow";
-import GenerateMCQFormContainer from "@/@modules/home/GenerateMCQFormContainer";
-import MCQContainer from "@/@modules/home/MCQContainer";
-import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
-import Avatar from "@/@shared/components/Avatar";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
-import { useGenerateMCQsMutation } from "@/api-services/questions.service";
-import { mockQuestions } from "@/constants";
+import { useGetAllUserCoursesQuery } from "@/api-services/couse.service";
+import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Home() {
-  const [isFormView, setIsFormView] = useState(true);
-  const [file, setFile] = useState<File | null>(null);
-  const [
-    generateQuestions,
-    { data: questions, isLoading, isSuccess, isError },
-  ] = useGenerateMCQsMutation();
+  const [page, setPage] = useState(1);
+  const { data, isLoading, error, refetch } = useGetAllUserCoursesQuery(
+    { page, pageSize: 10, title: "" },
+    { refetchOnMountOrArgChange: true }
+  );
 
-  const handleFile = (file: File | null) => {
-    setFile(file);
-  };
-
-  const handleSubmitQuestionGenerationForm = (
-    values: Record<string, string>
-  ) => {
-    const formData = new FormData();
-    for (const key in values) {
-      formData.append(key, values[key]);
-    }
-
-    if (file) {
-      formData.append("document", file);
-    }
-
-    generateQuestions(formData);
-  };
+  const { setModalContent } = useModalContext();
 
   useEffect(() => {
-    if (isError) {
-      toast.error("Something went wrong, let's try that again");
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
     }
-  }, [isError]);
+  }, [error]);
 
   useEffect(() => {
-    if (isSuccess) {
-      setFile(null);
-      setIsFormView(false);
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
     }
-  }, [isSuccess]);
+  }, [isLoading]);
 
   return (
     <AppLayout>
@@ -69,73 +51,20 @@ export default function Home() {
           { title: "Actions", flex: 1 },
         ]}
         generic={true}
-        rowData={mock}
-        rowComponent={(rows: (typeof mock)[0]) => <CourseTableRow {...rows} />}
+        rowData={data?.courses || []}
+        rowComponent={(rows) => <CourseTableRow {...rows} />}
       />
-      <Pagination
-        className=""
-        currentPage={1}
-        pageSize={5}
-        totalCount={10}
-        onPageChange={(p) => {}}
-      />
-
-      {/* {isLoading && (
-        <AppLoader loaderMessage="Just a moment, we are generating your questions ..." />
+      {data && (
+        <Pagination
+          className=""
+          currentPage={page}
+          pageSize={data.meta.pageSize}
+          totalCount={data.meta.totalCount}
+          onPageChange={(p) => {
+            setPage(() => p);
+          }}
+        />
       )}
-      <AppHead />
-      <div>
-        <h1 className="text-center py-8 pt-0 text-2xl font-bold text-blue-600">AI Examiner</h1>
-        {isFormView ? (
-          <GenerateMCQFormContainer
-            file={file}
-            handleFile={handleFile}
-            allowedTypes={["doc", "docx", "pdf", "ppt", "pptx", "txt"]}
-            maxFileSizeMB={10}
-            handleFormValues={(values: Record<string, string>) => {
-              handleSubmitQuestionGenerationForm(values);
-            }}
-          />
-        ) : (
-          questions && (
-            <MCQContainer
-              data={questions}
-              handeGenerateNewQuestions={() => setIsFormView(true)}
-            />
-          )
-        )}
-        
-      </div> */}
     </AppLayout>
   );
 }
-
-const mock = [
-  {
-    title: "Zoo 101",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem, asperiores",
-    topicCount: 4,
-    createdAt: new Date(),
-  },
-  {
-    title: "Chem 115",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
-    topicCount: 4,
-    createdAt: new Date(),
-  },
-  {
-    title: "Zoo 113",
-    description: "Lorem ipsum dolor sit amet consectetur adipisicing elit",
-    topicCount: 4,
-    createdAt: new Date(),
-  },
-  {
-    title: "GES 101",
-    description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Non officia voluptatibus laudantium repellat ut dolor nisi alias illum nihil exercitationem. Totam, praesentium magni ipsam reprehenderit cupiditate dolorum debitis libero ab natus quia! Quam, architecto ullam est inventore illum quis magni!",
-    topicCount: 4,
-    createdAt: new Date(),
-  },
-];

@@ -1,37 +1,87 @@
 import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
+import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
+import { useGetCourseByIdQuery } from "@/api-services/couse.service";
+import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
-import React from "react";
+import { useParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const Topic: NextPage = () => {
+  const [page, setPage] = useState(1);
+  const [courseId, setCourseId] = useState<string | null>(null);
+  const [title, setTitle] = useState("");
+  const params = useParams();
+
+  const { data, isLoading, error, refetch } = useGetAllUserTopicsQuery(
+    { courseId: courseId || "", page, pageSize: 10, title },
+    { refetchOnMountOrArgChange: true, skip: !courseId }
+  );
+
+  const { data: course, isLoading: courseLoading } = useGetCourseByIdQuery(courseId || "", {
+    skip: !courseId,
+    refetchOnMountOrArgChange: true,
+  });
+
+  const { setModalContent } = useModalContext();
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isLoading || courseLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading, courseLoading]);
+
+  useEffect(() => {
+    if (params) {
+      setCourseId(params.id as string);
+    }
+  }, [params]);
+
   return (
     <AppLayout>
       <div className="flex items-center justify-between w-full pb-10">
-        <h2 className="text-2xl font-bold">Zoo 101 Topics</h2>
+        {course && <h2 className="text-2xl font-bold">{course.title} Topics</h2>}
         <Button title="Add Topic" />
       </div>
       <EnhancedTable
         maxWidth="100%"
         headCellData={[
           { title: "Title", flex: 1 },
-          { title: "Question Count", flex: 1 },
+          { title: "Question Set Count", flex: 1 },
           { title: "Created At", flex: 1 },
           { title: "Actions", flex: 1 },
         ]}
         generic={true}
-        rowData={mock}
-        rowComponent={(rows: (typeof mock)[0]) => <TopicsTableRow {...rows} />}
+        rowData={data?.topics}
+        rowComponent={(rows) => <TopicsTableRow {...rows} />}
       />
-      <Pagination
-        className=""
-        currentPage={1}
-        pageSize={5}
-        totalCount={10}
-        onPageChange={(p) => {}}
-      />
+      {data && (
+        <Pagination
+          className=""
+          currentPage={page}
+          pageSize={data.meta.pageSize}
+          totalCount={data.meta.totalCount}
+          onPageChange={(p) => {
+            setPage(() => p);
+          }}
+        />
+      )}
     </AppLayout>
   );
 };

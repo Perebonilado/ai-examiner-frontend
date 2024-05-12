@@ -19,3 +19,8 @@ export interface AllCoursesDto {
   };
   status: number;
 }
+
+export interface GetCourseByIdDto {
+  data: CourseDto;
+  status: number;
+}

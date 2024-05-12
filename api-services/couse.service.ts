@@ -13,7 +13,7 @@ import {
   AllCoursesQueryModel,
   GetAllCoursesModel,
 } from "@/models/course.model";
-import { AllCoursesDto } from "@/dto/course.dto";
+import { AllCoursesDto, GetCourseByIdDto } from "@/dto/course.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course`,
@@ -46,7 +46,7 @@ const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
 export const CourseService = createApi({
   reducerPath: "course-api",
   baseQuery: baseQueryWithLogoutOnTokenExpiration,
-  tagTypes: ["all-courses"],
+  tagTypes: ["all-courses", "single-course"],
   endpoints: (build) => ({
     getAllUserCourses: build.query<GetAllCoursesModel, AllCoursesQueryModel>({
       query: (queryParams) => ({
@@ -64,7 +64,7 @@ export const CourseService = createApi({
               id: course.id,
               topicCount: course.topicCount,
               title: course.title,
-              description: course.description
+              description: course.description,
             };
           });
 
@@ -75,7 +75,25 @@ export const CourseService = createApi({
         }
       },
     }),
+    getCourseById: build.query<AllCoursesModel, string>({
+      query: (id) => ({
+        url: `/${id}`,
+        method: "GET",
+      }),
+      providesTags: ["single-course"],
+      transformResponse: (res: GetCourseByIdDto) => {
+        if (!res) return <AllCoursesModel>{};
+
+        return <AllCoursesModel>{
+          title: res.data.title,
+          createdAt: res.data.createdOn,
+          description: res.data.description,
+          id: res.data.id,
+          topicCount: res.data.topicCount,
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetAllUserCoursesQuery } = CourseService;
+export const { useGetAllUserCoursesQuery, useGetCourseByIdQuery } = CourseService;

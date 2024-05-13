@@ -12,6 +12,7 @@ import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
 import { useRouter } from "next/router";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
+import Link from "next/link";
 
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,7 +56,9 @@ const Sidebar: FC = () => {
         <div className="h-full relative p-2">
           <div className="absolute shadow-xl h-[95%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2 rounded-xl bg-white">
             <div className="h-[80px] flex items-center">
-              <p className="text-center font-bold text-lg ">AI Examiner</p>
+              <Link href={"/"}>
+                <p className="text-center font-bold text-lg ">AI Examiner</p>
+              </Link>
             </div>
             <div className="h-[calc(100%-80px)]">
               <div className="h-[calc(100%-100px)]">

@@ -18,3 +18,8 @@ export interface GetAllCoursesModel {
   courses: AllCoursesModel[];
   meta: MetaModel;
 }
+
+export interface CreateCoursePayloadModel {
+  title: string;
+  description: string;
+}

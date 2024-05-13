@@ -1,4 +1,6 @@
 import CourseTableRow from "@/@modules/home/CourseTableRow";
+import CreateCourseForm from "@/@modules/home/CreateCourseForm";
+import GenerateMCQFormContainer from "@/@modules/home/GenerateMCQFormContainer";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
@@ -36,11 +38,15 @@ export default function Home() {
     }
   }, [isLoading]);
 
+  const handleCreateCourse = () => {
+    setModalContent(<CreateCourseForm />)
+  }
+
   return (
     <AppLayout>
       <div className="flex items-center justify-between w-full pb-10">
-        <h2 className="text-2xl font-bold">Courses</h2>
-        <Button title="Create Course" />
+        <h2 className="text-2xl font-bold">All Courses</h2>
+        <Button title="Create Course" onClick={handleCreateCourse}/>
       </div>
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">

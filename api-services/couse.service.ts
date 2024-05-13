@@ -11,6 +11,7 @@ import { logout, secondsToMilliSeconds } from "@/utils";
 import {
   AllCoursesModel,
   AllCoursesQueryModel,
+  CreateCoursePayloadModel,
   GetAllCoursesModel,
 } from "@/models/course.model";
 import { AllCoursesDto, GetCourseByIdDto } from "@/dto/course.dto";
@@ -93,7 +94,19 @@ export const CourseService = createApi({
         };
       },
     }),
+    createCourse: build.mutation<any, CreateCoursePayloadModel>({
+      query: (body) => ({
+        url: "",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["all-courses"]
+    }),
   }),
 });
 
-export const { useGetAllUserCoursesQuery, useGetCourseByIdQuery } = CourseService;
+export const {
+  useGetAllUserCoursesQuery,
+  useGetCourseByIdQuery,
+  useCreateCourseMutation,
+} = CourseService;

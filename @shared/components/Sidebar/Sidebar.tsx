@@ -9,6 +9,9 @@ import ToggleMenuIcon from "@/icons/ToggleMenuIcon";
 import { useState } from "react";
 import cn from "classnames";
 import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useRouter } from "next/router";
+import { useActiveNavLink } from "@/hooks/useActiveNavLink";
+import { logout } from "@/utils";
 
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +25,7 @@ const Sidebar: FC = () => {
     page: 1,
     pageSize: 5,
     title: "",
-    id: ""
+    id: "",
   });
 
   const sideBarContainerStyling = cn(
@@ -32,6 +35,9 @@ const Sidebar: FC = () => {
       "max-md:-translate-x-full": !isOpen,
     }
   );
+
+  const [activeNavLink] = useActiveNavLink();
+  const router = useRouter();
 
   return (
     <>
@@ -56,13 +62,13 @@ const Sidebar: FC = () => {
                 <div className="flex flex-col gap-3 border-b border-b-gray-400 pb-10">
                   <SidebarItem
                     icon={<CourseIcon />}
-                    isActive={true}
+                    isActive={activeNavLink === "/"}
                     title="All Courses"
                     link="/"
                   />
                   <SidebarItem
                     icon={<CourseDocumentIcon />}
-                    isActive={false}
+                    isActive={activeNavLink === "/topics"}
                     title="All Topics"
                     link="/topics"
                   />
@@ -84,6 +90,11 @@ const Sidebar: FC = () => {
                   title="Logout"
                   variant="outlined"
                   endicon={<LogoutIcon />}
+                  onClick={() => {
+                    logout(() => {
+                      router.push("/auth/login");
+                    });
+                  }}
                 />
               </div>
             </div>

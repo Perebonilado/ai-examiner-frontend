@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import cn from "classnames";
 import ChevronRight from "@/icons/ChevronRight";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
@@ -50,7 +50,7 @@ const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
           >
             <CourseDocumentIcon />
             <Link href={t.link}>
-              <p className="py-2 text-xs">{t.title}</p>
+              <p className="py-1 text-xs">{t.title}</p>
             </Link>
           </div>
         ))}

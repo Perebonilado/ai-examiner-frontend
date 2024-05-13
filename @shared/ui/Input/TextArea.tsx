@@ -11,14 +11,14 @@ const TextArea: FC<Props> = ({ isRequired, label, error, ...props }) => {
   return (
     <div className="flex flex-col w-full">
       {label && (
-        <label className="text-white text-sm mb-2">
+        <label className="text-base font-semibold mb-2">
           {label}{" "}
           {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}
       {
         <textarea
-          className="flex m-0 text-black placeholder:text-gray-400 placeholder:text-sm px-4 py-3 resize-none  rounded-md outline-none bg-white border-none"
+          className="resize-none flex m-0 w-full text-black  placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-blue-300 transition-all"
           {...props}
         ></textarea>
       }

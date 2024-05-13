@@ -2,14 +2,27 @@ import React, { ButtonHTMLAttributes, HTMLAttributes, forwardRef } from "react";
 import s from "./styles.module.css";
 import cn from "classnames";
 
-interface Props extends ButtonHTMLAttributes<HTMLButtonElement>{
+interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "contained" | "outlined" | "text";
   size?: "large" | "medium" | "small";
   title: string;
+  fullWidth?: boolean;
+  starticon?: React.ReactNode;
+  endicon?: React.ReactNode;
 }
 
 const Button = forwardRef<HTMLButtonElement, Props>(
-  ({ variant = "contained", size = "medium", title, ...props }, ref) => {
+  (
+    {
+      variant = "contained",
+      size = "medium",
+      title,
+      starticon,
+      endicon,
+      ...props
+    },
+    ref
+  ) => {
     const rootClassName = cn(`${s.root}`, {
       [s.contained]: variant === "contained",
       [s.outlined]: variant === "outlined",
@@ -17,11 +30,14 @@ const Button = forwardRef<HTMLButtonElement, Props>(
       [s.large]: size === "large",
       [s.medium]: size === "medium",
       [s.small]: size === "small",
-    });
+      ["w-full"]: props.fullWidth,
+    }, `${props.className}`);
 
     return (
       <button ref={ref} {...props} className={rootClassName}>
+        {starticon}
         {title}
+        {endicon}
       </button>
     );
   }

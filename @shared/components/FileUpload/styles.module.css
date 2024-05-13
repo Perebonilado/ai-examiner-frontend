@@ -1,5 +1,6 @@
 .fileUploadContainer label {
-    min-width: unset !important;
+    min-width: 100% !important;
+    border: 1px solid #007bff;
 }
 
 .fileUploadContainer input {

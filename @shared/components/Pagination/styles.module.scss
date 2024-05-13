@@ -1,0 +1,88 @@
+.pagination-container {
+    display: flex;
+    justify-content: flex-end;
+    list-style-type: none;
+    padding: 10px 0;
+
+    .pagination-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 800;
+
+      &.disabled {
+        pointer-events: none; 
+        color: lightgray;
+      }
+    }
+  
+    .pagination-item {
+      padding: 5px;
+       /* height: 32px; */
+      font-weight: 800;
+      text-align: center;
+      margin: auto 8px;
+      color: rgba(0, 0, 0, 0.87);
+      display: flex;
+      box-sizing: border-box;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0.01071em;
+      border-radius: 6px;
+      line-height: 1.43;
+      font-size: 13px;
+      min-width: 32px;
+      background-color: #FFFFFF;
+  
+      &.dots:hover {
+        background-color: transparent;
+        cursor: default;
+      }
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+        cursor: pointer;
+      }
+  
+      &.selected {
+        background-color: #007bff;
+        color: white;
+      }
+  
+      .arrow {
+        &::before {
+          position: relative;
+          /* top: 3pt; Uncomment this to lower the icons as requested in comments*/
+          content: '';
+          /* By using an em scale, the arrows will size with the font */
+          display: inline-block;
+          width: 0.4em;
+          height: 0.4em;
+          border-right: 0.12em solid rgba(0, 0, 0, 0.87);
+          border-top: 0.12em solid rgba(0, 0, 0, 0.87);
+        }
+  
+        &.left {
+          transform: rotate(-135deg) translate(-50%);
+        }
+  
+        &.right {
+          transform: rotate(45deg);
+        }
+      }
+  
+      &.disabled {
+        pointer-events: none;
+  
+        .arrow::before {
+          border-right: 0.12em solid rgba(0, 0, 0, 0.43);
+          border-top: 0.12em solid rgba(0, 0, 0, 0.43);
+        }
+  
+        &:hover {
+          background-color: transparent;
+          cursor: default;
+        }
+      }
+    }
+  }

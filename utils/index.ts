@@ -1,8 +1,15 @@
-import { milliSecondToSecondConversionRate } from "@/constants";
+import { accessToken, milliSecondToSecondConversionRate } from "@/constants";
+import Cookie from "js-cookie";
 
 export const secondsToMilliSeconds = (seconds: number): number => {
   return seconds * milliSecondToSecondConversionRate;
 };
+
+export const logout = (callback?: () => any) => {
+  Cookie.remove(accessToken);
+  if (callback) callback();
+};
+
 
 export const generateAlphabets = (startChar: string, endChar: string) => {
   const alphabets = [];

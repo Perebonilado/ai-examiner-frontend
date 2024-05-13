@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useFormik, Form, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
 import Button from "@/@shared/ui/Button";
@@ -7,13 +7,41 @@ import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import FileUpload from "@/@shared/components/FileUpload/FileUpload";
 import { AddTopicValidation } from "@/validation-schemas/AddTopicValidation";
+import { useAddTopicMutation } from "@/api-services/topic.service";
+import { useParams } from "next/navigation";
 
 const initialValues = {
   title: "",
 };
 
 const CreateTopicForm: FC = () => {
-  const handleSubmit = (values: typeof initialValues) => {};
+  const [courseId, setCourseId] = useState("");
+
+  const params = useParams();
+
+  useEffect(() => {
+    if (params) {
+      setCourseId(params.id as string);
+    }
+  }, [params]);
+
+  const [addTopic, { isLoading, isSuccess, error }] = useAddTopicMutation();
+
+  const handleSubmit = (values: typeof initialValues) => {
+    if (!file) {
+      toast.error("Please attach a file");
+
+      return;
+    }
+
+    const formData = new FormData();
+
+    formData.append("title", values.title);
+    formData.append("courseId", courseId);
+    formData.append("document", file);
+
+    addTopic(formData);
+  };
 
   const { setModalContent } = useModalContext();
 
@@ -31,8 +59,28 @@ const CreateTopicForm: FC = () => {
 
   const allowedTypes = ["doc", "docx", "pdf", "ppt", "pptx", "txt"];
 
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Topic Successfully Created");
+      formik.resetForm();
+      setModalContent(null);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
+
   return (
     <>
+      {isLoading && (
+        <AppLoader loaderMessage="Just a moment while we add your topic" />
+      )}
       <div className="w-full max-w-[600px] max-sm:max-w-[90vw] rounded-xl bg-white p-4 shadow-lg">
         <h2 className="text-lg font-semibold text-center mb-6">Add Topic</h2>
 

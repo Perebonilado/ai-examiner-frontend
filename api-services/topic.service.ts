@@ -62,7 +62,7 @@ export const TopicService = createApi({
             createdAt: topic.createdOn,
             id: topic.id,
             title: topic.title,
-            questionSetCount: topic.questionCount
+            questionSetCount: topic.questionCount,
           };
         });
 
@@ -72,7 +72,15 @@ export const TopicService = createApi({
         };
       },
     }),
+    addTopic: build.mutation<any, FormData>({
+      query: (body) => ({
+        url: ``,
+        body,
+        method: 'POST'
+      }),
+      invalidatesTags: ["all-topics"]
+    }),
   }),
 });
 
-export const { useGetAllUserTopicsQuery } = TopicService;
+export const { useGetAllUserTopicsQuery, useAddTopicMutation } = TopicService;

@@ -1,4 +1,4 @@
-import MCQContainer from "@/@modules/home/MCQContainer";
+import MCQContainer from "@/@modules/questions/MCQContainer";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";

@@ -50,7 +50,7 @@ const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
           >
             <CourseDocumentIcon />
             <Link href={t.link}>
-              <p className="py-1">{t.title}</p>
+              <p className="py-2 text-xs">{t.title}</p>
             </Link>
           </div>
         ))}

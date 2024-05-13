@@ -91,11 +91,6 @@ const MCQItemContainer: FC<Props> = ({ data, handeGenerateNewQuestions }) => {
           {!isSubmitted ? (
             <>
               <Button
-                title="Generate New Questions"
-                onClick={handeGenerateNewQuestions}
-                variant="outlined"
-              />
-              <Button
                 title="Submit"
                 onClick={() => {
                   setIsSubmitted(true);

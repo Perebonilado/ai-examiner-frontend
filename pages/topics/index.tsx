@@ -90,7 +90,7 @@ const AllTopics: NextPage = () => {
             { title: "Title", flex: 1 },
             { title: "Question Sets Count", flex: 1 },
             { title: "Created At", flex: 1 },
-            { title: "Actions", flex: 1 },
+            // { title: "Actions", flex: 1 },
           ]}
           generic={true}
           rowData={data?.topics}

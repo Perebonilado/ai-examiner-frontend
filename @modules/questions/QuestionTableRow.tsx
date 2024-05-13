@@ -15,13 +15,13 @@ const QuestionTableRow: FC<Props> = ({ count, createdAt, type, id }) => {
       </div>
       <div style={{ flex: 1 }}>{type}</div>
       <div style={{ flex: 1 }}>{count}</div>
-      <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
+      {/* <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
         <Button
           title="Delete"
           size="small"
           className="!bg-rose-600 !border-rose-600"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

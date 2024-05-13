@@ -21,14 +21,14 @@ const TopicsTableRow: FC<Props> = ({
       </div>
       <div style={{ flex: 1 }}>{questionSetCount}</div>
       <div style={{ flex: 1 }}>{new Date(createdAt).toDateString()}</div>
-      <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
+      {/* <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
         <Button title="Edit" size="small" />
         <Button
           title="Delete"
           size="small"
           className="!bg-rose-600 !border-rose-600"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

@@ -121,7 +121,7 @@ const ViewQuestions: NextPage = () => {
             { title: "Created At", flex: 1 },
             { title: "Type", flex: 1 },
             { title: "Question Count", flex: 1 },
-            { title: "Actions", flex: 1 },
+            // { title: "Actions", flex: 1 },
           ]}
           generic={true}
           rowData={data?.questions}

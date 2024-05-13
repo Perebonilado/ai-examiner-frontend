@@ -22,14 +22,14 @@ const CourseTableRow: FC<Props> = ({
       <div style={{ flex: 2 }}>{description}</div>
       <div style={{ flex: 1 }}>{topicCount}</div>
       <div style={{ flex: 1 }}>{new Date(createdAt).toDateString()}</div>
-      <div style={{ flex: 1 }} className="flex items-center gap-3">
+      {/* <div style={{ flex: 1 }} className="flex items-center gap-3">
         <Button title="Edit" size="small" />
         <Button
           title="Delete"
           size="small"
           className="!bg-rose-600 !border-rose-600"
         />
-      </div>
+      </div> */}
     </div>
   );
 };

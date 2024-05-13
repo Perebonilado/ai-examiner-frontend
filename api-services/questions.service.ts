@@ -72,6 +72,7 @@ export const QuestionsService = createApi({
               correctAnswerId: q.correctAnswerId,
             })),
             topicTitle: res.topicTitle,
+            topicId: res.topicId
           };
         }
       },

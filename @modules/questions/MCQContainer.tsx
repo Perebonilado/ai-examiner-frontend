@@ -4,15 +4,15 @@ import { QuestionsModel } from "@/models/questions.model";
 
 interface Props {
   data: QuestionsModel[];
-  handeGenerateNewQuestions: () => void;
+  handleDone: () => void;
 }
 
-const MCQContainer: FC<Props> = ({ data, handeGenerateNewQuestions }) => {
+const MCQContainer: FC<Props> = ({ data, handleDone }) => {
   return (
     <section>
       <MCQItemContainer
         data={data}
-        handeGenerateNewQuestions={handeGenerateNewQuestions}
+        handleDone={handleDone}
       />
     </section>
   );

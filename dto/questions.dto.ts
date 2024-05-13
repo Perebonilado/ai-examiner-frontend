@@ -11,6 +11,7 @@ export interface QuestionsDto {
 export interface GetQuestionsByIdDto {
   id: string;
   topicTitle: string;
+  topicId: string;
   createdOn: Date;
   questions: QuestionsDto[]
 }

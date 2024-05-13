@@ -9,10 +9,10 @@ import { toast } from "react-toastify";
 
 interface Props {
   data: QuestionsModel[];
-  handeGenerateNewQuestions: () => void;
+  handleDone: () => void;
 }
 
-const MCQItemContainer: FC<Props> = ({ data, handeGenerateNewQuestions }) => {
+const MCQItemContainer: FC<Props> = ({ data, handleDone }) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
     boolean
@@ -104,17 +104,17 @@ const MCQItemContainer: FC<Props> = ({ data, handeGenerateNewQuestions }) => {
             </>
           ) : (
             <>
-              <Button
+              {/* <Button
                 title="Reset Answers"
                 variant="outlined"
                 onClick={() => {
                   handleResetAnswers();
                   toast.success("Answers Reset Successfully!");
                 }}
-              />
+              /> */}
               <Button
-                title="Generate New Questions"
-                onClick={handeGenerateNewQuestions}
+                title="Done"
+                onClick={handleDone}
               />
             </>
           )}

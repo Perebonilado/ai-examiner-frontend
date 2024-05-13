@@ -8,6 +8,7 @@ import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
@@ -20,6 +21,7 @@ const Practice: NextPage = () => {
   });
 
   const { setModalContent } = useModalContext();
+  const router = useRouter();
 
   useEffect(() => {
     if (error && "status" in error) {
@@ -46,25 +48,25 @@ const Practice: NextPage = () => {
 
   return (
     <>
-    <AppHead title="Practice Questions" />
-    <AppLayout>
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get questions" />
-          <Button title="Reload Questions" onClick={refetch} />
-        </div>
-      )}
-      {data && (
-        <h1 className="text-center mb-6 text-xl font-semibold">
-          {data.topicTitle} Multiple Choice Questions
-        </h1>
-      )}
-      <div>
-        {data && (
-          <MCQContainer data={data.data} handeGenerateNewQuestions={() => {}} />
+      <AppHead title="Practice Questions" />
+      <AppLayout>
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get questions" />
+            <Button title="Reload Questions" onClick={refetch} />
+          </div>
         )}
-      </div>
-    </AppLayout>
+        {data && (
+          <h1 className="text-center mb-6 text-xl font-semibold">
+            {data.topicTitle} Multiple Choice Questions
+          </h1>
+        )}
+        <div>
+          {data && <MCQContainer data={data.data} handleDone={() => {
+            router.push(`/questions/view-questions/${data.topicId}`)
+          }} />}
+        </div>
+      </AppLayout>
     </>
   );
 };

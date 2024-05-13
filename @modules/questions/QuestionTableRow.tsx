@@ -10,7 +10,7 @@ const QuestionTableRow: FC<Props> = ({ count, createdAt, type, id }) => {
     <div className="flex items-center text-sm  text-gray-700 w-full gap-6 border-b border-b-gray-200 px-3 py-4">
       <div style={{ flex: 1 }}>
         <Link href={`/questions/practise-questions/${id}`}>
-          <p className="text-[#007bff] underline">{new Date(createdAt).toLocaleDateString()}</p>
+          <p className="text-[#007bff] underline">{new Date(createdAt).toUTCString()}</p>
         </Link>
       </div>
       <div style={{ flex: 1 }}>{type}</div>

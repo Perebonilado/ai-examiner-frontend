@@ -101,8 +101,15 @@ export const QuestionsService = createApi({
         };
       },
     }),
+    generateQuestions: build.mutation<any, string>({
+      query: (topicId) => ({
+        url: `/${topicId}/generate-questions`,
+        method: "POST",
+      }),
+      invalidatesTags: ["question-summary"]
+    }),
   }),
 });
 
-export const { useGetQuestionsByIdQuery, useGetQuestionSummariesQuery } =
+export const { useGetQuestionsByIdQuery, useGetQuestionSummariesQuery, useGenerateQuestionsMutation } =
   QuestionsService;

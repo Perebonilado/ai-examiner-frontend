@@ -4,7 +4,10 @@ import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
+import {
+  useGenerateQuestionsMutation,
+  useGetQuestionSummariesQuery,
+} from "@/api-services/questions.service";
 import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -31,7 +34,20 @@ const ViewQuestions: NextPage = () => {
     { refetchOnMountOrArgChange: true, skip: !topicId }
   );
 
+  const [
+    generateQuestions,
+    {
+      isLoading: generateQuestionsLoading,
+      error: generateQuestionsError,
+      isSuccess: generateQuestionsSuccess,
+    },
+  ] = useGenerateQuestionsMutation();
+
   const { setModalContent } = useModalContext();
+
+  const handleGenerateQuestions = () => {
+    generateQuestions(topicId);
+  };
 
   useEffect(() => {
     if (error && "status" in error) {
@@ -40,15 +56,36 @@ const ViewQuestions: NextPage = () => {
         toast.error(message);
       } else toast.error("Oops! Something went wrong");
     }
-  }, [error]);
+
+    if (generateQuestionsError && "status" in generateQuestionsError) {
+      if ("data" in generateQuestionsError) {
+        const { message } = generateQuestionsError.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error, generateQuestionsError]);
 
   useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
+    if (isLoading || generateQuestionsLoading) {
+      setModalContent(
+        <AppLoader
+          loaderMessage={
+            generateQuestionsLoading
+              ? "Hang in there while we generate your questions, it will only take a moment..."
+              : undefined
+          }
+        />
+      );
     } else {
       setModalContent(null);
     }
-  }, [isLoading]);
+  }, [isLoading, generateQuestionsLoading]);
+
+  useEffect(() => {
+    if (generateQuestionsSuccess) {
+      toast.success("Questions generated successfully");
+    }
+  }, [generateQuestionsSuccess]);
 
   useEffect(() => {
     if (params) {
@@ -64,7 +101,10 @@ const ViewQuestions: NextPage = () => {
             {topic.topics[0].title} Questions
           </h2>
         )}
-        <Button title="Generate New Questions" />
+        <Button
+          title="Generate New Questions"
+          onClick={handleGenerateQuestions}
+        />
       </div>
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">

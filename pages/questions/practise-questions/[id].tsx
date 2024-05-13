@@ -1,4 +1,5 @@
 import MCQContainer from "@/@modules/questions/MCQContainer";
+import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -44,6 +45,8 @@ const Practice: NextPage = () => {
   }, [params]);
 
   return (
+    <>
+    <AppHead title="Practice Questions" />
     <AppLayout>
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">
@@ -62,6 +65,7 @@ const Practice: NextPage = () => {
         )}
       </div>
     </AppLayout>
+    </>
   );
 };
 

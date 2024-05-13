@@ -1,5 +1,6 @@
 import CreateTopicForm from "@/@modules/topics/CreateTopicForm";
 import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
+import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
@@ -21,14 +22,17 @@ const Topic: NextPage = () => {
   const params = useParams();
 
   const { data, isLoading, error, refetch } = useGetAllUserTopicsQuery(
-    { courseId: courseId || "", page, pageSize: 10, title, id: '' },
+    { courseId: courseId || "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true, skip: !courseId }
   );
 
-  const { data: course, isLoading: courseLoading } = useGetCourseByIdQuery(courseId || "", {
-    skip: !courseId,
-    refetchOnMountOrArgChange: true,
-  });
+  const { data: course, isLoading: courseLoading } = useGetCourseByIdQuery(
+    courseId || "",
+    {
+      skip: !courseId,
+      refetchOnMountOrArgChange: true,
+    }
+  );
 
   const { setModalContent } = useModalContext();
 
@@ -56,45 +60,50 @@ const Topic: NextPage = () => {
   }, [params]);
 
   const handleAddTopic = () => {
-    setModalContent(<CreateTopicForm />)
-  }
+    setModalContent(<CreateTopicForm />);
+  };
 
   return (
-    <AppLayout>
-      <div className="flex items-center justify-between w-full pb-10">
-        {course && <h2 className="text-2xl font-bold">{course.title} Topics</h2>}
-        <Button title="Add Topic" onClick={handleAddTopic}/>
-      </div>
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get topics for this course" />
-          <Button title="Reload topics" onClick={refetch} />
+    <>
+      <AppHead title={"Topic"} />
+      <AppLayout>
+        <div className="flex items-center justify-between w-full pb-10">
+          {course && (
+            <h2 className="text-2xl font-bold">{course.title} Topics</h2>
+          )}
+          <Button title="Add Topic" onClick={handleAddTopic} />
         </div>
-      )}
-      <EnhancedTable
-        maxWidth="100%"
-        headCellData={[
-          { title: "Title", flex: 1 },
-          { title: "Question Set Count", flex: 1 },
-          { title: "Created At", flex: 1 },
-          { title: "Actions", flex: 1 },
-        ]}
-        generic={true}
-        rowData={data?.topics}
-        rowComponent={(rows) => <TopicsTableRow {...rows} />}
-      />
-      {data && (
-        <Pagination
-          className=""
-          currentPage={page}
-          pageSize={data.meta.pageSize}
-          totalCount={data.meta.totalCount}
-          onPageChange={(p) => {
-            setPage(() => p);
-          }}
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get topics for this course" />
+            <Button title="Reload topics" onClick={refetch} />
+          </div>
+        )}
+        <EnhancedTable
+          maxWidth="100%"
+          headCellData={[
+            { title: "Title", flex: 1 },
+            { title: "Question Set Count", flex: 1 },
+            { title: "Created At", flex: 1 },
+            { title: "Actions", flex: 1 },
+          ]}
+          generic={true}
+          rowData={data?.topics}
+          rowComponent={(rows) => <TopicsTableRow {...rows} />}
         />
-      )}
-    </AppLayout>
+        {data && (
+          <Pagination
+            className=""
+            currentPage={page}
+            pageSize={data.meta.pageSize}
+            totalCount={data.meta.totalCount}
+            onPageChange={(p) => {
+              setPage(() => p);
+            }}
+          />
+        )}
+      </AppLayout>
+    </>
   );
 };
 

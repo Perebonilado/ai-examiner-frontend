@@ -1,4 +1,5 @@
 import QuestionTableRow from "@/@modules/questions/QuestionTableRow";
+import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
@@ -94,48 +95,51 @@ const ViewQuestions: NextPage = () => {
   }, [params]);
 
   return (
-    <AppLayout>
-      <div className="flex items-center justify-between w-full pb-10">
-        {topic && (
-          <h2 className="text-2xl font-bold">
-            {topic.topics[0].title} Questions
-          </h2>
-        )}
-        <Button
-          title="Generate New Questions"
-          onClick={handleGenerateQuestions}
-        />
-      </div>
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get question summaries for this topic" />
-          <Button title="Reload Question Summaries" onClick={refetch} />
+    <>
+      <AppHead title="View Questions" />
+      <AppLayout>
+        <div className="flex items-center justify-between w-full pb-10">
+          {topic && (
+            <h2 className="text-2xl font-bold">
+              {topic.topics[0].title} Questions
+            </h2>
+          )}
+          <Button
+            title="Generate New Questions"
+            onClick={handleGenerateQuestions}
+          />
         </div>
-      )}
-      <EnhancedTable
-        maxWidth="100%"
-        headCellData={[
-          { title: "Created At", flex: 1 },
-          { title: "Type", flex: 1 },
-          { title: "Question Count", flex: 1 },
-          { title: "Actions", flex: 1 },
-        ]}
-        generic={true}
-        rowData={data?.questions}
-        rowComponent={(rows) => <QuestionTableRow {...rows} />}
-      />
-      {data && (
-        <Pagination
-          className=""
-          currentPage={page}
-          pageSize={data.meta.pageSize}
-          totalCount={data.meta.totalCount}
-          onPageChange={(p) => {
-            setPage(() => p);
-          }}
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get question summaries for this topic" />
+            <Button title="Reload Question Summaries" onClick={refetch} />
+          </div>
+        )}
+        <EnhancedTable
+          maxWidth="100%"
+          headCellData={[
+            { title: "Created At", flex: 1 },
+            { title: "Type", flex: 1 },
+            { title: "Question Count", flex: 1 },
+            { title: "Actions", flex: 1 },
+          ]}
+          generic={true}
+          rowData={data?.questions}
+          rowComponent={(rows) => <QuestionTableRow {...rows} />}
         />
-      )}
-    </AppLayout>
+        {data && (
+          <Pagination
+            className=""
+            currentPage={page}
+            pageSize={data.meta.pageSize}
+            totalCount={data.meta.totalCount}
+            onPageChange={(p) => {
+              setPage(() => p);
+            }}
+          />
+        )}
+      </AppLayout>
+    </>
   );
 };
 

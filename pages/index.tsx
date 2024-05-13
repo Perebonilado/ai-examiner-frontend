@@ -1,6 +1,7 @@
 import CourseTableRow from "@/@modules/home/CourseTableRow";
 import CreateCourseForm from "@/@modules/home/CreateCourseForm";
 import GenerateMCQFormContainer from "@/@modules/home/GenerateMCQFormContainer";
+import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
@@ -39,45 +40,48 @@ export default function Home() {
   }, [isLoading]);
 
   const handleCreateCourse = () => {
-    setModalContent(<CreateCourseForm />)
-  }
+    setModalContent(<CreateCourseForm />);
+  };
 
   return (
-    <AppLayout>
-      <div className="flex items-center justify-between w-full pb-10">
-        <h2 className="text-2xl font-bold">All Courses</h2>
-        <Button title="Create Course" onClick={handleCreateCourse}/>
-      </div>
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get your courses" />
-          <Button title="Reload courses" onClick={refetch} />
+    <>
+      <AppHead title="All Courses" />
+      <AppLayout>
+        <div className="flex items-center justify-between w-full pb-10">
+          <h2 className="text-2xl font-bold">All Courses</h2>
+          <Button title="Create Course" onClick={handleCreateCourse} />
         </div>
-      )}
-      <EnhancedTable
-        maxWidth="100%"
-        headCellData={[
-          { title: "Title", flex: 1 },
-          { title: "Description", flex: 2 },
-          { title: "Topic Count", flex: 1 },
-          { title: "Created At", flex: 1 },
-          { title: "Actions", flex: 1 },
-        ]}
-        generic={true}
-        rowData={data?.courses || []}
-        rowComponent={(rows) => <CourseTableRow {...rows} />}
-      />
-      {data && (
-        <Pagination
-          className=""
-          currentPage={page}
-          pageSize={data.meta.pageSize}
-          totalCount={data.meta.totalCount}
-          onPageChange={(p) => {
-            setPage(() => p);
-          }}
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get your courses" />
+            <Button title="Reload courses" onClick={refetch} />
+          </div>
+        )}
+        <EnhancedTable
+          maxWidth="100%"
+          headCellData={[
+            { title: "Title", flex: 1 },
+            { title: "Description", flex: 2 },
+            { title: "Topic Count", flex: 1 },
+            { title: "Created At", flex: 1 },
+            { title: "Actions", flex: 1 },
+          ]}
+          generic={true}
+          rowData={data?.courses || []}
+          rowComponent={(rows) => <CourseTableRow {...rows} />}
         />
-      )}
-    </AppLayout>
+        {data && (
+          <Pagination
+            className=""
+            currentPage={page}
+            pageSize={data.meta.pageSize}
+            totalCount={data.meta.totalCount}
+            onPageChange={(p) => {
+              setPage(() => p);
+            }}
+          />
+        )}
+      </AppLayout>
+    </>
   );
 }

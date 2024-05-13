@@ -1,4 +1,5 @@
 import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
+import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
@@ -62,49 +63,52 @@ const AllTopics: NextPage = () => {
   }, [courses]);
 
   return (
-    <AppLayout>
-      <div className="flex items-center justify-between w-full pb-10 gap-3">
-        <h2 className="text-2xl font-bold">All Topics</h2>
-        <div className="max-w-[350px] w-full">
-          <DropDown
-            options={courseOptions}
-            label="Filter by Course"
-            onChange={(e) => {
-              setCourseId(e.target.value);
+    <>
+      <AppHead title="All Topics" />
+      <AppLayout>
+        <div className="flex items-center justify-between w-full pb-10 gap-3">
+          <h2 className="text-2xl font-bold">All Topics</h2>
+          <div className="max-w-[350px] w-full">
+            <DropDown
+              options={courseOptions}
+              label="Filter by Course"
+              onChange={(e) => {
+                setCourseId(e.target.value);
+              }}
+            />
+          </div>
+        </div>
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get your topics" />
+            <Button title="Reload topics" onClick={refetch} />
+          </div>
+        )}
+        <EnhancedTable
+          maxWidth="100%"
+          headCellData={[
+            { title: "Title", flex: 1 },
+            { title: "Question Sets Count", flex: 1 },
+            { title: "Created At", flex: 1 },
+            { title: "Actions", flex: 1 },
+          ]}
+          generic={true}
+          rowData={data?.topics}
+          rowComponent={(rows) => <TopicsTableRow {...rows} />}
+        />
+        {data && (
+          <Pagination
+            className=""
+            currentPage={page}
+            pageSize={data.meta.pageSize}
+            totalCount={data.meta.totalCount}
+            onPageChange={(p) => {
+              setPage(() => p);
             }}
           />
-        </div>
-      </div>
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get your topics" />
-          <Button title="Reload topics" onClick={refetch} />
-        </div>
-      )}
-      <EnhancedTable
-        maxWidth="100%"
-        headCellData={[
-          { title: "Title", flex: 1 },
-          { title: "Question Sets Count", flex: 1 },
-          { title: "Created At", flex: 1 },
-          { title: "Actions", flex: 1 },
-        ]}
-        generic={true}
-        rowData={data?.topics}
-        rowComponent={(rows) => <TopicsTableRow {...rows} />}
-      />
-      {data && (
-        <Pagination
-          className=""
-          currentPage={page}
-          pageSize={data.meta.pageSize}
-          totalCount={data.meta.totalCount}
-          onPageChange={(p) => {
-            setPage(() => p);
-          }}
-        />
-      )}
-    </AppLayout>
+        )}
+      </AppLayout>
+    </>
   );
 };
 

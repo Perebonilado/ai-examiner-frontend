@@ -1,3 +1,4 @@
+import CreateTopicForm from "@/@modules/topics/CreateTopicForm";
 import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
@@ -54,11 +55,15 @@ const Topic: NextPage = () => {
     }
   }, [params]);
 
+  const handleAddTopic = () => {
+    setModalContent(<CreateTopicForm />)
+  }
+
   return (
     <AppLayout>
       <div className="flex items-center justify-between w-full pb-10">
         {course && <h2 className="text-2xl font-bold">{course.title} Topics</h2>}
-        <Button title="Add Topic" />
+        <Button title="Add Topic" onClick={handleAddTopic}/>
       </div>
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">

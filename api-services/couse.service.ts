@@ -63,7 +63,7 @@ export const CourseService = createApi({
             return <AllCoursesModel>{
               createdAt: course.createdOn,
               id: course.id,
-              topicCount: course.topicCount,
+              topicCount: course.courseDocument.length,
               title: course.title,
               description: course.description,
             };
@@ -90,7 +90,7 @@ export const CourseService = createApi({
           createdAt: res.data.createdOn,
           description: res.data.description,
           id: res.data.id,
-          topicCount: res.data.topicCount,
+          topicCount: res.data.courseDocument.length,
         };
       },
     }),

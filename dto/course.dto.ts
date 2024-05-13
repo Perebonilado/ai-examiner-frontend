@@ -9,7 +9,7 @@ export interface CourseDto {
   modifiedOn: Date | null;
   modifiedBy: string | null;
   userId: string;
-  topicCount: number;
+  courseDocument: string[]
 }
 
 export interface AllCoursesDto {

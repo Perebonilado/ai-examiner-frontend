@@ -6,7 +6,7 @@ export interface TopicDto {
   courseId: string;
   userId: string;
   createdOn: Date;
-  questionCount: number;
+  question: string[]
 }
 
 export interface AllTopicsDto {

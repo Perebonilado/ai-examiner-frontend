@@ -22,7 +22,6 @@ import { logout, secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions`,
-  timeout: secondsToMilliSeconds(30),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 

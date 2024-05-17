@@ -24,8 +24,12 @@ const LoginForm: FC = () => {
   const { setModalContent } = useModalContext();
   const router = useRouter();
 
-  const handleSubmit = (values: typeof initialValues) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     login(values);
+  };
+
+  const googleLogin = async () => {
+    window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/google`;
   };
 
   const formik = useFormik({
@@ -96,9 +100,14 @@ const LoginForm: FC = () => {
             </div>
             <div className="flex gap-1 items-center justify-center">
               <p> Don't have an account?</p>{" "}
-              <Button type="button" title="Sign up" variant="text" onClick={()=>{
-                router.push('/auth/signup')
-              }}/>
+              <Button
+                type="button"
+                title="Sign up"
+                variant="text"
+                onClick={() => {
+                  router.push("/auth/signup");
+                }}
+              />
             </div>
           </div>
         </Form>

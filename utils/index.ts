@@ -10,7 +10,6 @@ export const logout = (callback?: () => any) => {
   if (callback) callback();
 };
 
-
 export const generateAlphabets = (startChar: string, endChar: string) => {
   const alphabets = [];
 
@@ -28,37 +27,50 @@ export const generateScoreDescription = (percentage: number) => {
         image: "/90up.jpeg",
         message:
           "The emperor, the conqueror, the champion, the lion is here !!!",
-        scoreColor: 'green'
+        scoreColor: "green",
       };
     case percentage >= 80 && percentage < 90:
       return {
         image: "/80-90.jpeg",
         message: "Clear road for who sabi !!!",
-        scoreColor: 'green'
+        scoreColor: "green",
       };
     case percentage >= 70 && percentage < 80:
       return {
         image: "/70-80.jpeg",
         message: `Repeat after me, "I am doing well!"`,
-        scoreColor: 'blue'
+        scoreColor: "blue",
       };
     case percentage >= 50 && percentage < 70:
       return {
         image: "/50-69.jpeg",
         message: "I no go gree for anybody !!!",
-        scoreColor: 'blue'
+        scoreColor: "blue",
       };
     case percentage >= 30 && percentage < 50:
       return {
         image: "/30-49.jpeg",
         message: "Boss, sit up o!",
-        scoreColor: 'red'
+        scoreColor: "red",
       };
     default:
       return {
         image: "/30 below.jpeg",
         message: "Problem no dey finish!",
-        scoreColor: 'red'
+        scoreColor: "red",
       };
   }
+};
+
+export const capitalizeFirstLetterOfEachWord = (input: string): string => {
+  const words = input.split(" ");
+
+  const capitalizedWords = words.map((word) => {
+    if (word.length > 0) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+    return word;
+  });
+
+  return capitalizedWords.join(" ");
 };

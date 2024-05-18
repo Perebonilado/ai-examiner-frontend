@@ -3,6 +3,7 @@ import cn from "classnames";
 import ChevronRight from "@/icons/ChevronRight";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import Link from "next/link";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
 interface Props {
   title: string;
@@ -43,7 +44,7 @@ const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
             key={idx}
           >
             <Link href={t.link}>
-              <p className="py-1 text-sm text-gray-300 hover:text-white">{t.title.toLowerCase()}</p>
+              <p className="py-1 text-sm text-gray-300 hover:text-white">{capitalizeFirstLetterOfEachWord(t.title.toLowerCase())}</p>
             </Link>
           </div>
         ))}

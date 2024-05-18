@@ -63,6 +63,7 @@ export const TopicService = createApi({
             id: topic.id,
             title: topic.title,
             questionSetCount: topic.question.length,
+            questionIds: topic.question.map((q)=>q.id)
           };
         });
 

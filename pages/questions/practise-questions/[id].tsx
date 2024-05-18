@@ -6,6 +6,7 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetQuestionsByIdQuery } from "@/api-services/questions.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -58,13 +59,19 @@ const Practice: NextPage = () => {
         )}
         {data && (
           <h1 className="text-center mb-6 text-xl font-semibold">
-            {data.topicTitle} Multiple Choice Questions
+            {capitalizeFirstLetterOfEachWord(data.topicTitle.toLowerCase())}{" "}
+            Questions
           </h1>
         )}
         <div>
-          {data && <MCQContainer data={data.data} handleDone={() => {
-            router.push(`/questions/view-questions/${data.topicId}`)
-          }} />}
+          {data && (
+            <MCQContainer
+              data={data.data}
+              handleDone={() => {
+                router.push(`/questions/view-questions/${data.topicId}`);
+              }}
+            />
+          )}
         </div>
       </AppLayout>
     </>

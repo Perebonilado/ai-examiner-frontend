@@ -1,7 +1,6 @@
 import React, { FC } from "react";
 import SidebarItem from "../SidebarItem";
 import CourseIcon from "@/icons/CourseIcon";
-import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import ExpandableSidebarItem from "../ExpandableSidebarItem/ExpandableSidebarItem";
 import Button from "@/@shared/ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
@@ -75,19 +74,13 @@ const Sidebar: FC = () => {
                     title="All Documents"
                     link="/"
                   />
-                  {/* <SidebarItem
-                    icon={<CourseDocumentIcon />}
-                    isActive={activeNavLink === "/topics"}
-                    title="All Topics"
-                    link="/topics"
-                  /> */}
                 </div>
 
                 <div className="pt-10">
                   <ExpandableSidebarItem
                     title="Recents"
                     data={recentTopics?.topics.map((t) => ({
-                      link: `/questions/view-questions/${t.id}`,
+                      link: `/questions/practise-questions/${t.questionIds[0]}`,
                       title: t.title,
                     }))}
                   />

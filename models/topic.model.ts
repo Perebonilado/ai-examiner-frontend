@@ -12,7 +12,8 @@ export interface AllTopicsModel {
   id: string;
   createdAt: Date;
   title: string
-  questionSetCount: number
+  questionSetCount: number;
+  questionIds: string[]
 }
 
 export interface GetAllTopicsModel {

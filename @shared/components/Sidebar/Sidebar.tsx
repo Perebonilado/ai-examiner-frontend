@@ -61,22 +61,28 @@ const Sidebar: FC = () => {
             </div>
             <div className="h-[calc(100%-120px)]">
               <div className="h-[calc(100%-100px)]">
-                <div className="flex flex-col gap-3 border-b border-b-gray-400 pb-10">
+                <div className="flex flex-col gap-3">
+                  <SidebarItem
+                    icon={<CourseIcon />}
+                    isActive={activeNavLink === "/dashboard"}
+                    title="Dashboard"
+                    link="/dashboard"
+                  />
                   <SidebarItem
                     icon={<CourseIcon />}
                     isActive={activeNavLink === "/"}
-                    title="All Courses"
+                    title="All Documents"
                     link="/"
                   />
-                  <SidebarItem
+                  {/* <SidebarItem
                     icon={<CourseDocumentIcon />}
                     isActive={activeNavLink === "/topics"}
                     title="All Topics"
                     link="/topics"
-                  />
+                  /> */}
                 </div>
 
-                <div className="pt-10">
+                {/* <div className="pt-10">
                   <ExpandableSidebarItem
                     title="Recent Topics"
                     data={recentTopics?.topics.map((t) => ({
@@ -84,7 +90,7 @@ const Sidebar: FC = () => {
                       title: t.title,
                     }))}
                   />
-                </div>
+                </div> */}
               </div>
 
               <div className="h-[100px] flex items-end justify-end py-4">

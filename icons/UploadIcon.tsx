@@ -1,10 +1,15 @@
 import React, { FC } from "react";
 
-const UploadIcon: FC = () => {
+interface Props {
+  width?: number;
+  height?: number;
+}
+
+const UploadIcon: FC<Props> = ({width=30, height=30}) => {
   return (
     <svg
-      width="30"
-      height="30"
+      width={width}
+      height={height}
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

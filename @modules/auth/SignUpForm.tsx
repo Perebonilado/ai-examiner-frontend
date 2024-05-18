@@ -59,7 +59,7 @@ const SignUpForm: FC = () => {
   useEffect(() => {
     if (data) {
       Cookies.set(accessToken, data.data.token);
-      router.push("/");
+      router.push("/dashboard");
     }
   }, [data]);
 

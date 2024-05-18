@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
 import Link from "next/link";
+import AppLogoAlt from "../AppLogoAlt";
 
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -30,7 +31,7 @@ const Sidebar: FC = () => {
   });
 
   const sideBarContainerStyling = cn(
-    `w-full pl-4 max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2 pt-[2rem]`,
+    `w-full max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2`,
     {
       "max-md:-translate-x-0": isOpen,
       "max-md:-translate-x-full": !isOpen,
@@ -54,13 +55,11 @@ const Sidebar: FC = () => {
       }
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
-          <div className="absolute shadow-xl h-[95%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2 rounded-xl bg-white">
-            <div className="h-[80px] flex items-center">
-              <Link href={"/"}>
-                <p className="text-center font-bold text-lg ">AI Examiner</p>
-              </Link>
+          <div className="absolute bg-[#2F004F] h-[100%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2">
+            <div className="h-[120px] flex items-center justify-center">
+              <AppLogoAlt />
             </div>
-            <div className="h-[calc(100%-80px)]">
+            <div className="h-[calc(100%-120px)]">
               <div className="h-[calc(100%-100px)]">
                 <div className="flex flex-col gap-3 border-b border-b-gray-400 pb-10">
                   <SidebarItem

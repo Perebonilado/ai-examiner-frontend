@@ -14,6 +14,7 @@ import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
 import Link from "next/link";
 import AppLogoAlt from "../AppLogoAlt";
+import DashboardIcon from "@/icons/DashboardIcon";
 
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -56,14 +57,14 @@ const Sidebar: FC = () => {
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
           <div className="absolute bg-[#2F004F] h-[100%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2">
-            <div className="h-[120px] flex items-center justify-center">
+            <div className="h-[150px] flex pt-6 justify-center">
               <AppLogoAlt />
             </div>
-            <div className="h-[calc(100%-120px)]">
+            <div className="h-[calc(100%-150px)]">
               <div className="h-[calc(100%-100px)]">
-                <div className="flex flex-col gap-3">
+                <div className="flex flex-col gap-3 border-b-[.3px] pb-12">
                   <SidebarItem
-                    icon={<CourseIcon />}
+                    icon={<DashboardIcon />}
                     isActive={activeNavLink === "/dashboard"}
                     title="Dashboard"
                     link="/dashboard"
@@ -82,15 +83,15 @@ const Sidebar: FC = () => {
                   /> */}
                 </div>
 
-                {/* <div className="pt-10">
+                <div className="pt-10">
                   <ExpandableSidebarItem
-                    title="Recent Topics"
+                    title="Recents"
                     data={recentTopics?.topics.map((t) => ({
                       link: `/questions/view-questions/${t.id}`,
                       title: t.title,
                     }))}
                   />
-                </div> */}
+                </div>
               </div>
 
               <div className="h-[100px] flex items-end justify-end py-4">

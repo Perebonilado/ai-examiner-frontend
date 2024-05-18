@@ -58,6 +58,7 @@ const UploadFileBox: FC<Props> = ({
             title="Click to upload file"
             size="large"
             variant="outlined"
+            type="button"
           />
         )}
 

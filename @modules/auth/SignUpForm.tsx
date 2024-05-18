@@ -13,13 +13,14 @@ import React, { FC, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { accessToken } from "@/constants";
 import Cookies from "js-cookie"
+import { AppLogo } from "@/@shared/components/AppLogo";
+import MessageIcon from "@/icons/MessageIcon";
 
 const initialValues = {
   firstName: "",
   lastName: "",
   email: "",
   password: "",
-  institution: "",
 };
 
 const SignUpForm: FC = () => {
@@ -63,9 +64,16 @@ const SignUpForm: FC = () => {
   }, [data]);
 
   return (
-    <div className="w-full max-w-[70%] mx-auto py-4 px-2 max-sm:max-w-full">
-      <div className="mx-auto mb-6">
-        <h2 className="text-center text-xl font-semibold">Sign Up</h2>
+    <div className="w-full max-w-[450px] mx-auto py-4 px-2 max-sm:max-w-full">
+      <div className="mx-auto flex justify-center my-12">
+        <AppLogo />
+      </div>
+
+      <div className="text-center mx-auto mb-10">
+        <h2 className="text-2xl font-bold">Create Account</h2>
+        <p className="text-[#667185] mt-4">
+          Enter your credentials to create your account
+        </p>
       </div>
 
       <FormikProvider value={formik}>
@@ -94,6 +102,7 @@ const SignUpForm: FC = () => {
               placeholder="Enter your email address"
               {...formik.getFieldProps("email")}
               error={formik.touched.email ? formik.errors.email : undefined}
+              endicon={<MessageIcon />}
             />
 
             <TextField
@@ -113,25 +122,11 @@ const SignUpForm: FC = () => {
               }
             />
 
-            <DropDown
-              label="Institution"
-              options={[
-                { label: "University", value: "2", defaultSelected: true },
-                { label: "High School", value: "1" },
-              ]}
-              {...formik.getFieldProps("institution")}
-              error={
-                formik.touched.institution
-                  ? formik.errors.institution
-                  : undefined
-              }
-            />
-
             <div className="!mt-8">
-              <Button title="Sign Up" type="submit" fullWidth />
+              <Button title="Create Account" size="large" type="submit" fullWidth />
             </div>
             <div className="flex gap-1 items-center justify-center">
-              <p> Already have an account?</p>{" "}
+              <p className="text-[#667185]"> Already have an account?</p>{" "}
               <Button
                 title="Login"
                 variant="text"

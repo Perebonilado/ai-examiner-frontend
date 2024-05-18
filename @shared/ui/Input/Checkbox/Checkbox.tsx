@@ -27,7 +27,7 @@ const Checkbox: FC<Props> = ({
     <div className="flex items-center gap-2">
       <div className=" relative">
         <div
-          className="w-[25px] h-[25px] bg-white rounded-md border border-blue-400"
+          className="w-[25px] h-[25px] bg-white rounded-md border border-[#2F004F]"
           style={{ borderColor: customBorderColor }}
         ></div>
         <input {...props} type="checkbox" className={checkInputStyles} />

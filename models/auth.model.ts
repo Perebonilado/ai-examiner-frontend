@@ -8,5 +8,4 @@ export interface SignUpPayload {
   lastName: string;
   email: string;
   password: string;
-  institution: string;
 }

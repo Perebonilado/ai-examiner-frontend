@@ -18,7 +18,7 @@ const TextArea: FC<Props> = ({ isRequired, label, error, ...props }) => {
       )}
       {
         <textarea
-          className="resize-none flex m-0 w-full text-black  placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-blue-300 transition-all"
+          className="resize-none flex m-0 w-full text-black  placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all"
           {...props}
         ></textarea>
       }

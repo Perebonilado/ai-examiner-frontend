@@ -1,9 +1,10 @@
 import CourseTableRow from "@/@modules/home/CourseTableRow";
 import CreateCourseForm from "@/@modules/home/CreateCourseForm";
-import GenerateMCQFormContainer from "@/@modules/home/GenerateMCQFormContainer";
+import Jumbotron from "@/@modules/home/Jumbotron";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
+import Navbar from "@/@shared/components/Navbar";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -14,38 +15,41 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export default function Home() {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, error, refetch } = useGetAllUserCoursesQuery(
-    { page, pageSize: 10, title: "" },
-    { refetchOnMountOrArgChange: true }
-  );
+  // const [page, setPage] = useState(1);
+  // const { data, isLoading, error, refetch } = useGetAllUserCoursesQuery(
+  //   { page, pageSize: 10, title: "" },
+  //   { refetchOnMountOrArgChange: true }
+  // );
 
-  const { setModalContent } = useModalContext();
+  // const { setModalContent } = useModalContext();
 
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
+  // useEffect(() => {
+  //   if (error && "status" in error) {
+  //     if ("data" in error) {
+  //       const { message } = error.data as { message: string };
+  //       toast.error(message);
+  //     } else toast.error("Oops! Something went wrong");
+  //   }
+  // }, [error]);
 
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     setModalContent(<AppLoader />);
+  //   } else {
+  //     setModalContent(null);
+  //   }
+  // }, [isLoading]);
 
-  const handleCreateCourse = () => {
-    setModalContent(<CreateCourseForm />);
-  };
+  // const handleCreateCourse = () => {
+  //   setModalContent(<CreateCourseForm />);
+  // };
 
   return (
     <>
-      <AppHead title="All Courses" />
+      <Navbar />
+      <Jumbotron />
+
+      {/* <AppHead title="All Courses" />
       <AppLayout>
         <div className="flex items-center justify-between w-full pb-10">
           <h2 className="text-2xl font-bold">All Courses</h2>
@@ -81,7 +85,7 @@ export default function Home() {
             }}
           />
         )}
-      </AppLayout>
+      </AppLayout> */}
     </>
   );
 }

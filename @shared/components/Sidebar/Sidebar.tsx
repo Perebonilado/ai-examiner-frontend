@@ -70,9 +70,9 @@ const Sidebar: FC = () => {
                   />
                   <SidebarItem
                     icon={<CourseIcon />}
-                    isActive={activeNavLink === "/"}
+                    isActive={activeNavLink === "/topics"}
                     title="All Documents"
-                    link="/"
+                    link="/topics"
                   />
                 </div>
 

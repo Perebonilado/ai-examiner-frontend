@@ -12,6 +12,7 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import * as moment from 'moment';
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -58,10 +59,13 @@ const Practice: NextPage = () => {
           </div>
         )}
         {data && (
-          <h1 className="text-center mb-6 text-xl font-semibold">
+          <>
+          <h1 className="text-center mb-3 text-xl font-semibold">
             {capitalizeFirstLetterOfEachWord(data.topicTitle.toLowerCase())}{" "}
             Questions
           </h1>
+          <p className="text-center text-sm text-gray-500">Date Created: {moment.utc(data.createdOn).local().format('MMMM D, YYYY h:mma')}</p>
+          </>
         )}
         <div>
           {data && (

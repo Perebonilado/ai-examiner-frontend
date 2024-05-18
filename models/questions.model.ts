@@ -12,7 +12,8 @@ export interface QuestionsModel {
 export interface GetQuestionByIdModel {
   data: QuestionsModel[];
   topicTitle: string;
-  topicId: string
+  topicId: string;
+  createdOn: Date
 }
 
 export interface QuestionOption {

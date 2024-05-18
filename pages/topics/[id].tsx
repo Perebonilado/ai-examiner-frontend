@@ -10,6 +10,7 @@ import { useGetCourseByIdQuery } from "@/api-services/couse.service";
 import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -69,7 +70,7 @@ const Topic: NextPage = () => {
       <AppLayout>
         <div className="flex items-center justify-between w-full pb-10">
           {course && (
-            <h2 className="text-2xl font-bold">{course.title} Topics</h2>
+            <h2 className="text-2xl font-bold">{capitalizeFirstLetterOfEachWord(course.title.toLowerCase())} Topics</h2>
           )}
           <Button title="Add Topic" onClick={handleAddTopic} />
         </div>

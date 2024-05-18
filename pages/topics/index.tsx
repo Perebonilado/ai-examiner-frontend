@@ -64,10 +64,10 @@ const AllTopics: NextPage = () => {
 
   return (
     <>
-      <AppHead title="All Topics" />
+      <AppHead title="All Documents" />
       <AppLayout>
         <div className="flex items-center justify-between w-full pb-10 gap-3">
-          <h2 className="text-2xl font-bold">All Topics</h2>
+          <h2 className="text-2xl font-bold">All Documents</h2>
           <div className="max-w-[350px] w-full">
             <DropDown
               options={courseOptions}

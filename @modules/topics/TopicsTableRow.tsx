@@ -2,6 +2,7 @@ import Button from "@/@shared/ui/Button";
 import { AllTopicsModel } from "@/models/topic.model";
 import Link from "next/link";
 import React, { FC } from "react";
+import * as moment from 'moment'
 
 interface Props extends AllTopicsModel {
 }
@@ -20,7 +21,7 @@ const TopicsTableRow: FC<Props> = ({
         </Link>
       </div>
       <div style={{ flex: 1 }}>{questionSetCount}</div>
-      <div style={{ flex: 1 }}>{new Date(createdAt).toDateString()}</div>
+      <div style={{ flex: 1 }}>{moment.utc(createdAt).local().format('dddd, MMMM D, YYYY h:mma')}</div>
       {/* <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
         <Button title="Edit" size="small" />
         <Button

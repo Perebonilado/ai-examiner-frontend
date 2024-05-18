@@ -2,6 +2,7 @@ import Button from "@/@shared/ui/Button";
 import { QuestionSummaryModel } from "@/models/questions.model";
 import Link from "next/link";
 import React, { FC } from "react";
+import * as moment from "moment";
 
 interface Props extends QuestionSummaryModel {}
 
@@ -10,7 +11,9 @@ const QuestionTableRow: FC<Props> = ({ count, createdAt, type, id }) => {
     <div className="flex items-center text-sm  text-gray-700 w-full gap-6 border-b border-b-gray-200 px-3 py-4">
       <div style={{ flex: 1 }}>
         <Link href={`/questions/practise-questions/${id}`}>
-          <p className="text-[#007bff] underline">{new Date(createdAt).toUTCString()}</p>
+          <p className="text-[#007bff] underline">
+            {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}
+          </p>
         </Link>
       </div>
       <div style={{ flex: 1 }}>{type}</div>

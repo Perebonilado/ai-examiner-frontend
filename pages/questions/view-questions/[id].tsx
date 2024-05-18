@@ -12,6 +12,7 @@ import {
 import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -101,7 +102,7 @@ const ViewQuestions: NextPage = () => {
         <div className="flex items-center justify-between w-full pb-10">
           {topic && (
             <h2 className="text-2xl font-bold">
-              {topic.topics[0].title} Questions
+              {capitalizeFirstLetterOfEachWord(topic.topics[0].title.toLowerCase())} Questions
             </h2>
           )}
           <Button

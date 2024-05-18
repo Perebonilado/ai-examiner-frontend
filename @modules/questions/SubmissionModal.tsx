@@ -18,27 +18,27 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <div
       ref={ref}
-      className="w-full max-w-[400px] rounded-xl shadow-lg p-8 flex flex-col gap-4 items-center justify-center bg-white"
+      className="w-full max-w-[300px] rounded-xl shadow-lg p-8 flex flex-col gap-4 items-center justify-center bg-white"
     >
       <p
         className={`text-center text-xl font-bold`}
         style={{ color: scoreColor }}
       >
-        Score: {props.scorePercentage}%
+        Score - {props.scorePercentage}%
       </p>
-      <Avatar
+      {/* <Avatar
         alt="meme"
         fallBack="Paw"
         imageUrl={image}
         shape="square"
         size="lg"
-      />
-      <p
+      /> */}
+      {/* <p
         className="text-center  text-black text-lg font-bold"
         style={{ color: scoreColor }}
       >
         {message}
-      </p>
+      </p> */}
 
       <Button
         title="Review answers"

@@ -72,7 +72,7 @@ const Practice: NextPage = () => {
             <MCQContainer
               data={data.data}
               handleDone={() => {
-                router.push(`/questions/view-questions/${data.topicId}`);
+                router.push(`/topics`);
               }}
             />
           )}

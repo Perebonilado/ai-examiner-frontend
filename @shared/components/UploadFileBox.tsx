@@ -51,34 +51,42 @@ const UploadFileBox: FC<Props> = ({
       <div className="w-full p-6 h-[400px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
         <UploadIcon width={80} height={80} />
         {!attachedFile && (
-          <Button
-            onClick={() => {
-              inputRef.current?.click();
-            }}
-            title="Click to upload file"
-            size="large"
-            variant="outlined"
-            type="button"
-          />
+          <div className="flex flex-col justify-center gap-3">
+            <Button
+              onClick={() => {
+                inputRef.current?.click();
+              }}
+              title="Click to upload file"
+              size="large"
+              variant="outlined"
+              type="button"
+            />
+            <p className="text-xs italic">
+              Maximum File Size: 10mb | Allowed File Types: pdf, docx, pptx
+            </p>
+          </div>
         )}
 
         {attachedFile && (
           <div className="flex items-center w-full max-w-[300px] rounded-xl bg-white p-4 shadow-md relative">
-            <span className="absolute top-[-6px] right-[-6px] cursor-pointer" onClick={handleDeleteFile}>
+            <span
+              className="absolute top-[-6px] right-[-6px] cursor-pointer"
+              onClick={handleDeleteFile}
+            >
               <CloseIcon />
             </span>
-            <div style={{flex: 1}} className="flex items-center justify-center">
-              <CourseDocumentIcon fill="#2F004F" width={25} height={25}/>
+            <div
+              style={{ flex: 1 }}
+              className="flex items-center justify-center"
+            >
+              <CourseDocumentIcon fill="#2F004F" width={25} height={25} />
             </div>
-            <div style={{flex: 4}} className="overflow-hidden">
+            <div style={{ flex: 4 }} className="overflow-hidden">
               <p className="font-semibold truncate">{attachedFile.name}</p>
             </div>
           </div>
         )}
       </div>
-      <p className="text-xs font-bold italic">
-        Maximum File Size: 10mb | Allowed File Types: pdf, docx, pptx
-      </p>
     </>
   );
 };

@@ -5,6 +5,7 @@ import UploadFileBox from "@/@shared/components/UploadFileBox";
 import Button from "@/@shared/ui/Button";
 import { useAddTopicMutation } from "@/api-services/topic.service";
 import { toast } from "react-toastify";
+import DropDown from "@/@shared/ui/Input/DropDown";
 
 const initialValues = {
   title: "",
@@ -31,20 +32,18 @@ const GenerateQuestionsForm: FC = () => {
     formData.append("title", values.title);
     formData.append("document", file);
 
-    createDocAndGenerateQuestions(formData)
+    createDocAndGenerateQuestions(formData);
   };
   return (
     <section>
       <FormikProvider value={formik}>
         <Form>
-          <div className="flex flex-col gap-4 mx-auto w-full max-w-[500px] pt-24">
+          <div className="flex flex-col gap-4 mx-auto w-full max-w-[500px] pt-24 pb-10">
             <TextField
               label="Document Title"
               placeholder="Enter the title of the document you want to upload"
-              {...formik.getFieldProps('title')}
-              error={
-                formik.touched.title ? formik.errors.title : undefined
-              }
+              {...formik.getFieldProps("title")}
+              error={formik.touched.title ? formik.errors.title : undefined}
             />
 
             <UploadFileBox
@@ -56,6 +55,17 @@ const GenerateQuestionsForm: FC = () => {
               handleDeleteFile={() => {
                 setFile(null);
               }}
+            />
+
+            <DropDown
+              options={[
+                { label: "5", value: "5", defaultSelected: true },
+                { label: "10", value: "10"},
+                { label: "15", value: "15"},
+                { label: "20", value: "20"},
+                { label: "25", value: "25"},
+              ]}
+              label="Number of Questions"
             />
 
             <Button title="Generate Questions" size="large" />

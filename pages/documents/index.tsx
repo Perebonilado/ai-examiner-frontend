@@ -9,6 +9,7 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import TextField from "@/@shared/ui/Input/TextField";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
+import { SearchIcon } from "@/icons/SearchIcon";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import React from "react";
@@ -49,7 +50,7 @@ const AllDocuments: NextPage = () => {
         <div className="flex items-center justify-between w-full pb-10 gap-3 max-lg:flex-col max-lg:gap-12">
           <h2 className="text-2xl font-bold">All Documents</h2>
           <div className="w-full max-w-[350px]">
-            <TextField label="Search" placeholder="Search by title" value={title} onChange={(e)=>{
+            <TextField label="Search" placeholder="Search by title" starticon={<SearchIcon />} value={title} onChange={(e)=>{
               setTitle(e.target.value)
             }}/>
           </div>

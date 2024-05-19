@@ -7,6 +7,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
+  GenerateQuestionsPayloadModel,
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
@@ -102,10 +103,13 @@ export const QuestionsService = createApi({
         };
       },
     }),
-    generateQuestions: build.mutation<any, string>({
-      query: (documentId) => ({
+    generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
+      query: ({documentId, questionCount}) => ({
         url: `/${documentId}/generate-questions`,
         method: "POST",
+        params: {
+          questionCount
+        }
       }),
       invalidatesTags: ["question-summary"]
     }),

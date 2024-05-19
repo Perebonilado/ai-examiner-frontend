@@ -13,7 +13,7 @@ export interface GetQuestionByIdModel {
   data: QuestionsModel[];
   documentTitle: string;
   documentId: string;
-  createdOn: Date
+  createdOn: Date;
 }
 
 export interface QuestionOption {
@@ -27,7 +27,7 @@ export interface QuestionSummaryModel {
   createdAt: Date;
   count: number;
   documentId: string;
-  score?: number
+  score?: number;
 }
 
 export interface GetQuestionSummaryModel {
@@ -39,4 +39,9 @@ export interface GetQuestionsQueryModel {
   courseDocumentId: string;
   page: number;
   pageSize: number;
+}
+
+export interface GenerateQuestionsPayloadModel {
+  documentId: string;
+  questionCount: string;
 }

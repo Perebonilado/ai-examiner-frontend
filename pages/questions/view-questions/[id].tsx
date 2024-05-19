@@ -1,13 +1,11 @@
-import QuestionTableRow from "@/@modules/questions/QuestionTableRow";
+
 import ViewQuestionCardContainer from "@/@modules/questions/ViewQuestionCardContainer";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
-import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import {
-  useGenerateQuestionsMutation,
   useGetQuestionSummariesQuery,
 } from "@/api-services/questions.service";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
@@ -18,6 +16,7 @@ import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -37,19 +36,10 @@ const ViewQuestions: NextPage = () => {
     { refetchOnMountOrArgChange: true, skip: !documentId }
   );
 
-  const [
-    generateQuestions,
-    {
-      isLoading: generateQuestionsLoading,
-      error: generateQuestionsError,
-      isSuccess: generateQuestionsSuccess,
-    },
-  ] = useGenerateQuestionsMutation();
-
   const { setModalContent } = useModalContext();
 
   const handleGenerateQuestions = () => {
-    generateQuestions(documentId);
+    setModalContent(<GenerateQuestionsForm />);
   };
 
   useEffect(() => {
@@ -59,37 +49,17 @@ const ViewQuestions: NextPage = () => {
         toast.error(message);
       } else toast.error("Oops! Something went wrong");
     }
-
-    if (generateQuestionsError && "status" in generateQuestionsError) {
-      if ("data" in generateQuestionsError) {
-        const { message } = generateQuestionsError.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error, generateQuestionsError]);
+  }, [error]);
 
   useEffect(() => {
-    if (isLoading || generateQuestionsLoading) {
-      setModalContent(
-        <AppLoader
-          loaderMessage={
-            generateQuestionsLoading
-              ? "Hang in there while we generate your questions, it will only take a moment..."
-              : undefined
-          }
-        />
-      );
+    if (isLoading) {
+      setModalContent(<AppLoader />);
     } else {
       setModalContent(null);
     }
-  }, [isLoading, generateQuestionsLoading]);
+  }, [isLoading]);
 
-  useEffect(() => {
-    if (generateQuestionsSuccess) {
-      toast.success("Questions generated successfully");
-    }
-  }, [generateQuestionsSuccess]);
-
+  
   useEffect(() => {
     if (params) {
       setdocumentId(params.id as string);

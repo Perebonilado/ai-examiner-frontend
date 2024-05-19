@@ -14,7 +14,7 @@ const Navbar: FC = () => {
           </div>
           <div
             style={{ flex: 1 }}
-            className="flex items-center justify-end gap-3"
+            className="flex items-center justify-end gap-3 max-md:hidden"
           >
             <Link href={"/auth/login"}>
               <Button title="Sign in" variant="outlined" size="large" />

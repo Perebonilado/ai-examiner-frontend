@@ -9,3 +9,4 @@ export const alphabets = [
     'b'
 ]
 
+export const mobileScreenSizePx = 768;

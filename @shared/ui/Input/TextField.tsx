@@ -21,7 +21,7 @@ const TextField: FC<Props> = ({
   const inputStyle = cn(
     `min-h-[50px] w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`,
     {
-      "pl-8": starticon !== undefined,
+      "pl-11": starticon !== undefined,
       "pr-14": endicon !== undefined,
     }
   );

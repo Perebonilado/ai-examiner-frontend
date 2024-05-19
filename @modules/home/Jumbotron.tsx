@@ -1,4 +1,3 @@
-import AttachedFileInfo from "@/@shared/components/AttachedFileInfo";
 import Button from "@/@shared/ui/Button";
 import Container from "@/@shared/ui/Container";
 import TextField from "@/@shared/ui/Input/TextField";

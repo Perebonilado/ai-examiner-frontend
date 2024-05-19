@@ -11,7 +11,6 @@ import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useRouter } from "next/router";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
-import Link from "next/link";
 import AppLogoAlt from "../AppLogoAlt";
 import DashboardIcon from "@/icons/DashboardIcon";
 
@@ -78,7 +77,7 @@ const Sidebar: FC = () => {
 
                 <div className="pt-10">
                   <ExpandableSidebarItem
-                    title="Recents"
+                    title="Recent Documents"
                     data={recentDocuments?.documents.map((t) => ({
                       link: `/questions/view-questions/${t.id}`,
                       title: t.title,

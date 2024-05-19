@@ -10,8 +10,8 @@ export interface QuestionsDto {
 
 export interface GetQuestionsByIdDto {
   id: string;
-  topicTitle: string;
-  topicId: string;
+  documentTitle: string;
+  documentId: string;
   createdOn: Date;
   questions: QuestionsDto[]
 }

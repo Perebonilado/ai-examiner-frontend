@@ -61,7 +61,7 @@ const Practice: NextPage = () => {
         {data && (
           <>
           <h1 className="text-center mb-3 text-xl font-semibold">
-            {capitalizeFirstLetterOfEachWord(data.topicTitle.toLowerCase())}{" "}
+            {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
             Questions
           </h1>
           <p className="text-center text-sm text-gray-500">Date Created: {moment.utc(data.createdOn).local().format('MMMM D, YYYY h:mma')}</p>
@@ -72,7 +72,7 @@ const Practice: NextPage = () => {
             <MCQContainer
               data={data.data}
               handleDone={() => {
-                router.push(`/topics`);
+                router.push(`/documents`);
               }}
             />
           )}

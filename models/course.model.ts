@@ -10,7 +10,7 @@ export interface AllCoursesModel {
   id: string;
   title: string;
   description: string;
-  topicCount: number;
+  documentCount: number;
   createdAt: Date;
 }
 

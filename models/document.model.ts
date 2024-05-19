@@ -1,6 +1,6 @@
 import { MetaModel } from "./meta.model";
 
-export interface AllTopicsQueryModel {
+export interface AllDocumentsQueryModel {
   courseId: string;
   title: string;
   page: number;
@@ -8,7 +8,7 @@ export interface AllTopicsQueryModel {
   id: string
 }
 
-export interface AllTopicsModel {
+export interface AllDocumentsModel {
   id: string;
   createdAt: Date;
   title: string
@@ -16,7 +16,7 @@ export interface AllTopicsModel {
   questionIds: string[]
 }
 
-export interface GetAllTopicsModel {
-  topics: AllTopicsModel[];
+export interface GetAllDocumentsModel {
+  documents: AllDocumentsModel[];
   meta: MetaModel;
 }

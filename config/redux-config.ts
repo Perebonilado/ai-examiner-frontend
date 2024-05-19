@@ -1,7 +1,7 @@
 import { AuthService } from "@/api-services/auth.service";
 import { CourseService } from "@/api-services/couse.service";
+import { DocumentService } from "@/api-services/document.service";
 import { QuestionsService } from "@/api-services/questions.service";
-import { TopicService } from "@/api-services/topic.service";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 
@@ -10,14 +10,14 @@ export const reduxStore = configureStore({
     [QuestionsService.reducerPath]: QuestionsService.reducer,
     [AuthService.reducerPath]: AuthService.reducer,
     [CourseService.reducerPath]: CourseService.reducer,
-    [TopicService.reducerPath]: TopicService.reducer,
+    [DocumentService.reducerPath]: DocumentService.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
       QuestionsService.middleware,
       AuthService.middleware,
       CourseService.middleware,
-      TopicService.middleware,
+      DocumentService.middleware,
     ]),
 });
 

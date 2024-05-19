@@ -1,13 +1,12 @@
-import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
+import DocumentsTableRow from "@/@modules/documents/DocumentsTableRow";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import DropDown from "@/@shared/ui/Input/DropDown";
 import { useGetAllUserCoursesQuery } from "@/api-services/couse.service";
-import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
@@ -15,7 +14,7 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const AllTopics: NextPage = () => {
+const AllDocuments: NextPage = () => {
   const [page, setPage] = useState(1);
   const [courseId, setCourseId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
@@ -26,7 +25,7 @@ const AllTopics: NextPage = () => {
       defaultSelected?: boolean | undefined;
     }[]
   >([]);
-  const { data, isLoading, error, refetch } = useGetAllUserTopicsQuery(
+  const { data, isLoading, error, refetch } = useGetAllUserDocumentsQuery(
     { courseId: courseId || "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true }
   );
@@ -68,20 +67,11 @@ const AllTopics: NextPage = () => {
       <AppLayout>
         <div className="flex items-center justify-between w-full pb-10 gap-3">
           <h2 className="text-2xl font-bold">All Documents</h2>
-          <div className="max-w-[350px] w-full">
-            <DropDown
-              options={courseOptions}
-              label="Filter by Course"
-              onChange={(e) => {
-                setCourseId(e.target.value);
-              }}
-            />
-          </div>
         </div>
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
-            <ErrorMessage message="Something went wrong while trying to get your topics" />
-            <Button title="Reload topics" onClick={refetch} />
+            <ErrorMessage message="Something went wrong while trying to get your documents" />
+            <Button title="Reload documents" onClick={refetch} />
           </div>
         )}
         <EnhancedTable
@@ -93,8 +83,8 @@ const AllTopics: NextPage = () => {
             // { title: "Actions", flex: 1 },
           ]}
           generic={true}
-          rowData={data?.topics}
-          rowComponent={(rows) => <TopicsTableRow {...rows} />}
+          rowData={data?.documents}
+          rowComponent={(rows) => <DocumentsTableRow {...rows} />}
         />
         {data && (
           <Pagination
@@ -112,4 +102,4 @@ const AllTopics: NextPage = () => {
   );
 };
 
-export default AllTopics;
+export default AllDocuments;

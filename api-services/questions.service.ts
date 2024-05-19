@@ -70,8 +70,8 @@ export const QuestionsService = createApi({
               question: q.question,
               correctAnswerId: q.correctAnswerId,
             })),
-            topicTitle: res.topicTitle,
-            topicId: res.topicId,
+            documentTitle: res.documentTitle,
+            documentId: res.documentId,
             createdOn: res.createdOn
           };
         }
@@ -103,8 +103,8 @@ export const QuestionsService = createApi({
       },
     }),
     generateQuestions: build.mutation<any, string>({
-      query: (topicId) => ({
-        url: `/${topicId}/generate-questions`,
+      query: (documentId) => ({
+        url: `/${documentId}/generate-questions`,
         method: "POST",
       }),
       invalidatesTags: ["question-summary"]

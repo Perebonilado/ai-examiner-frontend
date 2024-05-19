@@ -1,17 +1,15 @@
 import Avatar from "@/@shared/components/Avatar";
-import { generateScoreDescription } from "@/utils";
 import React, { forwardRef } from "react";
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
+import { generateScoreColor } from "@/utils";
 
 interface Props {
   scorePercentage: number;
 }
 
 const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const { image, message, scoreColor } = generateScoreDescription(
-    props.scorePercentage
-  );
+  const scoreColor = `text-${generateScoreColor(props.scorePercentage).scoreColor}`
 
   const { setModalContent } = useModalContext();
 
@@ -26,19 +24,6 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
       >
         Score - {props.scorePercentage}%
       </p>
-      {/* <Avatar
-        alt="meme"
-        fallBack="Paw"
-        imageUrl={image}
-        shape="square"
-        size="lg"
-      /> */}
-      {/* <p
-        className="text-center  text-black text-lg font-bold"
-        style={{ color: scoreColor }}
-      >
-        {message}
-      </p> */}
 
       <Button
         title="Review answers"

@@ -1,6 +1,6 @@
 import { MetaDto } from "./meta.dto";
 
-export interface TopicDto {
+export interface DocumentDto {
   id: string;
   title: string;
   courseId: string;
@@ -9,9 +9,9 @@ export interface TopicDto {
   question: {id: string}[]
 }
 
-export interface AllTopicsDto {
+export interface AllDocumentsDto {
   data: {
-    courseDocuments: TopicDto[];
+    courseDocuments: DocumentDto[];
     meta: MetaDto;
   };
   status: number;

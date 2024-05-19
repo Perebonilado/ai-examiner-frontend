@@ -9,11 +9,11 @@ import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
 import { logout, secondsToMilliSeconds } from "@/utils";
 import {
-  AllTopicsModel,
-  AllTopicsQueryModel,
-  GetAllTopicsModel,
-} from "@/models/topic.model";
-import { AllTopicsDto } from "@/dto/topic.dto";
+  AllDocumentsModel,
+  AllDocumentsQueryModel,
+  GetAllDocumentsModel,
+} from "@/models/document.model";
+import { AllDocumentsDto } from "@/dto/document.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
@@ -43,45 +43,46 @@ const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
   return result;
 };
 
-export const TopicService = createApi({
-  reducerPath: "topic-api",
+export const DocumentService = createApi({
+  reducerPath: "document-api",
   baseQuery: baseQueryWithLogoutOnTokenExpiration,
-  tagTypes: ["all-topics"],
+  tagTypes: ["all-documents"],
   endpoints: (build) => ({
-    getAllUserTopics: build.query<GetAllTopicsModel, AllTopicsQueryModel>({
+    getAllUserDocuments: build.query<GetAllDocumentsModel, AllDocumentsQueryModel>({
       query: (queryParams) => ({
         url: "",
         params: { ...queryParams },
       }),
-      providesTags: ["all-topics"],
-      transformResponse: (res: AllTopicsDto) => {
-        if (!res) return <GetAllTopicsModel>{};
+      providesTags: ["all-documents"],
+      transformResponse: (res: AllDocumentsDto) => {
+        if (!res) return <GetAllDocumentsModel>{};
 
-        const topics = res.data.courseDocuments.map((topic) => {
-          return <AllTopicsModel>{
-            createdAt: topic.createdOn,
-            id: topic.id,
-            title: topic.title,
-            questionSetCount: topic.question.length,
-            questionIds: topic.question.map((q)=>q.id)
+        const documents = res.data.courseDocuments.map((document) => {
+          return <AllDocumentsModel>{
+            createdAt: document.createdOn,
+            id: document.id,
+            title: document.title,
+            questionSetCount: document.question.length,
+            questionIds: document.question.map((q) => q.id),
           };
         });
 
         return {
-          topics,
+          documents,
           meta: res.data.meta,
         };
       },
     }),
-    addTopic: build.mutation<any, FormData>({
+    addDocument: build.mutation<any, FormData>({
       query: (body) => ({
         url: ``,
         body,
-        method: 'POST'
+        method: "POST",
       }),
-      invalidatesTags: ["all-topics"]
+      invalidatesTags: ["all-documents"],
     }),
   }),
 });
 
-export const { useGetAllUserTopicsQuery, useAddTopicMutation } = TopicService;
+export const { useGetAllUserDocumentsQuery, useAddDocumentMutation } =
+  DocumentService;

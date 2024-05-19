@@ -25,6 +25,6 @@ export const config = {
     "/auth/login",
     "/auth/signup",
     "/questions/:path",
-    "/topics/:path",
+    "/documents/:path",
   ],
 };

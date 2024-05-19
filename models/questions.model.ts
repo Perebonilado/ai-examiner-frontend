@@ -11,8 +11,8 @@ export interface QuestionsModel {
 
 export interface GetQuestionByIdModel {
   data: QuestionsModel[];
-  topicTitle: string;
-  topicId: string;
+  documentTitle: string;
+  documentId: string;
   createdOn: Date
 }
 
@@ -27,6 +27,7 @@ export interface QuestionSummaryModel {
   createdAt: Date;
   count: number;
   documentId: string;
+  score?: number
 }
 
 export interface GetQuestionSummaryModel {

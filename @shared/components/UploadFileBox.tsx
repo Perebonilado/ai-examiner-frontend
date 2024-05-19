@@ -4,6 +4,7 @@ import Button from "../ui/Button";
 import { toast } from "react-toastify";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import CloseIcon from "@/icons/CloseIcon";
+import TransitionUp from "@/transitions/TransitionUp";
 
 interface Props {
   handleSelectFile: (file: File) => void;
@@ -48,8 +49,8 @@ const UploadFileBox: FC<Props> = ({
         className="hidden"
         accept={allowedTypes.map((t) => `.${t}`).join(", ")}
       />
-      <div className="w-full p-6 h-[400px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
-        <UploadIcon width={80} height={80} />
+      <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
+        {!attachedFile && <UploadIcon width={80} height={80} />}
         {!attachedFile && (
           <div className="flex flex-col justify-center gap-3">
             <Button
@@ -68,23 +69,29 @@ const UploadFileBox: FC<Props> = ({
         )}
 
         {attachedFile && (
-          <div className="flex items-center w-full max-w-[300px] rounded-xl bg-white p-4 shadow-md relative">
-            <span
-              className="absolute top-[-6px] right-[-6px] cursor-pointer"
-              onClick={handleDeleteFile}
-            >
-              <CloseIcon />
-            </span>
-            <div
-              style={{ flex: 1 }}
-              className="flex items-center justify-center"
-            >
-              <CourseDocumentIcon fill="#2F004F" width={25} height={25} />
+          <TransitionUp>
+            <div className="flex items-center w-full max-w-[300px] rounded-xl bg-white p-4 shadow-md relative">
+              <span
+                className="absolute top-[-6px] right-[-6px] cursor-pointer"
+                onClick={() => {
+                  handleDeleteFile();
+                  if (inputRef.current && inputRef.current.value)
+                    inputRef.current.value = '';
+                }}
+              >
+                <CloseIcon />
+              </span>
+              <div
+                style={{ flex: 1 }}
+                className="flex items-center justify-center"
+              >
+                <CourseDocumentIcon fill="#2F004F" width={25} height={25} />
+              </div>
+              <div style={{ flex: 4 }} className="overflow-hidden">
+                <p className="font-semibold truncate">{attachedFile.name}</p>
+              </div>
             </div>
-            <div style={{ flex: 4 }} className="overflow-hidden">
-              <p className="font-semibold truncate">{attachedFile.name}</p>
-            </div>
-          </div>
+          </TransitionUp>
         )}
       </div>
     </>

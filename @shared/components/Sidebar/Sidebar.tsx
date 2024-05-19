@@ -7,7 +7,7 @@ import LogoutIcon from "@/icons/LogoutIcon";
 import ToggleMenuIcon from "@/icons/ToggleMenuIcon";
 import { useState } from "react";
 import cn from "classnames";
-import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useRouter } from "next/router";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
@@ -18,11 +18,11 @@ import DashboardIcon from "@/icons/DashboardIcon";
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {
-    data: recentTopics,
+    data: recentDocuments,
     isLoading,
     error,
     refetch,
-  } = useGetAllUserTopicsQuery({
+  } = useGetAllUserDocumentsQuery({
     courseId: "",
     page: 1,
     pageSize: 5,
@@ -70,16 +70,16 @@ const Sidebar: FC = () => {
                   />
                   <SidebarItem
                     icon={<CourseIcon />}
-                    isActive={activeNavLink === "/topics"}
+                    isActive={activeNavLink === "/documents"}
                     title="All Documents"
-                    link="/topics"
+                    link="/documents"
                   />
                 </div>
 
                 <div className="pt-10">
                   <ExpandableSidebarItem
                     title="Recents"
-                    data={recentTopics?.topics.map((t) => ({
+                    data={recentDocuments?.documents.map((t) => ({
                       link: `/questions/practise-questions/${t.questionIds[0]}`,
                       title: t.title,
                     }))}

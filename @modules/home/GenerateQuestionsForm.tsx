@@ -3,9 +3,11 @@ import { Form, useFormik, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
 import UploadFileBox from "@/@shared/components/UploadFileBox";
 import Button from "@/@shared/ui/Button";
-import { useAddTopicMutation } from "@/api-services/topic.service";
+import { useAddDocumentMutation } from "@/api-services/document.service";
 import { toast } from "react-toastify";
 import DropDown from "@/@shared/ui/Input/DropDown";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const initialValues = {
   title: "",
@@ -17,7 +19,9 @@ const GenerateQuestionsForm: FC = () => {
     onSubmit: (values) => handleSubmit(values),
   });
 
-  const [createDocAndGenerateQuestions] = useAddTopicMutation();
+  const router = useRouter();
+
+  const [createDocAndGenerateQuestions, { data }] = useAddDocumentMutation();
 
   const allowedMimeTypes = ["docx", "doc", "pdf", "pptx"];
 
@@ -34,11 +38,18 @@ const GenerateQuestionsForm: FC = () => {
 
     createDocAndGenerateQuestions(formData);
   };
+
+  useEffect(() => {
+    if (data) {
+      // router.push(`/questions/practise-questions/${data.}`)
+    }
+  }, [data]);
+
   return (
     <section>
       <FormikProvider value={formik}>
         <Form>
-          <div className="flex flex-col gap-4 mx-auto w-full max-w-[500px] pt-24 pb-10">
+          <div className="flex flex-col gap-4 mx-auto w-full max-w-[500px] pt-2 pb-10">
             <TextField
               label="Document Title"
               placeholder="Enter the title of the document you want to upload"
@@ -60,10 +71,10 @@ const GenerateQuestionsForm: FC = () => {
             <DropDown
               options={[
                 { label: "5", value: "5", defaultSelected: true },
-                { label: "10", value: "10"},
-                { label: "15", value: "15"},
-                { label: "20", value: "20"},
-                { label: "25", value: "25"},
+                { label: "10", value: "10" },
+                { label: "15", value: "15" },
+                { label: "20", value: "20" },
+                { label: "25", value: "25" },
               ]}
               label="Number of Questions"
             />

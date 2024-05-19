@@ -46,10 +46,10 @@ const AllDocuments: NextPage = () => {
     <>
       <AppHead title="All Documents" />
       <AppLayout>
-        <div className="flex items-center justify-between w-full pb-10 gap-3">
+        <div className="flex items-center justify-between w-full pb-10 gap-3 max-lg:flex-col max-lg:gap-12">
           <h2 className="text-2xl font-bold">All Documents</h2>
           <div className="w-full max-w-[350px]">
-            <TextField label="Search by title" placeholder="Search" value={title} onChange={(e)=>{
+            <TextField label="Search" placeholder="Search by title" value={title} onChange={(e)=>{
               setTitle(e.target.value)
             }}/>
           </div>

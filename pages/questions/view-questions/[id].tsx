@@ -70,9 +70,9 @@ const ViewQuestions: NextPage = () => {
     <>
       <AppHead title="View Questions" />
       <AppLayout>
-        <div className="flex items-center justify-between w-full pb-10">
+        <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
           {document && (
-            <h2 className="text-2xl font-bold">
+            <h2 className="text-2xl font-bold max-md:text-center">
               {capitalizeFirstLetterOfEachWord(
                 document.documents[0].title.toLowerCase()
               )}{" "}

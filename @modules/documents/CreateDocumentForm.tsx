@@ -40,7 +40,6 @@ const CreateDocumentForm: FC = () => {
     formData.append("courseId", courseId);
     formData.append("document", file);
 
-    // addDocument(formData);
   };
 
   const { setModalContent } = useModalContext();

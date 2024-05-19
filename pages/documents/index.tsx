@@ -1,8 +1,6 @@
 import DocumentCardContainer from "@/@modules/documents/DocumentCardContainer";
-import DocumentsTableRow from "@/@modules/documents/DocumentsTableRow";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
-import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";

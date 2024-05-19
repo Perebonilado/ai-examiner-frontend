@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 import DropDown from "@/@shared/ui/Input/DropDown";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { AppLoader } from "@/@shared/components/AppLoader";
+import { useModalContext } from "@/contexts/ModalContext";
 
 const initialValues = {
   title: "",
@@ -21,7 +23,10 @@ const GenerateQuestionsForm: FC = () => {
 
   const router = useRouter();
 
-  const [createDocAndGenerateQuestions, { data }] = useAddDocumentMutation();
+  const { setModalContent } = useModalContext();
+
+  const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
+    useAddDocumentMutation();
 
   const allowedMimeTypes = ["docx", "doc", "pdf", "pptx"];
 
@@ -41,9 +46,32 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (data) {
-      // router.push(`/questions/practise-questions/${data.}`)
+      router.push(`/questions/practise-questions/${data.questionId}`);
     }
   }, [data]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Questions Successfully generated for document");
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
 
   return (
     <section>

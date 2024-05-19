@@ -6,7 +6,7 @@ export interface DocumentDto {
   courseId: string;
   userId: string;
   createdOn: Date;
-  question: {id: string}[]
+  question: { id: string }[];
 }
 
 export interface AllDocumentsDto {
@@ -15,4 +15,13 @@ export interface AllDocumentsDto {
     meta: MetaDto;
   };
   status: number;
+}
+
+export interface CreateDocumentDto {
+  status: number;
+  message: string;
+  data: {
+    documentId: string;
+    questionId: string;
+  };
 }

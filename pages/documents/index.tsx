@@ -5,7 +5,6 @@ import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import { useGetAllUserCoursesQuery } from "@/api-services/couse.service";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -29,10 +28,7 @@ const AllDocuments: NextPage = () => {
     { courseId: courseId || "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true }
   );
-  const { data: courses } = useGetAllUserCoursesQuery(
-    { page, pageSize: 100000000, title: "" },
-    { refetchOnMountOrArgChange: true }
-  );
+
   const { setModalContent } = useModalContext();
 
   useEffect(() => {
@@ -51,15 +47,6 @@ const AllDocuments: NextPage = () => {
       setModalContent(null);
     }
   }, [isLoading]);
-
-  useEffect(() => {
-    if (courses) {
-      setCourseOptions(() => [
-        { label: "All", value: "", defaultSelected: true },
-        ...courses.courses.map((c) => ({ label: c.title, value: c.id })),
-      ]);
-    }
-  }, [courses]);
 
   return (
     <>

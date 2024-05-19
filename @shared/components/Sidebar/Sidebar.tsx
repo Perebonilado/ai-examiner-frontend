@@ -80,7 +80,7 @@ const Sidebar: FC = () => {
                   <ExpandableSidebarItem
                     title="Recents"
                     data={recentDocuments?.documents.map((t) => ({
-                      link: `/questions/practise-questions/${t.questionIds[0]}`,
+                      link: `/questions/view-questions/${t.id}`,
                       title: t.title,
                     }))}
                   />

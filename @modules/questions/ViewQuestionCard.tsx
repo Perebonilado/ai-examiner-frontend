@@ -21,7 +21,7 @@ const ViewQuestionCard: FC<Props> = ({
     ? `border-l-${generateScoreColor(score).scoreColor}`
     : "border-l-gray-400";
   const rootClassName = cn(
-    `w-full flex flex-col mx-auto max-w-[600px] h-[180px] rounded-xl shadow-lg p-4 bg-gray-50 border-l-[5px] ${scoreColor}`
+    `w-full flex flex-col max-w-[480px] h-[180px] rounded-xl shadow-lg p-4 bg-gray-50 border-l-[5px] ${scoreColor}`
   );
 
   return (

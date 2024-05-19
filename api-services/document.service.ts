@@ -11,9 +11,10 @@ import { logout, secondsToMilliSeconds } from "@/utils";
 import {
   AllDocumentsModel,
   AllDocumentsQueryModel,
+  CreateDocumentModel,
   GetAllDocumentsModel,
 } from "@/models/document.model";
-import { AllDocumentsDto } from "@/dto/document.dto";
+import { AllDocumentsDto, CreateDocumentDto } from "@/dto/document.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
@@ -48,7 +49,10 @@ export const DocumentService = createApi({
   baseQuery: baseQueryWithLogoutOnTokenExpiration,
   tagTypes: ["all-documents"],
   endpoints: (build) => ({
-    getAllUserDocuments: build.query<GetAllDocumentsModel, AllDocumentsQueryModel>({
+    getAllUserDocuments: build.query<
+      GetAllDocumentsModel,
+      AllDocumentsQueryModel
+    >({
       query: (queryParams) => ({
         url: "",
         params: { ...queryParams },
@@ -73,13 +77,21 @@ export const DocumentService = createApi({
         };
       },
     }),
-    addDocument: build.mutation<any, FormData>({
+    addDocument: build.mutation<CreateDocumentModel, FormData>({
       query: (body) => ({
         url: ``,
         body,
         method: "POST",
       }),
       invalidatesTags: ["all-documents"],
+      transformResponse: (res: CreateDocumentDto) => {
+        if (!res) return <CreateDocumentModel>{};
+        else
+          return {
+            documentId: res.data.documentId,
+            questionId: res.data.questionId,
+          };
+      },
     }),
   }),
 });

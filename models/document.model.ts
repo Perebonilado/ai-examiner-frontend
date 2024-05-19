@@ -5,18 +5,23 @@ export interface AllDocumentsQueryModel {
   title: string;
   page: number;
   pageSize: number;
-  id: string
+  id: string;
 }
 
 export interface AllDocumentsModel {
   id: string;
   createdAt: Date;
-  title: string
+  title: string;
   questionSetCount: number;
-  questionIds: string[]
+  questionIds: string[];
 }
 
 export interface GetAllDocumentsModel {
   documents: AllDocumentsModel[];
   meta: MetaModel;
+}
+
+export interface CreateDocumentModel {
+  documentId: string;
+  questionId: string;
 }

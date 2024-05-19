@@ -9,9 +9,9 @@ interface Props {
 
 const ViewQuestionCardContainer: FC<Props> = ({ data }) => {
   return (
-    <Container>
+    <>
       {data && data.length ? (
-        <section className="grid grid-cols-1 lg:grid-cols-2 content-center gap-y-12 gap-10 mb-6">
+        <section className="flex justify-center items-center flex-wrap gap-y-12 gap-10 mb-6">
           {data.map((d, idx) => (
             <ViewQuestionCard {...d} key={idx} />
           ))}
@@ -19,7 +19,7 @@ const ViewQuestionCardContainer: FC<Props> = ({ data }) => {
       ) : (
         <div></div>
       )}
-    </Container>
+    </>
   );
 };
 

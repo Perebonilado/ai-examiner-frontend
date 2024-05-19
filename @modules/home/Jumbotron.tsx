@@ -13,7 +13,7 @@ const Jumbotron: FC = () => {
         <div className="min-h-screen flex">
           <div style={{ flex: 1 }} className="pt-20">
             <h1 className="text-5xl leading-relaxed font-bold text-center">
-              Lorem ipsum dolor sit amet consectetur.
+              The smart practice tool to boost your exam scores.
             </h1>
             <h3 className="text-2xl mt-4 leading-relaxed text-center">
               Lorem ipsum dolor sit amet consectetur.

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import CloseIcon from "@/icons/CloseIcon";
 import TransitionUp from "@/transitions/TransitionUp";
+import AttachedFileInfo from "./AttachedFileInfo";
 
 interface Props {
   handleSelectFile: (file: File) => void;
@@ -70,27 +71,14 @@ const UploadFileBox: FC<Props> = ({
 
         {attachedFile && (
           <TransitionUp>
-            <div className="flex items-center w-full max-w-[300px] rounded-xl bg-white p-4 shadow-md relative">
-              <span
-                className="absolute top-[-6px] right-[-6px] cursor-pointer"
-                onClick={() => {
-                  handleDeleteFile();
-                  if (inputRef.current && inputRef.current.value)
-                    inputRef.current.value = '';
-                }}
-              >
-                <CloseIcon />
-              </span>
-              <div
-                style={{ flex: 1 }}
-                className="flex items-center justify-center"
-              >
-                <CourseDocumentIcon fill="#2F004F" width={25} height={25} />
-              </div>
-              <div style={{ flex: 4 }} className="overflow-hidden">
-                <p className="font-semibold truncate">{attachedFile.name}</p>
-              </div>
-            </div>
+            <AttachedFileInfo
+              handleDelete={() => {
+                handleDeleteFile();
+                if (inputRef.current && inputRef.current.value)
+                  inputRef.current.value = "";
+              }}
+              fileName={attachedFile.name}
+            />
           </TransitionUp>
         )}
       </div>

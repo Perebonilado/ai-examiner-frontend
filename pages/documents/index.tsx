@@ -1,3 +1,4 @@
+import DocumentCardContainer from "@/@modules/documents/DocumentCardContainer";
 import DocumentsTableRow from "@/@modules/documents/DocumentsTableRow";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
@@ -18,7 +19,7 @@ const AllDocuments: NextPage = () => {
   const [page, setPage] = useState(1);
   const [title, setTitle] = useState("");
   const { data, isLoading, error, refetch } = useGetAllUserDocumentsQuery(
-    { courseId: "", page, pageSize: 6, title, id: "" },
+    { courseId: "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -59,18 +60,8 @@ const AllDocuments: NextPage = () => {
             <Button title="Reload documents" onClick={refetch} />
           </div>
         )}
-        <EnhancedTable
-          maxWidth="100%"
-          headCellData={[
-            { title: "Title", flex: 1 },
-            { title: "Question Sets Count", flex: 1 },
-            { title: "Created At", flex: 1 },
-            // { title: "Actions", flex: 1 },
-          ]}
-          generic={true}
-          rowData={data?.documents}
-          rowComponent={(rows) => <DocumentsTableRow {...rows} />}
-        />
+
+        <DocumentCardContainer data={data?.documents}/>
         {data && (
           <Pagination
             className=""

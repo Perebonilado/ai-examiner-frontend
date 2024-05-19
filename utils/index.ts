@@ -49,3 +49,16 @@ export const capitalizeFirstLetterOfEachWord = (input: string): string => {
 
   return capitalizedWords.join(" ");
 };
+
+export const getRandomNumberInRange = (
+  startRange: number,
+  endRange: number
+): number => {
+  if (startRange > endRange) {
+    throw new Error("startRange should be less than or equal to endRange");
+  }
+  const randomDecimal = Math.random();
+  const randomNumber =
+    Math.floor(randomDecimal * (endRange - startRange + 1)) + startRange;
+  return randomNumber;
+};

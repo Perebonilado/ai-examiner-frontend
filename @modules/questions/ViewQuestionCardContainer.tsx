@@ -16,7 +16,9 @@ const ViewQuestionCardContainer: FC<Props> = ({ data }) => {
           ))}
         </section>
       ) : (
-        <div></div>
+        <div className="mx-auto py-10">
+          <p className="text-lg text-center">No Questions Found</p>
+        </div>
       )}
     </>
   );

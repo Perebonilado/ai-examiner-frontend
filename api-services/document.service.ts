@@ -9,6 +9,7 @@ import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
 import { logout, secondsToMilliSeconds } from "@/utils";
 import {
+  AddDocumentPayloadModel,
   AllDocumentsModel,
   AllDocumentsQueryModel,
   CreateDocumentModel,
@@ -18,7 +19,7 @@ import { AllDocumentsDto, CreateDocumentDto } from "@/dto/document.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
-  timeout: secondsToMilliSeconds(30),
+  timeout: secondsToMilliSeconds(600),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 
@@ -58,6 +59,7 @@ export const DocumentService = createApi({
         params: { ...queryParams },
       }),
       providesTags: ["all-documents"],
+
       transformResponse: (res: AllDocumentsDto) => {
         if (!res) return <GetAllDocumentsModel>{};
 
@@ -77,11 +79,14 @@ export const DocumentService = createApi({
         };
       },
     }),
-    addDocument: build.mutation<CreateDocumentModel, FormData>({
-      query: (body) => ({
+    addDocument: build.mutation<CreateDocumentModel, AddDocumentPayloadModel>({
+      query: ({ formData, questionCount }) => ({
         url: ``,
-        body,
+        body: formData,
         method: "POST",
+        params: {
+          questionCount,
+        },
       }),
       invalidatesTags: ["all-documents"],
       transformResponse: (res: CreateDocumentDto) => {

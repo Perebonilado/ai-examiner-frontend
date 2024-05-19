@@ -25,3 +25,8 @@ export interface CreateDocumentModel {
   documentId: string;
   questionId: string;
 }
+
+export interface AddDocumentPayloadModel {
+  formData: FormData;
+  questionCount: string;
+}

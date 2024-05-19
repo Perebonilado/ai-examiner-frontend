@@ -10,14 +10,18 @@ import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
+import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQuestionFormValidation";
+import ToolTip from "@/@shared/components/ToolTip";
 
 const initialValues = {
   title: "",
+  questionCount: "",
 };
 
 const GenerateQuestionsForm: FC = () => {
   const formik = useFormik({
     initialValues,
+    validationSchema: GenerateQuestionFormValidation,
     onSubmit: (values) => handleSubmit(values),
   });
 
@@ -41,7 +45,10 @@ const GenerateQuestionsForm: FC = () => {
     formData.append("title", values.title);
     formData.append("document", file);
 
-    createDocAndGenerateQuestions(formData);
+    createDocAndGenerateQuestions({
+      formData,
+      questionCount: values.questionCount,
+    });
   };
 
   useEffect(() => {
@@ -52,7 +59,7 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (isLoading) {
-      setModalContent(<AppLoader />);
+      setModalContent(<AppLoader loaderMessage="Hang in there while me generate your questions"/>);
     } else {
       setModalContent(null);
     }
@@ -96,16 +103,30 @@ const GenerateQuestionsForm: FC = () => {
               }}
             />
 
-            <DropDown
-              options={[
-                { label: "5", value: "5", defaultSelected: true },
-                { label: "10", value: "10" },
-                { label: "15", value: "15" },
-                { label: "20", value: "20" },
-                { label: "25", value: "25" },
-              ]}
-              label="Number of Questions"
-            />
+            <div>
+              <label className="text-base font-semibold flex items-center gap-4">
+                Number of Questions{" "}
+                <ToolTip
+                  id="q_generation"
+                  message="Please note that generating more questions typically takes more time"
+                />
+              </label>
+              <DropDown
+                options={[
+                  { label: "5", value: "5", defaultSelected: true },
+                  { label: "10", value: "10" },
+                  { label: "15", value: "15" },
+                  { label: "20", value: "20" },
+                  { label: "25", value: "25" },
+                ]}
+                {...formik.getFieldProps("questionCount")}
+                error={
+                  formik.touched.questionCount
+                    ? formik.errors.questionCount
+                    : undefined
+                }
+              />
+            </div>
 
             <Button title="Generate Questions" size="large" />
           </div>

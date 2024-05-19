@@ -18,7 +18,7 @@ const AllDocuments: NextPage = () => {
   const [page, setPage] = useState(1);
   const [title, setTitle] = useState("");
   const { data, isLoading, error, refetch } = useGetAllUserDocumentsQuery(
-    { courseId: "", page, pageSize: 4, title, id: "" },
+    { courseId: "", page, pageSize: 6, title, id: "" },
     { refetchOnMountOrArgChange: true }
   );
 

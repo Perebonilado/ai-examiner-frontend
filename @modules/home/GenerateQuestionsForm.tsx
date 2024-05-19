@@ -59,7 +59,7 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (isLoading) {
-      setModalContent(<AppLoader loaderMessage="Hang in there while me generate your questions"/>);
+      setModalContent(<AppLoader loaderMessage="Hang in there while we generate your questions"/>);
     } else {
       setModalContent(null);
     }

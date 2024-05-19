@@ -5,6 +5,7 @@ import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import TextField from "@/@shared/ui/Input/TextField";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -15,17 +16,9 @@ import { toast } from "react-toastify";
 
 const AllDocuments: NextPage = () => {
   const [page, setPage] = useState(1);
-  const [courseId, setCourseId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
-  const [courseOptions, setCourseOptions] = useState<
-    {
-      label: string;
-      value: string;
-      defaultSelected?: boolean | undefined;
-    }[]
-  >([]);
   const { data, isLoading, error, refetch } = useGetAllUserDocumentsQuery(
-    { courseId: courseId || "", page, pageSize: 10, title, id: "" },
+    { courseId: "", page, pageSize: 4, title, id: "" },
     { refetchOnMountOrArgChange: true }
   );
 
@@ -54,6 +47,11 @@ const AllDocuments: NextPage = () => {
       <AppLayout>
         <div className="flex items-center justify-between w-full pb-10 gap-3">
           <h2 className="text-2xl font-bold">All Documents</h2>
+          <div className="w-full max-w-[350px]">
+            <TextField label="Search by title" placeholder="Search" value={title} onChange={(e)=>{
+              setTitle(e.target.value)
+            }}/>
+          </div>
         </div>
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">

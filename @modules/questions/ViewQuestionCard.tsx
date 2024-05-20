@@ -24,7 +24,7 @@ const ViewQuestionCard: FC<Props> = ({
   );
 
   return (
-    <div className={rootClassName} style={{borderLeftColor: scoreColor}}>
+    <div className={rootClassName} style={{ borderLeftColor: scoreColor }}>
       <div
         style={{ flex: 1 }}
         className="flex flex-col justify-center gap-1 pb-4"
@@ -42,7 +42,7 @@ const ViewQuestionCard: FC<Props> = ({
       <div style={{ flex: 1 }} className="border-t flex items-center">
         <Link href={`/questions/practise-questions/${id}`}>
           <Button
-            title={score ? "Attempt Again" : "Start Assessment"}
+            title={score !== null ? "Attempt Again" : "Start Assessment"}
             variant="outlined"
           />
         </Link>

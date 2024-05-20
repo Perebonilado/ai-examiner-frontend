@@ -36,7 +36,7 @@ export const generateScoreColor = (percentage: number | null) => {
           scoreColor: "#EF4444",
         } as const;
     }
-  } else return { scoreColor: "F9FAFB" } as const;
+  } else return { scoreColor: "#F1F1F1" } as const;
 };
 
 export const generateDocumentCardColorFromScore = (

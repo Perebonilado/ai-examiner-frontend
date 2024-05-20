@@ -90,7 +90,7 @@ const ViewQuestions: NextPage = () => {
             <Button title="Reload Question Summaries" onClick={refetch} />
           </div>
         )}
-        <ViewQuestionCardContainer data={data?.questions} />
+        {data && <ViewQuestionCardContainer data={data?.questions} />}
 
         {data && (
           <Pagination

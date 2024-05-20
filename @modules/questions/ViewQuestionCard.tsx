@@ -18,6 +18,7 @@ const ViewQuestionCard: FC<Props> = ({
   type,
 }) => {
   const scoreColor = generateScoreColor(score).scoreColor;
+  console.log(scoreColor)
 
   const rootClassName = cn(
     `w-full flex flex-col max-w-[480px] h-[180px] rounded-xl shadow-lg p-4 bg-gray-50 border-l-[5px]`

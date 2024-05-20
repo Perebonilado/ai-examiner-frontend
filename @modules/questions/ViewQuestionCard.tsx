@@ -42,7 +42,7 @@ const ViewQuestionCard: FC<Props> = ({
       <div style={{ flex: 1 }} className="border-t flex items-center">
         <Link href={`/questions/practise-questions/${id}`}>
           <Button
-            title={score !== null ? "Attempt Again" : "Start Assessment"}
+            title={score !== null ? "Retry" : "Start Assessment"}
             variant="outlined"
           />
         </Link>

@@ -1,13 +1,10 @@
-
 import ViewQuestionCardContainer from "@/@modules/questions/ViewQuestionCardContainer";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import {
-  useGetQuestionSummariesQuery,
-} from "@/api-services/questions.service";
+import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -17,6 +14,8 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
+import ChevronLeft from "@/icons/ChevronLeft";
+import { useRouter } from "next/router";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -59,17 +58,27 @@ const ViewQuestions: NextPage = () => {
     }
   }, [isLoading]);
 
-  
   useEffect(() => {
     if (params) {
       setdocumentId(params.id as string);
     }
   }, [params]);
 
+  const router = useRouter()
+
   return (
     <>
       <AppHead title="View Questions" />
       <AppLayout>
+        <Button
+          title="Back"
+          variant="text"
+          starticon={<ChevronLeft />}
+          className="!gap-1 mb-6"
+          onClick={()=>{
+            router.push(`/documents`)
+          }}
+        />
         <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
           {document && (
             <h2 className="text-2xl font-bold max-md:text-center">

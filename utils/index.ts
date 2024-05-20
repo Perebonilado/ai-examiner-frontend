@@ -66,6 +66,15 @@ export const generateDocumentCardColorFromScore = (
   } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;
 };
 
+export const replaceHyphensWithSpaces = (inputString: string): string => {
+  return inputString.replace(/-/g, " ");
+};
+
+export const capitalizeFirstLetterOfEachWordInString = (str: string) => {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+
 export const capitalizeFirstLetterOfEachWord = (input: string): string => {
   const words = input.split(" ");
 

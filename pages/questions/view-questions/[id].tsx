@@ -74,7 +74,7 @@ const ViewQuestions: NextPage = () => {
           title="Back"
           variant="text"
           starticon={<ChevronLeft />}
-          className="!gap-1 mb-6"
+          className="!gap-1 mb-6 mt-7"
           onClick={()=>{
             router.push(`/documents`)
           }}

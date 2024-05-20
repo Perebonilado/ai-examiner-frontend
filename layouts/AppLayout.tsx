@@ -6,7 +6,7 @@ const AppLayout: FC<PropsWithChildren> = ({ children }) => {
   return (
     <div className="flex h-screen overflow-hidden bg-white">
       <Sidebar />
-      <main className="h-screen w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 pt-[2rem] px-10 max-md:px-4">
+      <main className="h-screen w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 pt-[1.2rem] px-10 max-md:px-4">
         <FadeIn>{children}</FadeIn>
       </main>
     </div>

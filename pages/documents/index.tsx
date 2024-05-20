@@ -51,7 +51,7 @@ const AllDocuments: NextPage = () => {
     <>
       <AppHead title="All Documents" />
       <AppLayout>
-        <div className="flex items-center justify-between w-full pb-10 gap-3 max-lg:flex-col max-lg:gap-12">
+        <div className="flex items-start justify-between w-full pb-10 gap-3 max-lg:flex-col max-lg:gap-12 mt-7">
           <h2 className="text-2xl font-bold">All Documents</h2>
           <div className="w-full max-w-[350px]">
             <TextField label="Search" placeholder="Search by title" starticon={<SearchIcon />} value={title} onChange={(e)=>{

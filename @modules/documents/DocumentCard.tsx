@@ -24,7 +24,7 @@ const DocumentCard: FC<Props> = ({
 
   const color = generateDocumentCardColorFromScore(averageScore);
 
-  const iconBg = cn(`rounded-lg flex justify-center items-center`);
+  const iconBg = cn(`rounded-lg flex justify-center items-center relative`);
 
   return (
     <div
@@ -37,6 +37,12 @@ const DocumentCard: FC<Props> = ({
         style={{ flex: 2, backgroundColor: color.background }}
         className={iconBg}
       >
+        <p
+          className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center text-xs font-bold"
+          style={{ color: color.fill }}
+        >
+          {averageScore === null ? 'Unanswered' : `Average score  ${averageScore}%`}
+        </p>
         <span style={{ fill: color.fill }}>
           <FileIcon />
         </span>

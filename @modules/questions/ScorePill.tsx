@@ -16,7 +16,7 @@ const ScorePill: FC<Props> = ({ score }) => {
   return (
     <div className={rootClassName} style={{backgroundColor: scoreColor}}>
       <p className="text-sm font-bold text-white">
-        {score !== null ? `Grade: ${score}%` : <span className="text-gray-500">Unattempted</span>}
+        {score !== null ? `Grade: ${score.toFixed(2)}%` : <span className="text-gray-500">Unattempted</span>}
       </p>
     </div>
   );

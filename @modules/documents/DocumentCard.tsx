@@ -41,7 +41,7 @@ const DocumentCard: FC<Props> = ({
           className="absolute bottom-2 left-1/2 -translate-x-1/2 text-center text-xs font-bold"
           style={{ color: color.fill }}
         >
-          {averageScore === null ? 'Unanswered' : `Average score  ${averageScore}%`}
+          {averageScore === null ? 'Unanswered' : `Average score  ${averageScore.toFixed(2)}%`}
         </p>
         <span style={{ fill: color.fill }}>
           <FileIcon />

@@ -3,20 +3,20 @@ import { generateScoreColor } from "@/utils";
 import cn from "classnames";
 
 interface Props {
-  score?: number;
+  score: number | null;
 }
 
 const ScorePill: FC<Props> = ({ score }) => {
-  const scoreColor = score ? `bg-${generateScoreColor(score).scoreColor}` : "bg-white";
+  const scoreColor = generateScoreColor(score).scoreColor
 
   const rootClassName = cn(
-    `shadow-lg px-6 py-1 rounded-xl ${scoreColor}`
+    `shadow-lg px-6 py-1 rounded-xl`,
   );
 
   return (
-    <div className={rootClassName}>
+    <div className={rootClassName} style={{backgroundColor: scoreColor}}>
       <p className="text-sm font-bold text-white">
-        {score ? `Grade: ${score}%` : <span className="text-gray-500">Unattempted</span>}
+        {score !== null ? `Grade: ${score}%` : <span className="text-gray-500">Unattempted</span>}
       </p>
     </div>
   );

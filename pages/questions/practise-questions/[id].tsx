@@ -74,6 +74,7 @@ const Practice: NextPage = () => {
               handleDone={() => {
                 router.push(`/questions/view-questions/${data.documentId}`);
               }}
+              documentId={data.documentId}
             />
           )}
         </div>

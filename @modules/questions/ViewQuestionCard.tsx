@@ -17,15 +17,14 @@ const ViewQuestionCard: FC<Props> = ({
   id,
   type,
 }) => {
-  const scoreColor = score
-    ? `border-l-${generateScoreColor(score).scoreColor}`
-    : "border-l-gray-400";
+  const scoreColor = generateScoreColor(score).scoreColor;
+
   const rootClassName = cn(
-    `w-full flex flex-col max-w-[480px] h-[180px] rounded-xl shadow-lg p-4 bg-gray-50 border-l-[5px] ${scoreColor}`
+    `w-full flex flex-col max-w-[480px] h-[180px] rounded-xl shadow-lg p-4 bg-gray-50 border-l-[5px]`
   );
 
   return (
-    <div className={rootClassName}>
+    <div className={rootClassName} style={{borderLeftColor: scoreColor}}>
       <div
         style={{ flex: 1 }}
         className="flex flex-col justify-center gap-1 pb-4"

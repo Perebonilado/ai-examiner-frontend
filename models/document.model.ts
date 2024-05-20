@@ -14,6 +14,7 @@ export interface AllDocumentsModel {
   title: string;
   questionSetCount: number;
   questionIds: string[];
+  averageScore: number | null
 }
 
 export interface GetAllDocumentsModel {

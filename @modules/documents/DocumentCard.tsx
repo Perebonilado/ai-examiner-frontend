@@ -5,6 +5,7 @@ import * as moment from "moment";
 import { useRouter } from "next/router";
 import {
   capitalizeFirstLetterOfEachWord,
+  generateDocumentCardColorFromScore,
   getRandomNumberInRange,
 } from "@/utils";
 import cn from "classnames";
@@ -17,27 +18,13 @@ const DocumentCard: FC<Props> = ({
   questionIds,
   questionSetCount,
   title,
+  averageScore,
 }) => {
   const router = useRouter();
-  const randomColors = [
-    { fill: "fill-green-600", bg: "bg-green-200" },
-    { fill: "fill-yellow-600", bg: "bg-yellow-200" },
-    { fill: "fill-rose-600", bg: "bg-rose-200" },
-    { fill: "fill-gray-600", bg: "bg-gray-200" },
-  ];
 
-  const color = randomColors[getRandomNumberInRange(0, 3)];
+  const color = generateDocumentCardColorFromScore(averageScore);
 
-  const iconBg = cn(
-    `bg-green-100 rounded-lg flex justify-center items-center`,
-    {
-      [color.bg]: true,
-    }
-  );
-
-  const iconFill = cn(``, {
-    [color.fill]: true,
-  });
+  const iconBg = cn(`rounded-lg flex justify-center items-center`);
 
   return (
     <div
@@ -46,8 +33,11 @@ const DocumentCard: FC<Props> = ({
       }}
       className="w-[250px] h-[280px] gap-2 p-5 flex flex-col bg-white rounded-lg shadow-black-400 shadow-xl cursor-pointer"
     >
-      <div style={{ flex: 2 }} className={iconBg}>
-        <span className={iconFill}>
+      <div
+        style={{ flex: 2, backgroundColor: color.background }}
+        className={iconBg}
+      >
+        <span style={{ fill: color.fill }}>
           <FileIcon />
         </span>
       </div>

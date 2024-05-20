@@ -7,6 +7,7 @@ export interface DocumentDto {
   userId: string;
   createdOn: Date;
   question: { id: string }[];
+  averageScore: number | null
 }
 
 export interface AllDocumentsDto {

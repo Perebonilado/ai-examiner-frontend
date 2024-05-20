@@ -20,21 +20,47 @@ export const generateAlphabets = (startChar: string, endChar: string) => {
   return alphabets;
 };
 
-export const generateScoreColor = (percentage: number) => {
-  switch (true) {
-    case percentage >= 80:
-      return {
-        scoreColor: "green-600",
-      } as const;
-    case percentage >= 50 && percentage <= 79:
-      return {
-        scoreColor: "yellow-500",
-      } as const;
-    default:
-      return {
-        scoreColor: "red-500",
-      } as const;
-  }
+export const generateScoreColor = (percentage: number | null) => {
+  if (percentage !== null) {
+    switch (true) {
+      case percentage >= 80:
+        return {
+          scoreColor: "#16A34A",
+        } as const;
+      case percentage >= 50 && percentage <= 79:
+        return {
+          scoreColor: "#EAB308",
+        } as const;
+      default:
+        return {
+          scoreColor: "#EF4444",
+        } as const;
+    }
+  } else return { scoreColor: "F9FAFB" } as const;
+};
+
+export const generateDocumentCardColorFromScore = (
+  percentage: number | null
+) => {
+  if (percentage !== null) {
+    switch (true) {
+      case percentage >= 80:
+        return {
+          background: "#BBF7D0",
+          fill: "#16a34a",
+        } as const;
+      case percentage >= 50 && percentage <= 79:
+        return {
+          background: "#FEF08A",
+          fill: "#ca8a04",
+        } as const;
+      default:
+        return {
+          background: "#FECDD3",
+          fill: "#EF4444",
+        } as const;
+    }
+  } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;
 };
 
 export const capitalizeFirstLetterOfEachWord = (input: string): string => {

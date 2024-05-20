@@ -21,6 +21,7 @@ export interface QuestionSummaryDto {
   createdOn: Date;
   id: string;
   count: number;
+  score: number | null
 }
 
 export interface AllQuestionSummaryDto {

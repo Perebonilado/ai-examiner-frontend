@@ -70,6 +70,7 @@ export const DocumentService = createApi({
             title: document.title,
             questionSetCount: document.question.length,
             questionIds: document.question.map((q) => q.id),
+            averageScore: document.averageScore
           };
         });
 

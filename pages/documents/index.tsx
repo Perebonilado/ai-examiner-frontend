@@ -41,6 +41,12 @@ const AllDocuments: NextPage = () => {
     }
   }, [isLoading]);
 
+  useEffect(()=>{
+    if(page !== 1) {
+      setPage(1)
+    }
+  },[title])
+
   return (
     <>
       <AppHead title="All Documents" />

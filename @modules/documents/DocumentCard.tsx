@@ -39,7 +39,7 @@ const DocumentCard: FC<Props> = ({
               >
                 {averageScore}%
               </p>
-              <p className="text-xs text-gray-500 mt-1">Excellent Work</p>
+              <p className="text-xs text-gray-500 mt-1">{color.message}</p>
             </>
           )}
           {averageScore === null && (

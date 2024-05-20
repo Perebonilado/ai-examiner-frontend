@@ -48,16 +48,19 @@ export const generateDocumentCardColorFromScore = (
         return {
           background: "#BBF7D0",
           fill: "#16a34a",
+          message: "Excellent Work"
         } as const;
       case percentage >= 50 && percentage <= 79:
         return {
           background: "#FEF08A",
           fill: "#ca8a04",
+          message: "Needs Improvement"
         } as const;
       default:
         return {
           background: "#FECDD3",
           fill: "#EF4444",
+          message: "Try Again"
         } as const;
     }
   } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;

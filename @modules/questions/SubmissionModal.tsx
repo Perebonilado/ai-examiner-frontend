@@ -22,7 +22,7 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
         className={`text-center text-xl font-bold`}
         style={{ color: scoreColor }}
       >
-        Score - {props.scorePercentage}%
+        Score - {props.scorePercentage.toFixed(2)}%
       </p>
 
       <Button

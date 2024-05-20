@@ -9,7 +9,7 @@ interface Props {
 const AppHead: FC<Props> = ({ title }) => {
   return (
     <Head>
-      <title>AI Examiner {title && `| ${title}`}</title>
+      <title>AI Examiner {title ? `| ${title}` : ''}</title>
     </Head>
   );
 };

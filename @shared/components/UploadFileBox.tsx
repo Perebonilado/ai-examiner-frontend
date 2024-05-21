@@ -2,16 +2,16 @@ import UploadIcon from "@/icons/UploadIcon";
 import React, { ElementRef, FC, useRef } from "react";
 import Button from "../ui/Button";
 import { toast } from "react-toastify";
-import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
-import CloseIcon from "@/icons/CloseIcon";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
+import { convertMegaBytesToBytes } from "@/utils";
 
 interface Props {
   handleSelectFile: (file: File) => void;
   handleDeleteFile: () => void;
   attachedFile: File | null;
   allowedTypes: string[];
+  maxFileSizeMB?: number;
 }
 
 const UploadFileBox: FC<Props> = ({
@@ -19,18 +19,18 @@ const UploadFileBox: FC<Props> = ({
   attachedFile,
   handleDeleteFile,
   handleSelectFile,
+  maxFileSizeMB = 10,
 }) => {
   const inputRef = useRef<ElementRef<"input">>(null);
-  const maxFileSizeMb = 3;
-  const oneByteToMegaByteConversion = 1024;
   const validateFileSize = (file: File) => {
-    const fileSizeInMb =
-      file.size / oneByteToMegaByteConversion / oneByteToMegaByteConversion;
-    if (fileSizeInMb > maxFileSizeMb) {
+    const maxSizeInBytes = convertMegaBytesToBytes(maxFileSizeMB);
+    if (file.size > maxSizeInBytes) {
       return false;
+    } else {
+      return true;
     }
-    return true;
   };
+
   return (
     <>
       <input
@@ -43,7 +43,7 @@ const UploadFileBox: FC<Props> = ({
               handleSelectFile(e.target.files[0]);
               return;
             } else {
-              toast.error("File Size must be 10mb or less");
+              toast.error(`File Size must be ${maxFileSizeMB}mb or less`);
             }
           }
         }}
@@ -64,7 +64,7 @@ const UploadFileBox: FC<Props> = ({
               type="button"
             />
             <p className="text-xs italic">
-              Maximum File Size: 10mb | Allowed File Types: pdf, docx, pptx
+              Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf, docx, pptx
             </p>
           </div>
         )}

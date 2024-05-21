@@ -1,53 +1,44 @@
-import QuestionTableRow from "@/@modules/questions/QuestionTableRow";
+import ViewQuestionCardContainer from "@/@modules/questions/ViewQuestionCardContainer";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
-import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import {
-  useGenerateQuestionsMutation,
-  useGetQuestionSummariesQuery,
-} from "@/api-services/questions.service";
-import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
+import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
+import ChevronLeft from "@/icons/ChevronLeft";
+import { useRouter } from "next/router";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
-  const [topicId, setTopicId] = useState<string>("");
+  const [documentId, setdocumentId] = useState<string>("");
   const params = useParams();
   const { data, isLoading, error, refetch } = useGetQuestionSummariesQuery(
     {
       page,
-      pageSize: 10,
-      courseDocumentId: topicId,
+      pageSize: 6,
+      courseDocumentId: documentId,
     },
-    { skip: !topicId, refetchOnMountOrArgChange: true }
+    { skip: !documentId, refetchOnMountOrArgChange: true }
   );
 
-  const { data: topic } = useGetAllUserTopicsQuery(
-    { courseId: "", page: 1, pageSize: 10, title: "", id: topicId },
-    { refetchOnMountOrArgChange: true, skip: !topicId }
+  const { data: document } = useGetAllUserDocumentsQuery(
+    { courseId: "", page: 1, pageSize: 10, title: "", id: documentId },
+    { refetchOnMountOrArgChange: true, skip: !documentId }
   );
-
-  const [
-    generateQuestions,
-    {
-      isLoading: generateQuestionsLoading,
-      error: generateQuestionsError,
-      isSuccess: generateQuestionsSuccess,
-    },
-  ] = useGenerateQuestionsMutation();
 
   const { setModalContent } = useModalContext();
 
   const handleGenerateQuestions = () => {
-    generateQuestions(topicId);
+    setModalContent(<GenerateQuestionsForm />);
   };
 
   useEffect(() => {
@@ -57,51 +48,44 @@ const ViewQuestions: NextPage = () => {
         toast.error(message);
       } else toast.error("Oops! Something went wrong");
     }
-
-    if (generateQuestionsError && "status" in generateQuestionsError) {
-      if ("data" in generateQuestionsError) {
-        const { message } = generateQuestionsError.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error, generateQuestionsError]);
+  }, [error]);
 
   useEffect(() => {
-    if (isLoading || generateQuestionsLoading) {
-      setModalContent(
-        <AppLoader
-          loaderMessage={
-            generateQuestionsLoading
-              ? "Hang in there while we generate your questions, it will only take a moment..."
-              : undefined
-          }
-        />
-      );
+    if (isLoading) {
+      setModalContent(<AppLoader />);
     } else {
       setModalContent(null);
     }
-  }, [isLoading, generateQuestionsLoading]);
-
-  useEffect(() => {
-    if (generateQuestionsSuccess) {
-      toast.success("Questions generated successfully");
-    }
-  }, [generateQuestionsSuccess]);
+  }, [isLoading]);
 
   useEffect(() => {
     if (params) {
-      setTopicId(params.id as string);
+      setdocumentId(params.id as string);
     }
   }, [params]);
+
+  const router = useRouter()
 
   return (
     <>
       <AppHead title="View Questions" />
       <AppLayout>
-        <div className="flex items-center justify-between w-full pb-10">
-          {topic && (
-            <h2 className="text-2xl font-bold">
-              {topic.topics[0].title} Questions
+        <Button
+          title="Back"
+          variant="text"
+          starticon={<ChevronLeft />}
+          className="!gap-1 mb-6 mt-7"
+          onClick={()=>{
+            router.push(`/documents`)
+          }}
+        />
+        <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
+          {document && (
+            <h2 className="text-2xl font-bold max-md:text-center">
+              {capitalizeFirstLetterOfEachWord(
+                document.documents[0].title.toLowerCase()
+              )}{" "}
+              Questions
             </h2>
           )}
           <Button
@@ -111,22 +95,12 @@ const ViewQuestions: NextPage = () => {
         </div>
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
-            <ErrorMessage message="Something went wrong while trying to get question summaries for this topic" />
+            <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />
             <Button title="Reload Question Summaries" onClick={refetch} />
           </div>
         )}
-        <EnhancedTable
-          maxWidth="100%"
-          headCellData={[
-            { title: "Created At", flex: 1 },
-            { title: "Type", flex: 1 },
-            { title: "Question Count", flex: 1 },
-            // { title: "Actions", flex: 1 },
-          ]}
-          generic={true}
-          rowData={data?.questions}
-          rowComponent={(rows) => <QuestionTableRow {...rows} />}
-        />
+        {data && <ViewQuestionCardContainer data={data?.questions} />}
+
         {data && (
           <Pagination
             className=""

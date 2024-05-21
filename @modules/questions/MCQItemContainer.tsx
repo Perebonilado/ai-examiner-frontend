@@ -6,17 +6,29 @@ import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
 import SubmissionModal from "./SubmissionModal";
 import { toast } from "react-toastify";
+import { useSaveScoreMutation } from "@/api-services/questions.service";
+import { AppLoader } from "@/@shared/components/AppLoader";
+import { useParams } from "next/navigation";
 
 interface Props {
   data: QuestionsModel[];
   handleDone: () => void;
+  documentId: string;
 }
 
-const MCQItemContainer: FC<Props> = ({ data, handleDone }) => {
+const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId }) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
     boolean
   > | null>(null);
+
+  const [questionId, setQuestionId] = useState("");
+
+  const params = useParams();
+
+  useEffect(() => {
+    if (params.id) setQuestionId(params.id as string);
+  }, [params]);
 
   const { setModalContent } = useModalContext();
 
@@ -24,6 +36,26 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone }) => {
 
   const [resetAllSelectionsTrigger, setResetAllSelectionsTrigger] =
     useState(false);
+
+  const [saveScore, { isLoading, isSuccess }] = useSaveScoreMutation();
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(
+        <AppLoader loaderMessage="Just a moment while we evaluate your score" />
+      );
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (isSuccess && !isLoading) {
+      setModalContent(
+        <SubmissionModal scorePercentage={calculateScorePercentage()} />
+      );
+    }
+  }, [isSuccess, isLoading]);
 
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
@@ -94,11 +126,11 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone }) => {
                 title="Submit"
                 onClick={() => {
                   setIsSubmitted(true);
-                  setModalContent(
-                    <SubmissionModal
-                      scorePercentage={calculateScorePercentage()}
-                    />
-                  );
+                  saveScore({
+                    documentId: documentId,
+                    questionId,
+                    score: calculateScorePercentage(),
+                  });
                 }}
               />
             </>
@@ -112,10 +144,7 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone }) => {
                   toast.success("Answers Reset Successfully!");
                 }}
               /> */}
-              <Button
-                title="Done"
-                onClick={handleDone}
-              />
+              <Button title="Done" onClick={handleDone} />
             </>
           )}
         </div>

@@ -3,6 +3,7 @@ import cn from "classnames";
 import ChevronRight from "@/icons/ChevronRight";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import Link from "next/link";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
 interface Props {
   title: string;
@@ -16,11 +17,8 @@ const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const expandBoxStyling = cn(
-    "transition-max-h duration-500 ease-in-out overflow-hidden px-4",
-    {
-      "max-h-[1000px] ": isOpen,
-      "max-h-0": !isOpen,
-    }
+    "transition-max-h duration-500 ease-in-out overflow-hidden pl-8",
+    
   );
 
   const chevronOrientationStyling = cn(
@@ -33,24 +31,20 @@ const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
   return (
     <div>
       <div
-        className="flex items-center gap-3 cursor-pointer px-4 pb-4"
+        className="flex items-center gap-3 cursor-pointer pr-2 pb-4"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span className={chevronOrientationStyling}>
-          <ChevronRight />
-        </span>
-        <p className="font-semibold text-sm">{title}</p>
+        <p className="font-semibold text-sm text-white pl-8">{title}</p>
       </div>
 
       <div className={expandBoxStyling}>
         {data?.map((t, idx) => (
           <div
-            className="flex items-center gap-3 pl-8 cursor-pointer"
+            className="flex items-center gap-3 cursor-pointer"
             key={idx}
           >
-            <CourseDocumentIcon />
             <Link href={t.link}>
-              <p className="py-1 text-xs">{t.title}</p>
+              <p className="py-1 text-sm text-gray-300 hover:text-white">{capitalizeFirstLetterOfEachWord(t.title.toLowerCase())}</p>
             </Link>
           </div>
         ))}

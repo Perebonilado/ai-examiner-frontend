@@ -1,5 +1,5 @@
-import CreateTopicForm from "@/@modules/topics/CreateTopicForm";
-import TopicsTableRow from "@/@modules/topics/TopicsTableRow";
+import CreateDocumentForm from "@/@modules/documents/CreateDocumentForm";
+import DocumentsTableRow from "@/@modules/documents/DocumentsTableRow";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
@@ -7,21 +7,22 @@ import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetCourseByIdQuery } from "@/api-services/couse.service";
-import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
-const Topic: NextPage = () => {
+const Document: NextPage = () => {
   const [page, setPage] = useState(1);
   const [courseId, setCourseId] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const params = useParams();
 
-  const { data, isLoading, error, refetch } = useGetAllUserTopicsQuery(
+  const { data, isLoading, error, refetch } = useGetAllUserDocumentsQuery(
     { courseId: courseId || "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true, skip: !courseId }
   );
@@ -59,24 +60,27 @@ const Topic: NextPage = () => {
     }
   }, [params]);
 
-  const handleAddTopic = () => {
-    setModalContent(<CreateTopicForm />);
+  const handleAddDocument = () => {
+    setModalContent(<CreateDocumentForm />);
   };
 
   return (
     <>
-      <AppHead title={"Topic"} />
+      <AppHead title={"Document"} />
       <AppLayout>
         <div className="flex items-center justify-between w-full pb-10">
           {course && (
-            <h2 className="text-2xl font-bold">{course.title} Topics</h2>
+            <h2 className="text-2xl font-bold">
+              {capitalizeFirstLetterOfEachWord(course.title.toLowerCase())}{" "}
+              Documents
+            </h2>
           )}
-          <Button title="Add Topic" onClick={handleAddTopic} />
+          <Button title="Add Document" onClick={handleAddDocument} />
         </div>
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
-            <ErrorMessage message="Something went wrong while trying to get topics for this course" />
-            <Button title="Reload topics" onClick={refetch} />
+            <ErrorMessage message="Something went wrong while trying to get documents for this course" />
+            <Button title="Reload documents" onClick={refetch} />
           </div>
         )}
         <EnhancedTable
@@ -88,8 +92,8 @@ const Topic: NextPage = () => {
             // { title: "Actions", flex: 1 },
           ]}
           generic={true}
-          rowData={data?.topics}
-          rowComponent={(rows) => <TopicsTableRow {...rows} />}
+          rowData={data?.documents}
+          rowComponent={(rows) => <DocumentsTableRow {...rows} />}
         />
         {data && (
           <Pagination
@@ -107,7 +111,7 @@ const Topic: NextPage = () => {
   );
 };
 
-export default Topic;
+export default Document;
 
 const mock = [
   {

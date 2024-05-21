@@ -1,27 +1,27 @@
 import React, { FC } from "react";
 import SidebarItem from "../SidebarItem";
 import CourseIcon from "@/icons/CourseIcon";
-import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
 import ExpandableSidebarItem from "../ExpandableSidebarItem/ExpandableSidebarItem";
 import Button from "@/@shared/ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
 import ToggleMenuIcon from "@/icons/ToggleMenuIcon";
 import { useState } from "react";
 import cn from "classnames";
-import { useGetAllUserTopicsQuery } from "@/api-services/topic.service";
+import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useRouter } from "next/router";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
-import Link from "next/link";
+import AppLogoAlt from "../AppLogoAlt";
+import DashboardIcon from "@/icons/DashboardIcon";
 
 const Sidebar: FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const {
-    data: recentTopics,
+    data: recentDocuments,
     isLoading,
     error,
     refetch,
-  } = useGetAllUserTopicsQuery({
+  } = useGetAllUserDocumentsQuery({
     courseId: "",
     page: 1,
     pageSize: 5,
@@ -30,7 +30,7 @@ const Sidebar: FC = () => {
   });
 
   const sideBarContainerStyling = cn(
-    `w-full pl-4 max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2 pt-[2rem]`,
+    `w-full max-w-[300px] h-full max-md:absolute max-md:z-30 transition-all max-md:top-1/2 max-md:-translate-y-1/2`,
     {
       "max-md:-translate-x-0": isOpen,
       "max-md:-translate-x-full": !isOpen,
@@ -54,33 +54,31 @@ const Sidebar: FC = () => {
       }
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
-          <div className="absolute shadow-xl h-[95%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2 rounded-xl bg-white">
-            <div className="h-[80px] flex items-center">
-              <Link href={"/"}>
-                <p className="text-center font-bold text-lg ">AI Examiner</p>
-              </Link>
+          <div className="absolute bg-[#2F004F] h-[100%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 left-1/2 -translate-x-1/2">
+            <div className="h-[150px] flex pt-6 justify-center">
+              <AppLogoAlt />
             </div>
-            <div className="h-[calc(100%-80px)]">
+            <div className="h-[calc(100%-150px)]">
               <div className="h-[calc(100%-100px)]">
-                <div className="flex flex-col gap-3 border-b border-b-gray-400 pb-10">
+                <div className="flex flex-col gap-3 border-b-[.3px] pb-12">
                   <SidebarItem
-                    icon={<CourseIcon />}
-                    isActive={activeNavLink === "/"}
-                    title="All Courses"
-                    link="/"
+                    icon={<DashboardIcon />}
+                    isActive={activeNavLink === "/dashboard"}
+                    title="Dashboard"
+                    link="/dashboard"
                   />
                   <SidebarItem
-                    icon={<CourseDocumentIcon />}
-                    isActive={activeNavLink === "/topics"}
-                    title="All Topics"
-                    link="/topics"
+                    icon={<CourseIcon />}
+                    isActive={activeNavLink === "/documents"}
+                    title="All Documents"
+                    link="/documents"
                   />
                 </div>
 
                 <div className="pt-10">
                   <ExpandableSidebarItem
-                    title="Recent Topics"
-                    data={recentTopics?.topics.map((t) => ({
+                    title="Recent Documents"
+                    data={recentDocuments?.documents.map((t) => ({
                       link: `/questions/view-questions/${t.id}`,
                       title: t.title,
                     }))}

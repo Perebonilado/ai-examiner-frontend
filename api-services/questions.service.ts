@@ -7,6 +7,8 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
+  CreateScorePayloadModel,
+  GenerateQuestionsPayloadModel,
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
@@ -22,7 +24,6 @@ import { logout, secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions`,
-  timeout: secondsToMilliSeconds(30),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 
@@ -71,8 +72,9 @@ export const QuestionsService = createApi({
               question: q.question,
               correctAnswerId: q.correctAnswerId,
             })),
-            topicTitle: res.topicTitle,
-            topicId: res.topicId
+            documentTitle: res.documentTitle,
+            documentId: res.documentId,
+            createdOn: res.createdOn,
           };
         }
       },
@@ -98,19 +100,35 @@ export const QuestionsService = createApi({
             createdAt: d.createdOn,
             count: d.count,
             documentId: d.courseDocumentId,
+            score: d.score
           })),
         };
       },
     }),
-    generateQuestions: build.mutation<any, string>({
-      query: (topicId) => ({
-        url: `/${topicId}/generate-questions`,
+    generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
+      query: ({ documentId, questionCount }) => ({
+        url: `/${documentId}/generate-questions`,
         method: "POST",
+        params: {
+          questionCount,
+        },
       }),
-      invalidatesTags: ["question-summary"]
+      invalidatesTags: ["question-summary"],
+    }),
+    saveScore: build.mutation<any, CreateScorePayloadModel>({
+      query: (body) => ({
+        url: "/score",
+        method: "POST",
+        body,
+      }),
+      invalidatesTags: ["question-summary", "single-question"],
     }),
   }),
 });
 
-export const { useGetQuestionsByIdQuery, useGetQuestionSummariesQuery, useGenerateQuestionsMutation } =
-  QuestionsService;
+export const {
+  useGetQuestionsByIdQuery,
+  useGetQuestionSummariesQuery,
+  useGenerateQuestionsMutation,
+  useSaveScoreMutation
+} = QuestionsService;

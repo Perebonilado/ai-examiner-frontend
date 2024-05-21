@@ -8,13 +8,20 @@ export function middleware(req: NextRequest) {
 
   if (pathname.startsWith("/_next")) return NextResponse.next();
 
-  if(!verifyCookie && !pathname.startsWith("/auth")){
-    req.nextUrl.pathname = "/auth/login"
-    return NextResponse.redirect(req.nextUrl);
+  if (!verifyCookie && !pathname.startsWith("/auth")) {
+    if (pathname === "/") {
+      NextResponse.next();
+    } else {
+      req.nextUrl.pathname = "/auth/login";
+      return NextResponse.redirect(req.nextUrl);
+    }
   }
 
-  if(verifyCookie && pathname.startsWith("/auth")) {
-    req.nextUrl.pathname = "/"
+  if (
+    (verifyCookie && pathname.startsWith("/auth")) ||
+    (verifyCookie && pathname === "/")
+  ) {
+    req.nextUrl.pathname = "/dashboard";
     return NextResponse.redirect(req.nextUrl);
   }
 }
@@ -22,9 +29,10 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/",
+    "/dashboard",
     "/auth/login",
     "/auth/signup",
     "/questions/:path",
-    "/topics/:path",
+    "/documents/:path",
   ],
 };

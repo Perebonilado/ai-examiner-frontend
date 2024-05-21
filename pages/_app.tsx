@@ -5,6 +5,7 @@ import { reduxStore } from "@/config/redux-config";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ModalProvider from "@/contexts/ModalContext";
+import 'react-tooltip/dist/react-tooltip.css'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (

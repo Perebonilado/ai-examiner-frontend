@@ -6,11 +6,14 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetQuestionsByIdQuery } from "@/api-services/questions.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import * as moment from "moment";
+import ChevronLeft from "@/icons/ChevronLeft";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -50,6 +53,17 @@ const Practice: NextPage = () => {
     <>
       <AppHead title="Practice Questions" />
       <AppLayout>
+        {data && (
+          <Button
+            title="Back"
+            variant="text"
+            starticon={<ChevronLeft />}
+            className="!gap-1 mb-6 mt-7"
+            onClick={() => {
+              router.push(`/questions/view-questions/${data?.documentId}`);
+            }}
+          />
+        )}
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
             <ErrorMessage message="Something went wrong while trying to get questions" />
@@ -57,14 +71,29 @@ const Practice: NextPage = () => {
           </div>
         )}
         {data && (
-          <h1 className="text-center mb-6 text-xl font-semibold">
-            {data.topicTitle} Multiple Choice Questions
-          </h1>
+          <>
+            <h1 className="text-center mb-3 text-xl font-semibold">
+              {capitalizeFirstLetterOfEachWord(
+                data.documentTitle.toLowerCase()
+              )}{" "}
+              Questions
+            </h1>
+            <p className="text-center text-sm text-gray-500">
+              Date Created:{" "}
+              {moment.utc(data.createdOn).local().format("MMMM D, YYYY h:mma")}
+            </p>
+          </>
         )}
         <div>
-          {data && <MCQContainer data={data.data} handleDone={() => {
-            router.push(`/questions/view-questions/${data.topicId}`)
-          }} />}
+          {data && (
+            <MCQContainer
+              data={data.data}
+              handleDone={() => {
+                router.push(`/questions/view-questions/${data.documentId}`);
+              }}
+              documentId={data.documentId}
+            />
+          )}
         </div>
       </AppLayout>
     </>

@@ -3,15 +3,15 @@
 }
 
 .contained {
-  @apply text-white border border-[#007bff] bg-[#007bff] rounded-lg;
+  @apply text-white border border-[#2F004F] bg-[#2F004F] rounded-lg;
 }
 
 .outlined {
-  @apply bg-[#FFFFFF] text-[#007bff] border border-[#007bff] rounded-lg;
+  @apply bg-[#FFFFFF] text-[#2F004F] border border-[#2F004F] rounded-lg;
 }
 
 .text {
-  @apply text-[#007bff] border-none bg-transparent !p-0;
+  @apply text-[#2F004F] border-none bg-transparent !p-0;
 }
 
 .small {

@@ -6,15 +6,15 @@ import { useModalContext } from "@/contexts/ModalContext";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import FileUpload from "@/@shared/components/FileUpload/FileUpload";
-import { AddTopicValidation } from "@/validation-schemas/AddTopicValidation";
-import { useAddTopicMutation } from "@/api-services/topic.service";
+import { AddDocumentValidation } from "@/validation-schemas/AddDocumentValidation";
+import { useAddDocumentMutation } from "@/api-services/document.service";
 import { useParams } from "next/navigation";
 
 const initialValues = {
   title: "",
 };
 
-const CreateTopicForm: FC = () => {
+const CreateDocumentForm: FC = () => {
   const [courseId, setCourseId] = useState("");
 
   const params = useParams();
@@ -25,7 +25,7 @@ const CreateTopicForm: FC = () => {
     }
   }, [params]);
 
-  const [addTopic, { isLoading, isSuccess, error }] = useAddTopicMutation();
+  const [addDocument, { isLoading, isSuccess, error }] = useAddDocumentMutation();
 
   const handleSubmit = (values: typeof initialValues) => {
     if (!file) {
@@ -40,14 +40,13 @@ const CreateTopicForm: FC = () => {
     formData.append("courseId", courseId);
     formData.append("document", file);
 
-    addTopic(formData);
   };
 
   const { setModalContent } = useModalContext();
 
   const formik = useFormik({
     initialValues,
-    validationSchema: AddTopicValidation,
+    validationSchema: AddDocumentValidation,
     onSubmit: handleSubmit,
   });
 
@@ -61,7 +60,7 @@ const CreateTopicForm: FC = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      toast.success("Topic Successfully Created");
+      toast.success("Document Successfully Created");
       formik.resetForm();
       setModalContent(null);
     }
@@ -79,18 +78,18 @@ const CreateTopicForm: FC = () => {
   return (
     <>
       {isLoading && (
-        <AppLoader loaderMessage="Just a moment while we add your topic" />
+        <AppLoader loaderMessage="Just a moment while we add your document" />
       )}
       <div className="w-full max-w-[600px] max-sm:max-w-[90vw] rounded-xl bg-white p-4 shadow-lg">
-        <h2 className="text-lg font-semibold text-center mb-6">Add Topic</h2>
+        <h2 className="text-lg font-semibold text-center mb-6">Add Document</h2>
 
         <FormikProvider value={formik}>
           <Form>
             <div className="flex flex-col gap-5">
               <TextField
-                label="Topic Title"
+                label="Document Title"
                 {...formik.getFieldProps("title")}
-                placeholder="Enter topic title"
+                placeholder="Enter document title"
                 error={formik.touched.title ? formik.errors.title : undefined}
               />
 
@@ -125,4 +124,4 @@ const CreateTopicForm: FC = () => {
   );
 };
 
-export default CreateTopicForm;
+export default CreateDocumentForm;

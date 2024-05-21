@@ -11,15 +11,15 @@ interface Props {
 
 const SidebarItem: FC<Props> = ({ title, isActive, link, icon }) => {
   const styling = cn(
-    `flex items-center gap-3 py-2 px-4 font-semibold text-sm cursor-pointer`,
+    `flex items-center gap-3 py-4 pl-8 pr-2 font-semibold text-sm cursor-pointer text-white`,
     {
-      "bg-black text-white rounded-full": isActive,
+      "bg-white !text-black": isActive,
     }
   );
   return (
     <Link href={link}>
       <div className={styling}>
-        <span style={{ fill: isActive ? "lightgrey" : "black" }}>{icon}</span>
+        <span style={{ fill: isActive ? "#2F004F" : "white" }}>{icon}</span>
         <p>{title}</p>
       </div>
     </Link>

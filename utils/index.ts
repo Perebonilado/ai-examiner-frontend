@@ -10,7 +10,6 @@ export const logout = (callback?: () => any) => {
   if (callback) callback();
 };
 
-
 export const generateAlphabets = (startChar: string, endChar: string) => {
   const alphabets = [];
 
@@ -21,44 +20,83 @@ export const generateAlphabets = (startChar: string, endChar: string) => {
   return alphabets;
 };
 
-export const generateScoreDescription = (percentage: number) => {
-  switch (true) {
-    case percentage > 90:
-      return {
-        image: "/90up.jpeg",
-        message:
-          "The emperor, the conqueror, the champion, the lion is here !!!",
-        scoreColor: 'green'
-      };
-    case percentage >= 80 && percentage < 90:
-      return {
-        image: "/80-90.jpeg",
-        message: "Clear road for who sabi !!!",
-        scoreColor: 'green'
-      };
-    case percentage >= 70 && percentage < 80:
-      return {
-        image: "/70-80.jpeg",
-        message: `Repeat after me, "I am doing well!"`,
-        scoreColor: 'blue'
-      };
-    case percentage >= 50 && percentage < 70:
-      return {
-        image: "/50-69.jpeg",
-        message: "I no go gree for anybody !!!",
-        scoreColor: 'blue'
-      };
-    case percentage >= 30 && percentage < 50:
-      return {
-        image: "/30-49.jpeg",
-        message: "Boss, sit up o!",
-        scoreColor: 'red'
-      };
-    default:
-      return {
-        image: "/30 below.jpeg",
-        message: "Problem no dey finish!",
-        scoreColor: 'red'
-      };
+export const generateScoreColor = (percentage: number | null) => {
+  if (percentage !== null) {
+    switch (true) {
+      case percentage >= 80:
+        return {
+          scoreColor: "#16A34A",
+        } as const;
+      case percentage >= 50 && percentage <= 79:
+        return {
+          scoreColor: "#EAB308",
+        } as const;
+      default:
+        return {
+          scoreColor: "#EF4444",
+        } as const;
+    }
+  } else return { scoreColor: "#F1F1F1" } as const;
+};
+
+export const generateDocumentCardColorFromScore = (
+  percentage: number | null
+) => {
+  if (percentage !== null) {
+    switch (true) {
+      case percentage >= 80:
+        return {
+          background: "#BBF7D0",
+          fill: "#16a34a",
+          message: "Excellent Work"
+        } as const;
+      case percentage >= 50 && percentage <= 79:
+        return {
+          background: "#FEF08A",
+          fill: "#ca8a04",
+          message: "Needs Improvement"
+        } as const;
+      default:
+        return {
+          background: "#FECDD3",
+          fill: "#EF4444",
+          message: "Try Again"
+        } as const;
+    }
+  } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;
+};
+
+export const replaceHyphensWithSpaces = (inputString: string): string => {
+  return inputString.replace(/-/g, " ");
+};
+
+export const capitalizeFirstLetterOfEachWordInString = (str: string) => {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+};
+
+
+export const capitalizeFirstLetterOfEachWord = (input: string): string => {
+  const words = input.split(" ");
+
+  const capitalizedWords = words.map((word) => {
+    if (word.length > 0) {
+      return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+    }
+    return word;
+  });
+
+  return capitalizedWords.join(" ");
+};
+
+export const getRandomNumberInRange = (
+  startRange: number,
+  endRange: number
+): number => {
+  if (startRange > endRange) {
+    throw new Error("startRange should be less than or equal to endRange");
   }
+  const randomDecimal = Math.random();
+  const randomNumber =
+    Math.floor(randomDecimal * (endRange - startRange + 1)) + startRange;
+  return randomNumber;
 };

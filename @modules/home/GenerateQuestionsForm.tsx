@@ -101,6 +101,7 @@ const GenerateQuestionsForm: FC = () => {
               handleDeleteFile={() => {
                 setFile(null);
               }}
+              maxFileSizeMB={15}
             />
 
             <div>

@@ -93,7 +93,7 @@ const Sidebar: FC = () => {
                   endicon={<LogoutIcon />}
                   onClick={() => {
                     logout(() => {
-                      router.push("/auth/login");
+                      window.location.pathname = '/auth/login'
                     });
                   }}
                 />

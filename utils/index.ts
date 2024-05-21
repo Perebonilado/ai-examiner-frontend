@@ -48,19 +48,19 @@ export const generateDocumentCardColorFromScore = (
         return {
           background: "#BBF7D0",
           fill: "#16a34a",
-          message: "Excellent Work"
+          message: "Excellent Work",
         } as const;
       case percentage >= 50 && percentage <= 79:
         return {
           background: "#FEF08A",
           fill: "#ca8a04",
-          message: "Needs Improvement"
+          message: "Needs Improvement",
         } as const;
       default:
         return {
           background: "#FECDD3",
           fill: "#EF4444",
-          message: "Try Again"
+          message: "Try Again",
         } as const;
     }
   } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;
@@ -73,7 +73,6 @@ export const replaceHyphensWithSpaces = (inputString: string): string => {
 export const capitalizeFirstLetterOfEachWordInString = (str: string) => {
   return str.replace(/\b\w/g, (char) => char.toUpperCase());
 };
-
 
 export const capitalizeFirstLetterOfEachWord = (input: string): string => {
   const words = input.split(" ");
@@ -99,4 +98,9 @@ export const getRandomNumberInRange = (
   const randomNumber =
     Math.floor(randomDecimal * (endRange - startRange + 1)) + startRange;
   return randomNumber;
+};
+
+export const convertMegaBytesToBytes = (byte: number): number => {
+  const conversationRate = 1024;
+  return byte * Math.pow(conversationRate, 2)
 };

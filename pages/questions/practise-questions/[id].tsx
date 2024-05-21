@@ -92,6 +92,9 @@ const Practice: NextPage = () => {
                 router.push(`/questions/view-questions/${data.documentId}`);
               }}
               documentId={data.documentId}
+              title={capitalizeFirstLetterOfEachWord(
+                data.documentTitle.toLowerCase()
+              )}
             />
           )}
         </div>

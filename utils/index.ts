@@ -49,18 +49,21 @@ export const generateDocumentCardColorFromScore = (
           background: "#BBF7D0",
           fill: "#16a34a",
           message: "Excellent Work",
+          subMessage: "You scored an excellent grade in this test ⭐"
         } as const;
       case percentage >= 50 && percentage <= 79:
         return {
           background: "#FEF08A",
           fill: "#ca8a04",
           message: "Needs Improvement",
+          subMessage: "You're very close to becoming a pro 🚀"
         } as const;
       default:
         return {
           background: "#FECDD3",
           fill: "#EF4444",
           message: "Try Again",
+          subMessage: "Let's give this another try 👏"
         } as const;
     }
   } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;

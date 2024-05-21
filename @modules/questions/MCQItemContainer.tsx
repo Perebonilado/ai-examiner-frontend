@@ -14,9 +14,10 @@ interface Props {
   data: QuestionsModel[];
   handleDone: () => void;
   documentId: string;
+  title: string
 }
 
-const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId }) => {
+const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
     boolean
@@ -52,7 +53,7 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId }) => {
   useEffect(() => {
     if (isSuccess && !isLoading) {
       setModalContent(
-        <SubmissionModal scorePercentage={calculateScorePercentage()} />
+        <SubmissionModal title={title} scorePercentage={calculateScorePercentage()} />
       );
     }
   }, [isSuccess, isLoading]);

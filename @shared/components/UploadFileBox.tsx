@@ -5,12 +5,15 @@ import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
 import { convertMegaBytesToBytes } from "@/utils";
+import { AppLoader } from "./AppLoader";
+import Spinner from "./Spinner";
 
 interface Props {
   handleSelectFile: (file: File) => void;
   handleDeleteFile: () => void;
   attachedFile: File | null;
   allowedTypes: string[];
+  uploadLoading: boolean;
   maxFileSizeMB?: number;
 }
 
@@ -19,6 +22,7 @@ const UploadFileBox: FC<Props> = ({
   attachedFile,
   handleDeleteFile,
   handleSelectFile,
+  uploadLoading,
   maxFileSizeMB = 10,
 }) => {
   const inputRef = useRef<ElementRef<"input">>(null);
@@ -51,8 +55,10 @@ const UploadFileBox: FC<Props> = ({
         accept={allowedTypes.map((t) => `.${t}`).join(", ")}
       />
       <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
-        {!attachedFile && <UploadIcon width={80} height={80} />}
-        {!attachedFile && (
+        {!attachedFile && !uploadLoading && (
+          <UploadIcon width={80} height={80} />
+        )}
+        {!attachedFile && !uploadLoading && (
           <div className="flex flex-col justify-center gap-3">
             <Button
               onClick={() => {
@@ -64,12 +70,13 @@ const UploadFileBox: FC<Props> = ({
               type="button"
             />
             <p className="text-xs italic">
-              Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf, docx, pptx
+              Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf,
+              docx, pptx
             </p>
           </div>
         )}
 
-        {attachedFile && (
+        {attachedFile && !uploadLoading && (
           <TransitionUp>
             <AttachedFileInfo
               handleDelete={() => {
@@ -80,6 +87,14 @@ const UploadFileBox: FC<Props> = ({
               fileName={attachedFile.name}
             />
           </TransitionUp>
+        )}
+        {attachedFile && uploadLoading && (
+          <div className="flex flex-col items-center justify-center gap-3">
+            <Spinner />
+            <p className="text-center truncate text-xs font-semibold">
+              File upload in progess...
+            </p>
+          </div>
         )}
       </div>
     </>

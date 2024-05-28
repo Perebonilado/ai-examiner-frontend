@@ -81,9 +81,9 @@ export const DocumentService = createApi({
       },
     }),
     addDocument: build.mutation<CreateDocumentModel, AddDocumentPayloadModel>({
-      query: ({ formData, questionCount }) => ({
+      query: ({ payload, questionCount }) => ({
         url: ``,
-        body: formData,
+        body: payload,
         method: "POST",
         params: {
           questionCount,

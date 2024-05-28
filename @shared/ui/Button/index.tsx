@@ -26,6 +26,7 @@ const Button = forwardRef<HTMLButtonElement, Props>(
     const rootClassName = cn(`${s.root}`, {
       [s.contained]: variant === "contained",
       [s.outlined]: variant === "outlined",
+      [s.disabled]: props.disabled === true,
       [s.text]: variant === "text",
       [s.large]: size === "large",
       [s.medium]: size === "medium",

@@ -12,6 +12,7 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQuestionFormValidation";
 import ToolTip from "@/@shared/components/ToolTip";
+import { useUploadFileMutation } from "@/api-services/file-upload.service";
 
 const initialValues = {
   title: "",
@@ -25,6 +26,8 @@ const GenerateQuestionsForm: FC = () => {
     onSubmit: (values) => handleSubmit(values),
   });
 
+  const [fileId, setFileId] = useState<string | null>(null);
+
   const router = useRouter();
 
   const { setModalContent } = useModalContext();
@@ -32,24 +35,47 @@ const GenerateQuestionsForm: FC = () => {
   const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
     useAddDocumentMutation();
 
+  const [
+    uploadFile,
+    {
+      isLoading: uploadfileLoading,
+      error: uploadFileError,
+      data: uploadFileData,
+    },
+  ] = useUploadFileMutation();
+
   const allowedMimeTypes = ["docx", "doc", "pdf", "pptx"];
 
   const [file, setFile] = useState<File | null>(null);
 
   const handleSubmit = (values: typeof initialValues) => {
-    if (!file) {
-      toast.error("Please attach a file");
+    if (!file || !fileId) {
+      toast.error("Please upload a file");
       return;
     }
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("document", file);
 
     createDocAndGenerateQuestions({
-      formData,
+      payload: {
+        fileId: fileId,
+        title: values.title,
+      },
       questionCount: values.questionCount,
     });
   };
+
+  const handleFileUpload = (file: File) => {
+    const formData = new FormData();
+
+    formData.append("document", file);
+
+    uploadFile({ payload: formData });
+  };
+
+  useEffect(() => {
+    if (uploadFileData) {
+      setFileId(uploadFileData.fileId);
+    }
+  }, [uploadFileData]);
 
   useEffect(() => {
     if (data) {
@@ -59,7 +85,7 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (isLoading) {
-      setModalContent(<AppLoader loaderMessage="Hang in there while we generate your questions"/>);
+      setModalContent(<AppLoader loaderMessage="Generating questions" />);
     } else {
       setModalContent(null);
     }
@@ -80,6 +106,20 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (uploadFileError && "status" in uploadFileError) {
+      if ("data" in uploadFileError) {
+        const { message } = uploadFileError.data as { message: string };
+        toast.error(message);
+      } else
+        toast.error(
+          "An error occured while uploading your file, please try again"
+        );
+      setFile(null);
+      setFileId(null);
+    }
+  }, [uploadFileError]);
+
   return (
     <section>
       <FormikProvider value={formik}>
@@ -96,10 +136,16 @@ const GenerateQuestionsForm: FC = () => {
               allowedTypes={allowedMimeTypes}
               attachedFile={file}
               handleSelectFile={(file) => {
+                console.log("selected");
                 setFile(file);
+                handleFileUpload(file);
               }}
+              uploadLoading={uploadfileLoading}
               handleDeleteFile={() => {
                 setFile(null);
+                if (fileId) {
+                  setFileId(null);
+                }
               }}
               maxFileSizeMB={15}
             />
@@ -129,7 +175,13 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <Button title="Generate Questions" size="large" />
+            <Button
+              title="Generate Questions"
+              size="large"
+              disabled={
+                !formik.isValid || !fileId || !file || uploadfileLoading
+              }
+            />
           </div>
         </Form>
       </FormikProvider>

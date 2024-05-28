@@ -14,6 +14,11 @@ import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQue
 import ToolTip from "@/@shared/components/ToolTip";
 import { useUploadFileMutation } from "@/api-services/file-upload.service";
 import Switch from "@/@shared/components/Switch";
+import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
+import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic.service";
+import Spinner from "@/@shared/components/Spinner";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import { DocumentTopicModel } from "@/models/document-topic.model";
 
 const initialValues = {
   title: "",
@@ -29,6 +34,17 @@ const GenerateQuestionsForm: FC = () => {
 
   const [fileId, setFileId] = useState<string | null>(null);
   const [isAdvanced, setIsAdvanced] = useState(false);
+  const [isFocusAreaData, setIsFocusAreaData] = useState(false);
+  const [
+    fetchTopics,
+    { data: topics, isLoading: topicsLoading, error: topicsError },
+  ] = useGenerateDocumentTopicsMutation();
+
+  useEffect(() => {
+    if (topics) {
+      setIsFocusAreaData(true);
+    }
+  }, [topics]);
 
   const router = useRouter();
 
@@ -50,16 +66,21 @@ const GenerateQuestionsForm: FC = () => {
 
   const [file, setFile] = useState<File | null>(null);
 
+  const [focusAreas, setFocusAreas] = useState<
+    { label: string; value: string }[]
+  >([]);
+
   const handleSubmit = (values: typeof initialValues) => {
     if (!file || !fileId) {
       toast.error("Please upload a file");
       return;
     }
-
+    
     createDocAndGenerateQuestions({
       payload: {
         fileId: fileId,
         title: values.title,
+        topics: focusAreas.length ? focusAreas.map((f) => f.label) : undefined,
       },
       questionCount: values.questionCount,
     });
@@ -122,11 +143,13 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [uploadFileError]);
 
-  useEffect(()=>{
-    if(!file || !fileId){
-      setIsAdvanced(false)
+  useEffect(() => {
+    if (!file || !fileId) {
+      setIsAdvanced(false);
+      setFocusAreas([]);
+      setIsFocusAreaData(false);
     }
-  },[file, fileId])
+  }, [file, fileId]);
 
   return (
     <section>
@@ -144,7 +167,6 @@ const GenerateQuestionsForm: FC = () => {
               allowedTypes={allowedMimeTypes}
               attachedFile={file}
               handleSelectFile={(file) => {
-                console.log("selected");
                 setFile(file);
                 handleFileUpload(file);
               }}
@@ -187,9 +209,41 @@ const GenerateQuestionsForm: FC = () => {
               disabled={!file || !fileId}
               handleChecked={() => {
                 setIsAdvanced(!isAdvanced);
+                if (!isFocusAreaData) fetchTopics({ fileId: fileId as string });
               }}
               isChecked={isAdvanced}
             />
+
+            {fileId && isAdvanced && !topicsLoading && topics && (
+              <ChipMultiSelect
+                options={topics.topics}
+                getSelectedItems={(items) => {
+                  setFocusAreas(items);
+                }}
+                label="Choose Focus Areas"
+              />
+            )}
+
+            {topicsLoading && isAdvanced && (
+              <div className="flex flex-col gap-2 items-center">
+                <Spinner size="sm" />
+                <p className="text-xs">Loading advanced settings...</p>
+              </div>
+            )}
+
+            {topicsError && isAdvanced && (
+              <div className="flex flex-col gap-2 items-center">
+                <ErrorMessage message="An error occured while loading advanced settings" />
+                <Button
+                  title="reload advanced settings"
+                  variant="text"
+                  size="small"
+                  onClick={() => {
+                    fetchTopics({ fileId: fileId as string });
+                  }}
+                />
+              </div>
+            )}
 
             <Button
               title="Generate Questions"

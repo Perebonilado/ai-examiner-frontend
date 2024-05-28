@@ -13,6 +13,7 @@ import { useModalContext } from "@/contexts/ModalContext";
 import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQuestionFormValidation";
 import ToolTip from "@/@shared/components/ToolTip";
 import { useUploadFileMutation } from "@/api-services/file-upload.service";
+import Switch from "@/@shared/components/Switch";
 
 const initialValues = {
   title: "",
@@ -27,6 +28,7 @@ const GenerateQuestionsForm: FC = () => {
   });
 
   const [fileId, setFileId] = useState<string | null>(null);
+  const [isAdvanced, setIsAdvanced] = useState(false);
 
   const router = useRouter();
 
@@ -120,6 +122,12 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [uploadFileError]);
 
+  useEffect(()=>{
+    if(!file || !fileId){
+      setIsAdvanced(false)
+    }
+  },[file, fileId])
+
   return (
     <section>
       <FormikProvider value={formik}>
@@ -174,6 +182,14 @@ const GenerateQuestionsForm: FC = () => {
                 }
               />
             </div>
+
+            <Switch
+              disabled={!file || !fileId}
+              handleChecked={() => {
+                setIsAdvanced(!isAdvanced);
+              }}
+              isChecked={isAdvanced}
+            />
 
             <Button
               title="Generate Questions"

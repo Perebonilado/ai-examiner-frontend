@@ -5,9 +5,10 @@ interface Props {
   isChecked: boolean;
   handleChecked: () => void;
   disabled: boolean;
+  label?: string
 }
 
-const Switch: FC<Props> = ({ disabled, handleChecked, isChecked }) => {
+const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
   const sliderClass = cn(
     `absolute w-[20px] h-[20px] rounded-full cursor-pointer top-1/2 -translate-y-1/2 transition-all`,
     {
@@ -44,7 +45,7 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked }) => {
           }}
         ></div>
       </div>
-      <label className={labelStyling}>Advanced</label>
+      <label className={labelStyling}>{label}</label>
     </div>
   );
 };

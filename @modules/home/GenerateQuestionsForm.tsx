@@ -75,12 +75,15 @@ const GenerateQuestionsForm: FC = () => {
       toast.error("Please upload a file");
       return;
     }
-    
+
     createDocAndGenerateQuestions({
       payload: {
         fileId: fileId,
         title: values.title,
-        topics: focusAreas.length ? focusAreas.map((f) => f.label) : undefined,
+        selectedQuestionTopics: focusAreas.length
+          ? focusAreas.map((f) => f.label)
+          : undefined,
+        topics: topics ? topics.topics.map((t) => t.label) : undefined,
       },
       questionCount: values.questionCount,
     });
@@ -212,6 +215,7 @@ const GenerateQuestionsForm: FC = () => {
                 if (!isFocusAreaData) fetchTopics({ fileId: fileId as string });
               }}
               isChecked={isAdvanced}
+              label="Advanced Preferences"
             />
 
             {fileId && isAdvanced && !topicsLoading && topics && (
@@ -227,15 +231,15 @@ const GenerateQuestionsForm: FC = () => {
             {topicsLoading && isAdvanced && (
               <div className="flex flex-col gap-2 items-center">
                 <Spinner size="sm" />
-                <p className="text-xs">Loading advanced settings...</p>
+                <p className="text-xs">Loading advanced preferences...</p>
               </div>
             )}
 
             {topicsError && isAdvanced && (
               <div className="flex flex-col gap-2 items-center">
-                <ErrorMessage message="An error occured while loading advanced settings" />
+                <ErrorMessage message="An error occured while loading advanced preferences" />
                 <Button
-                  title="reload advanced settings"
+                  title="reload advanced preferences"
                   variant="text"
                   size="small"
                   onClick={() => {

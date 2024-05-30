@@ -31,7 +31,8 @@ export interface AddDocumentPayloadModel {
   payload: {
     title: string;
     fileId: string;
-    topics?: string[]
+    topics?: string[];
+    selectedQuestionTopics?: string[]
   }
   questionCount: string;
 }

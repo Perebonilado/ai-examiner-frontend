@@ -59,7 +59,7 @@ export const DocumentTopicService = createApi({
         if (!res) return <DocumentTopicModel>{};
         else
           return {
-            topics: res.map((r) => {
+            topics: Array.from(new Set(res)).map((r) => {
               return { value: r, label: r };
             }),
           };

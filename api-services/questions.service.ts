@@ -75,6 +75,7 @@ export const QuestionsService = createApi({
             documentTitle: res.documentTitle,
             documentId: res.documentId,
             createdOn: res.createdOn,
+            topics: res.topics.map((t) => t.title),
           };
         }
       },
@@ -100,7 +101,8 @@ export const QuestionsService = createApi({
             createdAt: d.createdOn,
             count: d.count,
             documentId: d.courseDocumentId,
-            score: d.score
+            score: d.score,
+            topics: d?.topics.map((t) => t.title),
           })),
         };
       },
@@ -130,5 +132,5 @@ export const {
   useGetQuestionsByIdQuery,
   useGetQuestionSummariesQuery,
   useGenerateQuestionsMutation,
-  useSaveScoreMutation
+  useSaveScoreMutation,
 } = QuestionsService;

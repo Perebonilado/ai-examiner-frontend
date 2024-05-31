@@ -33,7 +33,7 @@ const Sidebar: FC = () => {
     `w-full max-w-[300px] h-full max-md:absolute max-md:bottom-0 max-md:z-30 transition-all max-md:top-0`,
     {
       "max-md:-translate-x-0": isOpen,
-      "max-md:-translate-x-full": !isOpen,
+      "max-md:-translate-x-[calc(100%+10px)]": !isOpen,
     }
   );
 
@@ -43,7 +43,7 @@ const Sidebar: FC = () => {
   return (
     <>
       {
-        <div className="absolute z-50 left-6 bottom-3 md:hidden">
+        <div className="absolute z-50 top-6 right-3 md:hidden">
           <Button
             title=""
             starticon={<ToggleMenuIcon />}
@@ -54,7 +54,7 @@ const Sidebar: FC = () => {
       }
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
-          <div className="absolute bg-[#2F004F] h-[100%] w-[100%] px-4 max-md:top-0 top-0 left-1/2 -translate-x-1/2">
+          <div className="absolute bg-[#2F004F] h-[100%] max-md:h-[95%] w-[100%] px-4 max-md:top-1/2 max-md:-translate-y-1/2 top-0 max-md:left-[calc(50%+10px)] max-md:rounded-xl left-1/2 -translate-x-1/2">
             <div className="h-[150px] flex pt-6 justify-center">
               <AppLogoAlt />
             </div>

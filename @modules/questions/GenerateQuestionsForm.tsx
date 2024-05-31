@@ -15,10 +15,15 @@ const initialValues = {
   questionCount: "",
 };
 
-const GenerateQuestionsForm: FC = () => {
+interface Props {
+  topics: { label: string; value: string }[];
+}
+
+const GenerateQuestionsForm: FC<Props> = ({ topics }) => {
   const params = useParams();
 
   const [documentId, setdocumentId] = useState<string>("");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
 
   const { setModalContent } = useModalContext();
 
@@ -34,7 +39,11 @@ const GenerateQuestionsForm: FC = () => {
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
-      generateQuestions({ documentId, questionCount: values.questionCount });
+      generateQuestions({
+        documentId,
+        questionCount: values.questionCount,
+        selectedQuestionTopics: selectedTopics,
+      });
     },
   });
 
@@ -103,7 +112,13 @@ const GenerateQuestionsForm: FC = () => {
               </div>
 
               <div>
-                <ChipMultiSelect getSelectedItems={(item)=>{}} label="Choose Focus Areas" options={[]}/>
+                <ChipMultiSelect
+                  getSelectedItems={(items) => {
+                    setSelectedTopics(items.map((it) => it.label));
+                  }}
+                  label="Choose Focus Areas"
+                  options={topics}
+                />
               </div>
 
               <Button title="Generate" type="submit" size="large" />

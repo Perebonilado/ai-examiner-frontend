@@ -29,7 +29,7 @@ export interface QuestionSummaryModel {
   count: number;
   documentId: string;
   score: number | null;
-  topics: string[]
+  topics: string[];
 }
 
 export interface GetQuestionSummaryModel {
@@ -46,6 +46,8 @@ export interface GetQuestionsQueryModel {
 export interface GenerateQuestionsPayloadModel {
   documentId: string;
   questionCount: string;
+  topics?: string[];
+  selectedQuestionTopics?: string[];
 }
 
 export interface CreateScorePayloadModel {

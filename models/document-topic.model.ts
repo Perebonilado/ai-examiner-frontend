@@ -5,3 +5,7 @@ export interface DocumentTopicQueryModel {
 export interface DocumentTopicModel {
   topics: {value: string; label: string}[];
 }
+
+export interface SavedDocumentTopicQueryModel {
+  documentId: string
+}

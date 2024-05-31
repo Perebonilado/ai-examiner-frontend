@@ -11,8 +11,12 @@ import { logout, secondsToMilliSeconds } from "@/utils";
 import {
   DocumentTopicModel,
   DocumentTopicQueryModel,
+  SavedDocumentTopicQueryModel,
 } from "@/models/document-topic.model";
-import { DocumentTopicDto } from "@/dto/document-topic.dto";
+import {
+  DocumentTopicDto,
+  SavedDocumentTopicDto,
+} from "@/dto/document-topic.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/document-topic`,
@@ -45,6 +49,7 @@ const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
 export const DocumentTopicService = createApi({
   reducerPath: "document-topic-api",
   baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  tagTypes: ["document-topics"],
   endpoints: (build) => ({
     generateDocumentTopics: build.mutation<
       DocumentTopicModel,
@@ -52,20 +57,43 @@ export const DocumentTopicService = createApi({
     >({
       query: ({ fileId }) => ({
         url: `/generate/${fileId}`,
-        method: 'POST',
-        body: {}
+        method: "POST",
+        body: {},
       }),
       transformResponse: (res: DocumentTopicDto) => {
         if (!res) return <DocumentTopicModel>{};
         else
           return {
-            topics: Array.from(new Set(res)).map((r) => {
+            topics: res.map((r) => {
               return { value: r, label: r };
             }),
           };
       },
     }),
+    getAllSavedDocumentTopics: build.query<
+      DocumentTopicModel,
+      SavedDocumentTopicQueryModel
+    >({
+      query: ({ documentId }) => ({
+        url: ``,
+        params: {
+          documentId,
+        },
+      }),
+      providesTags: ["document-topics"],
+      transformResponse: (res: SavedDocumentTopicDto[]) => {
+        if (!res) return <DocumentTopicModel>{};
+        else {
+          return {
+            topics: res.map((t) => ({ value: `${t.id}`, label: t.title })),
+          };
+        }
+      },
+    }),
   }),
 });
 
-export const { useGenerateDocumentTopicsMutation } = DocumentTopicService;
+export const {
+  useGenerateDocumentTopicsMutation,
+  useGetAllSavedDocumentTopicsQuery,
+} = DocumentTopicService;

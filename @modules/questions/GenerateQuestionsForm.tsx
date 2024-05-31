@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import CloseIcon from "@/icons/CloseIcon";
+import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
 
 const initialValues = {
   questionCount: "",
@@ -99,6 +100,10 @@ const GenerateQuestionsForm: FC = () => {
                       : undefined
                   }
                 />
+              </div>
+
+              <div>
+                <ChipMultiSelect getSelectedItems={(item)=>{}} label="Choose Focus Areas" options={[]}/>
               </div>
 
               <Button title="Generate" type="submit" size="large" />

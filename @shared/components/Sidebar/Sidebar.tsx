@@ -54,7 +54,7 @@ const Sidebar: FC = () => {
       }
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
-          <div className="absolute bg-[#2F004F] h-[100%] w-[100%] px-4 max-md:top-0 top-0 left-1/2 -translate-x-1/2">
+          <div className="absolute bg-[#2F004F] max-md:fixed h-[100%] w-[100%] px-4 max-md:top-0 top-0 left-1/2 -translate-x-1/2">
             <div className="h-[150px] flex pt-6 justify-center">
               <AppLogoAlt />
             </div>

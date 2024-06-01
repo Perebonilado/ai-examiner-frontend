@@ -38,7 +38,7 @@ const ViewQuestionCard: FC<Props> = ({
           <ScorePill score={score} />
         </div>
         <p className="text-sm font-semibold">{count} Question(s)</p>
-        <div className="flex items-center gap-3 mt-4">
+        <div className="flex items-center gap-3 mt-4 min-h-[30px]">
           <p className="text-xs text-[#8E8E8E]">
             Created on:{" "}
             {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}

@@ -138,14 +138,6 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
             </>
           ) : (
             <>
-              {/* <Button
-                title="Reset Answers"
-                variant="outlined"
-                onClick={() => {
-                  handleResetAnswers();
-                  toast.success("Answers Reset Successfully!");
-                }}
-              /> */}
               <Button title="Done" onClick={handleDone} size="large" />
             </>
           )}

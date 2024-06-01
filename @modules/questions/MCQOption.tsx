@@ -22,8 +22,8 @@ const MCQOption: FC<Props> = ({
     `border-2 border-gray-200 min-h-[50px] rounded-[12px] p-4 bg-white flex items-center`,
     {
       ["hover:border-[#9370DB] cursor-pointer"]: !submitted,
-      ["bg-[#9370DB] text-white border-[#9370DB]"]: isChecked,
-      ["!border-[#c3e6cb] text-[#155724] bg-[#d4edda]"]:
+      ["!bg-[#9370DB] text-white !border-[#9370DB]"]: isChecked && !submitted,
+      ["!border-[#c3e6cb] text-[#155724] !bg-[#d4edda]"]:
         submitted && isRightOption,
       ["!border-[#f5c6cb] text-[#721c24] !bg-[#f8d7da]"]:
         submitted && !isRightOption && isChecked,

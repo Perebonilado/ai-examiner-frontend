@@ -38,14 +38,17 @@ const MCQItem: FC<Props> = ({
   }, [isResetSelection]);
 
   return (
-    <div className="w-full bg-white px-4 py-8 rounded-xl max-w-[600px] mx-auto shadow-md">
+    <div className="w-full bg-[#FCFCFC] p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 ">
       {submitted && (
         <p className={correctAnswerMarkerStyling}>
           {isCorrect ? "Correct!" : "Wrong"}
         </p>
       )}
-      <p className="font-semibold">
-        {questionNumber}. {question}
+      <p className="text-lg text-[#360B58]">
+        Question {questionNumber}
+      </p>
+      <p className="my-8 font-semibold text-lg">
+        {question}
       </p>
       <div className="py-4 flex flex-col gap-6">
         {options.map((opt, idx) => {

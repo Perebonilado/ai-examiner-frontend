@@ -107,7 +107,7 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
   return (
     <section>
       <Container className="py-10">
-        <div className="flex flex-col gap-6">
+        <div className="flex flex-col gap-[80px]">
           {data.map((question, idx) => (
             <MCQItem
               {...question}
@@ -120,11 +120,12 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
           ))}
         </div>
 
-        <div className="flex justify-end gap-4 w-full max-w-[600px] mx-auto py-8">
+        <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!isSubmitted ? (
             <>
               <Button
                 title="Submit"
+                size="large"
                 onClick={() => {
                   setIsSubmitted(true);
                   saveScore({
@@ -145,7 +146,7 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
                   toast.success("Answers Reset Successfully!");
                 }}
               /> */}
-              <Button title="Done" onClick={handleDone} />
+              <Button title="Done" onClick={handleDone} size="large" />
             </>
           )}
         </div>

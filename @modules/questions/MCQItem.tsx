@@ -38,7 +38,7 @@ const MCQItem: FC<Props> = ({
   }, [isResetSelection]);
 
   return (
-    <div className="w-full bg-[#FCFCFC] p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 ">
+    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 ">
       {submitted && (
         <p className={correctAnswerMarkerStyling}>
           {isCorrect ? "Correct!" : "Wrong"}

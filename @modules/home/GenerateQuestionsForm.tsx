@@ -158,7 +158,7 @@ const GenerateQuestionsForm: FC = () => {
     <section>
       <FormikProvider value={formik}>
         <Form>
-          <div className="flex flex-col gap-4 mx-auto w-full max-w-[500px] pt-2 pb-10">
+          <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
             <TextField
               label="Document Title"
               placeholder="Enter the title of the document you want to upload"
@@ -208,15 +208,23 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <Switch
-              disabled={!file || !fileId}
-              handleChecked={() => {
-                setIsAdvanced(!isAdvanced);
-                if (!isFocusAreaData) fetchTopics({ fileId: fileId as string });
-              }}
-              isChecked={isAdvanced}
-              label="Advanced Preferences"
-            />
+            <div className="flex items-center gap-3">
+              <Switch
+                disabled={!file || !fileId}
+                handleChecked={() => {
+                  setIsAdvanced(!isAdvanced);
+                  if (!isFocusAreaData)
+                    fetchTopics({ fileId: fileId as string });
+                }}
+                isChecked={isAdvanced}
+                label="Advanced Preferences"
+              />
+
+              <ToolTip
+                id="adv"
+                message="Advanced preferences helps you generate questions from specific areas within the document"
+              />
+            </div>
 
             {fileId && isAdvanced && !topicsLoading && topics && (
               <ChipMultiSelect

@@ -25,7 +25,7 @@ const ViewQuestionCard: FC<Props> = ({
   const scoreColor = generateScoreColor(score).scoreColor;
 
   const rootClassName = cn(
-    `w-full flex flex-col py-4 gap-4 max-w-[450px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-100 px-4`
+    `w-full flex flex-col py-4 gap-4 max-w-[450px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`
   );
 
   const [topicsExpanded, setTopicsExpanded] = useState(false);

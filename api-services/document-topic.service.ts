@@ -55,11 +55,15 @@ export const DocumentTopicService = createApi({
       DocumentTopicModel,
       DocumentTopicQueryModel
     >({
-      query: ({ fileId }) => ({
+      query: ({ fileId, documentId }) => ({
         url: `/generate/${fileId}`,
         method: "POST",
         body: {},
+        params: {
+          documentId,
+        },
       }),
+      invalidatesTags: ['document-topics'],
       transformResponse: (res: DocumentTopicDto) => {
         if (!res) return <DocumentTopicModel>{};
         else

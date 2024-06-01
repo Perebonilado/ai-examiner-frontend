@@ -1,5 +1,6 @@
 export interface DocumentTopicQueryModel {
   fileId: string;
+  documentId?: string
 }
 
 export interface DocumentTopicModel {

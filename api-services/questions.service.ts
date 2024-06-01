@@ -95,7 +95,8 @@ export const QuestionsService = createApi({
 
         return {
           meta: res.meta,
-          questions: res.data.map((d) => ({
+          fileId: res.data.fileId,
+          questions: res.data.data.map((d) => ({
             id: d.id,
             type: "Multiple Choice",
             createdAt: d.createdOn,

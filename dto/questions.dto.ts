@@ -15,7 +15,7 @@ export interface GetQuestionsByIdDto {
   createdOn: Date;
   questions: QuestionsDto[];
   score: number | null;
-  topics: {title: string; id: number}[]
+  topics: { title: string; id: number }[];
 }
 
 export interface QuestionSummaryDto {
@@ -23,12 +23,15 @@ export interface QuestionSummaryDto {
   createdOn: Date;
   id: string;
   count: number;
-  score: number | null
-  topics: {id: number; title: string}[]
+  score: number | null;
+  topics: { id: number; title: string }[];
 }
 
 export interface AllQuestionSummaryDto {
-  data: QuestionSummaryDto[];
+  data: {
+    data: QuestionSummaryDto[];
+    fileId: string;
+  };
   status: number;
-  meta: MetaDto
+  meta: MetaDto;
 }

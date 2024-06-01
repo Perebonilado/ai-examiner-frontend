@@ -36,15 +36,21 @@ const ViewQuestions: NextPage = () => {
     { refetchOnMountOrArgChange: true, skip: !documentId }
   );
 
-  const { data: topics, isLoading: topicsLoading } = useGetAllSavedDocumentTopicsQuery(
-    { documentId },
-    { skip: !documentId, refetchOnMountOrArgChange: true }
-  );
+  const { data: topics, isLoading: topicsLoading } =
+    useGetAllSavedDocumentTopicsQuery(
+      { documentId },
+      { skip: !documentId, refetchOnMountOrArgChange: true }
+    );
 
   const { setModalContent } = useModalContext();
 
   const handleGenerateQuestions = () => {
-    setModalContent(<GenerateQuestionsForm topics={topics?.topics ?? []}/>);
+    setModalContent(
+      <GenerateQuestionsForm
+        topics={topics?.topics ?? []}
+        fileId={data?.fileId || ""}
+      />
+    );
   };
 
   useEffect(() => {

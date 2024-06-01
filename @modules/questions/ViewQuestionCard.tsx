@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import * as moment from "moment";
 import Button from "@/@shared/ui/Button";
 import ScorePill from "./ScorePill";
@@ -6,6 +6,10 @@ import { generateScoreColor } from "@/utils";
 import cn from "classnames";
 import { QuestionSummaryModel } from "@/models/questions.model";
 import Link from "next/link";
+import ArrowRight from "@/icons/ArrowRight";
+import ChevronDownAlt from "@/icons/ChevronDownAlt";
+import TopicPill from "./TopicPill";
+import TopicPillContainer from "./TopicPillContainer";
 
 interface Props extends QuestionSummaryModel {}
 
@@ -16,34 +20,50 @@ const ViewQuestionCard: FC<Props> = ({
   score,
   id,
   type,
+  topics,
 }) => {
   const scoreColor = generateScoreColor(score).scoreColor;
 
   const rootClassName = cn(
-    `w-full flex flex-col max-w-[480px] h-[180px] rounded-xl shadow-lg p-4 bg-gray-50 border-l-[5px]`
+    `w-full flex flex-col py-4 gap-4 max-w-[450px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-100 px-4`
   );
 
+  const [topicsExpanded, setTopicsExpanded] = useState(false);
+
   return (
-    <div className={rootClassName} style={{ borderLeftColor: scoreColor }}>
-      <div
-        style={{ flex: 1 }}
-        className="flex flex-col justify-center gap-1 pb-4"
-      >
+    <div className={rootClassName}>
+      <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <p className="font-bold">{type}</p>
           <ScorePill score={score} />
         </div>
         <p className="text-sm font-semibold">{count} Question(s)</p>
-        <p className="text-xs text-gray-500">
-          Created on:{" "}
-          {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}
-        </p>
+        <div className="flex items-center gap-3 mt-4">
+          <p className="text-xs text-[#8E8E8E]">
+            Created on:{" "}
+            {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}
+          </p>
+          {topics.length ? (
+            <div
+              className="cursor-pointer"
+              onClick={() => {
+                setTopicsExpanded(!topicsExpanded);
+              }}
+            >
+              <ChevronDownAlt />
+            </div>
+          ) : null}
+        </div>
       </div>
-      <div style={{ flex: 1 }} className="border-t flex items-center">
+      <div className="border-t pt-4 h-full border-t-gray-300 flex flex-col justify-center">
+        <div>
+          <TopicPillContainer data={topics} isOpen={topicsExpanded} />
+        </div>
         <Link href={`/questions/practise-questions/${id}`}>
           <Button
             title={score !== null ? "Retry" : "Start Assessment"}
-            variant="outlined"
+            variant="text"
+            endicon={<ArrowRight />}
           />
         </Link>
       </div>

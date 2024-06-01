@@ -10,7 +10,7 @@ const ViewQuestionCardContainer: FC<Props> = ({ data }) => {
   return (
     <>
       {data && data.length ? (
-        <section className="flex items-center flex-wrap gap-y-12 gap-10 mb-6">
+        <section className="flex items-start flex-wrap gap-y-12 gap-10 mb-6">
           {data.map((d, idx) => (
             <ViewQuestionCard {...d} key={idx} />
           ))}

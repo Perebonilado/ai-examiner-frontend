@@ -38,19 +38,6 @@ const MCQOption: FC<Props> = ({
       className={statusClass}
     >
       <p>{option.value}</p>
-      {/* <Checkbox
-        checked={isChecked}
-        onChange={() => {
-          if (!submitted) handleChecked(option);
-        }}
-        label={option.value}
-        customBorderColor={
-          submitted && isRightOption && !isChecked ? "green" : ""
-        }
-        customLabelColor={
-          submitted && isRightOption && !isChecked ? "green" : ""
-        }
-      /> */}
     </div>
   );
 };

@@ -97,6 +97,7 @@ const ViewQuestions: NextPage = () => {
           <Button
             title="Generate New Questions"
             onClick={handleGenerateQuestions}
+            size="large"
           />
         </div>
         {!data && error && (

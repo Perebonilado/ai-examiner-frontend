@@ -19,7 +19,7 @@ const MCQOption: FC<Props> = ({
   isRightOption,
 }) => {
   const statusClass = cn(
-    `border-2 border-gray-200 min-h-[50px] rounded-[12px] bg-white flex items-center justify-center text-center`,
+    `border-2 border-gray-200 min-h-[50px] rounded-[12px] p-4 bg-white flex items-center`,
     {
       ["hover:border-[#9370DB] cursor-pointer"]: !submitted,
       ["bg-[#9370DB] text-white border-[#9370DB]"]: isChecked,

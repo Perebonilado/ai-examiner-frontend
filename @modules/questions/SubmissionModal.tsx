@@ -20,9 +20,9 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
   return (
     <div
       ref={ref}
-      className="w-full max-w-[300px] rounded-xl shadow-lg p-8 flex flex-col gap-10 items-center justify-center bg-white"
+      className="w-full max-w-[400px] max-md:max-w-[320px] rounded-xl shadow-lg p-8 py-14 flex flex-col gap-10 items-center justify-center bg-white"
     >
-      <p className="text-lg text-center font-bold">{props.title}</p>
+      <p className="text-lg text-center font-bold">{props.title} Scores</p>
 
       <div
         className="w-[150px] h-[150px] rounded-full flex flex-col items-center justify-center text-center gap-2"
@@ -43,6 +43,7 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
         onClick={() => {
           setModalContent(null);
         }}
+        size="large"
       />
     </div>
   );

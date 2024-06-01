@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { Tooltip as ReactToolTip} from "react-tooltip";
+import { Tooltip as ReactToolTip } from "react-tooltip";
 
 interface Props {
   id: string;
@@ -12,7 +12,7 @@ const ToolTip: FC<Props> = ({ id, message }) => {
       <p
         data-tooltip-content={message}
         data-tooltip-id={id}
-        className="text-xs flex items-center justify-center w-[17px] h-[17px] rounded-full border-[2px] border-black font-bold cursor-pointer"
+        className="text-xs flex items-center justify-center w-[17px] h-[17px] rounded-full border-[2px] border-gray-600 text-gray-600 font-bold cursor-pointer"
       >
         i
       </p>

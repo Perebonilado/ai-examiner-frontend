@@ -12,6 +12,13 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQuestionFormValidation";
 import ToolTip from "@/@shared/components/ToolTip";
+import { useUploadFileMutation } from "@/api-services/file-upload.service";
+import Switch from "@/@shared/components/Switch";
+import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
+import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic.service";
+import Spinner from "@/@shared/components/Spinner";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import { DocumentTopicModel } from "@/models/document-topic.model";
 
 const initialValues = {
   title: "",
@@ -25,6 +32,20 @@ const GenerateQuestionsForm: FC = () => {
     onSubmit: (values) => handleSubmit(values),
   });
 
+  const [fileId, setFileId] = useState<string | null>(null);
+  const [isAdvanced, setIsAdvanced] = useState(false);
+  const [isFocusAreaData, setIsFocusAreaData] = useState(false);
+  const [
+    fetchTopics,
+    { data: topics, isLoading: topicsLoading, error: topicsError },
+  ] = useGenerateDocumentTopicsMutation();
+
+  useEffect(() => {
+    if (topics) {
+      setIsFocusAreaData(true);
+    }
+  }, [topics]);
+
   const router = useRouter();
 
   const { setModalContent } = useModalContext();
@@ -32,24 +53,55 @@ const GenerateQuestionsForm: FC = () => {
   const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
     useAddDocumentMutation();
 
+  const [
+    uploadFile,
+    {
+      isLoading: uploadfileLoading,
+      error: uploadFileError,
+      data: uploadFileData,
+    },
+  ] = useUploadFileMutation();
+
   const allowedMimeTypes = ["docx", "doc", "pdf", "pptx"];
 
   const [file, setFile] = useState<File | null>(null);
 
+  const [focusAreas, setFocusAreas] = useState<
+    { label: string; value: string }[]
+  >([]);
+
   const handleSubmit = (values: typeof initialValues) => {
-    if (!file) {
-      toast.error("Please attach a file");
+    if (!file || !fileId) {
+      toast.error("Please upload a file");
       return;
     }
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("document", file);
 
     createDocAndGenerateQuestions({
-      formData,
+      payload: {
+        fileId: fileId,
+        title: values.title,
+        selectedQuestionTopics: focusAreas.length
+          ? focusAreas.map((f) => f.label)
+          : undefined,
+        topics: topics ? topics.topics.map((t) => t.label) : undefined,
+      },
       questionCount: values.questionCount,
     });
   };
+
+  const handleFileUpload = (file: File) => {
+    const formData = new FormData();
+
+    formData.append("document", file);
+
+    uploadFile({ payload: formData });
+  };
+
+  useEffect(() => {
+    if (uploadFileData) {
+      setFileId(uploadFileData.fileId);
+    }
+  }, [uploadFileData]);
 
   useEffect(() => {
     if (data) {
@@ -59,7 +111,7 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (isLoading) {
-      setModalContent(<AppLoader loaderMessage="Hang in there while we generate your questions"/>);
+      setModalContent(<AppLoader loaderMessage="Generating questions" />);
     } else {
       setModalContent(null);
     }
@@ -80,11 +132,33 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [error]);
 
+  useEffect(() => {
+    if (uploadFileError && "status" in uploadFileError) {
+      if ("data" in uploadFileError) {
+        const { message } = uploadFileError.data as { message: string };
+        toast.error(message);
+      } else
+        toast.error(
+          "An error occured while uploading your file, please try again"
+        );
+      setFile(null);
+      setFileId(null);
+    }
+  }, [uploadFileError]);
+
+  useEffect(() => {
+    if (!file || !fileId) {
+      setIsAdvanced(false);
+      setFocusAreas([]);
+      setIsFocusAreaData(false);
+    }
+  }, [file, fileId]);
+
   return (
     <section>
       <FormikProvider value={formik}>
         <Form>
-          <div className="flex flex-col gap-4 mx-auto w-full max-w-[500px] pt-2 pb-10">
+          <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
             <TextField
               label="Document Title"
               placeholder="Enter the title of the document you want to upload"
@@ -97,9 +171,14 @@ const GenerateQuestionsForm: FC = () => {
               attachedFile={file}
               handleSelectFile={(file) => {
                 setFile(file);
+                handleFileUpload(file);
               }}
+              uploadLoading={uploadfileLoading}
               handleDeleteFile={() => {
                 setFile(null);
+                if (fileId) {
+                  setFileId(null);
+                }
               }}
               maxFileSizeMB={15}
             />
@@ -129,7 +208,62 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <Button title="Generate Questions" size="large" />
+            <div className="flex items-center gap-3">
+              <Switch
+                disabled={!file || !fileId}
+                handleChecked={() => {
+                  setIsAdvanced(!isAdvanced);
+                  if (!isFocusAreaData)
+                    fetchTopics({ fileId: fileId as string });
+                }}
+                isChecked={isAdvanced}
+                label="Advanced Preferences"
+              />
+
+              <ToolTip
+                id="adv"
+                message="Advanced preferences helps you generate questions from specific areas within the document"
+              />
+            </div>
+
+            {fileId && isAdvanced && !topicsLoading && topics && (
+              <ChipMultiSelect
+                options={topics.topics}
+                getSelectedItems={(items) => {
+                  setFocusAreas(items);
+                }}
+                label="Choose Focus Areas"
+              />
+            )}
+
+            {topicsLoading && isAdvanced && (
+              <div className="flex flex-col gap-2 items-center">
+                <Spinner size="sm" />
+                <p className="text-xs">Loading advanced preferences...</p>
+              </div>
+            )}
+
+            {topicsError && isAdvanced && (
+              <div className="flex flex-col gap-2 items-center">
+                <ErrorMessage message="An error occured while loading advanced preferences" />
+                <Button
+                  title="reload advanced preferences"
+                  variant="text"
+                  size="small"
+                  onClick={() => {
+                    fetchTopics({ fileId: fileId as string });
+                  }}
+                />
+              </div>
+            )}
+
+            <Button
+              title="Generate Questions"
+              size="large"
+              disabled={
+                !formik.isValid || !fileId || !file || uploadfileLoading
+              }
+            />
           </div>
         </Form>
       </FormikProvider>

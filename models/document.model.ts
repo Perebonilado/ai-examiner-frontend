@@ -28,6 +28,11 @@ export interface CreateDocumentModel {
 }
 
 export interface AddDocumentPayloadModel {
-  formData: FormData;
+  payload: {
+    title: string;
+    fileId: string;
+    topics?: string[];
+    selectedQuestionTopics?: string[]
+  }
   questionCount: string;
 }

@@ -6,6 +6,10 @@
   @apply text-white border border-[#2F004F] bg-[#2F004F] rounded-lg;
 }
 
+.contained.disabled {
+  @apply opacity-[.6];
+}
+
 .outlined {
   @apply bg-[#FFFFFF] text-[#2F004F] border border-[#2F004F] rounded-lg;
 }

@@ -9,15 +9,30 @@ import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import CloseIcon from "@/icons/CloseIcon";
+import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
+import Switch from "@/@shared/components/Switch";
+import {
+  useGenerateDocumentTopicsMutation,
+  useGetAllSavedDocumentTopicsQuery,
+} from "@/api-services/document-topic.service";
+import Spinner from "@/@shared/components/Spinner";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 
 const initialValues = {
   questionCount: "",
 };
 
-const GenerateQuestionsForm: FC = () => {
+interface Props {
+  topics: { label: string; value: string }[];
+  fileId: string;
+}
+
+const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
   const params = useParams();
 
   const [documentId, setdocumentId] = useState<string>("");
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [isAdvanced, setIsAdvanced] = useState(false);
 
   const { setModalContent } = useModalContext();
 
@@ -30,10 +45,19 @@ const GenerateQuestionsForm: FC = () => {
     },
   ] = useGenerateQuestionsMutation();
 
+  const [
+    generateFocusAreas,
+    { isLoading: focusAreasLoading, error: focusAreasError, data: focusAreas },
+  ] = useGenerateDocumentTopicsMutation();
+
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
-      generateQuestions({ documentId, questionCount: values.questionCount });
+      generateQuestions({
+        documentId,
+        questionCount: values.questionCount,
+        selectedQuestionTopics: selectedTopics,
+      });
     },
   });
 
@@ -59,12 +83,18 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [generateQuestionsSuccess]);
 
+  useEffect(() => {
+    if (isAdvanced) {
+      generateFocusAreas({ fileId, documentId });
+    }
+  }, [isAdvanced]);
+
   return (
     <>
       {generateQuestionsLoading && (
         <AppLoader loaderMessage="Hang in there while we generate your questions" />
       )}
-      <div className="bg-white rounded-xl shadow-xl p-4 py-12 w-full max-w-[400px] relative">
+      <div className="bg-white rounded-xl shadow-xl px-16 py-14  max-md:px-8 w-full max-w-[450px] relative">
         <span
           className="absolute top-2 right-2 cursor-pointer"
           onClick={() => {
@@ -75,7 +105,7 @@ const GenerateQuestionsForm: FC = () => {
         </span>
         <FormikProvider value={formik}>
           <Form>
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-[24px]">
               <div>
                 <label className="text-base font-semibold flex items-center gap-4">
                   Number of Questions{" "}
@@ -101,7 +131,65 @@ const GenerateQuestionsForm: FC = () => {
                 />
               </div>
 
-              <Button title="Generate" type="submit" size="large" />
+              <div>
+                {topics.length || focusAreas?.topics.length ? (
+                  <ChipMultiSelect
+                    getSelectedItems={(items) => {
+                      setSelectedTopics(items.map((it) => it.label));
+                    }}
+                    label="Choose Focus Areas"
+                    options={
+                      topics.length
+                        ? topics
+                        : focusAreas?.topics.length
+                        ? focusAreas.topics
+                        : []
+                    }
+                  />
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {
+                      <div className="flex items-center gap-3">
+                        <Switch
+                          disabled={false}
+                          handleChecked={() => {
+                            setIsAdvanced(!isAdvanced);
+                          }}
+                          isChecked={isAdvanced}
+                          label="Advanced Preferences"
+                        />
+                        <ToolTip
+                          id="adv"
+                          message="Advanced preferences helps you generate questions from specific areas within the document"
+                        />
+                      </div>
+                    }
+                    {focusAreasLoading && isAdvanced && (
+                      <div className="flex flex-col gap-2 items-center">
+                        <Spinner size="sm" />
+                        <p className="text-xs">
+                          Loading advanced preferences...
+                        </p>
+                      </div>
+                    )}
+                    {focusAreasError && isAdvanced && (
+                      <div className="flex flex-col gap-2 items-center">
+                        <ErrorMessage message="An error occured while loading advanced preferences" />
+                        <Button
+                          title="reload advanced preferences"
+                          variant="text"
+                          size="small"
+                          onClick={() => {
+                            generateFocusAreas({ fileId, documentId });
+                          }}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <Button title="Generate Questions" type="submit" size="large" />
             </div>
           </Form>
         </FormikProvider>

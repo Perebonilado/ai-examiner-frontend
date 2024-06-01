@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
+import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -35,10 +36,21 @@ const ViewQuestions: NextPage = () => {
     { refetchOnMountOrArgChange: true, skip: !documentId }
   );
 
+  const { data: topics, isLoading: topicsLoading } =
+    useGetAllSavedDocumentTopicsQuery(
+      { documentId },
+      { skip: !documentId, refetchOnMountOrArgChange: true }
+    );
+
   const { setModalContent } = useModalContext();
 
   const handleGenerateQuestions = () => {
-    setModalContent(<GenerateQuestionsForm />);
+    setModalContent(
+      <GenerateQuestionsForm
+        topics={topics?.topics ?? []}
+        fileId={data?.fileId || ""}
+      />
+    );
   };
 
   useEffect(() => {
@@ -51,12 +63,12 @@ const ViewQuestions: NextPage = () => {
   }, [error]);
 
   useEffect(() => {
-    if (isLoading) {
+    if (isLoading || topicsLoading) {
       setModalContent(<AppLoader />);
     } else {
       setModalContent(null);
     }
-  }, [isLoading]);
+  }, [isLoading, topicsLoading]);
 
   useEffect(() => {
     if (params) {
@@ -64,7 +76,7 @@ const ViewQuestions: NextPage = () => {
     }
   }, [params]);
 
-  const router = useRouter()
+  const router = useRouter();
 
   return (
     <>
@@ -75,8 +87,8 @@ const ViewQuestions: NextPage = () => {
           variant="text"
           starticon={<ChevronLeft />}
           className="!gap-1 mb-6 mt-7"
-          onClick={()=>{
-            router.push(`/documents`)
+          onClick={() => {
+            router.push(`/documents`);
           }}
         />
         <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
@@ -91,6 +103,7 @@ const ViewQuestions: NextPage = () => {
           <Button
             title="Generate New Questions"
             onClick={handleGenerateQuestions}
+            size="large"
           />
         </div>
         {!data && error && (

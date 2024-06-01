@@ -75,6 +75,7 @@ export const QuestionsService = createApi({
             documentTitle: res.documentTitle,
             documentId: res.documentId,
             createdOn: res.createdOn,
+            topics: res.topics.map((t) => t.title),
           };
         }
       },
@@ -94,24 +95,27 @@ export const QuestionsService = createApi({
 
         return {
           meta: res.meta,
-          questions: res.data.map((d) => ({
+          fileId: res.data.fileId,
+          questions: res.data.data.map((d) => ({
             id: d.id,
             type: "Multiple Choice",
             createdAt: d.createdOn,
             count: d.count,
             documentId: d.courseDocumentId,
-            score: d.score
+            score: d.score,
+            topics: d?.topics.map((t) => t.title),
           })),
         };
       },
     }),
     generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
-      query: ({ documentId, questionCount }) => ({
+      query: ({ documentId, questionCount, ...body }) => ({
         url: `/${documentId}/generate-questions`,
         method: "POST",
         params: {
           questionCount,
         },
+        body
       }),
       invalidatesTags: ["question-summary"],
     }),
@@ -130,5 +134,5 @@ export const {
   useGetQuestionsByIdQuery,
   useGetQuestionSummariesQuery,
   useGenerateQuestionsMutation,
-  useSaveScoreMutation
+  useSaveScoreMutation,
 } = QuestionsService;

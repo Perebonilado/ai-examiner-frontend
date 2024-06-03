@@ -30,6 +30,10 @@ const ViewQuestionCard: FC<Props> = ({
 
   const [topicsExpanded, setTopicsExpanded] = useState(false);
 
+  const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`,{
+    "rotate-180": topicsExpanded,
+  });
+
   return (
     <div className={rootClassName}>
       <div className="flex flex-col">
@@ -45,7 +49,7 @@ const ViewQuestionCard: FC<Props> = ({
           </p>
           {topics.length ? (
             <div
-              className="cursor-pointer"
+              className={chevronClasses}
               onClick={() => {
                 setTopicsExpanded(!topicsExpanded);
               }}

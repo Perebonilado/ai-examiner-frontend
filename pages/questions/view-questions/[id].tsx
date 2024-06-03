@@ -97,7 +97,6 @@ const ViewQuestions: NextPage = () => {
               {capitalizeFirstLetterOfEachWord(
                 document.documents[0].title.toLowerCase()
               )}{" "}
-              Questions
             </h2>
           )}
           <Button

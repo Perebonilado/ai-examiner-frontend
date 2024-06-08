@@ -6,15 +6,15 @@ interface Props extends HTMLAttributes<HTMLDivElement> {
 }
 
 const Hamburger: FC<Props> = (props) => {
-  const topHamStyling = cn("w-full h-[2px] bg-[#000] transition-all", {
+  const topHamStyling = cn("w-full h-[2px] bg-white transition-all", {
     "translate-y-2 rotate-45": props.isSideNavOpen,
   });
-  const bottomHamStyling = cn("w-full h-[2px] bg-[#000] transition-all", {
+  const bottomHamStyling = cn("w-full h-[2px] bg-white transition-all", {
     "-rotate-45": props.isSideNavOpen,
   });
   return (
     <div
-      className="w-[23px] h-[10px] flex-col justify-between cursor-pointer items-center hidden max-md:!flex"
+      className="w-[30px] h-[10px] flex-col justify-between cursor-pointer items-center hidden max-md:!flex"
       {...props}
     >
       <div className={topHamStyling}></div>

@@ -13,7 +13,7 @@ const SidebarItem: FC<Props> = ({ title, isActive, link, icon }) => {
   const styling = cn(
     `flex items-center gap-3 py-4 pl-8 pr-2 font-semibold text-sm cursor-pointer text-white`,
     {
-      "bg-white !text-black": isActive,
+      "bg-[#F2E1FF] !text-black": isActive,
     }
   );
   return (

@@ -42,7 +42,7 @@ const Sidebar: FC = () => {
 
   return (
     <>
-      {
+      {/* {
         <div className="absolute z-50 left-6 bottom-3 md:hidden">
           <Button
             title=""
@@ -51,7 +51,7 @@ const Sidebar: FC = () => {
             onClick={() => setIsOpen(!isOpen)}
           />
         </div>
-      }
+      } */}
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
           <div className="absolute bg-[#2F004F] max-md:fixed h-[100%] w-[100%] px-4 max-md:top-0 top-0 left-1/2 -translate-x-1/2">
@@ -86,11 +86,12 @@ const Sidebar: FC = () => {
                 </div>
               </div>
 
-              <div className="h-[100px] flex items-end justify-end py-4">
+              <div className="h-[100px] flex items-end py-4">
                 <Button
                   title="Logout"
-                  variant="outlined"
+                  variant="text"
                   endicon={<LogoutIcon />}
+                  className="!text-white"
                   onClick={() => {
                     logout(() => {
                       window.location.pathname = '/auth/login'

@@ -17,7 +17,7 @@ interface Props {
 
 const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
   const sideNavClasses = cn(
-    `absolute transition-all duration-[.3s] z-50 w-[95vw] h-[calc(100vh-100px)] top-[90px] bg-[#2F004F] left-[2.5vw] flex flex-col md:hidden`,
+    `fixed transition-all duration-[.3s] z-50 w-[95vw] h-[calc(100vh-100px)] top-[90px] bg-[#2F004F] left-[2.5vw] flex flex-col md:hidden`,
     {
       "translate-x-[calc(100%+2.5vw)]": !isSideNav,
     }

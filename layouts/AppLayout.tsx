@@ -25,7 +25,7 @@ const AppLayout: FC<PropsWithChildren> = ({ children }) => {
         />
 
         <Sidebar />
-        <main className="h-full max-md:pt-[120px] w-[calc(100%-300px)] max-md:w-full overflow-auto px-10 max-md:px-4">
+        <main className="h-full max-md:pt-[120px] w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 px-10 max-md:px-4">
           <FadeIn>{children}</FadeIn>
         </main>
       </div>

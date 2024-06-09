@@ -49,7 +49,7 @@ const FlashCardItem: FC<Props> = ({ question, answer, hint }) => {
             className="flex flex-col gap-8 items-center justify-center p-2"
             style={{ flex: 8 }}
           >
-            <p className="text-lg text-center leading-relaxed">{question}</p>
+            <p className="text-lg text-center leading-relaxed max-h-[140px] overflow-y-auto">{question}</p>
             <Button
               title="Show Answer"
               variant="outlined"
@@ -61,7 +61,7 @@ const FlashCardItem: FC<Props> = ({ question, answer, hint }) => {
         <div
           className={`bg-transparent border shadow-md border-gray-200 flex gap-8 flex-col items-center justify-center rounded-lg absolute ${s["backface-hidden"]} w-full h-full transform ${s["rotate-y-180"]}`}
         >
-          <p className="text-lg text-center leading-relaxed">{answer}</p>
+          <p className="text-lg text-center leading-relaxed max-h-[140px] overflow-y-auto">{answer}</p>
           <div onClick={handleFlip}>
             <Button title="Hide Answer" variant="outlined" size="large" />
           </div>

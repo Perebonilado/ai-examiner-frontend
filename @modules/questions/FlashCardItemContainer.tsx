@@ -7,9 +7,10 @@ import ArrowAltRightIcon from "@/icons/ArrowAltRightIcon";
 
 interface Props {
   data: { question: string; answer: string }[];
+  handleDone: () => void;
 }
 
-const FlashCardItemContainer: FC<Props> = ({ data }) => {
+const FlashCardItemContainer: FC<Props> = ({ data, handleDone }) => {
   const [currIndex, setCurrIndex] = useState(0);
 
   return (
@@ -56,6 +57,10 @@ const FlashCardItemContainer: FC<Props> = ({ data }) => {
             }
           }}
         />
+      </div>
+
+      <div className="flex justify-end mt-20">
+        <Button title="Done" size="large" onClick={handleDone}/>
       </div>
     </section>
   );

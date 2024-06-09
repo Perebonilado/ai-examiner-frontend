@@ -51,12 +51,9 @@ const FlashCardItem: FC<Props> = ({ question, answer }) => {
           className={`bg-transparent border shadow-md border-gray-200 flex gap-8 flex-col items-center justify-center rounded-lg absolute ${s["backface-hidden"]} w-full h-full transform ${s["rotate-y-180"]}`}
         >
           <p className="text-lg text-center leading-relaxed">{answer}</p>
-          <Button
-            title="Show Question"
-            variant="outlined"
-            size="large"
-            onClick={handleFlip}
-          />
+          <div onClick={handleFlip}>
+            <Button title="Show Question" variant="outlined" size="large" />
+          </div>
         </div>
       </div>
     </div>

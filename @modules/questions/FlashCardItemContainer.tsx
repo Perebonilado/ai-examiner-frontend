@@ -15,10 +15,9 @@ const FlashCardItemContainer: FC<Props> = ({ data }) => {
   return (
     <section className="w-full max-w-[700px] mx-auto">
       <div>
-        <FlashCardItem
-          answer={data[currIndex].answer}
-          question={data[currIndex].question}
-        />
+        {data.map((d, idx) => {
+          if (idx === currIndex) return <FlashCardItem {...d} key={idx} />;
+        })}
       </div>
       <div className="flex items-center gap-1 mt-4">
         {data.map((_, idx) => {

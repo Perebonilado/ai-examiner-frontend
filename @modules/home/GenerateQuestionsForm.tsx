@@ -18,11 +18,13 @@ import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
 import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic.service";
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import { DocumentTopicModel } from "@/models/document-topic.model";
+import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
+import { hyphenateString } from "@/utils";
 
 const initialValues = {
   title: "",
   questionCount: "",
+  questionType: "",
 };
 
 const GenerateQuestionsForm: FC = () => {
@@ -52,6 +54,8 @@ const GenerateQuestionsForm: FC = () => {
 
   const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
     useAddDocumentMutation();
+
+  const { data: questionTypes } = useGetLookUpsByTypeQuery({ type: "question_type" });
 
   const [
     uploadFile,
@@ -86,6 +90,7 @@ const GenerateQuestionsForm: FC = () => {
         topics: topics ? topics.topics.map((t) => t.label) : undefined,
       },
       questionCount: values.questionCount,
+      questionType: values.questionType,
     });
   };
 
@@ -105,7 +110,7 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (data) {
-      router.push(`/questions/practise-questions/${data.questionId}`);
+      router.push(`/questions/practise-questions/${hyphenateString(data.type.toLowerCase())}/${data.questionId}`);
     }
   }, [data]);
 
@@ -182,6 +187,25 @@ const GenerateQuestionsForm: FC = () => {
               }}
               maxFileSizeMB={15}
             />
+
+            <div>
+              <label className="text-base font-semibold flex items-center gap-4">
+                Question Type{" "}
+                <ToolTip
+                  id="q_generationuu"
+                  message="Choose the type of questions you would love to generate"
+                />
+              </label>
+              <DropDown
+                options={questionTypes ?? []}
+                {...formik.getFieldProps("questionType")}
+                error={
+                  formik.touched.questionType
+                    ? formik.errors.questionType
+                    : undefined
+                }
+              />
+            </div>
 
             <div>
               <label className="text-base font-semibold flex items-center gap-4">

@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import * as moment from "moment";
 import Button from "@/@shared/ui/Button";
 import ScorePill from "./ScorePill";
-import { generateScoreColor } from "@/utils";
+import { generateScoreColor, hyphenateString } from "@/utils";
 import cn from "classnames";
 import { QuestionSummaryModel } from "@/models/questions.model";
 import Link from "next/link";
@@ -32,10 +32,6 @@ const ViewQuestionCard: FC<Props> = ({
   const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`, {
     "rotate-180": topicsExpanded,
   });
-
-  const typeMap = {
-    "Multiple Choice": "mcq",
-  } as const;
 
   return (
     <div className={rootClassName}>
@@ -68,7 +64,7 @@ const ViewQuestionCard: FC<Props> = ({
         </div>
         <Link
           href={`/questions/practise-questions/${
-            typeMap[type as keyof typeof typeMap]
+            hyphenateString(type.toLowerCase())
           }/${id}`}
         >
           <Button

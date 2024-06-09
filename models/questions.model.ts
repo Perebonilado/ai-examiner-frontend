@@ -47,6 +47,7 @@ export interface GetQuestionsQueryModel {
 export interface GenerateQuestionsPayloadModel {
   documentId: string;
   questionCount: string;
+  questionType: string;
   topics?: string[];
   selectedQuestionTopics?: string[];
 }

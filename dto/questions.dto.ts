@@ -25,6 +25,7 @@ export interface QuestionSummaryDto {
   count: number;
   score: number | null;
   topics: { id: number; title: string }[];
+  type: string;
 }
 
 export interface AllQuestionSummaryDto {

@@ -14,7 +14,7 @@ export interface AllDocumentsModel {
   title: string;
   questionSetCount: number;
   questionIds: string[];
-  averageScore: number | null
+  averageScore: number | null;
 }
 
 export interface GetAllDocumentsModel {
@@ -25,6 +25,7 @@ export interface GetAllDocumentsModel {
 export interface CreateDocumentModel {
   documentId: string;
   questionId: string;
+  type: string;
 }
 
 export interface AddDocumentPayloadModel {
@@ -32,7 +33,8 @@ export interface AddDocumentPayloadModel {
     title: string;
     fileId: string;
     topics?: string[];
-    selectedQuestionTopics?: string[]
-  }
+    selectedQuestionTopics?: string[];
+  };
   questionCount: string;
+  questionType: string;
 }

@@ -81,12 +81,13 @@ export const DocumentService = createApi({
       },
     }),
     addDocument: build.mutation<CreateDocumentModel, AddDocumentPayloadModel>({
-      query: ({ payload, questionCount }) => ({
+      query: ({ payload, questionCount, questionType }) => ({
         url: ``,
         body: payload,
         method: "POST",
         params: {
           questionCount,
+          questionType
         },
       }),
       invalidatesTags: ["all-documents"],
@@ -96,6 +97,7 @@ export const DocumentService = createApi({
           return {
             documentId: res.data.documentId,
             questionId: res.data.questionId,
+            type: res.data.type
           };
       },
     }),

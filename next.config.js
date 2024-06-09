@@ -1,16 +1,19 @@
-// next.config.js
+const withPWA = require("@ducanh2912/next-pwa").default({
+  dest: "public",
+  cacheOnFrontEndNav: true,
+  aggressiveFrontEndNavCaching: true,
+  reloadOnOnline: true,
+  swcMinify: true,
+  disable:false,
+  workboxOptions: {
+    disableDevLogs: true,
+  },
+  // ... other options you like
+});
 
 /** @type {import('next').NextConfig} */
+const nextConfig = {
+  // ... other options you like
+};
 
-const runtimeCaching = require("next-pwa/cache");
-const withPWA = require('next-pwa')({
- dest: 'public', 
- register: true,
- skipWaiting: true,
- runtimeCaching
-})
-
-module.exports = withPWA({
- // other congigs
- reactStrictMode: false
-})
+module.exports = withPWA(nextConfig);

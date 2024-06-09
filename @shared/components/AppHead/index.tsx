@@ -28,7 +28,7 @@ const AppHead: FC<Props> = ({ title }) => {
       <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       <link rel="manifest" href="/manifest.json" />
       <link rel="shortcut icon" href="/favicon.ico" />
-      <title>AI Examiner {title ? `| ${title}` : ""}</title>
+      <title>AI Examiner</title>
     </Head>
   );
 };

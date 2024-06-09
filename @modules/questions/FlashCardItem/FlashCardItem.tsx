@@ -38,7 +38,7 @@ const FlashCardItem: FC<Props> = ({ question, answer }) => {
             className="flex flex-col gap-8 items-center justify-center p-2"
             style={{ flex: 8 }}
           >
-            <p className="text-lg">{question}</p>
+            <p className="text-lg text-center leading-relaxed">{question}</p>
             <Button
               title="Show Answer"
               variant="outlined"
@@ -50,7 +50,7 @@ const FlashCardItem: FC<Props> = ({ question, answer }) => {
         <div
           className={`bg-transparent border shadow-md border-gray-200 flex gap-8 flex-col items-center justify-center rounded-lg absolute ${s["backface-hidden"]} w-full h-full transform ${s["rotate-y-180"]}`}
         >
-          <p className="text-lg">{answer}</p>
+          <p className="text-lg text-center leading-relaxed">{answer}</p>
           <Button
             title="Show Question"
             variant="outlined"

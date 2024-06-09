@@ -11,12 +11,14 @@ interface Props {
 
 const FlashCardItemContainer: FC<Props> = ({ data }) => {
   const [currIndex, setCurrIndex] = useState(0);
-  const [questionInView, _] = useState(data[currIndex]);
 
   return (
     <section className="w-full max-w-[700px] mx-auto">
       <div>
-        <FlashCardItem {...questionInView} />
+        <FlashCardItem
+          answer={data[currIndex].answer}
+          question={data[currIndex].question}
+        />
       </div>
       <div className="flex items-center gap-1 mt-4">
         {data.map((_, idx) => {

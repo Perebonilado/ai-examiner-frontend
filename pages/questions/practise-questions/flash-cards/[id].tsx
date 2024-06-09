@@ -1,4 +1,5 @@
 import FlashCardItem from "@/@modules/questions/FlashCardItem/FlashCardItem";
+import FlashCardItemContainer from "@/@modules/questions/FlashCardItemContainer";
 import AppHead from "@/@shared/components/AppHead";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
@@ -11,9 +12,20 @@ const FlashCards: NextPage = () => {
       <AppLayout>
         <h1>Flash Cards</h1>
 
-        <div className="py-10 flex items-center justify-center">
-          <FlashCardItem />
-        </div>
+        <FlashCardItemContainer
+          data={[
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+            { answer: "dsf", question: "dsf" },
+          ]}
+        />
       </AppLayout>
     </>
   );

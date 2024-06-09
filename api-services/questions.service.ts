@@ -71,6 +71,7 @@ export const QuestionsService = createApi({
               options: q.options,
               question: q.question,
               correctAnswerId: q.correctAnswerId,
+              hint: q.hint,
             })),
             documentTitle: res.documentTitle,
             documentId: res.documentId,
@@ -114,9 +115,9 @@ export const QuestionsService = createApi({
         method: "POST",
         params: {
           questionCount,
-          questionType
+          questionType,
         },
-        body
+        body,
       }),
       invalidatesTags: ["question-summary"],
     }),

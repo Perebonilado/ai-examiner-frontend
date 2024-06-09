@@ -6,6 +6,7 @@ export interface QuestionsDto {
   options: { value: string; id: string }[];
   correctAnswerId: string;
   explanation: string;
+  hint?: string;
 }
 
 export interface GetQuestionsByIdDto {
@@ -16,6 +17,7 @@ export interface GetQuestionsByIdDto {
   questions: QuestionsDto[];
   score: number | null;
   topics: { title: string; id: number }[];
+  
 }
 
 export interface QuestionSummaryDto {

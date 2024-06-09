@@ -1,10 +1,15 @@
 import React, { FC } from "react";
 
-const HintIcon: FC = () => {
+interface Props {
+  width?: number;
+  height?: number;
+}
+
+const HintIcon: FC<Props> = ({ width = 20, height = 20 }) => {
   return (
     <svg
-      width="20"
-      height="20"
+      width={width}
+      height={height}
       viewBox="0 0 18 19"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

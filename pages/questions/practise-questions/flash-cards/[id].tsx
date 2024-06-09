@@ -93,7 +93,7 @@ const FlashCards: NextPage = () => {
                 const answer = d.options.find(
                   (opt) => opt.id === d.correctAnswerId
                 )?.value;
-                return { question: d.question, answer: answer || "" };
+                return { question: d.question, answer: answer || "", hint: d.hint };
               })}
             />
           </div>

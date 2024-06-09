@@ -38,7 +38,7 @@ const ViewQuestionCard: FC<Props> = ({
       <div className="flex flex-col">
         <div className="flex items-center justify-between">
           <p className="font-bold">{type}</p>
-          <ScorePill score={score} />
+          {type.toLowerCase() !== "flash cards" && <ScorePill score={score} />}
         </div>
         <p className="text-sm font-semibold">{count} Question(s)</p>
         <div className="flex items-center gap-3 mt-4 min-h-[30px]">
@@ -63,9 +63,9 @@ const ViewQuestionCard: FC<Props> = ({
           <TopicPillContainer data={topics} isOpen={topicsExpanded} />
         </div>
         <Link
-          href={`/questions/practise-questions/${
-            hyphenateString(type.toLowerCase())
-          }/${id}`}
+          href={`/questions/practise-questions/${hyphenateString(
+            type.toLowerCase()
+          )}/${id}`}
         >
           <Button
             title={score !== null ? "Retry" : "Start Assessment"}

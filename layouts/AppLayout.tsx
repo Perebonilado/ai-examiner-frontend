@@ -9,7 +9,7 @@ const AppLayout: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <>
-      <div className="flex h-screen max-h-screen overflow-hidden bg-white relative">
+      <div className="flex md:h-screen md:max-h-screen md:overflow-hidden bg-white relative">
         <MobileAppNav
           isSideNav={isSideNav}
           handleClick={() => {

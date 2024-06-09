@@ -7,9 +7,16 @@ interface Props {
   isActive: boolean;
   link: string;
   icon: React.ReactNode;
+  callBackOnClick?: () => void;
 }
 
-const SidebarItem: FC<Props> = ({ title, isActive, link, icon }) => {
+const SidebarItem: FC<Props> = ({
+  title,
+  isActive,
+  link,
+  icon,
+  callBackOnClick,
+}) => {
   const styling = cn(
     `flex items-center gap-3 py-4 pl-8 pr-2 font-semibold text-sm cursor-pointer text-white`,
     {
@@ -18,7 +25,12 @@ const SidebarItem: FC<Props> = ({ title, isActive, link, icon }) => {
   );
   return (
     <Link href={link}>
-      <div className={styling}>
+      <div
+        className={styling}
+        onClick={() => {
+          if (callBackOnClick) callBackOnClick();
+        }}
+      >
         <span style={{ fill: isActive ? "#2F004F" : "white" }}>{icon}</span>
         <p>{title}</p>
       </div>

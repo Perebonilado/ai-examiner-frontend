@@ -25,7 +25,7 @@ const FlashCardItemContainer: FC<Props> = ({ data }) => {
           const progressBarStyling = cn(
             `rounded-full bg-white  border  h-[4px] w-full`,
             {
-              "bg-[#9A67C2] border-[#9A67C2]": currIndex >= idx,
+              "!bg-[#9A67C2] border-[#9A67C2]": currIndex >= idx,
             }
           );
           return <div className={progressBarStyling} key={idx}></div>;

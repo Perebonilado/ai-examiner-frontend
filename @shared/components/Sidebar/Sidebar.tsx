@@ -4,24 +4,17 @@ import CourseIcon from "@/icons/CourseIcon";
 import ExpandableSidebarItem from "../ExpandableSidebarItem/ExpandableSidebarItem";
 import Button from "@/@shared/ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
-import ToggleMenuIcon from "@/icons/ToggleMenuIcon";
-import { useState } from "react";
 import cn from "classnames";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useRouter } from "next/router";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { logout } from "@/utils";
 import AppLogoAlt from "../AppLogoAlt";
-import DashboardIcon from "@/icons/DashboardIcon";
+import NewDocumentIcon from '@/icons/NewDocumentIcon'
+
 
 const Sidebar: FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const {
-    data: recentDocuments,
-    isLoading,
-    error,
-    refetch,
-  } = useGetAllUserDocumentsQuery({
+  const { data: recentDocuments } = useGetAllUserDocumentsQuery({
     courseId: "",
     page: 1,
     pageSize: 5,
@@ -30,28 +23,13 @@ const Sidebar: FC = () => {
   });
 
   const sideBarContainerStyling = cn(
-    `w-full max-w-[300px] h-full max-md:absolute max-md:bottom-0 max-md:z-30 transition-all max-md:top-0`,
-    {
-      "max-md:-translate-x-0": isOpen,
-      "max-md:-translate-x-full": !isOpen,
-    }
+    `max-md:hidden w-full max-w-[300px] h-full max-md:absolute max-md:bottom-0 max-md:z-30 transition-all max-md:top-0`
   );
 
   const [activeNavLink] = useActiveNavLink();
-  const router = useRouter();
 
   return (
     <>
-      {/* {
-        <div className="absolute z-50 left-6 bottom-3 md:hidden">
-          <Button
-            title=""
-            starticon={<ToggleMenuIcon />}
-            className="!w-[45px] h-[45px] !bg-black"
-            onClick={() => setIsOpen(!isOpen)}
-          />
-        </div>
-      } */}
       <aside className={sideBarContainerStyling}>
         <div className="h-full relative p-2">
           <div className="absolute bg-[#2F004F] max-md:fixed h-[100%] w-[100%] px-4 max-md:top-0 top-0 left-1/2 -translate-x-1/2">
@@ -62,10 +40,10 @@ const Sidebar: FC = () => {
               <div className="h-[calc(100%-100px)]">
                 <div className="flex flex-col gap-3 border-b-[.3px] pb-12">
                   <SidebarItem
-                    icon={<DashboardIcon />}
-                    isActive={activeNavLink === "/dashboard"}
-                    title="Dashboard"
-                    link="/dashboard"
+                    icon={<NewDocumentIcon />}
+                    isActive={activeNavLink === "/new-document"}
+                    title="New Document"
+                    link="/new-document"
                   />
                   <SidebarItem
                     icon={<CourseIcon />}
@@ -94,7 +72,7 @@ const Sidebar: FC = () => {
                   className="!text-white"
                   onClick={() => {
                     logout(() => {
-                      window.location.pathname = '/auth/login'
+                      window.location.pathname = "/auth/login";
                     });
                   }}
                 />

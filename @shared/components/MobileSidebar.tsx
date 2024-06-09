@@ -3,12 +3,12 @@ import cn from "classnames";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import SidebarItem from "./SidebarItem";
-import DashboardIcon from "@/icons/DashboardIcon";
 import CourseIcon from "@/icons/CourseIcon";
 import ExpandableSidebarItem from "./ExpandableSidebarItem/ExpandableSidebarItem";
 import Button from "../ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
 import { logout } from "@/utils";
+import NewDocumentIcon from "@/icons/NewDocumentIcon";
 
 interface Props {
   isSideNav: boolean;
@@ -25,9 +25,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
 
   const [activeNavLink] = useActiveNavLink();
 
-  const {
-    data: recentDocuments,
-  } = useGetAllUserDocumentsQuery({
+  const { data: recentDocuments } = useGetAllUserDocumentsQuery({
     courseId: "",
     page: 1,
     pageSize: 5,
@@ -51,10 +49,10 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
     <div className={sideNavClasses}>
       <div style={{ flex: 8 }} className="flex flex-col gap-6 pt-10 px-4">
         <SidebarItem
-          icon={<DashboardIcon />}
-          isActive={activeNavLink === "/dashboard"}
-          title="Dashboard"
-          link="/dashboard"
+          icon={<NewDocumentIcon />}
+          isActive={activeNavLink === "/new-document"}
+          title="New Document"
+          link="/new-document"
         />
         <SidebarItem
           icon={<CourseIcon />}

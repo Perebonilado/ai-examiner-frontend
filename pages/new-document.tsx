@@ -4,13 +4,13 @@ import AppLayout from '@/layouts/AppLayout'
 import { NextPage } from 'next'
 import React from 'react'
 
-const Dashboard:NextPage = () => {
+const NewDocument:NextPage = () => {
   return (
     <AppLayout>
-      <AppHead title='Dashboard'/>
+      <AppHead title='New Document'/>
         <GenerateQuestionsForm />
     </AppLayout>
   )
 }
 
-export default Dashboard
+export default NewDocument

@@ -15,7 +15,7 @@ const Login: NextPage = () => {
     const token = params.get("token");
     if (token) {
       Cookies.set(accessToken, token);
-      router.push('/dashboard')
+      router.push('/new-document')
     }
   }, [params]);
   return (

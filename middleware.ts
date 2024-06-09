@@ -21,7 +21,7 @@ export function middleware(req: NextRequest) {
     (verifyCookie && pathname.startsWith("/auth")) ||
     (verifyCookie && pathname === "/")
   ) {
-    req.nextUrl.pathname = "/dashboard";
+    req.nextUrl.pathname = "/new-document";
     return NextResponse.redirect(req.nextUrl);
   }
 }
@@ -29,7 +29,7 @@ export function middleware(req: NextRequest) {
 export const config = {
   matcher: [
     "/",
-    "/dashboard",
+    "/new-document",
     "/auth/login",
     "/auth/signup",
     "/questions/:path",

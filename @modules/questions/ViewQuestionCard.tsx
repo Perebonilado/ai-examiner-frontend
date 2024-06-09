@@ -16,7 +16,6 @@ interface Props extends QuestionSummaryModel {}
 const ViewQuestionCard: FC<Props> = ({
   count,
   createdAt,
-  documentId,
   score,
   id,
   type,
@@ -30,9 +29,13 @@ const ViewQuestionCard: FC<Props> = ({
 
   const [topicsExpanded, setTopicsExpanded] = useState(false);
 
-  const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`,{
+  const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`, {
     "rotate-180": topicsExpanded,
   });
+
+  const typeMap = {
+    "Multiple Choice": "mcq",
+  } as const;
 
   return (
     <div className={rootClassName}>
@@ -63,7 +66,11 @@ const ViewQuestionCard: FC<Props> = ({
         <div>
           <TopicPillContainer data={topics} isOpen={topicsExpanded} />
         </div>
-        <Link href={`/questions/practise-questions/${id}`}>
+        <Link
+          href={`/questions/practise-questions/${
+            typeMap[type as keyof typeof typeMap]
+          }/${id}`}
+        >
           <Button
             title={score !== null ? "Retry" : "Start Assessment"}
             variant="text"

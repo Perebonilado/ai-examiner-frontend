@@ -17,7 +17,7 @@ const FlashCardItem: FC<Props> = ({ question, answer }) => {
 
   return (
     <div
-      className={`${s["perspective-1000"]} w-full max-w-[600px] bg-transparent`}
+      className={`${s["perspective-1000"]} w-full max-w-[700px] bg-transparent`}
     >
       <div
         className={`relative w-full min-h-[300px] transition-transform duration-500 bg-transparent ${

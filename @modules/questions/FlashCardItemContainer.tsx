@@ -11,10 +11,10 @@ interface Props {
 
 const FlashCardItemContainer: FC<Props> = ({ data }) => {
   const [currIndex, setCurrIndex] = useState(0);
-  const [questionInView, setQuestionInView] = useState(data[currIndex]);
+  const [questionInView, _] = useState(data[currIndex]);
 
   return (
-    <section>
+    <section className="w-full max-w-[700px] mx-auto">
       <div>
         <FlashCardItem {...questionInView} />
       </div>

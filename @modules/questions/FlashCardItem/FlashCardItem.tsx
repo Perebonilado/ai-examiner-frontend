@@ -19,7 +19,7 @@ const FlashCardItem: FC = () => {
         } ${isFlipped ? s["rotate-y-180"] : ""}`}
       >
         <div
-          className={`border bg-transparent border-gray-200 rounded-lg absolute p-4 ${s["backface-hidden"]} w-full h-full flex flex-col`}
+          className={`border bg-transparent shadow-md border-gray-200 rounded-lg absolute p-4 ${s["backface-hidden"]} w-full h-full flex flex-col`}
         >
           <div className="flex items-center gap-2" style={{ flex: 1 }}>
             <HintIcon />
@@ -39,7 +39,7 @@ const FlashCardItem: FC = () => {
           </div>
         </div>
         <div
-          className={`bg-transparent border border-gray-200 flex gap-8 flex-col items-center justify-center rounded-lg absolute ${s["backface-hidden"]} w-full h-full transform ${s["rotate-y-180"]}`}
+          className={`bg-transparent border shadow-md border-gray-200 flex gap-8 flex-col items-center justify-center rounded-lg absolute ${s["backface-hidden"]} w-full h-full transform ${s["rotate-y-180"]}`}
         >
           <p className="text-lg">Regular Expressions are ...</p>
           <Button

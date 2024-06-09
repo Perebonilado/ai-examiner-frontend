@@ -51,7 +51,7 @@ const Practice: NextPage = () => {
 
   return (
     <>
-      <AppHead title="Practice Questions" />
+      <AppHead title="Multiple Choice" />
       <AppLayout>
         {data && (
           <Button

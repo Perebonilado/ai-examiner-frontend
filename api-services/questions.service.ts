@@ -71,6 +71,7 @@ export const QuestionsService = createApi({
               options: q.options,
               question: q.question,
               correctAnswerId: q.correctAnswerId,
+              hint: q.hint,
             })),
             documentTitle: res.documentTitle,
             documentId: res.documentId,
@@ -98,7 +99,7 @@ export const QuestionsService = createApi({
           fileId: res.data.fileId,
           questions: res.data.data.map((d) => ({
             id: d.id,
-            type: "Multiple Choice",
+            type: d.type,
             createdAt: d.createdOn,
             count: d.count,
             documentId: d.courseDocumentId,
@@ -109,13 +110,14 @@ export const QuestionsService = createApi({
       },
     }),
     generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
-      query: ({ documentId, questionCount, ...body }) => ({
+      query: ({ documentId, questionCount, questionType, ...body }) => ({
         url: `/${documentId}/generate-questions`,
         method: "POST",
         params: {
           questionCount,
+          questionType,
         },
-        body
+        body,
       }),
       invalidatesTags: ["question-summary"],
     }),

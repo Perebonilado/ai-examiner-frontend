@@ -49,21 +49,21 @@ export const generateDocumentCardColorFromScore = (
           background: "#BBF7D0",
           fill: "#16a34a",
           message: "Excellent Work",
-          subMessage: "You scored an excellent grade in this test ⭐"
+          subMessage: "You scored an excellent grade in this test ⭐",
         } as const;
       case percentage >= 50 && percentage <= 79:
         return {
           background: "#FEF08A",
           fill: "#ca8a04",
           message: "Needs Improvement",
-          subMessage: "You're very close to becoming a pro 🚀"
+          subMessage: "You're very close to becoming a pro 🚀",
         } as const;
       default:
         return {
           background: "#FECDD3",
           fill: "#EF4444",
           message: "Try Again",
-          subMessage: "Let's give this another try 👏"
+          subMessage: "Let's give this another try 👏",
         } as const;
     }
   } else return { background: "#F3F4F6", fill: "#BCBCBD" } as const;
@@ -90,6 +90,10 @@ export const capitalizeFirstLetterOfEachWord = (input: string): string => {
   return capitalizedWords.join(" ");
 };
 
+export const hyphenateString = (val: string) => {
+  return val.replace(/ /g, "-");
+};
+
 export const getRandomNumberInRange = (
   startRange: number,
   endRange: number
@@ -105,5 +109,5 @@ export const getRandomNumberInRange = (
 
 export const convertMegaBytesToBytes = (byte: number): number => {
   const conversationRate = 1024;
-  return byte * Math.pow(conversationRate, 2)
+  return byte * Math.pow(conversationRate, 2);
 };

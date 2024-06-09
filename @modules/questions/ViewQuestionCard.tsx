@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import * as moment from "moment";
 import Button from "@/@shared/ui/Button";
 import ScorePill from "./ScorePill";
-import { generateScoreColor } from "@/utils";
+import { generateScoreColor, hyphenateString } from "@/utils";
 import cn from "classnames";
 import { QuestionSummaryModel } from "@/models/questions.model";
 import Link from "next/link";
@@ -16,7 +16,6 @@ interface Props extends QuestionSummaryModel {}
 const ViewQuestionCard: FC<Props> = ({
   count,
   createdAt,
-  documentId,
   score,
   id,
   type,
@@ -30,7 +29,7 @@ const ViewQuestionCard: FC<Props> = ({
 
   const [topicsExpanded, setTopicsExpanded] = useState(false);
 
-  const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`,{
+  const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`, {
     "rotate-180": topicsExpanded,
   });
 
@@ -63,7 +62,11 @@ const ViewQuestionCard: FC<Props> = ({
         <div>
           <TopicPillContainer data={topics} isOpen={topicsExpanded} />
         </div>
-        <Link href={`/questions/practise-questions/${id}`}>
+        <Link
+          href={`/questions/practise-questions/${
+            hyphenateString(type.toLowerCase())
+          }/${id}`}
+        >
           <Button
             title={score !== null ? "Retry" : "Start Assessment"}
             variant="text"

@@ -7,6 +7,7 @@ export interface QuestionsModel {
   answerId: string;
   explanation: string;
   correctAnswerId: string;
+  hint?: string;
 }
 
 export interface GetQuestionByIdModel {
@@ -15,6 +16,7 @@ export interface GetQuestionByIdModel {
   topics: string[];
   documentId: string;
   createdOn: Date;
+  
 }
 
 export interface QuestionOption {
@@ -47,6 +49,7 @@ export interface GetQuestionsQueryModel {
 export interface GenerateQuestionsPayloadModel {
   documentId: string;
   questionCount: string;
+  questionType: string;
   topics?: string[];
   selectedQuestionTopics?: string[];
 }

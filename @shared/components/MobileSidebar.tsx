@@ -9,6 +9,7 @@ import Button from "../ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
 import { logout } from "@/utils";
 import NewDocumentIcon from "@/icons/NewDocumentIcon";
+import { useRouter } from "next/router";
 
 interface Props {
   isSideNav: boolean;
@@ -53,6 +54,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
           isActive={activeNavLink === "/new-document"}
           title="New Document"
           link="/new-document"
+          
         />
         <SidebarItem
           icon={<CourseIcon />}
@@ -68,6 +70,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
               link: `/questions/view-questions/${t.id}`,
               title: t.title,
             }))}
+            callbackOnClick={handleCloseSidebar}
           />
         </div>
       </div>

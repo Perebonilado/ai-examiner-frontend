@@ -11,14 +11,14 @@ interface Props {
     title: string;
     link: string;
   }[];
+  callbackOnClick?: () => void;
 }
 
-const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
+const ExpandableSidebarItem: FC<Props> = ({ title, data, callbackOnClick }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const expandBoxStyling = cn(
-    "transition-max-h duration-500 ease-in-out overflow-hidden pl-8",
-    
+    "transition-max-h duration-500 ease-in-out overflow-hidden pl-8"
   );
 
   const chevronOrientationStyling = cn(
@@ -39,12 +39,16 @@ const ExpandableSidebarItem: FC<Props> = ({ title, data }) => {
 
       <div className={expandBoxStyling}>
         {data?.map((t, idx) => (
-          <div
-            className="flex items-center gap-3 cursor-pointer"
-            key={idx}
-          >
+          <div className="flex items-center gap-3 cursor-pointer" key={idx}>
             <Link href={t.link}>
-              <p className="py-1 text-sm text-gray-300 hover:text-white">{capitalizeFirstLetterOfEachWord(t.title.toLowerCase())}</p>
+              <p
+                onClick={() => {
+                  if (callbackOnClick) callbackOnClick();
+                }}
+                className="py-1 text-sm text-gray-300 hover:text-white"
+              >
+                {capitalizeFirstLetterOfEachWord(t.title.toLowerCase())}
+              </p>
             </Link>
           </div>
         ))}

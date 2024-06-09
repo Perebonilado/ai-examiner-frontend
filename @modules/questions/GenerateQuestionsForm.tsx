@@ -11,15 +11,14 @@ import { useModalContext } from "@/contexts/ModalContext";
 import CloseIcon from "@/icons/CloseIcon";
 import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
 import Switch from "@/@shared/components/Switch";
-import {
-  useGenerateDocumentTopicsMutation,
-  useGetAllSavedDocumentTopicsQuery,
-} from "@/api-services/document-topic.service";
+import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic.service";
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
 
 const initialValues = {
   questionCount: "",
+  questionType: "",
 };
 
 interface Props {
@@ -45,6 +44,8 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
     },
   ] = useGenerateQuestionsMutation();
 
+  const { data: questionTypes } = useGetLookUpsByTypeQuery({ type: "question_type" });
+
   const [
     generateFocusAreas,
     { isLoading: focusAreasLoading, error: focusAreasError, data: focusAreas },
@@ -56,6 +57,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
       generateQuestions({
         documentId,
         questionCount: values.questionCount,
+        questionType: values.questionType,
         selectedQuestionTopics: selectedTopics,
       });
     },
@@ -106,6 +108,25 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
         <FormikProvider value={formik}>
           <Form>
             <div className="flex flex-col gap-[24px]">
+              <div>
+                <label className="text-base font-semibold flex items-center gap-4">
+                  Question Type{" "}
+                  <ToolTip
+                    id="q_generationuu"
+                    message="Choose the type of questions you would love to generate"
+                  />
+                </label>
+                <DropDown
+                  options={questionTypes ?? []}
+                  {...formik.getFieldProps("questionType")}
+                  error={
+                    formik.touched.questionType
+                      ? formik.errors.questionType
+                      : undefined
+                  }
+                />
+              </div>
+
               <div>
                 <label className="text-base font-semibold flex items-center gap-4">
                   Number of Questions{" "}

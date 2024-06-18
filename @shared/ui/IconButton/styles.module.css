@@ -1,0 +1,28 @@
+.root {
+    @apply font-medium flex items-center justify-center rounded-full;
+  }
+  
+  .contained {
+    @apply text-white border border-[#2F004F] bg-[#2F004F];
+  }
+  
+  .contained.disabled {
+    @apply opacity-[.6];
+  }
+  
+  .outlined {
+    @apply bg-[#FFFFFF] text-[#2F004F] border border-[#2F004F];
+  }
+  
+  .small {
+    @apply w-8 h-8;
+  }
+  
+  .medium {
+    @apply w-10 h-10;
+  }
+  
+  .large {
+    @apply w-14 h-14;
+  }
+  

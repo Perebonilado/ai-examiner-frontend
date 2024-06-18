@@ -1,4 +1,4 @@
-import React, { ButtonHTMLAttributes, HTMLAttributes, forwardRef } from "react";
+import React, { ButtonHTMLAttributes, forwardRef } from "react";
 import s from "./styles.module.css";
 import cn from "classnames";
 

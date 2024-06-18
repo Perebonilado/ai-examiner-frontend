@@ -14,6 +14,10 @@ import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import * as moment from "moment";
 import ChevronLeft from "@/icons/ChevronLeft";
+import MCQItemContainerPDF from "@/@modules/questions/MCQItemContainerPDF";
+import IconButton from "@/@shared/ui/IconButton";
+import DotsIcon from "@/icons/DotsIcon";
+import Dialog from "@/@shared/components/Dialog";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -52,17 +56,37 @@ const Practice: NextPage = () => {
   return (
     <>
       <AppHead title="Multiple Choice" />
+
       <AppLayout>
         {data && (
-          <Button
-            title="Back"
-            variant="text"
-            starticon={<ChevronLeft />}
-            className="!gap-1 mb-6 mt-7"
-            onClick={() => {
-              router.push(`/questions/view-questions/${data?.documentId}`);
-            }}
-          />
+          <div className="flex items-center justify-between mb-6">
+            <Button
+              title="Back"
+              variant="text"
+              starticon={<ChevronLeft />}
+              className="!gap-1 mb-6 mt-7"
+              onClick={() => {
+                router.push(`/questions/view-questions/${data?.documentId}`);
+              }}
+            />
+
+            <IconButton
+              icon={<DotsIcon />}
+              title="More"
+              onClick={() => {
+                setModalContent(
+                  <Dialog>
+                    <MCQItemContainerPDF
+                      data={data.data}
+                      title={capitalizeFirstLetterOfEachWord(
+                        data.documentTitle.toLowerCase()
+                      )}
+                    />
+                  </Dialog>
+                );
+              }}
+            />
+          </div>
         )}
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">

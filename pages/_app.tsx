@@ -5,7 +5,8 @@ import { reduxStore } from "@/config/redux-config";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ModalProvider from "@/contexts/ModalContext";
-import 'react-tooltip/dist/react-tooltip.css'
+import "react-tooltip/dist/react-tooltip.css";
+import { Analytics } from "@vercel/analytics/react";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -14,6 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <Component {...pageProps} />
       </ModalProvider>
       <ToastContainer />
+      <Analytics />
     </Provider>
   );
 }

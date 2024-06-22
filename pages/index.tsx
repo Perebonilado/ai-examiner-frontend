@@ -5,6 +5,7 @@ import descriptionData from "../json-data/description.json";
 import DescriptionItemContainer from "@/@modules/home/DescriptionItemContainer";
 import TestKnowledge from "@/@modules/home/TestKnowledge";
 import FAQContainer from "@/@modules/home/FAQContainer";
+import Footer from "@/@shared/components/Footer";
 
 export default function Home() {
   return (
@@ -15,6 +16,7 @@ export default function Home() {
       <DescriptionItemContainer data={descriptionData} />
       <TestKnowledge />
       <FAQContainer />
+      <Footer />
     </>
   );
 }

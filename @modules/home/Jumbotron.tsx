@@ -96,9 +96,9 @@ const Jumbotron: FC = () => {
               </Link>
             </div>
           </div>
-          <div style={{ flex: 1 }} className="max-md:hidden">
+          <div style={{ flex: 1 }} className="max-md:hidden flex items-center justify-center">
             <div
-              className="w-full h-full relative"
+              className="w-full h-full relative max-w-[550px]"
               style={{
                 background:
                   "url(/home/jumbotron-bg.png) no-repeat center center / 100% auto",

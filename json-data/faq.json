@@ -1,17 +1,17 @@
 [
   {
     "id": 1,
-    "body": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor eos veniam voluptatibus non cupiditate deserunt omnis? Vitae quod autem explicabo vel esse laborum ratione corporis cumque neque, molestias eligendi ducimus exercitationem similique rerum reprehenderit, quaerat dicta tempora facilis earum quidem, possimus ipsa molestiae et",
+    "body": "Our platform supports the following file types: PDF (Portable Document Format), DOCX (Microsoft Word Document) and PPTX (Microsoft PowerPoint Presentation)",
     "title": "What document types can I upload"
   },
   {
     "id": 2,
-    "body": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor eos veniam voluptatibus non cupiditate deserunt omnis? Vitae quod autem explicabo vel esse laborum ratione corporis cumque neque, molestias eligendi ducimus exercitationem similique rerum reprehenderit, quaerat dicta tempora facilis earum quidem, possimus ipsa molestiae et",
+    "body": "Yes, you can be quizzed on a specific topic of your choice. AI Examiner recommends topics based on the content you upload and further provides the option to choose a single topic or multiple topics from the list generated by the system.",
     "title": "Can i be quizzed on just a particular topic?"
   },
   {
     "id": 3,
-    "body": "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Dolor eos veniam voluptatibus non cupiditate deserunt omnis? Vitae quod autem explicabo vel esse laborum ratione corporis cumque neque, molestias eligendi ducimus exercitationem similique rerum reprehenderit, quaerat dicta tempora facilis earum quidem, possimus ipsa molestiae et",
+    "body": "Yes, AI Examiner provides detailed explanations for all questions you answer incorrectly. Understanding why an answer is incorrect is crucial for learning and improvement. When you get a question wrong, you will receive a thorough explanation that breaks down the correct answer and clarifies the key concepts.",
     "title": "Will I get explanations to questions I get wrong?"
   }
 ]

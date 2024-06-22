@@ -27,13 +27,13 @@ const AccordionItem: FC<Props> = ({ id, body, title, isOpen, handleClick }) => {
   );
 
   return (
-    <div className="border border-black bg-white rounded-xl">
-      <div
-        onClick={() => {
-          handleClick(id);
-        }}
-        className="flex items-center justify-between cursor-pointer p-5"
-      >
+    <div
+      className="border border-black bg-white rounded-xl cursor-pointer"
+      onClick={() => {
+        handleClick(id);
+      }}
+    >
+      <div className="flex items-center justify-between p-5">
         <p className="text-lg font-medium max-md:text-base">{title}</p>
         <div className={chevronContainerStyling}>
           <ChevronDown />

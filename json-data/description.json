@@ -2,11 +2,11 @@
   {
     "title": "Learn with flashcards",
     "body": "Just upload your study materials, and our free AI tool will create the perfect challenging questions for you.",
-    "videoSrc": "/videos/home/flashcards.mp4"
+    "videoSrc": "https://res.cloudinary.com/dtlhut3ew/video/upload/v1719092348/IMG_1680_djrtrx.mov"
   },
   {
     "title": "AI-Generated topics",
     "body": "Effortlessly get personalized topic recommendations with just one click of the advanced feature.",
-    "videoSrc": "/videos/home/advanced-pref.mp4"
+    "videoSrc": "https://res.cloudinary.com/dtlhut3ew/video/upload/v1719092348/IMG_1681_jpeurr.mov"
   }
 ]

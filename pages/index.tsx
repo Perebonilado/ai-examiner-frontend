@@ -4,6 +4,7 @@ import Navbar from "@/@shared/components/Navbar";
 import descriptionData from "../json-data/description.json";
 import DescriptionItemContainer from "@/@modules/home/DescriptionItemContainer";
 import TestKnowledge from "@/@modules/home/TestKnowledge";
+import FAQContainer from "@/@modules/home/FAQContainer";
 
 export default function Home() {
   return (
@@ -13,6 +14,7 @@ export default function Home() {
       <Jumbotron />
       <DescriptionItemContainer data={descriptionData} />
       <TestKnowledge />
+      <FAQContainer />
     </>
   );
 }

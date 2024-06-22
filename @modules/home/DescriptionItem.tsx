@@ -28,7 +28,7 @@ const DescriptionItem: FC<Props> = ({
         <h3 className="text-[#360B58] font-bold text-4xl max-md:text-3xl leading-relaxed">
           {title}
         </h3>
-        <p className="mt-3 text-base max-md:text-sm">{body}</p>
+        <p className="mt-3 text-base">{body}</p>
       </div>
       <div className={imageContainerStyling} style={{ flex: 4 }}>
         <div className="md:h-[550px] max-md:h-[400px] w-full max-w-[700px] relative">

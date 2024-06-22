@@ -15,10 +15,11 @@ const Jumbotron: FC = () => {
   return (
     <section>
       <Container>
-        <div className="min-h-screen flex max-md:flex-col">
-          <div style={{ flex: 1 }} className="pt-20 ">
+        <div className="min-h-screen gap-4 flex max-md:flex-col">
+          <div style={{ flex: 1 }} className="flex flex-col justify-center">
             <h1 className="text-5xl max-md:text-4xl leading-relaxed font-bold text-left">
-              The smart practice tool to boost your exam scores.
+              The <span className="text-[#9A67E2]">smart practice</span> tool to
+              boost your exam scores.
             </h1>
             <h3 className="text-2xl mt-4 leading-relaxed text-left  max-md:text-xl">
               Just upload your study materials, and our free AI tool will create
@@ -96,11 +97,17 @@ const Jumbotron: FC = () => {
             </div>
           </div>
           <div style={{ flex: 1 }} className="max-md:hidden">
-            <div className="w-full h-full relative">
+            <div
+              className="w-full h-full relative"
+              style={{
+                background:
+                  "url(/home/jumbotron-bg.png) no-repeat center center / 100% auto",
+              }}
+            >
               <Image
                 layout="fill"
                 objectFit="contain"
-                objectPosition="100% 0%"
+                objectPosition="100% 50%"
                 src={"/home/jumbotron-3d.png"}
                 alt="ai examiner logo"
               />

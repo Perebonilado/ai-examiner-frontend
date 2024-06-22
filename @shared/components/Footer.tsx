@@ -7,7 +7,7 @@ import { FooterLink } from "@/models/footer.model";
 
 const Footer: FC = () => {
   return (
-    <footer className="bg-[#2F004F] py-10">
+    <footer className="bg-[#2F004F] py-10 text-sm">
       <Container>
         <AppLogoAlt />
         <div className="mt-6 flex gap-4 max-sm:gap-16 text-white max-md:flex-col">

@@ -29,6 +29,7 @@ const DescriptionItem: FC<Props> = ({ title, body, isEven = false, videoSrc }) =
             <video
               autoPlay={true}
               loop={true}
+              muted={true}
               className="!bg-transparent"
             >
               <source src={videoSrc} type="video/mp4" />

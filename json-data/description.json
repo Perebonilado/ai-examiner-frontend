@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Learn with flashcards",
+    "body": "Just upload your study materials, and our free AI tool will create the perfect challenging questions for you.",
+    "imageSrc": "/home/flash-cards.png",
+    "imageAlt": "Learn with flashcards"
+  },
+  {
+    "title": "AI-Generated topics",
+    "body": "Effortlessly get personalized topic recommendations with just one click of the advanced feature.",
+    "imageSrc": "/home/ai-generated.png",
+    "imageAlt": "AI-Generated topics"
+  }
+]

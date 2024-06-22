@@ -23,7 +23,7 @@ const DescriptionItem: FC<Props> = ({
   });
 
   return (
-    <div className="flex even:flex-row-reverse gap-6 items-center w-full max-w-[1250px] mx-auto max-md:!flex-col max-md:items-center">
+    <div className="flex even:flex-row-reverse gap-6 max-md:gap-16 items-center w-full max-w-[1250px] mx-auto max-md:!flex-col max-md:items-center">
       <div className="w-full md:max-w-[300px]" style={{ flex: 2 }}>
         <h3 className="text-[#360B58] font-bold text-4xl max-md:text-3xl leading-relaxed">
           {title}

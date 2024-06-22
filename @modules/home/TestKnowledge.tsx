@@ -17,7 +17,7 @@ const TestKnowledge: FC = () => {
         </p>
 
         <div
-          className="relative h-[500px] w-full"
+          className="relative h-[500px] w-full mt-16 max-md:mt-4"
           style={{
             background:
               "url(/home/jumbotron-bg.png) no-repeat center center / 40% auto",

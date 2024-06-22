@@ -21,7 +21,7 @@ const Jumbotron: FC = () => {
               The <span className="text-[#9A67E2]">smart practice</span> tool to
               boost your exam scores.
             </h1>
-            <h3 className="text-2xl mt-4 leading-relaxed text-left  max-md:text-xl">
+            <h3 className="text-base mt-4 leading-relaxed text-left  max-md:text-xl w-full max-w-[560px]">
               Just upload your study materials, and our free AI tool will create
               the perfect challenging questions for you.
             </h3>

@@ -9,8 +9,7 @@ interface Props {
   data: {
     title: string;
     body: string;
-    imageSrc: string;
-    imageAlt: string;
+    videoSrc: string;
   }[];
 }
 

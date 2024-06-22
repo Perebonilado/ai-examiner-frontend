@@ -5,18 +5,11 @@ import cn from "classnames";
 interface Props {
   title: string;
   body: string;
-  imageSrc: string;
-  imageAlt: string;
+  videoSrc: string;
   isEven?: boolean;
 }
 
-const DescriptionItem: FC<Props> = ({
-  title,
-  body,
-  imageSrc,
-  imageAlt,
-  isEven = false,
-}) => {
+const DescriptionItem: FC<Props> = ({ title, body, isEven = false, videoSrc }) => {
   const imageContainerStyling = cn(`w-full flex`, {
     ["even:justify-end"]: isEven,
     ["odd:justify-start"]: !isEven,
@@ -31,14 +24,17 @@ const DescriptionItem: FC<Props> = ({
         <p className="mt-3 text-base">{body}</p>
       </div>
       <div className={imageContainerStyling} style={{ flex: 4 }}>
-        <div className="md:h-[550px] max-md:h-[400px] w-full max-w-[700px] relative">
-          <Image
-            layout="fill"
-            objectFit="contain"
-            objectPosition="50% 0"
-            src={imageSrc}
-            alt={imageAlt}
-          />
+        <div className="w-full max-w-[700px] relative">
+          <div className="overflow-hidden max-h-[690px] flex items-center">
+            <video
+              autoPlay={true}
+              muted={true}
+              loop={true}
+              className="!bg-transparent"
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          </div>
         </div>
       </div>
     </div>

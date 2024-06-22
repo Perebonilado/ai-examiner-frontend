@@ -28,7 +28,7 @@ const DescriptionItem: FC<Props> = ({ title, body, isEven = false, videoSrc }) =
           <div className="overflow-hidden max-h-[690px] flex items-center">
             <video
               autoPlay={true}
-              muted={true}
+              playsInline={true}
               loop={true}
               className="!bg-transparent"
             >

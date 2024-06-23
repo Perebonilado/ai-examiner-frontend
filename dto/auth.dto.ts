@@ -13,3 +13,14 @@ export interface SignUpDto {
   };
   message: string;
 }
+
+export interface ForgotPasswordDto {
+  message: string;
+  status: number;
+}
+
+export interface ResetPasswordDto {
+  data: { data: null },
+  message: string,
+  status: number,
+}

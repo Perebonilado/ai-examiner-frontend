@@ -128,7 +128,7 @@ const LoginForm: FC = () => {
               />
             </div>
 
-            <div className="flex gap-1 items-center justify-center pb-10">
+            <div className="flex gap-1 items-center justify-center">
               <p className="text-[#667185]"> Are you new here?</p>{" "}
               <Button
                 type="button"
@@ -136,6 +136,17 @@ const LoginForm: FC = () => {
                 variant="text"
                 onClick={() => {
                   router.push("/auth/signup");
+                }}
+              />
+            </div>
+            <div className="flex gap-1 items-center justify-center pb-10">
+              <p className="text-[#667185]"> Can't remember your password?</p>{" "}
+              <Button
+                type="button"
+                title="Reset Password"
+                variant="text"
+                onClick={() => {
+                  router.push("/auth/forgot-password");
                 }}
               />
             </div>

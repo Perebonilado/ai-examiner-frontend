@@ -1,7 +1,17 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL } from "../constants";
-import { LoginDto, SignUpDto } from "@/dto/auth.dto";
-import { LoginPayload, SignUpPayload } from "@/models/auth.model";
+import {
+  ForgotPasswordDto,
+  LoginDto,
+  ResetPasswordDto,
+  SignUpDto,
+} from "@/dto/auth.dto";
+import {
+  ForgotPasswordPayload,
+  LoginPayload,
+  ResetPasswordPayload,
+  SignUpPayload,
+} from "@/models/auth.model";
 import { secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
@@ -27,7 +37,26 @@ export const AuthService = createApi({
         body,
       }),
     }),
+    forgotPassword: build.mutation<ForgotPasswordDto, ForgotPasswordPayload>({
+      query: (body) => ({
+        url: "forgot-password",
+        method: "POST",
+        body,
+      }),
+    }),
+    resetPassword: build.mutation<ResetPasswordDto, ResetPasswordPayload>({
+      query: (body) => ({
+        url: "reset-password",
+        method: "POST",
+        body,
+      }),
+    }),
   }),
 });
 
-export const { useLoginMutation, useSignUpMutation } = AuthService;
+export const {
+  useLoginMutation,
+  useSignUpMutation,
+  useForgotPasswordMutation,
+  useResetPasswordMutation,
+} = AuthService;

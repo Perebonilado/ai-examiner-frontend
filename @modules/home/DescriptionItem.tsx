@@ -24,11 +24,12 @@ const DescriptionItem: FC<Props> = ({
   useEffect(() => {
     playVideo();
 
-    setInterval(() => {
+    const intervalId = setInterval(() => {
       repeatVideo();
     }, 1000);
 
     return () => {
+      clearInterval(intervalId);
       stopVideo();
     };
   }, []);
@@ -66,7 +67,12 @@ const DescriptionItem: FC<Props> = ({
       <div className={imageContainerStyling} style={{ flex: 4 }}>
         <div className="w-full max-w-[700px] relative">
           <div className="overflow-hidden max-h-[690px] flex items-center">
-            <video muted={true} className="!bg-transparent" ref={ref}>
+            <video
+              muted
+              playsInline
+              className="!bg-transparent"
+              ref={ref}
+            >
               <source src={videoSrc} type="video/mp4" />
             </video>
           </div>

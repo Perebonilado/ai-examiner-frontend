@@ -139,7 +139,7 @@ const LoginForm: FC = () => {
                 }}
               />
             </div>
-            <div className="flex gap-1 items-center justify-center pb-10">
+            <div className="flex max-sm:flex-col gap-1 items-center justify-center pb-10">
               <p className="text-[#667185]"> Can't remember your password?</p>{" "}
               <Button
                 type="button"

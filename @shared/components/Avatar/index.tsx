@@ -3,7 +3,7 @@ import Image from "next/image";
 import c from "classnames";
 import s from "./styles.module.css";
 
-interface Props {
+interface Props extends React.HTMLAttributes<HTMLDivElement> {
   size?: "sm" | "md" | "lg";
   imageUrl?: string;
   fallBack: string;
@@ -20,6 +20,7 @@ const Avatar: FC<Props> = ({
   shape = "round",
   alt,
   slateBg = true,
+  ...props
 }) => {
   const rootClassName = c(s.root, {
     [s.sm]: size === "sm",
@@ -31,20 +32,26 @@ const Avatar: FC<Props> = ({
   });
 
   return (
-    <div className={rootClassName}>
+    <div className={rootClassName} {...props}>
       {imageUrl ? (
-        <Image
-          layout="fill"
-          objectFit="cover"
-          objectPosition="50% 50%"
-          style={{
-            cursor: "pointer",
-          }}
-          src={imageUrl}
-          alt={alt}
-        />
+        <div className="w-full h-full relative rounded-full overflow-hidden">
+          <Image
+            layout="fill"
+            objectFit="cover"
+            objectPosition="50% 50%"
+            style={{
+              cursor: "pointer",
+            }}
+            src={imageUrl}
+            alt={alt}
+          />
+        </div>
       ) : (
-        <p className={`font-bold ${size === "lg" ? "text-4xl" : "text-lg"}`}>
+        <p
+          className={`font-bold border border-rose-700 ${
+            size === "lg" ? "text-4xl" : "text-lg"
+          }`}
+        >
           {fallBack.toUpperCase()}
         </p>
       )}

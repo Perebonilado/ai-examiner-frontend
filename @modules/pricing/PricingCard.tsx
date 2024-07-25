@@ -1,0 +1,54 @@
+import Button from "@/@shared/ui/Button";
+import CheckMark from "@/icons/CheckMark";
+import { PricingModel } from "@/models/pricing.model";
+import React, { FC } from "react";
+
+interface Props extends PricingModel {}
+
+const PricingCard: FC<Props> = ({ type, costPerMonth, currency, offers }) => {
+  const buttonTextBasedOnPlanType = new Map<string, string>([
+    ["free", "Try Free Plan"],
+    ["standard", "Choose Standard"],
+    ["premium", "Choose Premium"],
+  ]);
+
+  const currencySignMap = new Map<string, string>([
+    ["USD", "$"],
+    ["NGN", "₦"],
+  ]);
+
+  return (
+    <div className="rounded-lg w-full max-w-[280px] px-4 flex flex-col py-6 h-[450px] bg-white border border-black">
+      <div style={{ flex: 1 }}>
+        <p className="text-center font-bold mb-3">{type}</p>
+        <p className="text-center">
+          <span className="text-2xl font-bold text-[#9A67C2]">
+            {currencySignMap.get(currency)}
+            {costPerMonth}
+          </span>
+          /month
+        </p>
+      </div>
+
+      <div className="flex flex-col gap-3 pt-4" style={{ flex: 3 }}>
+        {offers.map((offer, idx) => {
+          return (
+            <div key={idx} className="flex items-center gap-2">
+              <CheckMark />
+              {offer}
+            </div>
+          );
+        })}
+      </div>
+
+      <div style={{ flex: 1 }}>
+        <Button
+          title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
+          fullWidth
+        />
+      </div>
+    </div>
+  );
+};
+
+export default PricingCard;

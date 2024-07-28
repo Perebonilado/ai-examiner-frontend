@@ -1,9 +1,9 @@
 import Container from "@/@shared/ui/Container";
-import { PricingModel } from "@/models/pricing.model";
 import React, { FC } from "react";
-import PricingCardContainer from "./PricingCardContainer";
+import PlanCardContainer from "./PlanCardContainer";
+import { PlanModel } from "@/models/plan.model";
 
-const PricingContainer: FC = () => {
+const PlanContainer: FC = () => {
   return (
     <section className="bg-[#FAFAFA]">
       <Container>
@@ -13,16 +13,16 @@ const PricingContainer: FC = () => {
             Start generating questions to strengthen your knowledge{" "}
           </p>
 
-          <PricingCardContainer plans={mock} />
+          <PlanCardContainer plans={mock} />
         </div>
       </Container>
     </section>
   );
 };
 
-export default PricingContainer;
+export default PlanContainer;
 
-const mock: PricingModel[] = [
+const mock: PlanModel[] = [
   {
     type: "Free",
     costPerMonth: 9.99,

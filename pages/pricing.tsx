@@ -1,4 +1,4 @@
-import PricingContainer from "@/@modules/pricing/PricingContainer";
+import PlanContainer from "@/@modules/pricing/PlanContainer";
 import AppHead from "@/@shared/components/AppHead";
 import Footer from "@/@shared/components/Footer";
 import Navbar from "@/@shared/components/Navbar";
@@ -10,7 +10,7 @@ const Pricing: NextPage = () => {
     <>
       <AppHead />
       <Navbar />
-      <PricingContainer />
+      <PlanContainer />
       <Footer />
     </>
   );

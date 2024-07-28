@@ -1,11 +1,11 @@
 import Button from "@/@shared/ui/Button";
 import CheckMark from "@/icons/CheckMark";
-import { PricingModel } from "@/models/pricing.model";
+import { PlanModel } from "@/models/plan.model";
 import React, { FC } from "react";
 
-interface Props extends PricingModel {}
+interface Props extends PlanModel {}
 
-const PricingCard: FC<Props> = ({ type, costPerMonth, currency, offers }) => {
+const PlanCard: FC<Props> = ({ type, costPerMonth, currency, offers }) => {
   const buttonTextBasedOnPlanType = new Map<string, string>([
     ["free", "Try Free Plan"],
     ["standard", "Choose Standard"],
@@ -51,4 +51,4 @@ const PricingCard: FC<Props> = ({ type, costPerMonth, currency, offers }) => {
   );
 };
 
-export default PricingCard;
+export default PlanCard;

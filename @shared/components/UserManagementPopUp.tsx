@@ -17,7 +17,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
     const router = useRouter();
 
     const baseStyles = cn(
-      `w-[240px] p-4 shadow-md bg-white rounded-lg absolute top-full right-0`,
+      `w-[240px] p-4 shadow-md bg-white rounded-lg absolute top-full right-0 z-[800]`,
       {
         ["block"]: isOpen,
         ["hidden"]: !isOpen,

@@ -36,7 +36,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
         <div className="flex flex-col gap-y-3 pb-[12px] border-b border-b-gray-200">
           <Link href={"/account/profile"}>
             <Button
-              title="Edit Profile"
+              title="View Profile"
               variant="text"
               size="small"
               className="!text-black"

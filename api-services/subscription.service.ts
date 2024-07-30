@@ -129,6 +129,7 @@ export const SubscriptionService = createApi({
               ],
               subscription: [
                 ["Plan", res.planInformation.name || "N/A"],
+                ["Frequency", "Monthly"],
                 [
                   "Amount",
                   res.planInformation

@@ -1,4 +1,4 @@
-export interface InitiateSubscriptionQueryModel {
+export interface InitiateSubscriptionPayloadModel {
   planId: string;
 }
 
@@ -22,4 +22,9 @@ export interface RestartSubscriptionPayloadModel {
 
 export interface RestartSubscriptionModel {
   status: boolean;
+}
+
+export interface SubscriptionDetailsModel {
+  billing: [string, string][];
+  subscription: [string, string][];
 }

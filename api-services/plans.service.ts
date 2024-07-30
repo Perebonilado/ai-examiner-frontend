@@ -59,7 +59,7 @@ export const PlanService = createApi({
                 currency: plan.currency,
                 offers: plan.description.split(","),
                 type: plan.planName,
-                planId: plan.planId
+                planId: plan.planId,
               };
             });
           }
@@ -68,3 +68,5 @@ export const PlanService = createApi({
     };
   },
 });
+
+export const { useGetPlansQuery } = PlanService;

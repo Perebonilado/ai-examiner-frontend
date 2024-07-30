@@ -55,3 +55,5 @@ export const PermissionService = createApi({
     }),
   }),
 });
+
+export const { useGetPermissionsQuery } = PermissionService;

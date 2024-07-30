@@ -1,9 +1,34 @@
 import Container from "@/@shared/ui/Container";
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import PlanCardContainer from "./PlanCardContainer";
 import { PlanModel } from "@/models/plan.model";
+import { useGetPlansQuery } from "@/api-services/plans.service";
+import { toast } from "react-toastify";
+import { AppLoader } from "@/@shared/components/AppLoader";
+import { useModalContext } from "@/contexts/ModalContext";
 
 const PlanContainer: FC = () => {
+  const { data: plans, isLoading, error, refetch } = useGetPlansQuery('')
+
+  const { setModalContent } = useModalContext();
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
+
   return (
     <section className="bg-[#FAFAFA]">
       <Container>
@@ -13,7 +38,7 @@ const PlanContainer: FC = () => {
             Start generating questions to strengthen your knowledge{" "}
           </p>
 
-          <PlanCardContainer plans={mock} />
+          <PlanCardContainer plans={plans ?? []} />
         </div>
       </Container>
     </section>
@@ -22,32 +47,3 @@ const PlanContainer: FC = () => {
 
 export default PlanContainer;
 
-const mock: PlanModel[] = [
-  {
-    type: "Free",
-    costPerMonth: 9.99,
-    currency: "USD",
-    offers: ["Access to basic features", "Email support"],
-  },
-  {
-    type: "Standard",
-    costPerMonth: 19.99,
-    currency: "USD",
-    offers: [
-      "Access to all features",
-      "Priority email support",
-      "Monthly reports",
-    ],
-  },
-  {
-    type: "Premium",
-    costPerMonth: 49.99,
-    currency: "USD",
-    offers: [
-      "Customizable features",
-      "Dedicated account manager",
-      "24/7 support",
-      "Quarterly business reviews",
-    ],
-  },
-];

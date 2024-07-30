@@ -55,3 +55,5 @@ export const UserService = createApi({
     }),
   }),
 });
+
+export const { useGetUserProfileQuery } = UserService;

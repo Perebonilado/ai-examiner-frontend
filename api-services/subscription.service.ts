@@ -12,14 +12,16 @@ import {
   CancelSubscriptionModel,
   CancelSubscriptionPayloadModel,
   InitiateSubscriptionModel,
-  InitiateSubscriptionQueryModel,
+  InitiateSubscriptionPayloadModel,
   RestartSubscriptionModel,
   RestartSubscriptionPayloadModel,
+  SubscriptionDetailsModel,
 } from "@/models/subscription.model";
 import {
   CancelSubscriptionDto,
   InitiateSubscriptionDto,
   RestartSubscriptionDto,
+  SubscriptionDetailsDto,
 } from "@/dto/subscription.dto";
 
 const baseQuery = fetchBaseQuery({
@@ -56,13 +58,14 @@ export const SubscriptionService = createApi({
   baseQuery: baseQueryWithLogoutOnTokenExpiration,
   endpoints: (build) => {
     return {
-      initiateSubscription: build.query<
+      initiateSubscription: build.mutation<
         InitiateSubscriptionModel,
-        InitiateSubscriptionQueryModel
+        InitiateSubscriptionPayloadModel
       >({
         query: ({ planId }) => ({
           url: `/initiate`,
-          params: {
+          method: "POST",
+          body: {
             planId,
           },
         }),
@@ -70,7 +73,7 @@ export const SubscriptionService = createApi({
           if (!res) return <InitiateSubscriptionModel>{};
           else {
             return {
-              redirectUrl: res.redirectUrl,
+              redirectUrl: res.data.redirectUrl,
             };
           }
         },
@@ -82,7 +85,7 @@ export const SubscriptionService = createApi({
         query: (body) => ({
           url: "/cancel",
           method: "POST",
-          body,        
+          body,
         }),
         transformResponse: (res: CancelSubscriptionDto) => {
           if (!res) return <CancelSubscriptionModel>{};
@@ -96,13 +99,54 @@ export const SubscriptionService = createApi({
         query: (body) => ({
           url: "/restart",
           method: "POST",
-          body,        
+          body,
         }),
         transformResponse: (res: RestartSubscriptionDto) => {
           if (!res) return <RestartSubscriptionModel>{};
           else return res;
         },
       }),
+      getSubscriptionDetails: build.query<SubscriptionDetailsModel, "">({
+        query: () => ({
+          url: "/details",
+        }),
+        transformResponse: (res: SubscriptionDetailsDto) => {
+          if (!res) return <SubscriptionDetailsModel>{};
+          else {
+            return {
+              billing: [
+                ["Account name", res.cardInformation.accountName || "N/A"],
+                ["Bank", res.cardInformation.bank || "N/A"],
+                [
+                  "Expiration month",
+                  res.cardInformation.expirationMonth || "N/A",
+                ],
+                [
+                  "Expiration year",
+                  res.cardInformation.expirationYear || "N/A",
+                ],
+                ["Last 4 digits", res.cardInformation.last4 ? `**** **** **** ${res.cardInformation.last4}` : null || "N/A"],
+              ],
+              subscription: [
+                ["Plan", res.planInformation.name || "N/A"],
+                [
+                  "Amount",
+                  res.planInformation
+                    ? `${res.planInformation.currency}${res.planInformation.amount}`
+                    : null || "N/A",
+                ],
+              ],
+            };
+          }
+        },
+      }),
     };
   },
 });
+
+export const {
+  useCancelSubscriptionMutation,
+  useInitiateSubscriptionMutation,
+  useRestartSubscriptionMutation,
+  useGetSubscriptionDetailsQuery,
+} = SubscriptionService;

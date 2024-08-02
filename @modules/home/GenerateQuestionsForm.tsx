@@ -19,7 +19,8 @@ import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
-import { hyphenateString } from "@/utils";
+import { generateQustionCountOptions, getQuestionTypeBasedOnPermission, hyphenateString } from "@/utils";
+import { usePermissionContext } from "@/contexts/PermissionContext";
 
 const initialValues = {
   title: "",
@@ -51,11 +52,14 @@ const GenerateQuestionsForm: FC = () => {
   const router = useRouter();
 
   const { setModalContent } = useModalContext();
+  const { permissions } = usePermissionContext();
 
   const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
     useAddDocumentMutation();
 
-  const { data: questionTypes } = useGetLookUpsByTypeQuery({ type: "question_type" });
+  const { data: questionTypes } = useGetLookUpsByTypeQuery({
+    type: "question_type",
+  });
 
   const [
     uploadFile,
@@ -110,7 +114,11 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (data) {
-      router.push(`/questions/practise-questions/${hyphenateString(data.type.toLowerCase())}/${data.questionId}`);
+      router.push(
+        `/questions/practise-questions/${hyphenateString(
+          data.type.toLowerCase()
+        )}/${data.questionId}`
+      );
     }
   }, [data]);
 
@@ -159,7 +167,7 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [file, fileId]);
 
-  return (
+  return !permissions ? null : (
     <section>
       <FormikProvider value={formik}>
         <Form>
@@ -185,7 +193,7 @@ const GenerateQuestionsForm: FC = () => {
                   setFileId(null);
                 }
               }}
-              maxFileSizeMB={15}
+              maxFileSizeMB={permissions.maxFileSizeAllowed}
             />
 
             <div>
@@ -197,7 +205,12 @@ const GenerateQuestionsForm: FC = () => {
                 />
               </label>
               <DropDown
-                options={questionTypes ?? []}
+                options={
+                  getQuestionTypeBasedOnPermission(
+                    permissions,
+                    questionTypes
+                  ) ?? []
+                }
                 {...formik.getFieldProps("questionType")}
                 error={
                   formik.touched.questionType
@@ -215,14 +228,9 @@ const GenerateQuestionsForm: FC = () => {
                   message="Please note that generating more questions typically takes more time"
                 />
               </label>
+
               <DropDown
-                options={[
-                  { label: "5", value: "5", defaultSelected: true },
-                  { label: "10", value: "10" },
-                  { label: "15", value: "15" },
-                  { label: "20", value: "20" },
-                  { label: "25", value: "25" },
-                ]}
+                options={generateQustionCountOptions(permissions.maxQA)}
                 {...formik.getFieldProps("questionCount")}
                 error={
                   formik.touched.questionCount
@@ -232,7 +240,7 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <div className="flex items-center gap-3">
+            {permissions.canUseAdvancedPreferences && <div className="flex items-center gap-3">
               <Switch
                 disabled={!file || !fileId}
                 handleChecked={() => {
@@ -248,7 +256,7 @@ const GenerateQuestionsForm: FC = () => {
                 id="adv"
                 message="Advanced preferences helps you generate questions from specific areas within the document"
               />
-            </div>
+            </div>}
 
             {fileId && isAdvanced && !topicsLoading && topics && (
               <ChipMultiSelect

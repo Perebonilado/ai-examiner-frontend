@@ -17,6 +17,7 @@ import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { usePermissionContext } from "@/contexts/PermissionContext";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -43,6 +44,7 @@ const ViewQuestions: NextPage = () => {
     );
 
   const { setModalContent } = useModalContext();
+  const { permissions } = usePermissionContext();
 
   const handleGenerateQuestions = () => {
     setModalContent(
@@ -99,11 +101,13 @@ const ViewQuestions: NextPage = () => {
               )}{" "}
             </h2>
           )}
-          <Button
-            title="Generate New Questions"
-            onClick={handleGenerateQuestions}
-            size="large"
-          />
+          {permissions && (
+            <Button
+              title="Generate New Questions"
+              onClick={handleGenerateQuestions}
+              size="large"
+            />
+          )}
         </div>
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">

@@ -1,4 +1,6 @@
 import { accessToken, milliSecondToSecondConversionRate } from "@/constants";
+import { LookUpModel } from "@/models/look-up.model";
+import { PermissionModel } from "@/models/permission.model";
 import Cookie from "js-cookie";
 
 export const secondsToMilliSeconds = (seconds: number): number => {
@@ -110,4 +112,53 @@ export const getRandomNumberInRange = (
 export const convertMegaBytesToBytes = (byte: number): number => {
   const conversationRate = 1024;
   return byte * Math.pow(conversationRate, 2);
+};
+
+export const generateQustionCountOptions = (maxCount: number) => {
+  const countsArr: number[] = [5];
+  const incrementVal = 15;
+
+  while (countsArr[countsArr.length - 1] + incrementVal < maxCount) {
+    countsArr.push(countsArr[countsArr.length - 1] + incrementVal);
+  }
+
+  countsArr.push(maxCount);
+
+  const options = countsArr.map((item, idx) => {
+    if (idx === 0) {
+      return { label: `${item}`, value: `${item}`, defaultSelected: true };
+    }
+
+    return { label: `${item}`, value: `${item}` };
+  });
+
+  return options;
+};
+
+export const getQuestionTypeBasedOnPermission = (
+  permissions: PermissionModel,
+  questionTypes?: LookUpModel[]
+) => {
+  if (questionTypes) {
+    const multipleChoiceOption = questionTypes.find(
+      (q) => q.label === "Multiple Choice"
+    )?.label as string;
+    const flashCardsOption = questionTypes.find(
+      (q) => q.label === "Flash Cards"
+    )?.label as string;
+
+    return questionTypes.filter((q) => {
+      if (q.label === multipleChoiceOption) {
+        if (permissions.canGenerateMultipleChoice && multipleChoiceOption) {
+          return multipleChoiceOption;
+        }
+      } else {
+        if (permissions.canGenerateFlashcards && flashCardsOption) {
+          return flashCardsOption;
+        }
+      }
+    });
+  }
+
+  return [];
 };

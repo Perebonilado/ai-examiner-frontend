@@ -13,11 +13,11 @@ import PermissionProvider from "@/contexts/PermissionContext";
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={reduxStore}>
-      <ModalProvider>
-        <PermissionProvider>
+      <PermissionProvider>
+        <ModalProvider>
           <Component {...pageProps} />
-        </PermissionProvider>
-      </ModalProvider>
+        </ModalProvider>
+      </PermissionProvider>
       <ToastContainer />
       <Analytics />
       <SpeedInsights />

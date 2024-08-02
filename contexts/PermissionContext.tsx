@@ -25,7 +25,6 @@ const PermissionProvider: React.FC<React.PropsWithChildren> = ({
 
   useEffect(() => {
     if (data) {
-        console.log(data)
       setPermissions(data);
     }
   }, [data]);

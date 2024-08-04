@@ -19,8 +19,13 @@ import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
-import { generateQustionCountOptions, getQuestionTypeBasedOnPermission, hyphenateString } from "@/utils";
+import {
+  generateQustionCountOptions,
+  getQuestionTypeBasedOnPermission,
+  hyphenateString,
+} from "@/utils";
 import { usePermissionContext } from "@/contexts/PermissionContext";
+import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 
 const initialValues = {
   title: "",
@@ -84,18 +89,23 @@ const GenerateQuestionsForm: FC = () => {
       return;
     }
 
-    createDocAndGenerateQuestions({
-      payload: {
-        fileId: fileId,
-        title: values.title,
-        selectedQuestionTopics: focusAreas.length
-          ? focusAreas.map((f) => f.label)
-          : undefined,
-        topics: topics ? topics.topics.map((t) => t.label) : undefined,
-      },
-      questionCount: values.questionCount,
-      questionType: values.questionType,
-    });
+    if (!permissions?.maxGenerationReached) {
+      setModalContent(<MaxGenerationModal />);
+      return;
+    }
+
+    // createDocAndGenerateQuestions({
+    //   payload: {
+    //     fileId: fileId,
+    //     title: values.title,
+    //     selectedQuestionTopics: focusAreas.length
+    //       ? focusAreas.map((f) => f.label)
+    //       : undefined,
+    //     topics: topics ? topics.topics.map((t) => t.label) : undefined,
+    //   },
+    //   questionCount: values.questionCount,
+    //   questionType: values.questionType,
+    // });
   };
 
   const handleFileUpload = (file: File) => {
@@ -240,23 +250,25 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            {permissions.canUseAdvancedPreferences && <div className="flex items-center gap-3">
-              <Switch
-                disabled={!file || !fileId}
-                handleChecked={() => {
-                  setIsAdvanced(!isAdvanced);
-                  if (!isFocusAreaData)
-                    fetchTopics({ fileId: fileId as string });
-                }}
-                isChecked={isAdvanced}
-                label="Advanced Preferences"
-              />
+            {permissions.canUseAdvancedPreferences && (
+              <div className="flex items-center gap-3">
+                <Switch
+                  disabled={!file || !fileId}
+                  handleChecked={() => {
+                    setIsAdvanced(!isAdvanced);
+                    if (!isFocusAreaData)
+                      fetchTopics({ fileId: fileId as string });
+                  }}
+                  isChecked={isAdvanced}
+                  label="Advanced Preferences"
+                />
 
-              <ToolTip
-                id="adv"
-                message="Advanced preferences helps you generate questions from specific areas within the document"
-              />
-            </div>}
+                <ToolTip
+                  id="adv"
+                  message="Advanced preferences helps you generate questions from specific areas within the document"
+                />
+              </div>
+            )}
 
             {fileId && isAdvanced && !topicsLoading && topics && (
               <ChipMultiSelect

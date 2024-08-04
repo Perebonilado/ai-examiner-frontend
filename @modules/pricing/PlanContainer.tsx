@@ -34,7 +34,7 @@ const PlanContainer: FC = () => {
       <Container>
         <div className="min-h-[80vh] py-20">
           <h1 className="text-center text-3xl font-bold">AI Examiner Plans</h1>
-          <p className="text-center text-base">
+          <p className="text-center text-base mt-4">
             Start generating questions to strengthen your knowledge{" "}
           </p>
 

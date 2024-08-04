@@ -89,23 +89,23 @@ const GenerateQuestionsForm: FC = () => {
       return;
     }
 
-    if (!permissions?.maxGenerationReached) {
+    if (permissions && permissions.maxGenerationReached) {
       setModalContent(<MaxGenerationModal />);
       return;
     }
 
-    // createDocAndGenerateQuestions({
-    //   payload: {
-    //     fileId: fileId,
-    //     title: values.title,
-    //     selectedQuestionTopics: focusAreas.length
-    //       ? focusAreas.map((f) => f.label)
-    //       : undefined,
-    //     topics: topics ? topics.topics.map((t) => t.label) : undefined,
-    //   },
-    //   questionCount: values.questionCount,
-    //   questionType: values.questionType,
-    // });
+    createDocAndGenerateQuestions({
+      payload: {
+        fileId: fileId,
+        title: values.title,
+        selectedQuestionTopics: focusAreas.length
+          ? focusAreas.map((f) => f.label)
+          : undefined,
+        topics: topics ? topics.topics.map((t) => t.label) : undefined,
+      },
+      questionCount: values.questionCount,
+      questionType: values.questionType,
+    });
   };
 
   const handleFileUpload = (file: File) => {

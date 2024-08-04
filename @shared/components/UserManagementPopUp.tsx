@@ -67,7 +67,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
             className="!text-black"
             onClick={() => {
               logout(() => {
-                router.push("/auth/login");
+                window.location.pathname = "/auth/login";
               });
             }}
           />

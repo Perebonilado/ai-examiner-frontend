@@ -6,7 +6,12 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
-import { logout, secondsToMilliSeconds } from "@/utils";
+import {
+  capitalizeWords,
+  logout,
+  removeHyphens,
+  secondsToMilliSeconds,
+} from "@/utils";
 import Cookies from "js-cookie";
 import {
   CancelSubscriptionModel,
@@ -125,18 +130,32 @@ export const SubscriptionService = createApi({
                   "Expiration year",
                   res.cardInformation.expirationYear || "N/A",
                 ],
-                ["Last 4 digits", res.cardInformation.last4 ? `**** **** **** ${res.cardInformation.last4}` : null || "N/A"],
+                [
+                  "Last 4 digits",
+                  res.cardInformation.last4
+                    ? `**** **** **** ${res.cardInformation.last4}`
+                    : null || "N/A",
+                ],
               ],
               subscription: [
                 ["Plan", res.planInformation.name || "N/A"],
                 ["Frequency", "Monthly"],
                 [
                   "Amount",
-                  res.planInformation
+                  res.planInformation?.amount
                     ? `${res.planInformation.currency}${res.planInformation.amount}`
                     : null || "N/A",
                 ],
+                [
+                  "Status",
+                  res.subscrptionInformation.status
+                    ? capitalizeWords(
+                        removeHyphens(res.subscrptionInformation.status)
+                      )
+                    : "N/A",
+                ],
               ],
+              status: res.subscrptionInformation.status
             };
           }
         },

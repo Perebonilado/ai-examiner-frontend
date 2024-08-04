@@ -34,6 +34,8 @@ const Settings: NextPage = () => {
     }
   }, [isLoading]);
 
+  const activeSubscriptionStatuses = ["active", "attention"]
+
   return (
     <>
       <AppHead title="Account Settings" />
@@ -55,15 +57,19 @@ const Settings: NextPage = () => {
               title="Subscription"
               data={data.subscription}
             >
+              {activeSubscriptionStatuses.includes(data.status.toLowerCase()) ? (
+                <Button title="Cancel Subscription" />
+              ) : (
+                <Button title="Renew Subscription" />
+              )}
               <Link href={"/pricing"}>
                 <Button
                   title="View Pricing Plans"
                   variant="text"
-                  className="!mb-6"
+                  className="!mt-6"
                   endicon={<ExternalLinkIcon />}
                 />
               </Link>
-              <Button title="Cancel Subscription" />
             </AccountSettingInformationItemContainer>
           </>
         )}

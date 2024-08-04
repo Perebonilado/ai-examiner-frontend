@@ -27,4 +27,5 @@ export interface RestartSubscriptionModel {
 export interface SubscriptionDetailsModel {
   billing: [string, string][];
   subscription: [string, string][];
+  status: "completed" | "cancelled" | "active" | "non-renewing" | "attention"
 }

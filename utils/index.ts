@@ -162,3 +162,9 @@ export const getQuestionTypeBasedOnPermission = (
 
   return [];
 };
+
+
+export const removeHyphens = (input: string): string => input.replace(/-/g, ' ');
+
+export const capitalizeWords = (input: string): string => input.replace(/\b\w/g, char => char.toUpperCase());
+

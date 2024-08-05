@@ -24,8 +24,9 @@ import {
   getQuestionTypeBasedOnPermission,
   hyphenateString,
 } from "@/utils";
-import { usePermissionContext } from "@/contexts/PermissionContext";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../config/redux-config";
 
 const initialValues = {
   title: "",
@@ -57,7 +58,9 @@ const GenerateQuestionsForm: FC = () => {
   const router = useRouter();
 
   const { setModalContent } = useModalContext();
-  const { permissions } = usePermissionContext();
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
 
   const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
     useAddDocumentMutation();

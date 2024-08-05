@@ -20,6 +20,9 @@ import {
   generateQustionCountOptions,
   getQuestionTypeBasedOnPermission,
 } from "@/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/config/redux-config";
+import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 
 const initialValues = {
   questionCount: "",
@@ -39,7 +42,9 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
   const [isAdvanced, setIsAdvanced] = useState(false);
 
   const { setModalContent } = useModalContext();
-  const { permissions } = usePermissionContext();
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
 
   const [
     generateQuestions,
@@ -62,6 +67,11 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
+      if (permissions && permissions.maxGenerationReached) {
+        setModalContent(<MaxGenerationModal />);
+        return;
+      }
+
       generateQuestions({
         documentId,
         questionCount: values.questionCount,

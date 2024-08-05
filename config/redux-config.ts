@@ -11,6 +11,7 @@ import { SubscriptionService } from "@/api-services/subscription.service";
 import { UserService } from "@/api-services/user.service";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
+import PermissionsReducer from "../features/permissionSlice";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -25,6 +26,7 @@ export const reduxStore = configureStore({
     [SubscriptionService.reducerPath]: SubscriptionService.reducer,
     [UserService.reducerPath]: UserService.reducer,
     [PermissionService.reducerPath]: PermissionService.reducer,
+    permissionsState: PermissionsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([

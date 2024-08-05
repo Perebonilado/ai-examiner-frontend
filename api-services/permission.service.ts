@@ -10,6 +10,7 @@ import { logout, secondsToMilliSeconds } from "@/utils";
 import Cookies from "js-cookie";
 import { PermissionModel } from "@/models/permission.model";
 import { PermissionDto } from "@/dto/permission.dto";
+import { setPermissions } from "@/features/permissionSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/permission`,
@@ -51,6 +52,12 @@ export const PermissionService = createApi({
       transformResponse: (res: PermissionDto) => {
         if (!res) return <PermissionModel>{};
         return res;
+      },
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          const { data } = await queryFulfilled;
+          dispatch(setPermissions(data));
+        } catch (error) {}
       },
     }),
   }),

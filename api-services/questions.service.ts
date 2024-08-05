@@ -21,6 +21,7 @@ import {
   QuestionsDto,
 } from "@/dto/questions.dto";
 import { logout, secondsToMilliSeconds } from "@/utils";
+import { PermissionService } from "./permission.service";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions`,
@@ -80,6 +81,16 @@ export const QuestionsService = createApi({
           };
         }
       },
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            PermissionService.util.prefetch("getPermissions", '', {
+              force: true,
+            })
+          );
+        } catch (error) {}
+      },
     }),
     getQuestionSummaries: build.query<
       GetQuestionSummaryModel,
@@ -120,6 +131,16 @@ export const QuestionsService = createApi({
         body,
       }),
       invalidatesTags: ["question-summary"],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            PermissionService.util.prefetch("getPermissions", '', {
+              force: true,
+            })
+          );
+        } catch (error) {}
+      },
     }),
     saveScore: build.mutation<any, CreateScorePayloadModel>({
       query: (body) => ({

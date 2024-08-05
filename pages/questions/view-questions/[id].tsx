@@ -1,6 +1,5 @@
 import ViewQuestionCardContainer from "@/@modules/questions/ViewQuestionCardContainer";
 import AppHead from "@/@shared/components/AppHead";
-import { AppLoader } from "@/@shared/components/AppLoader";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -12,12 +11,10 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
-import { usePermissionContext } from "@/contexts/PermissionContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 
@@ -58,23 +55,6 @@ const ViewQuestions: NextPage = () => {
       />
     );
   };
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (isLoading || topicsLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading, topicsLoading]);
 
   useEffect(() => {
     if (params) {

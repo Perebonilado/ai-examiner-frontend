@@ -8,8 +8,6 @@ import Button from "@/@shared/ui/Button";
 import { useRouter } from "next/router";
 import { useForgotPasswordMutation } from "@/api-services/auth.service";
 import { toast } from "react-toastify";
-import { useModalContext } from "@/contexts/ModalContext";
-import { AppLoader } from "@/@shared/components/AppLoader";
 
 const initialValues = {
   email: "",
@@ -17,8 +15,6 @@ const initialValues = {
 
 const ForgotPasswordForm: FC = () => {
   const router = useRouter();
-
-  const { setModalContent } = useModalContext();
 
   const [forgotPassword, { isLoading, error, isSuccess }] =
     useForgotPasswordMutation();
@@ -30,23 +26,6 @@ const ForgotPasswordForm: FC = () => {
       forgotPassword({ email: values.email });
     },
   });
-
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
 
   useEffect(() => {
     if (isSuccess) {

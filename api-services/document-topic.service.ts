@@ -1,13 +1,11 @@
-import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
-import { logout, secondsToMilliSeconds } from "@/utils";
+import {
+  baseQueryWithLogoutOnTokenExpiration,
+  logout,
+  secondsToMilliSeconds,
+} from "@/utils";
 import {
   DocumentTopicModel,
   DocumentTopicQueryModel,
@@ -32,23 +30,9 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
-
 export const DocumentTopicService = createApi({
   reducerPath: "document-topic-api",
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["document-topics"],
   endpoints: (build) => ({
     generateDocumentTopics: build.mutation<
@@ -63,7 +47,8 @@ export const DocumentTopicService = createApi({
           documentId,
         },
       }),
-      invalidatesTags: ['document-topics'],
+      extraOptions: { triggerLoading: false },
+      invalidatesTags: ["document-topics"],
       transformResponse: (res: DocumentTopicDto) => {
         if (!res) return <DocumentTopicModel>{};
         else

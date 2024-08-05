@@ -1,14 +1,11 @@
 import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
+  baseQueryWithLogoutOnTokenExpiration,
   capitalizeFirstLetterOfEachWord,
-  logout,
   secondsToMilliSeconds,
 } from "@/utils";
 import Cookies from "js-cookie";
@@ -29,24 +26,10 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
-
 export const UserService = createApi({
   reducerPath: "user",
   tagTypes: ["profile"],
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   endpoints: (build) => ({
     getUserProfile: build.query<UserProfileModel, "">({
       query: () => ({

@@ -1,13 +1,7 @@
-import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
-import { logout } from "@/utils";
+import { baseQueryWithLogoutOnTokenExpiration, logout } from "@/utils";
 import {
   FileUploadModel,
   FileUploadPayloadModel,
@@ -27,30 +21,17 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
-
 export const FileUploadService = createApi({
   reducerPath: "file-upload-api",
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   endpoints: (build) => ({
     uploadFile: build.mutation<FileUploadModel, FileUploadPayloadModel>({
       query: ({ payload }) => ({
         url: "",
         body: payload,
-        method: 'POST'
+        method: "POST",
       }),
+      extraOptions: { triggerLoading: false },
       transformResponse: (res: FileUploadDto) => {
         if (!res) return <FileUploadModel>{};
         else {
@@ -63,4 +44,4 @@ export const FileUploadService = createApi({
   }),
 });
 
-export const { useUploadFileMutation } = FileUploadService
+export const { useUploadFileMutation } = FileUploadService;

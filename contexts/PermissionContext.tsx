@@ -2,7 +2,7 @@
 
 import { useGetPermissionsQuery } from "@/api-services/permission.service";
 import { accessToken } from "@/constants";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 

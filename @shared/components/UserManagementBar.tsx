@@ -1,11 +1,9 @@
-import React, { ElementRef, FC, useEffect, useState } from "react";
+import React, { ElementRef, FC, useState } from "react";
 import Avatar from "./Avatar";
 import UserManagementPopUp from "./UserManagementPopUp";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
 import { useModalContext } from "@/contexts/ModalContext";
-import { toast } from "react-toastify";
-import { AppLoader } from "./AppLoader";
 
 interface Props {
   pageTitle: string;
@@ -18,26 +16,7 @@ const UserManagementBar: FC<Props> = ({ pageTitle }) => {
     setIsPopUp(false);
   });
 
-  const { data, isLoading, error } = useGetUserProfileQuery("");
-
-  const { setModalContent } = useModalContext();
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
+  const { data } = useGetUserProfileQuery("");
 
   return (
     <section className="flex items-center mt-7">
@@ -59,10 +38,7 @@ const UserManagementBar: FC<Props> = ({ pageTitle }) => {
               setIsPopUp(!isPopUp);
             }}
           />
-          {data && <UserManagementPopUp
-            {...data}
-            isOpen={isPopUp}
-          />}
+          {data && <UserManagementPopUp {...data} isOpen={isPopUp} />}
         </div>
       </div>
     </section>

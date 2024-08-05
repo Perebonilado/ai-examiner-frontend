@@ -1,14 +1,11 @@
 import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
+  baseQueryWithLogoutOnTokenExpiration,
   capitalizeWords,
-  logout,
   removeHyphens,
   secondsToMilliSeconds,
 } from "@/utils";
@@ -43,24 +40,10 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
-
 export const SubscriptionService = createApi({
   reducerPath: "subscription",
   tagTypes: [""],
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   endpoints: (build) => {
     return {
       initiateSubscription: build.mutation<
@@ -155,7 +138,7 @@ export const SubscriptionService = createApi({
                     : "N/A",
                 ],
               ],
-              status: res.subscrptionInformation.status
+              status: res.subscrptionInformation.status,
             };
           }
         },

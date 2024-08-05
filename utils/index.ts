@@ -2,6 +2,57 @@ import { accessToken, milliSecondToSecondConversionRate } from "@/constants";
 import { LookUpModel } from "@/models/look-up.model";
 import { PermissionModel } from "@/models/permission.model";
 import Cookie from "js-cookie";
+import {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+} from "@reduxjs/toolkit/query/react";
+import { setLoading, setLoadingMessage } from "@/features/loaderSlice";
+import { toast } from "react-toastify";
+
+export const baseQueryWithLogoutOnTokenExpiration = (
+  baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
+) => {
+  return async (
+    args: string | FetchArgs,
+    api: any,
+    extraOptions: {
+      loadingMessage?: string;
+      triggerLoading?: boolean;
+    } = { loadingMessage: "", triggerLoading: true }
+  ): Promise<any> => {
+    if (extraOptions.loadingMessage) {
+      api.dispatch(
+        setLoadingMessage({ loadingMessage: extraOptions.loadingMessage })
+      );
+    }
+
+    if (extraOptions.triggerLoading) {
+      api.dispatch(setLoading({ loading: true }));
+    }
+
+    let result = await baseQuery(args, api, extraOptions);
+
+    if (extraOptions.triggerLoading) {
+      api.dispatch(setLoading({ loading: false }));
+    }
+
+    if (result.error) {
+      if (result.error.status === 401) {
+        logout(() => {
+          window.location.pathname = "/auth/login";
+        });
+      } else if ("status" in result.error) {
+        const { message } = result.error.data as { message: string };
+        toast.error(message);
+      } else {
+        toast.error("Oops! Something went wrong");
+      }
+    }
+
+    return result;
+  };
+};
 
 export const secondsToMilliSeconds = (seconds: number): number => {
   return seconds * milliSecondToSecondConversionRate;
@@ -163,8 +214,8 @@ export const getQuestionTypeBasedOnPermission = (
   return [];
 };
 
+export const removeHyphens = (input: string): string =>
+  input.replace(/-/g, " ");
 
-export const removeHyphens = (input: string): string => input.replace(/-/g, ' ');
-
-export const capitalizeWords = (input: string): string => input.replace(/\b\w/g, char => char.toUpperCase());
-
+export const capitalizeWords = (input: string): string =>
+  input.replace(/\b\w/g, (char) => char.toUpperCase());

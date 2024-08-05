@@ -7,8 +7,6 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useRouter } from "next/router";
-import { toast } from "react-toastify";
-import { AppLoader } from "@/@shared/components/AppLoader";
 import Button from "@/@shared/ui/Button";
 import ChevronLeft from "@/icons/ChevronLeft";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -18,30 +16,13 @@ import * as moment from "moment";
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
   const params = useParams();
-  const { data, isLoading, error, refetch } = useGetQuestionsByIdQuery(id, {
+  const { data, error, refetch } = useGetQuestionsByIdQuery(id, {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
 
   useEffect(() => {
     if (params) {

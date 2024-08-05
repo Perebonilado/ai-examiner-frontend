@@ -1,11 +1,8 @@
-import { AppLoader } from "@/@shared/components/AppLoader";
 import Button from "@/@shared/ui/Button";
 import { useInitiateSubscriptionMutation } from "@/api-services/subscription.service";
-import { useModalContext } from "@/contexts/ModalContext";
 import CheckMark from "@/icons/CheckMark";
 import { PlanModel } from "@/models/plan.model";
 import React, { FC, useEffect } from "react";
-import { toast } from "react-toastify";
 
 interface Props extends PlanModel {}
 
@@ -27,32 +24,11 @@ const PlanCard: FC<Props> = ({
     ["NGN", "₦"],
   ]);
 
-  const [inititateSubscription, { isLoading, error, data }] =
-    useInitiateSubscriptionMutation();
-
-  const { setModalContent } = useModalContext();
-
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
+  const [inititateSubscription, { data }] = useInitiateSubscriptionMutation();
 
   useEffect(() => {
     if (data) {
-      console.log(data);
-      window.location.assign(data.redirectUrl)
+      window.location.assign(data.redirectUrl);
     }
   }, [data]);
 

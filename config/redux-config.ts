@@ -1,5 +1,5 @@
 import { AuthService } from "@/api-services/auth.service";
-import { CourseService } from "@/api-services/couse.service";
+import { CourseService } from "@/api-services/course.service";
 import { DocumentTopicService } from "@/api-services/document-topic.service";
 import { DocumentService } from "@/api-services/document.service";
 import { FileUploadService } from "@/api-services/file-upload.service";
@@ -12,6 +12,7 @@ import { UserService } from "@/api-services/user.service";
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import PermissionsReducer from "../features/permissionSlice";
+import LoadingAndErrorReducer from "../features/loaderSlice";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const reduxStore = configureStore({
     [UserService.reducerPath]: UserService.reducer,
     [PermissionService.reducerPath]: PermissionService.reducer,
     permissionsState: PermissionsReducer,
+    loadingAndErrorState: LoadingAndErrorReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([

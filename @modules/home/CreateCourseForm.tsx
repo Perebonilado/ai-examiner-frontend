@@ -5,7 +5,7 @@ import TextField from "@/@shared/ui/Input/TextField";
 import TextArea from "@/@shared/ui/Input/TextArea";
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
-import { useCreateCourseMutation } from "@/api-services/couse.service";
+import { useCreateCourseMutation } from "@/api-services/course.service";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 

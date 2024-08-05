@@ -15,7 +15,6 @@ import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
-import { usePermissionContext } from "@/contexts/PermissionContext";
 import {
   generateQustionCountOptions,
   getQuestionTypeBasedOnPermission,
@@ -80,15 +79,6 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
       });
     },
   });
-
-  useEffect(() => {
-    if (generateQuestionsError && "status" in generateQuestionsError) {
-      if ("data" in generateQuestionsError) {
-        const { message } = generateQuestionsError.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [generateQuestionsError]);
 
   useEffect(() => {
     if (params) {

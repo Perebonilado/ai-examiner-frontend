@@ -1,18 +1,14 @@
-import { AppLoader } from "@/@shared/components/AppLoader";
 import Button from "@/@shared/ui/Button";
-import DropDown from "@/@shared/ui/Input/DropDown";
 import TextField from "@/@shared/ui/Input/TextField";
 import { useSignUpMutation } from "@/api-services/auth.service";
-import { useModalContext } from "@/contexts/ModalContext";
 import CloseEyeIcon from "@/icons/CloseEyeIcon";
 import OpenEyeIcon from "@/icons/OpenEyeIcon";
 import { SignUpValidation } from "@/validation-schemas/SignUpValidation";
 import { Form, FormikProvider, useFormik } from "formik";
 import { useRouter } from "next/router";
 import React, { FC, useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import { accessToken } from "@/constants";
-import Cookies from "js-cookie"
+import Cookies from "js-cookie";
 import { AppLogo } from "@/@shared/components/AppLogo";
 import MessageIcon from "@/icons/MessageIcon";
 
@@ -25,12 +21,11 @@ const initialValues = {
 
 const SignUpForm: FC = () => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
-  const [signUp, { isLoading, error, data }] = useSignUpMutation();
-  const { setModalContent } = useModalContext();
+  const [signUp, { data }] = useSignUpMutation();
   const router = useRouter();
 
   const handleSubmit = (values: typeof initialValues) => {
-    signUp(values)
+    signUp(values);
   };
 
   const formik = useFormik({
@@ -38,23 +33,6 @@ const SignUpForm: FC = () => {
     validationSchema: SignUpValidation,
     onSubmit: (values) => handleSubmit(values),
   });
-
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
 
   useEffect(() => {
     if (data) {
@@ -123,7 +101,12 @@ const SignUpForm: FC = () => {
             />
 
             <div className="!mt-8">
-              <Button title="Create Account" size="large" type="submit" fullWidth />
+              <Button
+                title="Create Account"
+                size="large"
+                type="submit"
+                fullWidth
+              />
             </div>
             <div className="flex gap-1 items-center justify-center">
               <p className="text-[#667185]"> Already have an account?</p>{" "}

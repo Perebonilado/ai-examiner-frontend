@@ -1,18 +1,15 @@
 import DocumentCardContainer from "@/@modules/documents/DocumentCardContainer";
 import AppHead from "@/@shared/components/AppHead";
-import { AppLoader } from "@/@shared/components/AppLoader";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import TextField from "@/@shared/ui/Input/TextField";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
-import { useModalContext } from "@/contexts/ModalContext";
 import { SearchIcon } from "@/icons/SearchIcon";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import React from "react";
 import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 
 const AllDocuments: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -22,24 +19,6 @@ const AllDocuments: NextPage = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-  const { setModalContent } = useModalContext();
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
 
   useEffect(()=>{
     if(page !== 1) {

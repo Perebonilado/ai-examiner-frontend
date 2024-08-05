@@ -11,7 +11,6 @@ import { useResetPasswordMutation } from "@/api-services/auth.service";
 import { useSearchParams } from "next/navigation";
 import { useModalContext } from "@/contexts/ModalContext";
 import { toast } from "react-toastify";
-import { AppLoader } from "@/@shared/components/AppLoader";
 
 const initialValues = {
   password: "",
@@ -19,15 +18,13 @@ const initialValues = {
 };
 
 const ResetPasswordForm: FC = () => {
-  const [resetPassword, { error, isLoading, isSuccess }] =
-    useResetPasswordMutation();
+  const [resetPassword, { isSuccess }] = useResetPasswordMutation();
   const queryParams = useSearchParams();
   const token = queryParams.get("token");
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const [hideConfirmPassword, setHideConfirmPassword] = useState<boolean>(true);
   const [passwordMismatch, setPasswordMisMatch] = useState(false);
   const passwordMismatchErrorMessage = "Passwords do not match";
-  const { setModalContent } = useModalContext();
 
   const router = useRouter();
 
@@ -47,26 +44,9 @@ const ResetPasswordForm: FC = () => {
   });
 
   useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
     if (isSuccess) {
       toast.success("Password reset successful");
-      toast.success("Please login to continue")
+      toast.success("Please login to continue");
       router.push("/auth/login");
     }
   }, [isSuccess]);

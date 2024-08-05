@@ -51,7 +51,7 @@ const UserManagementBar: FC<Props> = ({ pageTitle }) => {
         >
           <Avatar
             fallBack="U"
-            imageUrl="/home/me.jpg"
+            imageUrl="https://avatar.iran.liara.run/public/49"
             size="md"
             alt="user image"
             slateBg={false}

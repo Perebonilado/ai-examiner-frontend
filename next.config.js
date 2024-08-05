@@ -8,12 +8,23 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   workboxOptions: {
     disableDevLogs: true,
   },
+ 
   // ... other options you like
 });
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // ... other options you like
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'avatar.iran.liara.run',
+        port: '',
+        pathname: '/**', // Allow all paths under this hostname
+      },
+    ],
+  },
 };
 
 module.exports = withPWA(nextConfig);

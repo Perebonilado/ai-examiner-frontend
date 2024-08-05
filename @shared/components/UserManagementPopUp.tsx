@@ -28,7 +28,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
       <div className={baseStyles} ref={ref}>
         <div className="pb-8">
           <p className="text-sm font-bold">
-            {lastName} {firstName}
+          {firstName} {lastName} 
           </p>
           <p className="text-xs text-gray-400">{email}</p>
         </div>
@@ -50,14 +50,14 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
               className="!text-black"
             />
           </Link>
-          <Link href={""}>
+          {/* <Link href={""}>
             <Button
               title="Support"
               variant="text"
               size="small"
               className="!text-black"
             />
-          </Link>
+          </Link> */}
         </div>
         <div className="pt-[12px]">
           <Button

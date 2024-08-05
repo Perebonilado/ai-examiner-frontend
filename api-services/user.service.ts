@@ -6,7 +6,11 @@ import {
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
-import { logout, secondsToMilliSeconds } from "@/utils";
+import {
+  capitalizeFirstLetterOfEachWord,
+  logout,
+  secondsToMilliSeconds,
+} from "@/utils";
 import Cookies from "js-cookie";
 import { UserProfileModel } from "@/models/user.model";
 import { UserProfileDto } from "@/dto/user.dto";
@@ -50,7 +54,16 @@ export const UserService = createApi({
       }),
       transformResponse: (res: UserProfileDto) => {
         if (!res) return <UserProfileModel>{};
-        else return res;
+        else
+          return {
+            firstName: capitalizeFirstLetterOfEachWord(
+              res.firstName.toLowerCase()
+            ),
+            lastName: capitalizeFirstLetterOfEachWord(
+              res.lastName.toLowerCase()
+            ),
+            email: res.email,
+          };
       },
     }),
   }),

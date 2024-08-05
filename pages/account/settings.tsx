@@ -34,7 +34,7 @@ const Settings: NextPage = () => {
     }
   }, [isLoading]);
 
-  const activeSubscriptionStatuses = ["active", "attention"]
+  const activeSubscriptionStatuses = ["active", "attention"];
 
   return (
     <>
@@ -57,11 +57,15 @@ const Settings: NextPage = () => {
               title="Subscription"
               data={data.subscription}
             >
-              {activeSubscriptionStatuses.includes(data.status.toLowerCase()) ? (
-                <Button title="Cancel Subscription" />
-              ) : (
-                <Button title="Renew Subscription" />
-              )}
+              {data.status ? (
+                activeSubscriptionStatuses.includes(
+                  data.status.toLowerCase()
+                ) ? (
+                  <Button title="Cancel Subscription" />
+                ) : (
+                  <Button title="Renew Subscription" />
+                )
+              ) : null}
               <Link href={"/pricing"}>
                 <Button
                   title="View Pricing Plans"

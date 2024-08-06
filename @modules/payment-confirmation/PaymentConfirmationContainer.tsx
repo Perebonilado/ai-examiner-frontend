@@ -22,7 +22,7 @@ const PaymentConfirmationContainer: FC = () => {
   };
 
   const onEventReceived = (message: NotificationModel) => {
-    console.log(message)
+    console.log(message);
     if (message.status === "successful") {
       toast.success(message.message);
       setIsConfirmingPayment(false);
@@ -56,7 +56,9 @@ const PaymentConfirmationContainer: FC = () => {
         toast.error("Error connecting to server. Please try again later.");
       });
 
-      socketRef.current.on(eventName, onEventReceived);
+      socketRef.current.on(eventName, (e) => {
+        console.log(e);
+      });
       console.log(`Listening to event: ${eventName}`);
     }
 
@@ -66,7 +68,9 @@ const PaymentConfirmationContainer: FC = () => {
         socketRef.current.off("connect_error");
         if (data) {
           const eventName = getEventName(data.email);
-          socketRef.current.off(eventName, onEventReceived);
+          socketRef.current.off(eventName, (e) => {
+            console.log(e);
+          });
         }
         socketRef.current.disconnect();
       }

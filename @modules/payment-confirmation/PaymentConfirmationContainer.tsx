@@ -21,11 +21,14 @@ const PaymentConfirmationContainer: FC = () => {
     skip: stopPolling,
   });
 
+  let interval: NodeJS.Timeout | null = null;
+
   useEffect(() => {
     if (data && data.status === "active") {
       setStopPolling(true);
       setIsConfirmingPayment(false);
       setPaymentConfirmationMessage("Payment Successful");
+      if (interval) clearInterval(interval);
     }
   }, [data]);
 
@@ -40,12 +43,12 @@ const PaymentConfirmationContainer: FC = () => {
   }, [subscriptionPollCount]);
 
   useEffect(() => {
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
       setSubscriptionPollCount((prevCount) => prevCount + 1);
     }, pollIntervalTimeMs);
 
     return () => {
-      clearInterval(interval);
+      if (interval) clearInterval(interval);
     };
   }, [pollIntervalTimeMs]);
 
@@ -65,7 +68,7 @@ const PaymentConfirmationContainer: FC = () => {
           )}
 
           {!isConfirmingPayment && paymentError && (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 items-center justify-center">
               <h2 className="text-lg font-medium text-center text-rose-700">
                 An error occurred with your payment
               </h2>
@@ -77,7 +80,7 @@ const PaymentConfirmationContainer: FC = () => {
           )}
 
           {!isConfirmingPayment && !paymentError && (
-            <div className="flex flex-col gap-1">
+            <div className="flex flex-col gap-1 items-center justify-center">
               <h2 className="text-lg font-medium text-center text-green-600">
                 Payment Successful
               </h2>

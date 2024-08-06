@@ -22,7 +22,7 @@ const PaymentConfirmationContainer: FC = () => {
   };
 
   const onEventReceived = (message: NotificationModel) => {
-    console.log("listened");
+    console.log(message)
     if (message.status === "successful") {
       toast.success(message.message);
       setIsConfirmingPayment(false);
@@ -49,9 +49,6 @@ const PaymentConfirmationContainer: FC = () => {
 
       socketRef.current.on("connect", () => {
         console.log("Connected to WebSocket");
-        if (socketRef.current) {
-          socketRef.current.on(eventName, onEventReceived);
-        }
       });
 
       socketRef.current.on("connect_error", (error: any) => {
@@ -60,6 +57,7 @@ const PaymentConfirmationContainer: FC = () => {
       });
 
       socketRef.current.on(eventName, onEventReceived);
+      console.log(`Listening to event: ${eventName}`);
     }
 
     return () => {

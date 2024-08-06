@@ -5,9 +5,9 @@ import { useGetUserProfileQuery } from "@/api-services/user.service";
 import { API_BASE_URL } from "@/constants";
 import { NotificationModel } from "@/models/notification.model";
 import Link from "next/link";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
 const socket = io(API_BASE_URL, { autoConnect: false });
 
@@ -17,6 +17,7 @@ const PaymentConfirmationContainer: FC = () => {
   const [paymentConfirmationMessage, setPaymentConfirmationMessage] =
     useState("");
   const [paymentError, setPaymentError] = useState(false);
+  const socketRef = useRef<Socket | null>(null);
 
   const getEventName = (userEmail: string) => {
     return `notification-${userEmail}`;
@@ -27,28 +28,47 @@ const PaymentConfirmationContainer: FC = () => {
       toast.success(message.message);
       setIsConfirmingPayment(false);
       setPaymentError(false);
+      setPaymentConfirmationMessage(message.message);
     } else {
-      toast.error(message.status);
+      toast.error(message.message);
       setIsConfirmingPayment(false);
       setPaymentError(true);
+      setPaymentConfirmationMessage(message.message);
     }
   };
 
   useEffect(() => {
     if (data) {
-      socket.connect();
+      socketRef.current = io(API_BASE_URL, {
+        reconnectionAttempts: 5,
+        reconnectionDelay: 1000,
+      });
 
       const eventName = getEventName(data.email);
 
-      socket.on(eventName, onEventReceived);
+      socketRef.current.on("connect", () => {
+        console.log("Connected to WebSocket");
+      });
+
+      socketRef.current.on("connect_error", (error: any) => {
+        console.error("WebSocket connection error:", error);
+        toast.error("Error connecting to server. Please try again later.");
+      });
+
+      socketRef.current.on(eventName, onEventReceived);
+
+      socketRef.current.connect();
     }
 
     return () => {
-      if (data) {
-        const eventName = getEventName(data.email);
-        socket.off(eventName, onEventReceived);
-
-        socket.disconnect();
+      if (socketRef.current) {
+        socketRef.current.off("connect");
+        socketRef.current.off("connect_error");
+        if (data) {
+          const eventName = getEventName(data.email);
+          socketRef.current.off(eventName, onEventReceived);
+        }
+        socketRef.current.disconnect();
       }
     };
   }, [data]);

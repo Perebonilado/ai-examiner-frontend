@@ -9,8 +9,6 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import { io, Socket } from "socket.io-client";
 
-const socket = io(API_BASE_URL, { autoConnect: false });
-
 const PaymentConfirmationContainer: FC = () => {
   const { data } = useGetUserProfileQuery("");
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(true);
@@ -39,10 +37,12 @@ const PaymentConfirmationContainer: FC = () => {
 
   useEffect(() => {
     if (data) {
-      socketRef.current = io(API_BASE_URL, {
+      socketRef.current = io(new URL(API_BASE_URL).origin, {
         reconnectionAttempts: 5,
         reconnectionDelay: 1000,
       });
+
+      socketRef.current.connect();
 
       const eventName = getEventName(data.email);
 
@@ -56,8 +56,6 @@ const PaymentConfirmationContainer: FC = () => {
       });
 
       socketRef.current.on(eventName, onEventReceived);
-
-      socketRef.current.connect();
     }
 
     return () => {

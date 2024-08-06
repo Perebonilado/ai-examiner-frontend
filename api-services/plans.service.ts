@@ -36,15 +36,17 @@ export const PlanService = createApi({
         transformResponse: (res: PlanDto[]) => {
           if (!res) return <PlanModel[]>[];
           else {
-            const plans = res.map((plan) => {
-              return {
-                costPerMonth: plan.amount,
-                currency: plan.currency,
-                offers: plan.description.split(","),
-                type: plan.planName,
-                planId: plan.planId,
-              };
-            });
+            const plans = res
+              .map((plan) => {
+                return {
+                  costPerMonth: plan.amount,
+                  currency: plan.currency,
+                  offers: plan.description.split(","),
+                  type: plan.planName,
+                  planId: plan.planId,
+                };
+              })
+              .sort((a, b) => b.type.localeCompare(a.type));
 
             const freePlan = {
               costPerMonth: 0,

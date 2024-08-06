@@ -67,9 +67,13 @@ const PlanCard: FC<Props> = ({
           title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
           onClick={() => {
             if (isLoggedIn) {
-              inititateSubscription({ planId: `${planId}` });
+              type.toLowerCase() === "free"
+                ? router.push("/new-document")
+                : inititateSubscription({ planId: `${planId}` });
             } else {
-              router.push(`/auth/login?returnUrl=${encodeURIComponent(router.asPath)}`)
+              router.push(
+                `/auth/login?returnUrl=${encodeURIComponent(router.asPath)}`
+              );
             }
           }}
           fullWidth

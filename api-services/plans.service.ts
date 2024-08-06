@@ -36,7 +36,7 @@ export const PlanService = createApi({
         transformResponse: (res: PlanDto[]) => {
           if (!res) return <PlanModel[]>[];
           else {
-            return res.map((plan) => {
+            const plans = res.map((plan) => {
               return {
                 costPerMonth: plan.amount,
                 currency: plan.currency,
@@ -45,6 +45,21 @@ export const PlanService = createApi({
                 planId: plan.planId,
               };
             });
+
+            const freePlan = {
+              costPerMonth: 0,
+              currency: plans[0].currency,
+              offers: [
+                "10 Q&A's/test",
+                "3 tests / month",
+                "Random topic generation",
+                "Multiple choice questions",
+              ],
+              type: "Free",
+              planId: 4098888376,
+            };
+
+            return [freePlan, ...plans];
           }
         },
       }),

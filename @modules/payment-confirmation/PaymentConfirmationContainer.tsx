@@ -1,77 +1,53 @@
 import Spinner from "@/@shared/components/Spinner";
 import Button from "@/@shared/ui/Button";
 import Container from "@/@shared/ui/Container";
-import { useGetUserProfileQuery } from "@/api-services/user.service";
-import { API_BASE_URL } from "@/constants";
-import { NotificationModel } from "@/models/notification.model";
+import { useGetSubscriptionDetailsQuery } from "@/api-services/subscription.service";
+import { useState, useEffect, FC } from "react";
 import Link from "next/link";
-import React, { FC, useEffect, useRef, useState } from "react";
-import { toast } from "react-toastify";
-import { io, Socket } from "socket.io-client";
 
 const PaymentConfirmationContainer: FC = () => {
-  const { data } = useGetUserProfileQuery("");
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(true);
   const [paymentConfirmationMessage, setPaymentConfirmationMessage] =
     useState("");
   const [paymentError, setPaymentError] = useState(false);
-  const socketRef = useRef<Socket | null>(null);
+  const [stopPolling, setStopPolling] = useState(false);
 
-  const getEventName = (userEmail: string) => {
-    return `notification-${userEmail}`;
-  };
+  const [subscriptionPollCount, setSubscriptionPollCount] = useState(0);
+  const maxPollCount = 40;
+  const pollIntervalTimeMs = 300;
 
-  const onEventReceived = (message: NotificationModel) => {
-    console.log(message)
-    if (message.status === "successful") {
-      toast.success(message.message);
-      setIsConfirmingPayment(false);
-      setPaymentError(false);
-      setPaymentConfirmationMessage(message.message);
-    } else {
-      toast.error(message.message);
-      setIsConfirmingPayment(false);
-      setPaymentError(true);
-      setPaymentConfirmationMessage(message.message);
-    }
-  };
+  const { data } = useGetSubscriptionDetailsQuery("", {
+    pollingInterval: pollIntervalTimeMs,
+    skip: stopPolling,
+  });
 
   useEffect(() => {
-    if (data) {
-      socketRef.current = io(new URL(API_BASE_URL).origin, {
-        reconnectionAttempts: 5,
-        reconnectionDelay: 1000,
-      });
-
-      socketRef.current.connect();
-
-      const eventName = getEventName(data.email);
-
-      socketRef.current.on("connect", () => {
-        console.log("Connected to WebSocket");
-      });
-
-      socketRef.current.on("connect_error", (error: any) => {
-        console.error("WebSocket connection error:", error);
-        toast.error("Error connecting to server. Please try again later.");
-      });
-
-      socketRef.current.on(eventName, (onEventReceived));
-      console.log(`Listening to event: ${eventName}`);
+    if (data && data.status === "active") {
+      setStopPolling(true);
+      setIsConfirmingPayment(false);
+      setPaymentConfirmationMessage("Payment Successful");
     }
+  }, [data]);
+
+  useEffect(() => {
+    if (subscriptionPollCount > maxPollCount) {
+      setStopPolling(true);
+      setPaymentError(true);
+      setPaymentConfirmationMessage(
+        "An error occurred while processing your payment, please retry."
+      );
+    }
+  }, [subscriptionPollCount]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSubscriptionPollCount((prevCount) => prevCount + 1);
+    }, pollIntervalTimeMs);
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.off("connect");
-        socketRef.current.off("connect_error");
-        if (data) {
-          const eventName = getEventName(data.email);
-          socketRef.current.off(eventName, onEventReceived);
-        }
-        socketRef.current.disconnect();
-      }
+      clearInterval(interval);
     };
-  }, [data]);
+  }, [pollIntervalTimeMs]);
 
   return (
     <section className="bg-[#FAFAFA]">
@@ -91,7 +67,7 @@ const PaymentConfirmationContainer: FC = () => {
           {!isConfirmingPayment && paymentError && (
             <div className="flex flex-col gap-1">
               <h2 className="text-lg font-medium text-center text-rose-700">
-                An error occured with your payment
+                An error occurred with your payment
               </h2>
               <p>{paymentConfirmationMessage}</p>
               <Link href={"/pricing"}>

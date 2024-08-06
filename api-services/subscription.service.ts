@@ -1,7 +1,4 @@
-import {
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
   baseQueryWithLogoutOnTokenExpiration,
@@ -98,6 +95,7 @@ export const SubscriptionService = createApi({
         query: () => ({
           url: "/details",
         }),
+        extraOptions: { triggerLoading: false },
         transformResponse: (res: SubscriptionDetailsDto) => {
           if (!res) return <SubscriptionDetailsModel>{};
           else {

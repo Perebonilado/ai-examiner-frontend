@@ -3,8 +3,11 @@ import { useInitiateSubscriptionMutation } from "@/api-services/subscription.ser
 import CheckMark from "@/icons/CheckMark";
 import { PlanModel } from "@/models/plan.model";
 import React, { FC, useEffect } from "react";
+import { useRouter } from "next/router";
 
-interface Props extends PlanModel {}
+interface Props extends PlanModel {
+  isLoggedIn: boolean;
+}
 
 const PlanCard: FC<Props> = ({
   type,
@@ -12,6 +15,7 @@ const PlanCard: FC<Props> = ({
   currency,
   offers,
   planId,
+  isLoggedIn,
 }) => {
   const buttonTextBasedOnPlanType = new Map<string, string>([
     ["free", "Try Free Plan"],
@@ -25,6 +29,8 @@ const PlanCard: FC<Props> = ({
   ]);
 
   const [inititateSubscription, { data }] = useInitiateSubscriptionMutation();
+
+  const router = useRouter();
 
   useEffect(() => {
     if (data) {
@@ -60,7 +66,11 @@ const PlanCard: FC<Props> = ({
         <Button
           title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
           onClick={() => {
-            inititateSubscription({ planId: `${planId}` });
+            if (isLoggedIn) {
+              inititateSubscription({ planId: `${planId}` });
+            } else {
+              router.push(`/auth/login?returnUrl=${encodeURIComponent(router.asPath)}`)
+            }
           }}
           fullWidth
         />

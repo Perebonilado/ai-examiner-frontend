@@ -3,7 +3,6 @@ import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
 import {
   baseQueryWithLogoutOnTokenExpiration,
-  logout,
   secondsToMilliSeconds,
 } from "@/utils";
 import {

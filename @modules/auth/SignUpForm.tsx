@@ -23,6 +23,7 @@ const SignUpForm: FC = () => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const [signUp, { data }] = useSignUpMutation();
   const router = useRouter();
+  const { returnUrl } = router.query;
 
   const handleSubmit = (values: typeof initialValues) => {
     signUp(values);
@@ -37,7 +38,12 @@ const SignUpForm: FC = () => {
   useEffect(() => {
     if (data) {
       Cookies.set(accessToken, data.data.token);
-      router.push("/new-document");
+
+      if (returnUrl) {
+        router.push(decodeURIComponent(returnUrl as string));
+      } else {
+        router.push("/new-document");
+      }
     }
   }, [data]);
 

@@ -22,6 +22,7 @@ const LoginForm: FC = () => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const [login, { data }] = useLoginMutation();
   const router = useRouter();
+  const { returnUrl } = router.query;
 
   const handleSubmit = async (values: typeof initialValues) => {
     login(values);
@@ -40,7 +41,12 @@ const LoginForm: FC = () => {
   useEffect(() => {
     if (data) {
       Cookies.set(accessToken, data.data.token);
-      router.push("/new-document");
+
+      if (returnUrl) {
+        router.push(decodeURIComponent(returnUrl as string));
+      } else {
+        router.push("/new-document");
+      }
     }
   }, [data]);
 
@@ -114,7 +120,15 @@ const LoginForm: FC = () => {
                 title="Create Account"
                 variant="text"
                 onClick={() => {
-                  router.push("/auth/signup");
+                  if (returnUrl) {
+                    router.push(
+                      `/auth/signup?returnUrl=${encodeURIComponent(
+                        returnUrl as string
+                      )}`
+                    );
+                  } else {
+                    router.push("/auth/signup");
+                  }
                 }}
               />
             </div>

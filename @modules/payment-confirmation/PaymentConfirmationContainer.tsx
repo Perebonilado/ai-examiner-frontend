@@ -13,7 +13,7 @@ const PaymentConfirmationContainer: FC = () => {
   const [stopPolling, setStopPolling] = useState(false);
   const [subscriptionPollCount, setSubscriptionPollCount] = useState(0);
 
-  const maxPollCount = 40;
+  const maxPollCount = 400;
   const pollIntervalTimeMs = 300;
 
   // Using useRef to store the interval ID

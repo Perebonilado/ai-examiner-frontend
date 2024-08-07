@@ -35,6 +35,9 @@ export const UserService = createApi({
       query: () => ({
         url: "profile",
       }),
+      extraOptions: {
+         triggerLoading: true
+      },
       transformResponse: (res: UserProfileDto) => {
         if (!res) return <UserProfileModel>{};
         else

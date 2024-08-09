@@ -1,18 +1,53 @@
 import AccountSettingInformationItemContainer from "@/@modules/account/AccountSettingInformationItemContainer";
 import AppHead from "@/@shared/components/AppHead";
+import { AppLoader } from "@/@shared/components/AppLoader";
 import UserManagementBar from "@/@shared/components/UserManagementBar";
 import Button from "@/@shared/ui/Button";
-import { useGetSubscriptionDetailsQuery } from "@/api-services/subscription.service";
+import {
+  useCancelSubscriptionMutation,
+  useGetSubscriptionDetailsQuery,
+  useRestartSubscriptionMutation,
+  useUpdateCardInformationMutation,
+} from "@/api-services/subscription.service";
+import { useModalContext } from "@/contexts/ModalContext";
 import ExternalLinkIcon from "@/icons/ExternalLinkIcon";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import { toast } from "react-toastify";
 
 const Settings: NextPage = () => {
-  const { data } = useGetSubscriptionDetailsQuery("");
+  const { data, isLoading, error } = useGetSubscriptionDetailsQuery("");
+  const { setModalContent } = useModalContext();
 
   const activeSubscriptionStatuses = ["active", "attention"];
+  const [cancelSubscription] = useCancelSubscriptionMutation();
+  const [updateCardDetails, { data: updateCardDetailsData }] =
+    useUpdateCardInformationMutation();
+
+  useEffect(() => {
+    if (updateCardDetailsData) {
+      window.open(updateCardDetailsData.redirectUrl, "_blank");
+    }
+  }, [updateCardDetailsData]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
 
   return (
     <>
@@ -35,15 +70,33 @@ const Settings: NextPage = () => {
               title="Subscription"
               data={data.subscription}
             >
-              {data.status ? (
+              <Button
+                title="Update Card Information"
+                onClick={() => {
+                  updateCardDetails({
+                    subscriptionCode: data.subscriptionCode,
+                  });
+                }}
+              />
+
+              {data.status &&
                 activeSubscriptionStatuses.includes(
                   data.status.toLowerCase()
-                ) ? (
-                  <Button title="Cancel Subscription" />
-                ) : (
-                  <Button title="Renew Subscription" />
-                )
-              ) : null}
+                ) && (
+                  <div className="mt-3">
+                    <Button
+                      variant="outlined"
+                      title="Cancel Subscription"
+                      onClick={() => {
+                        cancelSubscription({
+                          emailToken: data.emailToken,
+                          subscriptionCode: data.subscriptionCode,
+                        });
+                      }}
+                    />
+                  </div>
+                )}
+
               <Link href={"/pricing"}>
                 <Button
                   title="View Pricing Plans"

@@ -12,7 +12,7 @@ import {
   ResetPasswordPayload,
   SignUpPayload,
 } from "@/models/auth.model";
-import { secondsToMilliSeconds } from "@/utils";
+import { baseQueryWithLogoutOnTokenExpiration, secondsToMilliSeconds } from "@/utils";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/auth/`,
@@ -21,7 +21,7 @@ const baseQuery = fetchBaseQuery({
 
 export const AuthService = createApi({
   reducerPath: "authApi",
-  baseQuery,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   endpoints: (build) => ({
     login: build.mutation<LoginDto, LoginPayload>({
       query: (body) => ({

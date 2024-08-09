@@ -15,13 +15,17 @@ import {
   RestartSubscriptionModel,
   RestartSubscriptionPayloadModel,
   SubscriptionDetailsModel,
+  UpdateSubscriptionCardModel,
+  UpdateSubscriptionCardPayloadModel,
 } from "@/models/subscription.model";
 import {
   CancelSubscriptionDto,
   InitiateSubscriptionDto,
   RestartSubscriptionDto,
   SubscriptionDetailsDto,
+  UpdateSubscriptionCardDto,
 } from "@/dto/subscription.dto";
+import { toast } from "react-toastify";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/subscription`,
@@ -76,6 +80,10 @@ export const SubscriptionService = createApi({
           if (!res) return <CancelSubscriptionModel>{};
           else return res;
         },
+        onQueryStarted: async (_, { queryFulfilled }) => {
+          await queryFulfilled;
+          toast.success("Your subscription has been cancelled successfully");
+        },
       }),
       restartSubscription: build.mutation<
         RestartSubscriptionModel,
@@ -89,6 +97,22 @@ export const SubscriptionService = createApi({
         transformResponse: (res: RestartSubscriptionDto) => {
           if (!res) return <RestartSubscriptionModel>{};
           else return res;
+        },
+      }),
+      updateCardInformation: build.mutation<
+        UpdateSubscriptionCardModel,
+        UpdateSubscriptionCardPayloadModel
+      >({
+        query: (body) => ({
+          url: "/update-card-information",
+          method: "POST",
+          body,
+        }),
+        transformResponse: (res: UpdateSubscriptionCardDto) => {
+          if (!res) return <UpdateSubscriptionCardModel>{};
+          return {
+            redirectUrl: res.link,
+          };
         },
       }),
       getSubscriptionDetails: build.query<SubscriptionDetailsModel, "">({
@@ -137,6 +161,8 @@ export const SubscriptionService = createApi({
                 ],
               ],
               status: res.subscrptionInformation.status,
+              subscriptionCode: res.subscrptionInformation.code,
+              emailToken: res.subscrptionInformation.token,
             };
           }
         },
@@ -150,4 +176,5 @@ export const {
   useInitiateSubscriptionMutation,
   useRestartSubscriptionMutation,
   useGetSubscriptionDetailsQuery,
+  useUpdateCardInformationMutation
 } = SubscriptionService;

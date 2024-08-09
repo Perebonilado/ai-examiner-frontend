@@ -35,3 +35,7 @@ export interface SubscriptionDetailsDto {
     status: 'active' | 'non-renewing' | 'attention' | 'completed' | 'cancelled';
   }
 }
+
+export interface UpdateSubscriptionCardDto {
+  link: string;
+}

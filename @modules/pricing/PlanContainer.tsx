@@ -2,6 +2,8 @@ import Container from "@/@shared/ui/Container";
 import React, { FC, } from "react";
 import PlanCardContainer from "./PlanCardContainer";
 import { useGetPlansQuery } from "@/api-services/plans.service";
+import Cookies from "js-cookie";
+import { accessToken } from "@/constants";
 
 const PlanContainer: FC = () => {
   const { data: plans } = useGetPlansQuery('')

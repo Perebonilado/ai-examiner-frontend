@@ -21,6 +21,7 @@ export const baseQueryWithLogoutOnTokenExpiration = (
       triggerLoading?: boolean;
     } = { loadingMessage: "", triggerLoading: true }
   ): Promise<any> => {
+    console.log(extraOptions.triggerLoading)
     if (extraOptions.loadingMessage) {
       api.dispatch(
         setLoadingMessage({ loadingMessage: extraOptions.loadingMessage })

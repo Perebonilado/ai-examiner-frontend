@@ -27,5 +27,15 @@ export interface RestartSubscriptionModel {
 export interface SubscriptionDetailsModel {
   billing: [string, string][];
   subscription: [string, string][];
-  status: "completed" | "cancelled" | "active" | "non-renewing" | "attention"
+  status: "completed" | "cancelled" | "active" | "non-renewing" | "attention";
+  subscriptionCode: string;
+  emailToken: string;
+}
+
+export interface UpdateSubscriptionCardModel {
+  redirectUrl: string;
+}
+
+export interface UpdateSubscriptionCardPayloadModel {
+  subscriptionCode: string;
 }

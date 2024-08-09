@@ -16,13 +16,16 @@ import { NextPage } from "next";
 import Link from "next/link";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
+import { useRouter } from "next/router";
 
 const Settings: NextPage = () => {
   const { data, isLoading, error } = useGetSubscriptionDetailsQuery("");
   const { setModalContent } = useModalContext();
+  const router = useRouter();
 
   const activeSubscriptionStatuses = ["active", "attention"];
-  const [cancelSubscription] = useCancelSubscriptionMutation();
+  const [cancelSubscription, { data: subCancelledData }] =
+    useCancelSubscriptionMutation();
   const [updateCardDetails, { data: updateCardDetailsData }] =
     useUpdateCardInformationMutation();
 
@@ -31,6 +34,12 @@ const Settings: NextPage = () => {
       window.open(updateCardDetailsData.redirectUrl, "_blank");
     }
   }, [updateCardDetailsData]);
+
+  useEffect(() => {
+    if (subCancelledData) {
+      router.push("/new-document");
+    }
+  }, [subCancelledData]);
 
   useEffect(() => {
     if (isLoading) {

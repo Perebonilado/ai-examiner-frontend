@@ -79,9 +79,7 @@ const Settings: NextPage = () => {
               title="Subscription"
               data={data.subscription}
             >
-              {activeSubscriptionStatuses.includes(
-                data.status.toLowerCase()
-              ) && (
+              {data.status && (
                 <Button
                   title="Update Card Information"
                   onClick={() => {

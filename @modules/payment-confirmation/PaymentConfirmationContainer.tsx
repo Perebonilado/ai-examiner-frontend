@@ -63,6 +63,10 @@ const PaymentConfirmationContainer: FC = () => {
     };
   }, [pollIntervalTimeMs]);
 
+  const handleGetStarted = () => {
+    window.location.pathname = "/new-document";
+  };
+
   return (
     <section className="bg-[#FAFAFA] min-h-[80vh] flex flex-col justify-between">
       <Container>
@@ -100,9 +104,7 @@ const PaymentConfirmationContainer: FC = () => {
               <p>{paymentConfirmationMessage}</p>
 
               <div className="mt-10 bg-white p-10 rounded-xl border border-gray-500">
-                <Link href={"/new-document"}>
-                  <Button title="Get Started" size="large" />
-                </Link>
+                <Button title="Get Started" size="large" onClick={handleGetStarted}/>
               </div>
             </div>
           )}

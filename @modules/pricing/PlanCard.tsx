@@ -4,6 +4,7 @@ import CheckMark from "@/icons/CheckMark";
 import { PlanModel } from "@/models/plan.model";
 import React, { FC, useEffect } from "react";
 import { useRouter } from "next/router";
+import CancelIcon from "@/icons/CancelIcon";
 
 interface Props extends PlanModel {
   isLoggedIn: boolean;
@@ -55,8 +56,8 @@ const PlanCard: FC<Props> = ({
         {offers.map((offer, idx) => {
           return (
             <div key={idx} className="flex items-center gap-2">
-              <CheckMark />
-              {offer}
+              {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
+              {offer.title}
             </div>
           );
         })}

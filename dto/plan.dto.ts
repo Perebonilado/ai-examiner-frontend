@@ -3,5 +3,10 @@ export interface PlanDto {
   planId: number;
   currency: string;
   amount: number;
-  description: string;
+  description: Description[];
+}
+
+interface Description {
+  title: string;
+  isAvailable: boolean;
 }

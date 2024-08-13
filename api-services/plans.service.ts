@@ -41,7 +41,7 @@ export const PlanService = createApi({
                 return {
                   costPerMonth: plan.amount,
                   currency: plan.currency,
-                  offers: plan.description.split(","),
+                  offers: plan.description,
                   type: plan.planName,
                   planId: plan.planId,
                 };
@@ -52,10 +52,12 @@ export const PlanService = createApi({
               costPerMonth: 0,
               currency: plans[0].currency,
               offers: [
-                "10 Q&A's/test",
-                "3 tests / month",
-                "Random topic generation",
-                "Multiple choice questions",
+                { title: "5 Q&As / test", isAvailable: true },
+                { title: "2 tests / month", isAvailable: true },
+                { title: "Multiple choice questions", isAvailable: true },
+                { title: "Max file size 15mb", isAvailable: true },
+                { title: "Topic selection", isAvailable: false },
+                { title: "Flashcards", isAvailable: false },
               ],
               type: "Free",
               planId: 4098888376,

@@ -6,9 +6,6 @@ import CloseEyeIcon from "@/icons/CloseEyeIcon";
 import OpenEyeIcon from "@/icons/OpenEyeIcon";
 import Button from "@/@shared/ui/Button";
 import { useLoginMutation } from "@/api-services/auth.service";
-import { useModalContext } from "@/contexts/ModalContext";
-import { AppLoader } from "@/@shared/components/AppLoader";
-import { toast } from "react-toastify";
 import { accessToken } from "@/constants";
 import Cookies from "js-cookie";
 import { useRouter } from "next/router";
@@ -23,9 +20,9 @@ const initialValues = {
 
 const LoginForm: FC = () => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
-  const [login, { isLoading, error, data }] = useLoginMutation();
-  const { setModalContent } = useModalContext();
+  const [login, { data }] = useLoginMutation();
   const router = useRouter();
+  const { returnUrl } = router.query;
 
   const handleSubmit = async (values: typeof initialValues) => {
     login(values);
@@ -42,26 +39,14 @@ const LoginForm: FC = () => {
   });
 
   useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
     if (data) {
       Cookies.set(accessToken, data.data.token);
-      router.push("/new-document");
+
+      if (returnUrl) {
+        router.push(decodeURIComponent(returnUrl as string));
+      } else {
+        router.push("/new-document");
+      }
     }
   }, [data]);
 
@@ -135,7 +120,15 @@ const LoginForm: FC = () => {
                 title="Create Account"
                 variant="text"
                 onClick={() => {
-                  router.push("/auth/signup");
+                  if (returnUrl) {
+                    router.push(
+                      `/auth/signup?returnUrl=${encodeURIComponent(
+                        returnUrl as string
+                      )}`
+                    );
+                  } else {
+                    router.push("/auth/signup");
+                  }
                 }}
               />
             </div>

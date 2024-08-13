@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
 import { convertMegaBytesToBytes } from "@/utils";
-import { AppLoader } from "./AppLoader";
 import Spinner from "./Spinner";
 
 interface Props {

@@ -1,6 +1,6 @@
 
 .root {
-    @apply relative  overflow-hidden flex items-center justify-center 
+    @apply relative  overflow-hidden flex items-center justify-center border border-[#360B58] p-[2px]
 }
 
 .slateBg {

@@ -1,12 +1,11 @@
 import CreateDocumentForm from "@/@modules/documents/CreateDocumentForm";
 import DocumentsTableRow from "@/@modules/documents/DocumentsTableRow";
 import AppHead from "@/@shared/components/AppHead";
-import { AppLoader } from "@/@shared/components/AppLoader";
 import EnhancedTable from "@/@shared/components/EnhancedTable/EnhancedTable";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import { useGetCourseByIdQuery } from "@/api-services/couse.service";
+import { useGetCourseByIdQuery } from "@/api-services/course.service";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -22,37 +21,17 @@ const Document: NextPage = () => {
   const [title, setTitle] = useState("");
   const params = useParams();
 
-  const { data, isLoading, error, refetch } = useGetAllUserDocumentsQuery(
+  const { data, error, refetch } = useGetAllUserDocumentsQuery(
     { courseId: courseId || "", page, pageSize: 10, title, id: "" },
     { refetchOnMountOrArgChange: true, skip: !courseId }
   );
 
-  const { data: course, isLoading: courseLoading } = useGetCourseByIdQuery(
-    courseId || "",
-    {
-      skip: !courseId,
-      refetchOnMountOrArgChange: true,
-    }
-  );
+  const { data: course } = useGetCourseByIdQuery(courseId || "", {
+    skip: !courseId,
+    refetchOnMountOrArgChange: true,
+  });
 
   const { setModalContent } = useModalContext();
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (isLoading || courseLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading, courseLoading]);
 
   useEffect(() => {
     if (params) {

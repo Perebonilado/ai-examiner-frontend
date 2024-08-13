@@ -15,6 +15,13 @@ import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
+import {
+  generateQustionCountOptions,
+  getQuestionTypeBasedOnPermission,
+} from "@/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "@/config/redux-config";
+import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 
 const initialValues = {
   questionCount: "",
@@ -34,6 +41,9 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
   const [isAdvanced, setIsAdvanced] = useState(false);
 
   const { setModalContent } = useModalContext();
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
 
   const [
     generateQuestions,
@@ -44,7 +54,9 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
     },
   ] = useGenerateQuestionsMutation();
 
-  const { data: questionTypes } = useGetLookUpsByTypeQuery({ type: "question_type" });
+  const { data: questionTypes } = useGetLookUpsByTypeQuery({
+    type: "question_type",
+  });
 
   const [
     generateFocusAreas,
@@ -54,6 +66,11 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
+      if (permissions && permissions.maxGenerationReached) {
+        setModalContent(<MaxGenerationModal />);
+        return;
+      }
+
       generateQuestions({
         documentId,
         questionCount: values.questionCount,
@@ -62,15 +79,6 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
       });
     },
   });
-
-  useEffect(() => {
-    if (generateQuestionsError && "status" in generateQuestionsError) {
-      if ("data" in generateQuestionsError) {
-        const { message } = generateQuestionsError.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [generateQuestionsError]);
 
   useEffect(() => {
     if (params) {
@@ -91,7 +99,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
     }
   }, [isAdvanced]);
 
-  return (
+  return !permissions ? null : (
     <>
       {generateQuestionsLoading && (
         <AppLoader loaderMessage="Hang in there while we generate your questions" />
@@ -117,7 +125,12 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                   />
                 </label>
                 <DropDown
-                  options={questionTypes ?? []}
+                  options={
+                    getQuestionTypeBasedOnPermission(
+                      permissions,
+                      questionTypes
+                    ) ?? []
+                  }
                   {...formik.getFieldProps("questionType")}
                   error={
                     formik.touched.questionType
@@ -136,13 +149,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                   />
                 </label>
                 <DropDown
-                  options={[
-                    { label: "5", value: "5", defaultSelected: true },
-                    { label: "10", value: "10" },
-                    { label: "15", value: "15" },
-                    { label: "20", value: "20" },
-                    { label: "25", value: "25" },
-                  ]}
+                  options={generateQustionCountOptions(permissions.maxQA)}
                   {...formik.getFieldProps("questionCount")}
                   error={
                     formik.touched.questionCount
@@ -152,63 +159,65 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                 />
               </div>
 
-              <div>
-                {topics.length || focusAreas?.topics.length ? (
-                  <ChipMultiSelect
-                    getSelectedItems={(items) => {
-                      setSelectedTopics(items.map((it) => it.label));
-                    }}
-                    label="Choose Focus Areas"
-                    options={
-                      topics.length
-                        ? topics
-                        : focusAreas?.topics.length
-                        ? focusAreas.topics
-                        : []
-                    }
-                  />
-                ) : (
-                  <div className="flex flex-col gap-4">
-                    {
-                      <div className="flex items-center gap-3">
-                        <Switch
-                          disabled={false}
-                          handleChecked={() => {
-                            setIsAdvanced(!isAdvanced);
-                          }}
-                          isChecked={isAdvanced}
-                          label="Advanced Preferences"
-                        />
-                        <ToolTip
-                          id="adv"
-                          message="Advanced preferences helps you generate questions from specific areas within the document"
-                        />
-                      </div>
-                    }
-                    {focusAreasLoading && isAdvanced && (
-                      <div className="flex flex-col gap-2 items-center">
-                        <Spinner size="sm" />
-                        <p className="text-xs">
-                          Loading advanced preferences...
-                        </p>
-                      </div>
-                    )}
-                    {focusAreasError && isAdvanced && (
-                      <div className="flex flex-col gap-2 items-center">
-                        <ErrorMessage message="An error occured while loading advanced preferences" />
-                        <Button
-                          title="reload advanced preferences"
-                          variant="text"
-                          size="small"
-                          onClick={() => {
-                            generateFocusAreas({ fileId, documentId });
-                          }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                )}
-              </div>
+              {permissions.canUseAdvancedPreferences && (
+                <div>
+                  {topics.length || focusAreas?.topics.length ? (
+                    <ChipMultiSelect
+                      getSelectedItems={(items) => {
+                        setSelectedTopics(items.map((it) => it.label));
+                      }}
+                      label="Choose Focus Areas"
+                      options={
+                        topics.length
+                          ? topics
+                          : focusAreas?.topics.length
+                          ? focusAreas.topics
+                          : []
+                      }
+                    />
+                  ) : (
+                    <div className="flex flex-col gap-4">
+                      {
+                        <div className="flex items-center gap-3">
+                          <Switch
+                            disabled={false}
+                            handleChecked={() => {
+                              setIsAdvanced(!isAdvanced);
+                            }}
+                            isChecked={isAdvanced}
+                            label="Advanced Preferences"
+                          />
+                          <ToolTip
+                            id="adv"
+                            message="Advanced preferences helps you generate questions from specific areas within the document"
+                          />
+                        </div>
+                      }
+                      {focusAreasLoading && isAdvanced && (
+                        <div className="flex flex-col gap-2 items-center">
+                          <Spinner size="sm" />
+                          <p className="text-xs">
+                            Loading advanced preferences...
+                          </p>
+                        </div>
+                      )}
+                      {focusAreasError && isAdvanced && (
+                        <div className="flex flex-col gap-2 items-center">
+                          <ErrorMessage message="An error occured while loading advanced preferences" />
+                          <Button
+                            title="reload advanced preferences"
+                            variant="text"
+                            size="small"
+                            onClick={() => {
+                              generateFocusAreas({ fileId, documentId });
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
 
               <Button title="Generate Questions" type="submit" size="large" />
             </div>

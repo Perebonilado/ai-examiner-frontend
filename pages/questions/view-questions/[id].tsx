@@ -1,6 +1,5 @@
 import ViewQuestionCardContainer from "@/@modules/questions/ViewQuestionCardContainer";
 import AppHead from "@/@shared/components/AppHead";
-import { AppLoader } from "@/@shared/components/AppLoader";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -12,11 +11,12 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { useSelector } from "react-redux";
+import { RootState } from "@/config/redux-config";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -43,6 +43,9 @@ const ViewQuestions: NextPage = () => {
     );
 
   const { setModalContent } = useModalContext();
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
 
   const handleGenerateQuestions = () => {
     setModalContent(
@@ -52,23 +55,6 @@ const ViewQuestions: NextPage = () => {
       />
     );
   };
-
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
-
-  useEffect(() => {
-    if (isLoading || topicsLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading, topicsLoading]);
 
   useEffect(() => {
     if (params) {
@@ -99,11 +85,13 @@ const ViewQuestions: NextPage = () => {
               )}{" "}
             </h2>
           )}
-          <Button
-            title="Generate New Questions"
-            onClick={handleGenerateQuestions}
-            size="large"
-          />
+          {permissions && (
+            <Button
+              title="Generate New Questions"
+              onClick={handleGenerateQuestions}
+              size="large"
+            />
+          )}
         </div>
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">

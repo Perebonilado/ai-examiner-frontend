@@ -1,13 +1,10 @@
 import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
   createApi,
   fetchBaseQuery,
 } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
-import { logout, secondsToMilliSeconds } from "@/utils";
+import { baseQueryWithLogoutOnTokenExpiration, secondsToMilliSeconds } from "@/utils";
 import {
   AllCoursesModel,
   AllCoursesQueryModel,
@@ -30,23 +27,10 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
 
 export const CourseService = createApi({
   reducerPath: "course-api",
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["all-courses", "single-course"],
   endpoints: (build) => ({
     getAllUserCourses: build.query<GetAllCoursesModel, AllCoursesQueryModel>({

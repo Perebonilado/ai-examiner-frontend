@@ -1,13 +1,11 @@
-import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
-import { logout, secondsToMilliSeconds } from "@/utils";
+import {
+  baseQueryWithLogoutOnTokenExpiration,
+  logout,
+  secondsToMilliSeconds,
+} from "@/utils";
 import {
   AddDocumentPayloadModel,
   AllDocumentsModel,
@@ -31,23 +29,9 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
-
 export const DocumentService = createApi({
   reducerPath: "document-api",
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["all-documents"],
   endpoints: (build) => ({
     getAllUserDocuments: build.query<
@@ -70,7 +54,7 @@ export const DocumentService = createApi({
             title: document.title,
             questionSetCount: document.question.length,
             questionIds: document.question.map((q) => q.id),
-            averageScore: document.averageScore
+            averageScore: document.averageScore,
           };
         });
 
@@ -87,9 +71,10 @@ export const DocumentService = createApi({
         method: "POST",
         params: {
           questionCount,
-          questionType
+          questionType,
         },
       }),
+      extraOptions: { triggerLoading: false },
       invalidatesTags: ["all-documents"],
       transformResponse: (res: CreateDocumentDto) => {
         if (!res) return <CreateDocumentModel>{};
@@ -97,7 +82,7 @@ export const DocumentService = createApi({
           return {
             documentId: res.data.documentId,
             questionId: res.data.questionId,
-            type: res.data.type
+            type: res.data.type,
           };
       },
     }),

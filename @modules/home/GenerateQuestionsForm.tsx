@@ -19,7 +19,14 @@ import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic
 import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
-import { hyphenateString } from "@/utils";
+import {
+  generateQustionCountOptions,
+  getQuestionTypeBasedOnPermission,
+  hyphenateString,
+} from "@/utils";
+import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
+import { useSelector } from "react-redux";
+import { RootState } from "../../config/redux-config";
 
 const initialValues = {
   title: "",
@@ -51,11 +58,16 @@ const GenerateQuestionsForm: FC = () => {
   const router = useRouter();
 
   const { setModalContent } = useModalContext();
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
 
   const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
     useAddDocumentMutation();
 
-  const { data: questionTypes } = useGetLookUpsByTypeQuery({ type: "question_type" });
+  const { data: questionTypes } = useGetLookUpsByTypeQuery({
+    type: "question_type",
+  });
 
   const [
     uploadFile,
@@ -77,6 +89,11 @@ const GenerateQuestionsForm: FC = () => {
   const handleSubmit = (values: typeof initialValues) => {
     if (!file || !fileId) {
       toast.error("Please upload a file");
+      return;
+    }
+
+    if (permissions && permissions.maxGenerationReached) {
+      setModalContent(<MaxGenerationModal />);
       return;
     }
 
@@ -110,7 +127,11 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (data) {
-      router.push(`/questions/practise-questions/${hyphenateString(data.type.toLowerCase())}/${data.questionId}`);
+      router.push(
+        `/questions/practise-questions/${hyphenateString(
+          data.type.toLowerCase()
+        )}/${data.questionId}`
+      );
     }
   }, [data]);
 
@@ -128,14 +149,6 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
 
   useEffect(() => {
     if (uploadFileError && "status" in uploadFileError) {
@@ -159,7 +172,7 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [file, fileId]);
 
-  return (
+  return !permissions ? null : (
     <section>
       <FormikProvider value={formik}>
         <Form>
@@ -185,7 +198,7 @@ const GenerateQuestionsForm: FC = () => {
                   setFileId(null);
                 }
               }}
-              maxFileSizeMB={15}
+              maxFileSizeMB={permissions.maxFileSizeAllowed}
             />
 
             <div>
@@ -197,7 +210,12 @@ const GenerateQuestionsForm: FC = () => {
                 />
               </label>
               <DropDown
-                options={questionTypes ?? []}
+                options={
+                  getQuestionTypeBasedOnPermission(
+                    permissions,
+                    questionTypes
+                  ) ?? []
+                }
                 {...formik.getFieldProps("questionType")}
                 error={
                   formik.touched.questionType
@@ -215,14 +233,9 @@ const GenerateQuestionsForm: FC = () => {
                   message="Please note that generating more questions typically takes more time"
                 />
               </label>
+
               <DropDown
-                options={[
-                  { label: "5", value: "5", defaultSelected: true },
-                  { label: "10", value: "10" },
-                  { label: "15", value: "15" },
-                  { label: "20", value: "20" },
-                  { label: "25", value: "25" },
-                ]}
+                options={generateQustionCountOptions(permissions.maxQA)}
                 {...formik.getFieldProps("questionCount")}
                 error={
                   formik.touched.questionCount
@@ -232,23 +245,25 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <div className="flex items-center gap-3">
-              <Switch
-                disabled={!file || !fileId}
-                handleChecked={() => {
-                  setIsAdvanced(!isAdvanced);
-                  if (!isFocusAreaData)
-                    fetchTopics({ fileId: fileId as string });
-                }}
-                isChecked={isAdvanced}
-                label="Advanced Preferences"
-              />
+            {permissions.canUseAdvancedPreferences && (
+              <div className="flex items-center gap-3">
+                <Switch
+                  disabled={!file || !fileId}
+                  handleChecked={() => {
+                    setIsAdvanced(!isAdvanced);
+                    if (!isFocusAreaData)
+                      fetchTopics({ fileId: fileId as string });
+                  }}
+                  isChecked={isAdvanced}
+                  label="Advanced Preferences"
+                />
 
-              <ToolTip
-                id="adv"
-                message="Advanced preferences helps you generate questions from specific areas within the document"
-              />
-            </div>
+                <ToolTip
+                  id="adv"
+                  message="Advanced preferences helps you generate questions from specific areas within the document"
+                />
+              </div>
+            )}
 
             {fileId && isAdvanced && !topicsLoading && topics && (
               <ChipMultiSelect

@@ -1,10 +1,4 @@
-import {
-  BaseQueryFn,
-  FetchArgs,
-  FetchBaseQueryError,
-  createApi,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
   CreateScorePayloadModel,
@@ -12,15 +6,14 @@ import {
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
-  QuestionsModel,
 } from "@/models/questions.model";
 import Cookies from "js-cookie";
 import {
   AllQuestionSummaryDto,
   GetQuestionsByIdDto,
-  QuestionsDto,
 } from "@/dto/questions.dto";
-import { logout, secondsToMilliSeconds } from "@/utils";
+import { baseQueryWithLogoutOnTokenExpiration } from "@/utils";
+import { PermissionService } from "./permission.service";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions`,
@@ -35,23 +28,9 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithLogoutOnTokenExpiration: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
-  let result = await baseQuery(args, api, extraOptions);
-  if (result.error && result.error.status === 401) {
-    logout(() => {
-      window.location.pathname = "/auth/login";
-    });
-  }
-  return result;
-};
-
 export const QuestionsService = createApi({
   reducerPath: "questions",
-  baseQuery: baseQueryWithLogoutOnTokenExpiration,
+  baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["question-summary", "single-question"],
   endpoints: (build) => ({
     getQuestionsById: build.query<GetQuestionByIdModel, string>({
@@ -79,6 +58,16 @@ export const QuestionsService = createApi({
             topics: res.topics.map((t) => t.title),
           };
         }
+      },
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            PermissionService.util.prefetch("getPermissions", "", {
+              force: true,
+            })
+          );
+        } catch (error) {}
       },
     }),
     getQuestionSummaries: build.query<
@@ -120,6 +109,16 @@ export const QuestionsService = createApi({
         body,
       }),
       invalidatesTags: ["question-summary"],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            PermissionService.util.prefetch("getPermissions", "", {
+              force: true,
+            })
+          );
+        } catch (error) {}
+      },
     }),
     saveScore: build.mutation<any, CreateScorePayloadModel>({
       query: (body) => ({
@@ -127,6 +126,7 @@ export const QuestionsService = createApi({
         method: "POST",
         body,
       }),
+      extraOptions: { triggerLoading: false },
       invalidatesTags: ["question-summary", "single-question"],
     }),
   }),

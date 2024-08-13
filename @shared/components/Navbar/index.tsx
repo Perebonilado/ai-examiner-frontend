@@ -3,16 +3,18 @@ import Container from "@/@shared/ui/Container";
 import React, { FC, useEffect, useState } from "react";
 import { AppLogo } from "../AppLogo";
 import Link from "next/link";
-import Hamburger from "../Hamburger";
 import MobileNav from "../MobileNav";
-import { mobileScreenSizePx } from "@/constants";
+import { accessToken, mobileScreenSizePx } from "@/constants";
+import Cookies from "js-cookie";
+import UserManagementBox from "../UserManagementBox";
 
 const Navbar: FC = () => {
   const [isMobileNav, setIsMobileNav] = useState(false);
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
 
   const handleCloseOnResize = () => {
     if (window.innerWidth <= mobileScreenSizePx) {
-      setIsMobileNav(false)
+      setIsMobileNav(false);
     }
   };
 
@@ -20,6 +22,14 @@ const Navbar: FC = () => {
     window.addEventListener("resize", handleCloseOnResize);
 
     return () => window.removeEventListener("resize", handleCloseOnResize);
+  }, []);
+
+  useEffect(() => {
+    const loggedIn = Cookies.get(accessToken);
+
+    if (loggedIn) {
+      setIsUserLoggedIn(true);
+    }
   }, []);
 
   return (
@@ -33,30 +43,30 @@ const Navbar: FC = () => {
             style={{ flex: 1 }}
             className="flex items-center justify-end gap-3 max-md:hidden"
           >
-            <Link href={"/auth/login"}>
-              <Button title="Sign in" variant="outlined" size="large" />
-            </Link>
-            <Link href={"/auth/signup"}>
-              {" "}
-              <Button title="Create account" size="large" />
-            </Link>
+            {!isUserLoggedIn ? (
+              <>
+                <Link href={"/auth/login"}>
+                  <Button title="Sign in" variant="outlined" size="large" />
+                </Link>
+                <Link href={"/auth/signup"}>
+                  {" "}
+                  <Button title="Create account" size="large" />
+                </Link>
+              </>
+            ) : (
+              <UserManagementBox />
+            )}
           </div>
-          {/* <Hamburger
-            isSideNavOpen={isMobileNav}
-            onClick={() => {
-              setIsMobileNav(!isMobileNav);
-            }}
-          /> */}
         </div>
       </Container>
-      {(
+      {
         <MobileNav
           isMobileNav={isMobileNav}
           handleClose={() => {
             setIsMobileNav(false);
           }}
         />
-      )}
+      }
     </nav>
   );
 };

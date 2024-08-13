@@ -25,7 +25,7 @@ const CreateDocumentForm: FC = () => {
     }
   }, [params]);
 
-  const [addDocument, { isLoading, isSuccess, error }] = useAddDocumentMutation();
+  const [addDocument, { isLoading, isSuccess,  }] = useAddDocumentMutation();
 
   const handleSubmit = (values: typeof initialValues) => {
     if (!file) {
@@ -66,14 +66,6 @@ const CreateDocumentForm: FC = () => {
     }
   }, [isSuccess]);
 
-  useEffect(() => {
-    if (error && "status" in error) {
-      if ("data" in error) {
-        const { message } = error.data as { message: string };
-        toast.error(message);
-      } else toast.error("Oops! Something went wrong");
-    }
-  }, [error]);
 
   return (
     <>

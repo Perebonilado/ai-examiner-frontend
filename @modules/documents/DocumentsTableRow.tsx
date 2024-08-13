@@ -23,14 +23,6 @@ const TopicsTableRow: FC<Props> = ({
       <div style={{ flex: 1 }}>
         {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}
       </div>
-      {/* <div style={{ flex: 1 }} className="flex flex-wrap items-center gap-3">
-        <Button title="Edit" size="small" />
-        <Button
-          title="Delete"
-          size="small"
-          className="!bg-rose-600 !border-rose-600"
-        />
-      </div> */}
     </div>
   );
 };

@@ -42,7 +42,7 @@ const SignUpForm: FC = () => {
       if (returnUrl) {
         router.push(decodeURIComponent(returnUrl as string));
       } else {
-        router.push("/new-document");
+        router.push("/pricing");
       }
     }
   }, [data]);

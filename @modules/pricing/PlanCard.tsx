@@ -53,7 +53,7 @@ const PlanCard: FC<Props> = ({
       </div>
 
       <div className="flex flex-col gap-3 pt-4" style={{ flex: 3 }}>
-        {offers.map((offer, idx) => {
+        {offers?.map((offer, idx) => {
           return (
             <div key={idx} className="flex items-center gap-2">
               {offer.isAvailable ? <CheckMark /> : <CancelIcon />}

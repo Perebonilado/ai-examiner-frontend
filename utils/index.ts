@@ -168,7 +168,7 @@ export const convertMegaBytesToBytes = (byte: number): number => {
 
 export const generateQustionCountOptions = (maxCount: number) => {
   const countsArr: number[] = [5];
-  const incrementVal = 15;
+  const incrementVal = 5;
 
   while (countsArr[countsArr.length - 1] + incrementVal < maxCount) {
     countsArr.push(countsArr[countsArr.length - 1] + incrementVal);

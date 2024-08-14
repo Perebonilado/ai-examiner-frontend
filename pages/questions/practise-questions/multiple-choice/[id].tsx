@@ -17,6 +17,7 @@ import MCQItemContainerPDF from "@/@modules/questions/MCQItemContainerPDF";
 import IconButton from "@/@shared/ui/IconButton";
 import DotsIcon from "@/icons/DotsIcon";
 import Dialog from "@/@shared/components/Dialog";
+import { AppLoader } from "@/@shared/components/AppLoader";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -34,6 +35,23 @@ const Practice: NextPage = () => {
       setId(params.id as string);
     }
   }, [params]);
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
 
   return (
     <>

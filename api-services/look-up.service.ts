@@ -34,6 +34,9 @@ export const LookUpService = createApi({
           type,
         },
       }),
+      extraOptions: {
+        triggerLoading: false
+      },
       providesTags: ["look-up-by-id"],
       transformResponse: (res: LookUpDto[]) => {
         if (!res) return <LookUpModel[]>[];

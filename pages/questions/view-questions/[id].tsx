@@ -17,6 +17,8 @@ import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
+import { toast } from "react-toastify";
+import { AppLoader } from "@/@shared/components/AppLoader";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -61,6 +63,23 @@ const ViewQuestions: NextPage = () => {
       setdocumentId(params.id as string);
     }
   }, [params]);
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
 
   const router = useRouter();
 

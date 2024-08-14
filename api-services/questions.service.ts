@@ -39,6 +39,9 @@ export const QuestionsService = createApi({
         method: "GET",
       }),
       providesTags: ["single-question"],
+      extraOptions: {
+        triggerLoading: false,
+      },
       transformResponse: (res: GetQuestionsByIdDto) => {
         if (!res) return <GetQuestionByIdModel>{};
         else {
@@ -79,6 +82,9 @@ export const QuestionsService = createApi({
         method: "GET",
         params: { ...query },
       }),
+      extraOptions: {
+        triggerLoading: false,
+      },
       providesTags: ["question-summary"],
       transformResponse: (res: AllQuestionSummaryDto) => {
         if (!res) return <GetQuestionSummaryModel>{};

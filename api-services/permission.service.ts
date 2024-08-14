@@ -33,6 +33,9 @@ export const PermissionService = createApi({
       query: () => ({
         url: "",
       }),
+      extraOptions: {
+        triggerLoading: false,
+      },
       transformResponse: (res: PermissionDto) => {
         if (!res) return <PermissionModel>{};
         return res;

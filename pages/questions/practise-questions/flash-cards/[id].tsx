@@ -12,11 +12,13 @@ import ChevronLeft from "@/icons/ChevronLeft";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import * as moment from "moment";
+import { AppLoader } from "@/@shared/components/AppLoader";
+import { toast } from "react-toastify";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
   const params = useParams();
-  const { data, error, refetch } = useGetQuestionsByIdQuery(id, {
+  const { data, error, refetch, isLoading } = useGetQuestionsByIdQuery(id, {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
@@ -29,6 +31,23 @@ const FlashCards: NextPage = () => {
       setId(params.id as string);
     }
   }, [params]);
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
+
+  useEffect(() => {
+    if (isLoading) {
+      setModalContent(<AppLoader />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isLoading]);
 
   return (
     <>

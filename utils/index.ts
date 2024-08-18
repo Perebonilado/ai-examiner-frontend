@@ -167,6 +167,10 @@ export const convertMegaBytesToBytes = (byte: number): number => {
 };
 
 export const generateQustionCountOptions = (maxCount: number) => {
+  if(maxCount <= 5) {
+    return [{label: `${maxCount}`, value: `${maxCount}`, defaultSelected: true}]
+  }
+
   const countsArr: number[] = [5];
   const incrementVal = 5;
 

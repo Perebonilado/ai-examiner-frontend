@@ -255,12 +255,12 @@ const GenerateQuestionsForm: FC = () => {
                       fetchTopics({ fileId: fileId as string });
                   }}
                   isChecked={isAdvanced}
-                  label="Advanced Preferences"
+                  label="Select Topics"
                 />
 
                 <ToolTip
                   id="adv"
-                  message="Advanced preferences helps you generate questions from specific areas within the document"
+                  message="Enable to generate topics"
                 />
               </div>
             )}
@@ -271,22 +271,22 @@ const GenerateQuestionsForm: FC = () => {
                 getSelectedItems={(items) => {
                   setFocusAreas(items);
                 }}
-                label="Choose Focus Areas"
+                label="Topics"
               />
             )}
 
             {topicsLoading && isAdvanced && (
               <div className="flex flex-col gap-2 items-center">
                 <Spinner size="sm" />
-                <p className="text-xs">Loading advanced preferences...</p>
+                <p className="text-xs">Loading topics...</p>
               </div>
             )}
 
             {topicsError && isAdvanced && (
               <div className="flex flex-col gap-2 items-center">
-                <ErrorMessage message="An error occured while loading advanced preferences" />
+                <ErrorMessage message="An error occured while loading topics" />
                 <Button
-                  title="reload advanced preferences"
+                  title="reload topics"
                   variant="text"
                   size="small"
                   onClick={() => {

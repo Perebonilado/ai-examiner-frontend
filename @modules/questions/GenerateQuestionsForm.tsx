@@ -166,7 +166,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                       getSelectedItems={(items) => {
                         setSelectedTopics(items.map((it) => it.label));
                       }}
-                      label="Choose Focus Areas"
+                      label="Topics"
                       options={
                         topics.length
                           ? topics
@@ -185,11 +185,11 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                               setIsAdvanced(!isAdvanced);
                             }}
                             isChecked={isAdvanced}
-                            label="Advanced Preferences"
+                            label="Select Topics"
                           />
                           <ToolTip
                             id="adv"
-                            message="Advanced preferences helps you generate questions from specific areas within the document"
+                            message="Enable to generate topics"
                           />
                         </div>
                       }
@@ -197,15 +197,15 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                         <div className="flex flex-col gap-2 items-center">
                           <Spinner size="sm" />
                           <p className="text-xs">
-                            Loading advanced preferences...
+                            Loading topics...
                           </p>
                         </div>
                       )}
                       {focusAreasError && isAdvanced && (
                         <div className="flex flex-col gap-2 items-center">
-                          <ErrorMessage message="An error occured while loading advanced preferences" />
+                          <ErrorMessage message="An error occured while loading topics" />
                           <Button
-                            title="reload advanced preferences"
+                            title="reload topics"
                             variant="text"
                             size="small"
                             onClick={() => {

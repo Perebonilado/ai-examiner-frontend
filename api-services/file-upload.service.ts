@@ -1,7 +1,11 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
-import { baseQueryWithLogoutOnTokenExpiration, logout } from "@/utils";
+import {
+  baseQueryWithLogoutOnTokenExpiration,
+  logout,
+  secondsToMilliSeconds,
+} from "@/utils";
 import {
   FileUploadModel,
   FileUploadPayloadModel,
@@ -10,6 +14,7 @@ import { FileUploadDto } from "@/dto/file-upload.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/file-upload`,
+  timeout: secondsToMilliSeconds(6000),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 

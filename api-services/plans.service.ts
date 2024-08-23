@@ -53,7 +53,7 @@ export const PlanService = createApi({
               currency: plans[0].currency,
               offers: [
                 { title: "3 Q&As / test", isAvailable: true },
-                { title: "1 test / month", isAvailable: true },
+                { title: "2 test / month", isAvailable: true },
                 { title: "Multiple choice questions", isAvailable: true },
                 { title: "Max file size 15mb", isAvailable: true },
                 { title: "Topic selection", isAvailable: false },

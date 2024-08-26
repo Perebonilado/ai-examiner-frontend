@@ -40,15 +40,19 @@ const AppHead: FC<Props> = ({ title }) => {
       <link rel="shortcut icon" href="/favicon.ico" />
       <title>AI Examiner</title>
 
-      <Script>
+      <script
+        async
+        src="https://www.googletagmanager.com/gtag/js?id=G-8F87VFDMSQ"
+      ></script>
+      <script>
         {`
-        window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-        
-          gtag('config', 'G-8F87VFDMSQ');
-        `}
-      </Script>
+          window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-8F87VFDMSQ');
+          `}
+      </script>
     </Head>
   );
 };

@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 
 import Head from "next/head";
+import Script from "next/script";
 
 interface Props {
   title?: string;
@@ -38,6 +39,16 @@ const AppHead: FC<Props> = ({ title }) => {
       <link rel="manifest" href="/manifest.json" />
       <link rel="shortcut icon" href="/favicon.ico" />
       <title>AI Examiner</title>
+
+      <Script>
+        {`
+        window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+        
+          gtag('config', 'G-8F87VFDMSQ');
+        `}
+      </Script>
     </Head>
   );
 };

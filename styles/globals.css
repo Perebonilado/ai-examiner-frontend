@@ -3,6 +3,80 @@
 @tailwind components;
 @tailwind utilities;
 
+.markdown-content {
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.markdown-content h1, .markdown-content h2, .markdown-content h3 {
+  margin-top: 24px;
+  margin-bottom: 16px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.markdown-content p {
+  margin-bottom: 16px;
+}
+
+.markdown-content ul, .markdown-content ol {
+  margin-bottom: 16px;
+  padding-left: 32px;
+}
+
+.markdown-content li {
+  margin-bottom: 8px;
+}
+
+.markdown-content a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.markdown-content a:hover {
+  text-decoration: underline;
+}
+
+.markdown-content pre {
+  background-color: #f6f8fa;
+  border-radius: 3px;
+  padding: 16px;
+  overflow: auto;
+}
+
+.markdown-content code {
+  background-color: rgba(27,31,35,0.05);
+  border-radius: 3px;
+  font-size: 85%;
+  margin: 0;
+  padding: 0.2em 0.4em;
+}
+
+/* styles/globals.css or your specific CSS file */
+.prose ul,
+.prose ol {
+  margin-left: 1.5rem; /* Indent lists */
+}
+
+.prose li {
+  margin-bottom: 0.5rem; /* Space between list items */
+}
+
+/* styles/globals.css or your specific CSS file */
+.prose ul,
+.prose ol {
+  margin-left: 1.5rem; /* Indent lists */
+}
+
+.prose li {
+  margin-bottom: 0.5rem; /* Space between list items */
+}
+
+
 :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

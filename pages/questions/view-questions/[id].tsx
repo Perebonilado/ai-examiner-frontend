@@ -19,6 +19,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
+import Tab from "@/@shared/components/Tab";
+import ChatContainer from "@/@modules/chat/ChatContainer";
 
 const ViewQuestions: NextPage = () => {
   const [page, setPage] = useState(1);
@@ -83,6 +85,8 @@ const ViewQuestions: NextPage = () => {
 
   const router = useRouter();
 
+  const [activeTab, setActiveTab] = useState("");
+
   return (
     <>
       <AppHead title="View Questions" />
@@ -96,40 +100,57 @@ const ViewQuestions: NextPage = () => {
             router.push(`/documents`);
           }}
         />
-        <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
-          {document && (
-            <h2 className="text-2xl font-bold max-md:text-center">
-              {capitalizeFirstLetterOfEachWord(
-                document.documents[0].title.toLowerCase()
-              )}{" "}
-            </h2>
-          )}
-          {permissions && (
-            <Button
-              title="Generate New Questions"
-              onClick={handleGenerateQuestions}
-              size="large"
-            />
-          )}
-        </div>
-        {!data && error && (
-          <div className="flex flex-col gap-4 justify-center items-center py-8">
-            <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />
-            <Button title="Reload Question Summaries" onClick={refetch} />
+        <Tab
+          tabs={["Questions", "Discussions"]}
+          getActiveTab={(tab) => {
+            setActiveTab(tab);
+          }}
+        />
+
+        {activeTab === "Discussions" && (
+          <div>
+            <ChatContainer />
           </div>
         )}
-        {data && <ViewQuestionCardContainer data={data?.questions} />}
 
-        {data && (
-          <Pagination
-            className=""
-            currentPage={page}
-            pageSize={data.meta.pageSize}
-            totalCount={data.meta.totalCount}
-            onPageChange={(p) => {
-              setPage(() => p);
-            }}
-          />
+        {activeTab === "Questions" && (
+          <div>
+            <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
+              {document && (
+                <h2 className="text-2xl font-bold max-md:text-center">
+                  {capitalizeFirstLetterOfEachWord(
+                    document.documents[0].title.toLowerCase()
+                  )}{" "}
+                </h2>
+              )}
+              {permissions && (
+                <Button
+                  title="Generate New Questions"
+                  onClick={handleGenerateQuestions}
+                  size="large"
+                />
+              )}
+            </div>
+            {!data && error && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />
+                <Button title="Reload Question Summaries" onClick={refetch} />
+              </div>
+            )}
+            {data && <ViewQuestionCardContainer data={data?.questions} />}
+
+            {data && (
+              <Pagination
+                className=""
+                currentPage={page}
+                pageSize={data.meta.pageSize}
+                totalCount={data.meta.totalCount}
+                onPageChange={(p) => {
+                  setPage(() => p);
+                }}
+              />
+            )}
+          </div>
         )}
       </AppLayout>
     </>
@@ -137,36 +158,3 @@ const ViewQuestions: NextPage = () => {
 };
 
 export default ViewQuestions;
-
-const mock = [
-  {
-    id: 1,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 5,
-  },
-  {
-    id: 2,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 10,
-  },
-  {
-    id: 3,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 20,
-  },
-  {
-    id: 4,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 5,
-  },
-  {
-    id: 5,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 5,
-  },
-];

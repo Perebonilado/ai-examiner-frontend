@@ -109,7 +109,7 @@ const ViewQuestions: NextPage = () => {
 
         {activeTab === "Discussions" && (
           <div>
-            <ChatContainer />
+            <ChatContainer documentId={documentId} />
           </div>
         )}
 

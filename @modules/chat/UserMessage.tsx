@@ -5,9 +5,10 @@ interface Props {
 }
 
 const UserMessage: FC<Props> = ({ message }) => {
+ 
   return (
     <div className="w-full flex justify-end py-3">
-      <p className="p-3 bg-[#F2E1FF] rounded-xl w-fit max-w-[70%]">{message}</p>
+      <p className="p-3 bg-[#F2E1FF] rounded-xl w-fit max-w-[85%]">{message}</p>
     </div>
   );
 };

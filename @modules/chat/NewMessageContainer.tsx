@@ -3,7 +3,11 @@ import ArrowUpIcon from "@/icons/ArrowUpIcon";
 import ChatIcon from "@/icons/ChatIcon";
 import React, { FC, useEffect, useRef, useState } from "react";
 
-const NewMessageContainer: FC = () => {
+interface Props {
+  handleSendMessage: (message: string) => void;
+}
+
+const NewMessageContainer: FC<Props> = ({ handleSendMessage }) => {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -27,9 +31,10 @@ const NewMessageContainer: FC = () => {
     setValue(e.target.value);
   };
 
-  const onSubmit = () =>{
-    setValue("")
-  }
+  const onSubmit = () => {
+    handleSendMessage(value);
+    setValue("");
+  };
 
   return (
     <div className="min-h-[25px] px-3 py-1 flex gap-4 items-center border border-gray-300 rounded-xl">

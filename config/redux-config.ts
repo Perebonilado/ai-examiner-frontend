@@ -13,6 +13,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import PermissionsReducer from "../features/permissionSlice";
 import LoadingAndErrorReducer from "../features/loaderSlice";
+import { DocumentMessageService } from "@/api-services/document-message.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -27,6 +28,7 @@ export const reduxStore = configureStore({
     [SubscriptionService.reducerPath]: SubscriptionService.reducer,
     [UserService.reducerPath]: UserService.reducer,
     [PermissionService.reducerPath]: PermissionService.reducer,
+    [DocumentMessageService.reducerPath]: DocumentMessageService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
   },
@@ -43,6 +45,7 @@ export const reduxStore = configureStore({
       SubscriptionService.middleware,
       UserService.middleware,
       PermissionService.middleware,
+      DocumentMessageService.middleware,
     ]),
 });
 

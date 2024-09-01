@@ -22,7 +22,7 @@ const SystemMessage: FC<Props> = ({ message }) => {
   };
   return (
     <div
-      className="w-full prose-base"
+      className="w-full prose-base max-w-full !text-wrap overflow-x-hidden"
       dangerouslySetInnerHTML={{ __html: htmlMessage }}
     ></div>
   );

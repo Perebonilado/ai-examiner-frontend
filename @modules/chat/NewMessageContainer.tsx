@@ -51,7 +51,7 @@ const NewMessageContainer: FC<Props> = ({
           value={value}
           onChange={handleChange}
           placeholder={`Ask AI Examiner anything about ${documentTitle}`}
-          className="placeholder:italic placeholder:text-xs w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
+          className="placeholder:italic placeholder:text-sm max-sm:placeholder:text-xs w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
           rows={1}
         ></textarea>
       </div>

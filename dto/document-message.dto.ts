@@ -7,7 +7,7 @@ export interface DocumentMessageDTO {
 
 export interface DocumentMessagesDTO {
   data: DocumentMessageDTO[];
-  count: number;
+  totalCount: number;
 }
 
 export interface SendMessageDto {

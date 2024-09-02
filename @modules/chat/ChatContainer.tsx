@@ -17,13 +17,19 @@ interface Props {
   documentTitle: string;
 }
 
+interface SearchParams {
+  lastMessageCreatedOn?: Date;
+  courseDocumentId: string;
+  limit: number;
+}
+
 const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
-  const { data, isError: isLoadingMessagesError } = useGetDocumentMessagesQuery(
-    {
-      courseDocumentId: documentId,
-      limit: 10,
-    }
-  );
+  const [searchParams, setSearchParams] = useState<SearchParams>({
+    courseDocumentId: documentId,
+    limit: 4,
+  });
+  const { data, isError: isLoadingMessagesError } =
+    useGetDocumentMessagesQuery(searchParams);
 
   const [currentMessages, setCurrentMessages] = useState<
     { message: string; sender: string }[]
@@ -33,10 +39,44 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
     { message: string; sender: string }[]
   >([]);
 
+  const [showFetchPreviousMessagesButton, setShowPreviousMessagesButton] =
+    useState(false);
+
   const chatContainerRef = useRef<ElementRef<"section">>(null);
 
   const [sendMessage, { data: newSystemMessage, isLoading, isError, error }] =
     useSendMessageMutation();
+
+  const handleFetchMorePreviousMessages = () => {
+    if (data) {
+      const totalMessagesInDatabase = data.count;
+      const totalMessagesOnClient =
+        currentMessages.length + previousMessages.length;
+
+      if (totalMessagesInDatabase > totalMessagesOnClient) {
+        const params: SearchParams = {
+          ...searchParams,
+          lastMessageCreatedOn: data.data[0].createdOn,
+        };
+
+        setSearchParams(params);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (data) {
+      const totalMessagesInDatabase = data.count;
+      const totalMessagesOnClient =
+        currentMessages.length + previousMessages.length;
+
+      if (totalMessagesInDatabase > totalMessagesOnClient) {
+        setShowPreviousMessagesButton(true);
+      } else {
+        setShowPreviousMessagesButton(false);
+      }
+    }
+  }, [data, JSON.stringify(previousMessages), JSON.stringify(currentMessages)]);
 
   useEffect(() => {
     if (error && "status" in error) {
@@ -53,7 +93,7 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
         message: d.message,
         sender: d.sender,
       }));
-      setPreviousMessages([...previousMessages, ...messages]);
+      setPreviousMessages([ ...messages, ...previousMessages]);
       scrollToBottomOfChat();
     }
   }, [data]);
@@ -93,6 +133,16 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
           <NoMessageInfo />
         )}
         <div className="flex flex-col h-auto min-h-[calc(100vh-410px)] justify-end gap-12">
+          {showFetchPreviousMessagesButton && (
+            <div className="flex justify-center items-center">
+              <Button
+                title="Fetch previous messages"
+                variant="text"
+                size="small"
+                onClick={handleFetchMorePreviousMessages}
+              />
+            </div>
+          )}
           {previousMessages.map((m) => {
             if (m.sender === "system") {
               return <SystemMessage message={m.message} />;

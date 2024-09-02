@@ -65,7 +65,10 @@ export const DocumentMessageService = createApi({
       transformResponse: (res: DocumentMessagesDTO) => {
         if (!res) return <DocumentMessagesModel>{};
         else {
-          return res;
+          return {
+            ...res,
+            count: res.totalCount
+          };
         }
       },
     }),

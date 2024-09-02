@@ -7,6 +7,10 @@ import {
   useSendMessageMutation,
 } from "@/api-services/document-message.service";
 import Spinner from "@/@shared/components/Spinner";
+import NoMessageInfo from "./NoMessageInfo";
+import { toast } from "react-toastify";
+import Button from "@/@shared/ui/Button";
+import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 
 interface Props {
   documentId: string;
@@ -14,10 +18,12 @@ interface Props {
 }
 
 const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
-  const { data } = useGetDocumentMessagesQuery({
-    courseDocumentId: documentId,
-    limit: 10,
-  });
+  const { data, isError: isLoadingMessagesError } = useGetDocumentMessagesQuery(
+    {
+      courseDocumentId: documentId,
+      limit: 10,
+    }
+  );
 
   const [currentMessages, setCurrentMessages] = useState<
     { message: string; sender: string }[]
@@ -29,8 +35,17 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
 
   const chatContainerRef = useRef<ElementRef<"section">>(null);
 
-  const [sendMessage, { data: newSystemMessage, isLoading }] =
+  const [sendMessage, { data: newSystemMessage, isLoading, isError, error }] =
     useSendMessageMutation();
+
+  useEffect(() => {
+    if (error && "status" in error) {
+      if ("data" in error) {
+        const { message } = error.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [error]);
 
   useEffect(() => {
     if (data) {
@@ -63,12 +78,20 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
     }
   };
 
+  const handleRetryOnError = () => {
+    const lastUserMessage = currentMessages[currentMessages.length - 1].message;
+    sendMessage({ courseDocumentId: documentId, message: lastUserMessage });
+  };
+
   return (
     <>
       <section
         ref={chatContainerRef}
-        className="bg-[#FAFAFA] h-[calc(100vh-330px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
+        className="bg-[#FAFAFA] relative h-[calc(100vh-330px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
       >
+        {!previousMessages.length && !currentMessages.length && (
+          <NoMessageInfo />
+        )}
         <div className="flex flex-col h-auto min-h-[calc(100vh-410px)] justify-end gap-12">
           {previousMessages.map((m) => {
             if (m.sender === "system") {
@@ -92,10 +115,32 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
               </p>
             </div>
           )}
+
+          {/* if there is an error and the last message was a user message */}
+          {isError &&
+            currentMessages.length &&
+            currentMessages[currentMessages.length - 1].sender === "user" && (
+              <div className="flex flex-col gap-2 items-center justify-center my-4">
+                <p>Oops! My bad, let's try that again</p>
+                <Button
+                  title="Retry"
+                  size="small"
+                  variant="outlined"
+                  onClick={handleRetryOnError}
+                />
+              </div>
+            )}
+
+          {isLoadingMessagesError && (
+            <div className="flex flex-col gap-2 items-center justify-center my-4">
+              <ErrorMessage message="We encountered an issue fetching your previous messages" />
+              <Button title="Reload" size="small" variant="outlined" />
+            </div>
+          )}
         </div>
       </section>
       <NewMessageContainer
-        chatDisabled={isLoading}
+        chatDisabled={isLoading || isLoadingMessagesError}
         documentTitle={documentTitle}
         handleSendMessage={(message) => {
           setCurrentMessages([...currentMessages, { message, sender: "user" }]);

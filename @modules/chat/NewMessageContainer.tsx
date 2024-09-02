@@ -12,7 +12,7 @@ interface Props {
 const NewMessageContainer: FC<Props> = ({
   handleSendMessage,
   chatDisabled,
-  documentTitle
+  documentTitle,
 }) => {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -51,16 +51,15 @@ const NewMessageContainer: FC<Props> = ({
           value={value}
           onChange={handleChange}
           placeholder={`Ask AI Examiner anything about ${documentTitle}`}
-          className="placeholder:italic placeholder:text-sm w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
+          className="placeholder:italic placeholder:text-xs w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
           rows={1}
-          disabled={chatDisabled}
         ></textarea>
       </div>
       <IconButton
         icon={<ArrowUpIcon />}
         onClick={onSubmit}
         className={
-          isDisabled
+          isDisabled || chatDisabled
             ? "!bg-gray-300 !border-gray-300 transition-all cursor-auto"
             : "transition-all"
         }

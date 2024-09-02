@@ -6,11 +6,13 @@ import React, { FC, useEffect, useRef, useState } from "react";
 interface Props {
   handleSendMessage: (message: string) => void;
   chatDisabled: boolean;
+  documentTitle: string;
 }
 
 const NewMessageContainer: FC<Props> = ({
   handleSendMessage,
   chatDisabled,
+  documentTitle
 }) => {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -41,17 +43,15 @@ const NewMessageContainer: FC<Props> = ({
   };
 
   return (
-    <div
-      className="min-h-[25px] px-3 py-1 flex gap-4 items-center border border-gray-300 rounded-xl"
-    >
+    <div className="min-h-[25px] px-3 py-1 flex gap-4 items-center border border-gray-300 rounded-xl">
       <ChatIcon />
       <div className="w-full flex items-center">
         <textarea
           ref={textareaRef}
           value={value}
           onChange={handleChange}
-          placeholder="Chat with AI Examiner"
-          className="placeholder:italic w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
+          placeholder={`Ask AI Examiner anything about ${documentTitle}`}
+          className="placeholder:italic placeholder:text-sm w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
           rows={1}
           disabled={chatDisabled}
         ></textarea>

@@ -109,7 +109,7 @@ const ViewQuestions: NextPage = () => {
               )}{" "}
             </h2>
           )}
-          {permissions && activeTab ==="Questions" &&(
+          {permissions && activeTab === "Questions" && (
             <Button
               title="Generate New Questions"
               onClick={handleGenerateQuestions}
@@ -128,7 +128,16 @@ const ViewQuestions: NextPage = () => {
 
         {activeTab === "Discussions" && (
           <div>
-            <ChatContainer documentId={documentId} />
+            <ChatContainer
+              documentId={documentId}
+              documentTitle={
+                document
+                  ? capitalizeFirstLetterOfEachWord(
+                      document.documents[0].title.toLowerCase()
+                    )
+                  : ""
+              }
+            />
           </div>
         )}
 

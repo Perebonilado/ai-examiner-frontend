@@ -10,9 +10,10 @@ import Spinner from "@/@shared/components/Spinner";
 
 interface Props {
   documentId: string;
+  documentTitle: string;
 }
 
-const ChatContainer: FC<Props> = ({ documentId }) => {
+const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
   const { data } = useGetDocumentMessagesQuery({
     courseDocumentId: documentId,
     limit: 10,
@@ -66,9 +67,9 @@ const ChatContainer: FC<Props> = ({ documentId }) => {
     <>
       <section
         ref={chatContainerRef}
-        className="bg-[#FAFAFA] h-[calc(100vh-350px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
+        className="bg-[#FAFAFA] h-[calc(100vh-330px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
       >
-        <div className="flex flex-col h-auto min-h-[calc(100vh-430px)] justify-end gap-12">
+        <div className="flex flex-col h-auto min-h-[calc(100vh-410px)] justify-end gap-12">
           {previousMessages.map((m) => {
             if (m.sender === "system") {
               return <SystemMessage message={m.message} />;
@@ -95,6 +96,7 @@ const ChatContainer: FC<Props> = ({ documentId }) => {
       </section>
       <NewMessageContainer
         chatDisabled={isLoading}
+        documentTitle={documentTitle}
         handleSendMessage={(message) => {
           setCurrentMessages([...currentMessages, { message, sender: "user" }]);
           scrollToBottomOfChat();

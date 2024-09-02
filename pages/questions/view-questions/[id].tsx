@@ -95,16 +95,35 @@ const ViewQuestions: NextPage = () => {
           title="Back"
           variant="text"
           starticon={<ChevronLeft />}
-          className="!gap-1 mb-6 mt-7"
+          className="!gap-1 mb-4 mt-7 max-sm:mt-0"
           onClick={() => {
             router.push(`/documents`);
           }}
         />
+
+        <div className="flex items-center justify-between w-full pb-4 max-md:flex-col max-md:gap-12">
+          {document && (
+            <h2 className="text-2xl font-bold max-md:text-center">
+              {capitalizeFirstLetterOfEachWord(
+                document.documents[0].title.toLowerCase()
+              )}{" "}
+            </h2>
+          )}
+          {permissions && activeTab ==="Questions" &&(
+            <Button
+              title="Generate New Questions"
+              onClick={handleGenerateQuestions}
+              size="large"
+            />
+          )}
+        </div>
+
         <Tab
           tabs={["Questions", "Discussions"]}
           getActiveTab={(tab) => {
             setActiveTab(tab);
           }}
+          defaultActiveTab="Questions"
         />
 
         {activeTab === "Discussions" && (
@@ -115,22 +134,6 @@ const ViewQuestions: NextPage = () => {
 
         {activeTab === "Questions" && (
           <div>
-            <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
-              {document && (
-                <h2 className="text-2xl font-bold max-md:text-center">
-                  {capitalizeFirstLetterOfEachWord(
-                    document.documents[0].title.toLowerCase()
-                  )}{" "}
-                </h2>
-              )}
-              {permissions && (
-                <Button
-                  title="Generate New Questions"
-                  onClick={handleGenerateQuestions}
-                  size="large"
-                />
-              )}
-            </div>
             {!data && error && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />

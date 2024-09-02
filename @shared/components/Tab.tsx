@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import TabItem from "./TabItem";
+import { useRouter } from "next/router";
 
 interface Props {
   tabs: string[];
@@ -15,6 +16,7 @@ const Tab: FC<Props> = ({ tabs, defaultActiveTab, getActiveTab }) => {
       isActive: boolean;
     }[]
   >([]);
+  const router = useRouter();
 
   const initializeActualTabs = () => {
     getActiveTab(activeTab)
@@ -32,8 +34,12 @@ const Tab: FC<Props> = ({ tabs, defaultActiveTab, getActiveTab }) => {
     initializeActualTabs();
   }, [activeTab]);
 
+  useEffect(()=>{
+    setActiveTab(tabs[0])
+  },[router.asPath])
+
   return (
-    <div className="flex border-b border-b-gray-400 mb-8">
+    <div className="flex border-b border-b-gray-400 mb-4">
       {actualTabs.map((tab, idx) => {
         return (
           <TabItem

@@ -5,9 +5,13 @@ import React, { FC, useEffect, useRef, useState } from "react";
 
 interface Props {
   handleSendMessage: (message: string) => void;
+  chatDisabled: boolean;
 }
 
-const NewMessageContainer: FC<Props> = ({ handleSendMessage }) => {
+const NewMessageContainer: FC<Props> = ({
+  handleSendMessage,
+  chatDisabled,
+}) => {
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -37,7 +41,9 @@ const NewMessageContainer: FC<Props> = ({ handleSendMessage }) => {
   };
 
   return (
-    <div className="min-h-[25px] px-3 py-1 flex gap-4 items-center border border-gray-300 rounded-xl">
+    <div
+      className="min-h-[25px] px-3 py-1 flex gap-4 items-center border border-gray-300 rounded-xl"
+    >
       <ChatIcon />
       <div className="w-full flex items-center">
         <textarea
@@ -47,6 +53,7 @@ const NewMessageContainer: FC<Props> = ({ handleSendMessage }) => {
           placeholder="Chat with AI Examiner"
           className="placeholder:italic w-full outline-none max-h-[150px] overflow-y-auto resize-none rounded"
           rows={1}
+          disabled={chatDisabled}
         ></textarea>
       </div>
       <IconButton

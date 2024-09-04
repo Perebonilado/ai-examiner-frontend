@@ -1,3 +1,4 @@
+import TransitionUp from "@/transitions/TransitionUp";
 import React, { FC } from "react";
 
 interface Props {
@@ -18,9 +19,11 @@ const NoMessageInfo: FC<Props> = ({ documentTitle }) => {
           "Answer specific questions about this topic",
         ].map((title, idx) => {
           return (
-            <li key={idx} className="text-xs border border-gray-300 font-medium w-fit p-2 rounded-xl">
-              {title}
-            </li>
+            <TransitionUp key={idx}>
+              <li className="text-xs border border-gray-300 font-medium w-fit p-2 rounded-xl">
+                {title}
+              </li>
+            </TransitionUp>
           );
         })}
       </ul>

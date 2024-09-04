@@ -130,7 +130,7 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
         className="bg-[#FAFAFA] relative h-[calc(100vh-330px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
       >
         {!previousMessages.length && !currentMessages.length && (
-          <NoMessageInfo />
+          <NoMessageInfo documentTitle={documentTitle}/>
         )}
         <div className="flex flex-col h-auto min-h-[calc(100vh-410px)] justify-end gap-12">
           {showFetchPreviousMessagesButton && (

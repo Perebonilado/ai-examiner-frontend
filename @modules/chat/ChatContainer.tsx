@@ -11,6 +11,10 @@ import NoMessageInfo from "./NoMessageInfo";
 import { toast } from "react-toastify";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import FilterIcon from "@/icons/FilterIcon";
+import IconButton from "@/@shared/ui/IconButton";
+import { useModalContext } from "@/contexts/ModalContext";
+import ResponseFormatDialog from "./ResponseFormatDialog";
 
 interface Props {
   documentId: string;
@@ -47,6 +51,8 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
   const [sendMessage, { data: newSystemMessage, isLoading, isError, error }] =
     useSendMessageMutation();
 
+  const { setModalContent } = useModalContext();
+
   const handleFetchMorePreviousMessages = () => {
     if (data) {
       const totalMessagesInDatabase = data.count;
@@ -62,6 +68,20 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
         setSearchParams(params);
       }
     }
+  };
+
+  const [selectedResponseFormat, setSelectedResponseFormat] =
+    useState("indepth");
+
+  const handleInitializeResponseFormatModal = () => {
+    setModalContent(
+      <ResponseFormatDialog
+        defaultSelectedOption={selectedResponseFormat}
+        handleSelectedOption={(selectedOption) => {
+          setSelectedResponseFormat(selectedOption);
+        }}
+      />
+    );
   };
 
   useEffect(() => {
@@ -93,7 +113,7 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
         message: d.message,
         sender: d.sender,
       }));
-      setPreviousMessages([ ...messages, ...previousMessages]);
+      setPreviousMessages([...messages, ...previousMessages]);
       scrollToBottomOfChat();
     }
   }, [data]);
@@ -120,17 +140,28 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
 
   const handleRetryOnError = () => {
     const lastUserMessage = currentMessages[currentMessages.length - 1].message;
-    sendMessage({ courseDocumentId: documentId, message: lastUserMessage });
+    sendMessage({
+      courseDocumentId: documentId,
+      message: lastUserMessage,
+      responseFormat: selectedResponseFormat,
+    });
   };
 
   return (
-    <>
+    <div className="relative">
+      {/* <div className="absolute right-3 top-2 z-40">
+        <IconButton
+          icon={<FilterIcon />}
+          size="small"
+          onClick={handleInitializeResponseFormatModal}
+        />
+      </div> */}
       <section
         ref={chatContainerRef}
         className="bg-[#FAFAFA] relative h-[calc(100vh-330px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
       >
         {!previousMessages.length && !currentMessages.length && (
-          <NoMessageInfo documentTitle={documentTitle}/>
+          <NoMessageInfo documentTitle={documentTitle} />
         )}
         <div className="flex flex-col h-auto min-h-[calc(100vh-410px)] justify-end gap-12">
           {showFetchPreviousMessagesButton && (
@@ -196,10 +227,14 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
           setCurrentMessages([...currentMessages, { message, sender: "user" }]);
           scrollToBottomOfChat();
 
-          sendMessage({ courseDocumentId: documentId, message });
+          sendMessage({
+            courseDocumentId: documentId,
+            message,
+            responseFormat: selectedResponseFormat,
+          });
         }}
       />
-    </>
+    </div>
   );
 };
 

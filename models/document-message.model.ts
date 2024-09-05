@@ -19,6 +19,7 @@ export interface DocumentMessageQueryModel {
 export interface SendMessagePayloadModel {
   message: string;
   courseDocumentId: string;
+  responseFormat: string;
 }
 
 export interface SendMessageModel {

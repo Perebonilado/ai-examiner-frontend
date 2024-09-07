@@ -5,4 +5,5 @@ export interface PermissionDto {
   canGenerateMultipleChoice: boolean;
   canGenerateFlashcards: boolean;
   maxFileSizeAllowed: number;
+  canDiscuss: boolean
 }

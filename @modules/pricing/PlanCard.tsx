@@ -40,7 +40,7 @@ const PlanCard: FC<Props> = ({
   }, [data]);
 
   return (
-    <div className="rounded-lg w-full max-w-[280px] px-4 flex flex-col py-6 h-[450px] bg-white border border-black">
+    <div className="rounded-lg w-full max-w-[280px] px-4 flex flex-col py-6 h-[470px] bg-white border border-black">
       <div style={{ flex: 1 }}>
         <p className="text-center font-bold mb-3">{type}</p>
         <p className="text-center">
@@ -63,7 +63,7 @@ const PlanCard: FC<Props> = ({
         })}
       </div>
 
-      <div style={{ flex: 1 }}>
+      <div style={{ flex: 1 }} className="pt-5"> 
         <Button
           title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
           onClick={() => {

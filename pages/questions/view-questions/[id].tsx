@@ -169,7 +169,7 @@ const ViewQuestions: NextPage = () => {
     setPreviousMessages([]);
     setInitialMessagesOnRender([]);
     if (initialMessages) {
-      setInitialMessagesFetched(true)
+      setInitialMessagesFetched(true);
       const messages = initialMessages.data.map((d) => ({
         message: d.message,
         sender: d.sender,
@@ -193,8 +193,9 @@ const ViewQuestions: NextPage = () => {
   /* this handles whether or not to show the 
   fetch previous messages button
   **/
-  let totalMessagesInDatabase = 0;
-  useEffect(() => {
+  const handleCanFetchPreviousMessages = () => {
+    let totalMessagesInDatabase = 0;
+
     if (previousMessagesData) {
       totalMessagesInDatabase = previousMessagesData.count;
     }
@@ -213,6 +214,10 @@ const ViewQuestions: NextPage = () => {
     } else {
       setShowPreviousMessagesButton(false);
     }
+  };
+
+  useEffect(() => {
+    handleCanFetchPreviousMessages();
   }, [
     initialMessages,
     previousMessagesData,

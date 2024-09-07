@@ -96,9 +96,9 @@ const MCQItem: FC<Props> = ({
       {!submitted &&
         (!permissions.canDiscuss ? (
           <div className="mt-3 flex justify-center gap-2">
-            <p>Not sure?</p>
             <Button
-              title="Ask AI Examiner"
+              title="Not Sure?"
+              className="hover:underline"
               variant="text"
               onClick={showSubscribeModalOnDiscussionUnavailable}
             />
@@ -110,8 +110,7 @@ const MCQItem: FC<Props> = ({
             target="_blank"
           >
             <div className="mt-3 flex justify-center gap-2">
-              <p>Not sure?</p>
-              <Button title="Ask AI Examiner" variant="text" />
+              <Button title="Not Sure?" variant="text" className="hover:underline"/>
             </div>
           </Link>
         ))}

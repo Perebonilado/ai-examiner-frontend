@@ -5,4 +5,5 @@ export interface PermissionModel {
   canGenerateMultipleChoice: boolean;
   canGenerateFlashcards: boolean;
   maxFileSizeAllowed: number;
+  canDiscuss: boolean;
 }

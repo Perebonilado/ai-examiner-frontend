@@ -5,7 +5,15 @@ import { useModalContext } from "@/contexts/ModalContext";
 import { useRouter } from "next/router";
 import Dialog from "./Dialog";
 
-const MaxGenerationModal: FC = () => {
+interface Props {
+  title?: string;
+  body?: string;
+}
+
+const MaxGenerationModal: FC<Props> = ({
+  title = "Max Generation Reached!",
+  body = "Please, upgrade your plan to continue generating questions",
+}) => {
   const { setModalContent } = useModalContext();
   const ref = useClickOutside<ElementRef<"div">>(() => {
     setModalContent(null);
@@ -17,13 +25,9 @@ const MaxGenerationModal: FC = () => {
         className="w-full flex flex-col gap-5 justify-center bg-white"
         ref={ref}
       >
-        <h1 className="text-lg font-bold text-center">
-          Max Generation Reached!
-        </h1>
+        <h1 className="text-lg font-bold text-center">{title}</h1>
         <div>
-          <p className="text-base text-center">
-            Please, upgrade your plan to continue generating questions
-          </p>
+          <p className="text-base text-center">{body}</p>
         </div>
 
         <Button

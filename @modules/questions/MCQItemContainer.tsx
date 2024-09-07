@@ -116,6 +116,7 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
               handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
               submitted={isSubmitted}
               isResetSelection={resetAllSelectionsTrigger}
+              documentId={documentId}
             />
           ))}
         </div>

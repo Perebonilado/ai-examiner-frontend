@@ -34,5 +34,7 @@ export const config = {
     "/auth/signup",
     "/questions/:path",
     "/documents/:path",
+    "/account/profile",
+    "/account/settings"
   ],
 };

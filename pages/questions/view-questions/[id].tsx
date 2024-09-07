@@ -19,8 +19,19 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
+import Tab from "@/@shared/components/Tab";
+import ChatContainer from "@/@modules/chat/ChatContainer";
+import { useGetDocumentMessagesQuery } from "@/api-services/document-message.service";
+
+interface SearchParams {
+  lastMessageCreatedOn?: Date;
+  courseDocumentId: string;
+  limit: number;
+}
 
 const ViewQuestions: NextPage = () => {
+  // Question tab logic
+
   const [page, setPage] = useState(1);
   const [documentId, setdocumentId] = useState<string>("");
   const params = useParams();
@@ -83,6 +94,151 @@ const ViewQuestions: NextPage = () => {
 
   const router = useRouter();
 
+  //Discussion tab logic
+
+  const [lastMessageCreatedOn, setLastMessageCreatedOn] = useState<Date>();
+  const { data: initialMessages, isError: isLoadingMessagesError } =
+    useGetDocumentMessagesQuery(
+      {
+        courseDocumentId: documentId,
+        limit: 4,
+      },
+      {
+        skip: !documentId,
+        refetchOnMountOrArgChange: true,
+      }
+    );
+  const { data: previousMessagesData } = useGetDocumentMessagesQuery(
+    {
+      courseDocumentId: documentId,
+      limit: 4,
+      lastMessageCreatedOn,
+    },
+    {
+      skip: !lastMessageCreatedOn,
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const [initialMessagesOnRender, setInitialMessagesOnRender] = useState<
+    { message: string; sender: string }[]
+  >([]);
+
+  const [currentMessages, setCurrentMessages] = useState<
+    { message: string; sender: string }[]
+  >([]);
+
+  const [previousMessages, setPreviousMessages] = useState<
+    { message: string; sender: string }[]
+  >([]);
+
+  const [showFetchPreviousMessagesButton, setShowPreviousMessagesButton] =
+    useState(false);
+
+  const [initialMessagesFetched, setInitialMessagesFetched] = useState(false);
+
+  const handleFetchMorePreviousMessages = () => {
+    let totalMessagesInDatabase = 0;
+    const totalMessagesOnClient =
+      currentMessages.length + previousMessages.length;
+
+    if (previousMessagesData) {
+      totalMessagesInDatabase = previousMessagesData.count;
+      if (totalMessagesInDatabase > totalMessagesOnClient) {
+        setLastMessageCreatedOn(previousMessagesData.data[0].createdOn);
+      }
+    }
+
+    if (!previousMessagesData && initialMessages) {
+      totalMessagesInDatabase = initialMessages.count;
+      if (totalMessagesInDatabase > totalMessagesOnClient) {
+        setLastMessageCreatedOn(initialMessages.data[0].createdOn);
+      }
+    }
+  };
+
+  const handleAppendNewMessage = (
+    message: string,
+    sender: "user" | "system"
+  ) => {
+    setCurrentMessages([...currentMessages, { message, sender }]);
+  };
+
+  /*  clear and set initial messages **/
+  useEffect(() => {
+    setPreviousMessages([]);
+    setInitialMessagesOnRender([]);
+    if (initialMessages) {
+      setInitialMessagesFetched(true);
+      const messages = initialMessages.data.map((d) => ({
+        message: d.message,
+        sender: d.sender,
+      }));
+      setInitialMessagesOnRender(messages);
+    }
+  }, [initialMessages]);
+
+  // set the previousMessages
+  useEffect(() => {
+    if (previousMessagesData) {
+      const messages = previousMessagesData.data.map((d) => ({
+        message: d.message,
+        sender: d.sender,
+      }));
+
+      setPreviousMessages([...previousMessages, ...messages]);
+    }
+  }, [previousMessagesData]);
+
+  /* this handles whether or not to show the 
+  fetch previous messages button
+  **/
+  const handleCanFetchPreviousMessages = () => {
+    let totalMessagesInDatabase = 0;
+
+    if (previousMessagesData) {
+      totalMessagesInDatabase = previousMessagesData.count;
+    }
+
+    if (!previousMessagesData && initialMessages) {
+      totalMessagesInDatabase = initialMessages.count;
+    }
+
+    const totalMessagesOnClient =
+      currentMessages.length +
+      previousMessages.length +
+      initialMessagesOnRender.length;
+
+    if (totalMessagesInDatabase > totalMessagesOnClient) {
+      setShowPreviousMessagesButton(true);
+    } else {
+      setShowPreviousMessagesButton(false);
+    }
+  };
+
+  useEffect(() => {
+    handleCanFetchPreviousMessages();
+  }, [
+    initialMessages,
+    previousMessagesData,
+    JSON.stringify(previousMessages),
+    JSON.stringify(currentMessages),
+  ]);
+
+  // tabs
+
+  const [activeTab, setActiveTab] = useState("Questions");
+  const [tabs, setTabs] = useState(["Questions", "Discussions"]);
+
+  useEffect(() => {
+    const { tab } = router.query;
+    if (tab && typeof tab === "string" && tabs.includes(tab)) {
+      setActiveTab(tab);
+    } else {
+      setActiveTab(tabs[0]);
+    }
+  }, [router.query]);
+
   return (
     <>
       <AppHead title="View Questions" />
@@ -91,12 +247,13 @@ const ViewQuestions: NextPage = () => {
           title="Back"
           variant="text"
           starticon={<ChevronLeft />}
-          className="!gap-1 mb-6 mt-7"
+          className="!gap-1 mb-4 mt-7 max-sm:mt-0"
           onClick={() => {
             router.push(`/documents`);
           }}
         />
-        <div className="flex items-center justify-between w-full pb-10 max-md:flex-col max-md:gap-12">
+
+        <div className="flex items-center justify-between w-full pb-4 max-md:flex-col max-md:gap-12">
           {document && (
             <h2 className="text-2xl font-bold max-md:text-center">
               {capitalizeFirstLetterOfEachWord(
@@ -104,7 +261,7 @@ const ViewQuestions: NextPage = () => {
               )}{" "}
             </h2>
           )}
-          {permissions && (
+          {permissions && activeTab === "Questions" && (
             <Button
               title="Generate New Questions"
               onClick={handleGenerateQuestions}
@@ -112,24 +269,60 @@ const ViewQuestions: NextPage = () => {
             />
           )}
         </div>
-        {!data && error && (
-          <div className="flex flex-col gap-4 justify-center items-center py-8">
-            <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />
-            <Button title="Reload Question Summaries" onClick={refetch} />
+
+        <Tab
+          tabs={tabs}
+          activeTab={activeTab}
+          handleClickTab={(tabTitle) => {
+            setActiveTab(tabTitle);
+          }}
+        />
+
+        {activeTab === "Discussions" && (
+          <div>
+            <ChatContainer
+              documentId={documentId}
+              documentTitle={
+                document
+                  ? capitalizeFirstLetterOfEachWord(
+                      document.documents[0].title.toLowerCase()
+                    )
+                  : ""
+              }
+              handleAppendNewMessage={handleAppendNewMessage}
+              handleFetchMorePreviousMessages={handleFetchMorePreviousMessages}
+              initialMessagesFetched={initialMessagesFetched}
+              currentMessages={currentMessages}
+              initialMessages={initialMessagesOnRender}
+              previousMessages={previousMessages}
+              isLoadingMessagesError={isLoadingMessagesError}
+              showFetchPreviousMessagesButton={showFetchPreviousMessagesButton}
+            />
           </div>
         )}
-        {data && <ViewQuestionCardContainer data={data?.questions} />}
 
-        {data && (
-          <Pagination
-            className=""
-            currentPage={page}
-            pageSize={data.meta.pageSize}
-            totalCount={data.meta.totalCount}
-            onPageChange={(p) => {
-              setPage(() => p);
-            }}
-          />
+        {activeTab === "Questions" && (
+          <div>
+            {!data && error && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />
+                <Button title="Reload Question Summaries" onClick={refetch} />
+              </div>
+            )}
+            {data && <ViewQuestionCardContainer data={data?.questions} />}
+
+            {data && (
+              <Pagination
+                className=""
+                currentPage={page}
+                pageSize={data.meta.pageSize}
+                totalCount={data.meta.totalCount}
+                onPageChange={(p) => {
+                  setPage(() => p);
+                }}
+              />
+            )}
+          </div>
         )}
       </AppLayout>
     </>
@@ -137,36 +330,3 @@ const ViewQuestions: NextPage = () => {
 };
 
 export default ViewQuestions;
-
-const mock = [
-  {
-    id: 1,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 5,
-  },
-  {
-    id: 2,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 10,
-  },
-  {
-    id: 3,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 20,
-  },
-  {
-    id: 4,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 5,
-  },
-  {
-    id: 5,
-    createdAt: new Date(),
-    type: "Multiple Choice",
-    count: 5,
-  },
-];

@@ -4,49 +4,21 @@ import { useRouter } from "next/router";
 
 interface Props {
   tabs: string[];
-  defaultActiveTab?: string;
-  getActiveTab: (tab: string) => void;
+  activeTab: string;
+  handleClickTab: (title: string)=>void
 }
 
-const Tab: FC<Props> = ({ tabs, defaultActiveTab, getActiveTab }) => {
-  const [activeTab, setActiveTab] = useState(defaultActiveTab || tabs[0]);
-  const [actualTabs, setActualTabs] = useState<
-    {
-      title: string;
-      isActive: boolean;
-    }[]
-  >([]);
-  const router = useRouter();
-
-  const initializeActualTabs = () => {
-    getActiveTab(activeTab)
-    const isActiveTabPresent = activeTab && tabs.includes(activeTab);
-
-    const tabItems = tabs.map((title, idx) => {
-      const isActive = isActiveTabPresent ? title === activeTab : idx === 0;
-      return { title, isActive };
-    });
-
-    setActualTabs(tabItems);
-  };
-
-  useEffect(() => {
-    initializeActualTabs();
-  }, [activeTab]);
-
-  useEffect(()=>{
-    setActiveTab(tabs[0])
-  },[router.asPath])
-
+const Tab: FC<Props> = ({ tabs, activeTab, handleClickTab }) => {
   return (
     <div className="flex border-b border-b-gray-400 mb-4">
-      {actualTabs.map((tab, idx) => {
+      {tabs.map((tabTitle, idx) => {
         return (
           <TabItem
-            {...tab}
+            isActive={activeTab === tabTitle}
+            title={tabTitle}
             key={idx}
             handleClick={(tabTitle) => {
-              setActiveTab(tabTitle);
+              handleClickTab(tabTitle)
             }}
           />
         );

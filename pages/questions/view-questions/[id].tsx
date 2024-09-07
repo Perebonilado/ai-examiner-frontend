@@ -135,6 +135,8 @@ const ViewQuestions: NextPage = () => {
   const [showFetchPreviousMessagesButton, setShowPreviousMessagesButton] =
     useState(false);
 
+  const [initialMessagesFetched, setInitialMessagesFetched] = useState(false);
+
   const handleFetchMorePreviousMessages = () => {
     let totalMessagesInDatabase = 0;
     const totalMessagesOnClient =
@@ -153,8 +155,6 @@ const ViewQuestions: NextPage = () => {
         setLastMessageCreatedOn(initialMessages.data[0].createdOn);
       }
     }
-
-    
   };
 
   const handleAppendNewMessage = (
@@ -166,9 +166,10 @@ const ViewQuestions: NextPage = () => {
 
   /*  clear and set initial messages **/
   useEffect(() => {
-    setPreviousMessages([])
+    setPreviousMessages([]);
     setInitialMessagesOnRender([]);
     if (initialMessages) {
+      setInitialMessagesFetched(true)
       const messages = initialMessages.data.map((d) => ({
         message: d.message,
         sender: d.sender,
@@ -203,7 +204,9 @@ const ViewQuestions: NextPage = () => {
     }
 
     const totalMessagesOnClient =
-      currentMessages.length + previousMessages.length + initialMessagesOnRender.length;
+      currentMessages.length +
+      previousMessages.length +
+      initialMessagesOnRender.length;
 
     if (totalMessagesInDatabase > totalMessagesOnClient) {
       setShowPreviousMessagesButton(true);
@@ -219,7 +222,17 @@ const ViewQuestions: NextPage = () => {
 
   // tabs
 
-  const [activeTab, setActiveTab] = useState("");
+  const [activeTab, setActiveTab] = useState("Questions");
+  const [tabs, setTabs] = useState(["Questions", "Discussions"]);
+
+  useEffect(() => {
+    const { tab } = router.query;
+    if (tab && typeof tab === "string" && tabs.includes(tab)) {
+      setActiveTab(tab);
+    } else {
+      setActiveTab(tabs[0]);
+    }
+  }, [router.query]);
 
   return (
     <>
@@ -253,11 +266,11 @@ const ViewQuestions: NextPage = () => {
         </div>
 
         <Tab
-          tabs={["Questions", "Discussions"]}
-          getActiveTab={(tab) => {
-            setActiveTab(tab);
+          tabs={tabs}
+          activeTab={activeTab}
+          handleClickTab={(tabTitle) => {
+            setActiveTab(tabTitle);
           }}
-          defaultActiveTab="Questions"
         />
 
         {activeTab === "Discussions" && (
@@ -273,6 +286,7 @@ const ViewQuestions: NextPage = () => {
               }
               handleAppendNewMessage={handleAppendNewMessage}
               handleFetchMorePreviousMessages={handleFetchMorePreviousMessages}
+              initialMessagesFetched={initialMessagesFetched}
               currentMessages={currentMessages}
               initialMessages={initialMessagesOnRender}
               previousMessages={previousMessages}

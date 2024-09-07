@@ -1,7 +1,11 @@
+import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 import IconButton from "@/@shared/ui/IconButton";
+import { RootState } from "@/config/redux-config";
+import { useModalContext } from "@/contexts/ModalContext";
 import ArrowUpIcon from "@/icons/ArrowUpIcon";
 import ChatIcon from "@/icons/ChatIcon";
 import React, { FC, useEffect, useRef, useState } from "react";
+import { useSelector } from "react-redux";
 
 interface Props {
   handleSendMessage: (message: string) => void;
@@ -17,6 +21,10 @@ const NewMessageContainer: FC<Props> = ({
   const [value, setValue] = useState("");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const [isDisabled, setIsDisabled] = useState(false);
+
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
 
   useEffect(() => {
     if (textareaRef.current) {
@@ -37,9 +45,20 @@ const NewMessageContainer: FC<Props> = ({
     setValue(e.target.value);
   };
 
+  const { setModalContent } = useModalContext();
+
   const onSubmit = () => {
-    handleSendMessage(value);
-    setValue("");
+    if (!permissions.canDiscuss) {
+      setModalContent(
+        <MaxGenerationModal
+          title="Discussions only available on a paid plan!"
+          body="Please, subscribe to a paid plan to continue"
+        />
+      );
+    } else {
+      handleSendMessage(value);
+      setValue("");
+    }
   };
 
   return (

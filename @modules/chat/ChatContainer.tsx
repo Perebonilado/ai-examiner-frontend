@@ -15,10 +15,12 @@ import FilterIcon from "@/icons/FilterIcon";
 import IconButton from "@/@shared/ui/IconButton";
 import { useModalContext } from "@/contexts/ModalContext";
 import ResponseFormatDialog from "./ResponseFormatDialog";
+import { useRouter } from "next/router";
 
 interface Props {
   documentId: string;
   documentTitle: string;
+  initialMessagesFetched: boolean;
   handleAppendNewMessage: (message: string, sender: "system" | "user") => void;
   currentMessages: { message: string; sender: string }[];
   previousMessages: { message: string; sender: string }[];
@@ -38,6 +40,7 @@ const ChatContainer: FC<Props> = ({
   showFetchPreviousMessagesButton,
   isLoadingMessagesError,
   handleFetchMorePreviousMessages,
+  initialMessagesFetched,
 }) => {
   const chatContainerRef = useRef<ElementRef<"section">>(null);
 
@@ -81,8 +84,8 @@ const ChatContainer: FC<Props> = ({
       // Using setTimeout to wait for the new message to render before scrolling
       setTimeout(() => {
         chatContainerRef.current!.scrollTop =
-          chatContainerRef.current!.scrollHeight;
-      }, 0);
+          chatContainerRef.current?.scrollHeight || 0;
+      }, 50);
     }
   };
 
@@ -94,6 +97,34 @@ const ChatContainer: FC<Props> = ({
       responseFormat: selectedResponseFormat,
     });
   };
+
+  const handleSendMessage = (message: string) => {
+    handleAppendNewMessage(message, "user");
+    scrollToBottomOfChat();
+
+    sendMessage({
+      courseDocumentId: documentId,
+      message,
+      responseFormat: selectedResponseFormat,
+    });
+  };
+
+  const router = useRouter();
+
+  useEffect(() => {
+    const { question, tab } = router.query;
+
+    if (question && typeof question === "string" && initialMessagesFetched) {
+      handleSendMessage(question);
+      router.push(
+        `/questions/view-questions/${documentId}?tab=${tab || ""}`,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
+    }
+  }, [router.query, initialMessagesFetched]);
 
   return (
     <div className="relative">
@@ -124,24 +155,24 @@ const ChatContainer: FC<Props> = ({
           )}
           {previousMessages.map((m, idx) => {
             if (m.sender === "system") {
-              return <SystemMessage message={m.message} key={idx}/>;
+              return <SystemMessage message={m.message} key={idx} />;
             }
 
-            return <UserMessage message={m.message} key={idx}/>;
+            return <UserMessage message={m.message} key={idx} />;
           })}
           {initialMessages.map((m, idx) => {
             if (m.sender === "system") {
-              return <SystemMessage message={m.message} key={idx}/>;
+              return <SystemMessage message={m.message} key={idx} />;
             }
 
-            return <UserMessage message={m.message} key={idx}/>;
+            return <UserMessage message={m.message} key={idx} />;
           })}
           {currentMessages.map((m, idx) => {
             if (m.sender === "system") {
-              return <SystemMessage message={m.message} key={idx}/>;
+              return <SystemMessage message={m.message} key={idx} />;
             }
 
-            return <UserMessage message={m.message} key={idx}/>;
+            return <UserMessage message={m.message} key={idx} />;
           })}
           {isLoading && (
             <div className="flex flex-col items-center justify-center my-4">
@@ -178,16 +209,7 @@ const ChatContainer: FC<Props> = ({
       <NewMessageContainer
         chatDisabled={isLoading || isLoadingMessagesError}
         documentTitle={documentTitle}
-        handleSendMessage={(message) => {
-          handleAppendNewMessage(message, "user");
-          scrollToBottomOfChat();
-
-          sendMessage({
-            courseDocumentId: documentId,
-            message,
-            responseFormat: selectedResponseFormat,
-          });
-        }}
+        handleSendMessage={handleSendMessage}
       />
     </div>
   );

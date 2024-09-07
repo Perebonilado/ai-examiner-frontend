@@ -21,8 +21,17 @@ import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import Tab from "@/@shared/components/Tab";
 import ChatContainer from "@/@modules/chat/ChatContainer";
+import { useGetDocumentMessagesQuery } from "@/api-services/document-message.service";
+
+interface SearchParams {
+  lastMessageCreatedOn?: Date;
+  courseDocumentId: string;
+  limit: number;
+}
 
 const ViewQuestions: NextPage = () => {
+  // Question tab logic
+
   const [page, setPage] = useState(1);
   const [documentId, setdocumentId] = useState<string>("");
   const params = useParams();
@@ -85,6 +94,131 @@ const ViewQuestions: NextPage = () => {
 
   const router = useRouter();
 
+  //Discussion tab logic
+
+  const [lastMessageCreatedOn, setLastMessageCreatedOn] = useState<Date>();
+  const { data: initialMessages, isError: isLoadingMessagesError } =
+    useGetDocumentMessagesQuery(
+      {
+        courseDocumentId: documentId,
+        limit: 4,
+      },
+      {
+        skip: !documentId,
+        refetchOnMountOrArgChange: true,
+      }
+    );
+  const { data: previousMessagesData } = useGetDocumentMessagesQuery(
+    {
+      courseDocumentId: documentId,
+      limit: 4,
+      lastMessageCreatedOn,
+    },
+    {
+      skip: !lastMessageCreatedOn,
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const [initialMessagesOnRender, setInitialMessagesOnRender] = useState<
+    { message: string; sender: string }[]
+  >([]);
+
+  const [currentMessages, setCurrentMessages] = useState<
+    { message: string; sender: string }[]
+  >([]);
+
+  const [previousMessages, setPreviousMessages] = useState<
+    { message: string; sender: string }[]
+  >([]);
+
+  const [showFetchPreviousMessagesButton, setShowPreviousMessagesButton] =
+    useState(false);
+
+  const handleFetchMorePreviousMessages = () => {
+    let totalMessagesInDatabase = 0;
+    const totalMessagesOnClient =
+      currentMessages.length + previousMessages.length;
+
+    if (previousMessagesData) {
+      totalMessagesInDatabase = previousMessagesData.count;
+      if (totalMessagesInDatabase > totalMessagesOnClient) {
+        setLastMessageCreatedOn(previousMessagesData.data[0].createdOn);
+      }
+    }
+
+    if (!previousMessagesData && initialMessages) {
+      totalMessagesInDatabase = initialMessages.count;
+      if (totalMessagesInDatabase > totalMessagesOnClient) {
+        setLastMessageCreatedOn(initialMessages.data[0].createdOn);
+      }
+    }
+
+    
+  };
+
+  const handleAppendNewMessage = (
+    message: string,
+    sender: "user" | "system"
+  ) => {
+    setCurrentMessages([...currentMessages, { message, sender }]);
+  };
+
+  /*  clear and set initial messages **/
+  useEffect(() => {
+    setPreviousMessages([])
+    setInitialMessagesOnRender([]);
+    if (initialMessages) {
+      const messages = initialMessages.data.map((d) => ({
+        message: d.message,
+        sender: d.sender,
+      }));
+      setInitialMessagesOnRender(messages);
+    }
+  }, [initialMessages]);
+
+  // set the previousMessages
+  useEffect(() => {
+    if (previousMessagesData) {
+      const messages = previousMessagesData.data.map((d) => ({
+        message: d.message,
+        sender: d.sender,
+      }));
+
+      setPreviousMessages([...previousMessages, ...messages]);
+    }
+  }, [previousMessagesData]);
+
+  /* this handles whether or not to show the 
+  fetch previous messages button
+  **/
+  let totalMessagesInDatabase = 0;
+  useEffect(() => {
+    if (previousMessagesData) {
+      totalMessagesInDatabase = previousMessagesData.count;
+    }
+
+    if (!previousMessagesData && initialMessages) {
+      totalMessagesInDatabase = initialMessages.count;
+    }
+
+    const totalMessagesOnClient =
+      currentMessages.length + previousMessages.length + initialMessagesOnRender.length;
+
+    if (totalMessagesInDatabase > totalMessagesOnClient) {
+      setShowPreviousMessagesButton(true);
+    } else {
+      setShowPreviousMessagesButton(false);
+    }
+  }, [
+    initialMessages,
+    previousMessagesData,
+    JSON.stringify(previousMessages),
+    JSON.stringify(currentMessages),
+  ]);
+
+  // tabs
+
   const [activeTab, setActiveTab] = useState("");
 
   return (
@@ -137,6 +271,13 @@ const ViewQuestions: NextPage = () => {
                     )
                   : ""
               }
+              handleAppendNewMessage={handleAppendNewMessage}
+              handleFetchMorePreviousMessages={handleFetchMorePreviousMessages}
+              currentMessages={currentMessages}
+              initialMessages={initialMessagesOnRender}
+              previousMessages={previousMessages}
+              isLoadingMessagesError={isLoadingMessagesError}
+              showFetchPreviousMessagesButton={showFetchPreviousMessagesButton}
             />
           </div>
         )}

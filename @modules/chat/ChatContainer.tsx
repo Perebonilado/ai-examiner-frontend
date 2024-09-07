@@ -19,56 +19,32 @@ import ResponseFormatDialog from "./ResponseFormatDialog";
 interface Props {
   documentId: string;
   documentTitle: string;
+  handleAppendNewMessage: (message: string, sender: "system" | "user") => void;
+  currentMessages: { message: string; sender: string }[];
+  previousMessages: { message: string; sender: string }[];
+  initialMessages: { message: string; sender: string }[];
+  showFetchPreviousMessagesButton: boolean;
+  handleFetchMorePreviousMessages: () => void;
+  isLoadingMessagesError: boolean;
 }
 
-interface SearchParams {
-  lastMessageCreatedOn?: Date;
-  courseDocumentId: string;
-  limit: number;
-}
-
-const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
-  const [searchParams, setSearchParams] = useState<SearchParams>({
-    courseDocumentId: documentId,
-    limit: 4,
-  });
-  const { data, isError: isLoadingMessagesError } =
-    useGetDocumentMessagesQuery(searchParams);
-
-  const [currentMessages, setCurrentMessages] = useState<
-    { message: string; sender: string }[]
-  >([]);
-
-  const [previousMessages, setPreviousMessages] = useState<
-    { message: string; sender: string }[]
-  >([]);
-
-  const [showFetchPreviousMessagesButton, setShowPreviousMessagesButton] =
-    useState(false);
-
+const ChatContainer: FC<Props> = ({
+  documentId,
+  documentTitle,
+  handleAppendNewMessage,
+  currentMessages,
+  previousMessages,
+  initialMessages,
+  showFetchPreviousMessagesButton,
+  isLoadingMessagesError,
+  handleFetchMorePreviousMessages,
+}) => {
   const chatContainerRef = useRef<ElementRef<"section">>(null);
 
   const [sendMessage, { data: newSystemMessage, isLoading, isError, error }] =
     useSendMessageMutation();
 
   const { setModalContent } = useModalContext();
-
-  const handleFetchMorePreviousMessages = () => {
-    if (data) {
-      const totalMessagesInDatabase = data.count;
-      const totalMessagesOnClient =
-        currentMessages.length + previousMessages.length;
-
-      if (totalMessagesInDatabase > totalMessagesOnClient) {
-        const params: SearchParams = {
-          ...searchParams,
-          lastMessageCreatedOn: data.data[0].createdOn,
-        };
-
-        setSearchParams(params);
-      }
-    }
-  };
 
   const [selectedResponseFormat, setSelectedResponseFormat] =
     useState("indepth");
@@ -85,20 +61,6 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
   };
 
   useEffect(() => {
-    if (data) {
-      const totalMessagesInDatabase = data.count;
-      const totalMessagesOnClient =
-        currentMessages.length + previousMessages.length;
-
-      if (totalMessagesInDatabase > totalMessagesOnClient) {
-        setShowPreviousMessagesButton(true);
-      } else {
-        setShowPreviousMessagesButton(false);
-      }
-    }
-  }, [data, JSON.stringify(previousMessages), JSON.stringify(currentMessages)]);
-
-  useEffect(() => {
     if (error && "status" in error) {
       if ("data" in error) {
         const { message } = error.data as { message: string };
@@ -108,22 +70,8 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
   }, [error]);
 
   useEffect(() => {
-    if (data) {
-      const messages = data.data.map((d) => ({
-        message: d.message,
-        sender: d.sender,
-      }));
-      setPreviousMessages([...messages, ...previousMessages]);
-      scrollToBottomOfChat();
-    }
-  }, [data]);
-
-  useEffect(() => {
     if (newSystemMessage) {
-      setCurrentMessages([
-        ...currentMessages,
-        { message: newSystemMessage.message, sender: "system" },
-      ]);
+      handleAppendNewMessage(newSystemMessage.message, "system");
       scrollToBottomOfChat();
     }
   }, [newSystemMessage]);
@@ -160,7 +108,7 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
         ref={chatContainerRef}
         className="bg-[#FAFAFA] relative h-[calc(100vh-330px)] pt-10 px-14 max-md:px-4 pb-8 overflow-y-auto w-full rounded-xl"
       >
-        {!previousMessages.length && !currentMessages.length && (
+        {!initialMessages.length && !currentMessages.length && (
           <NoMessageInfo documentTitle={documentTitle} />
         )}
         <div className="flex flex-col h-auto min-h-[calc(100vh-410px)] justify-end gap-12">
@@ -174,19 +122,26 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
               />
             </div>
           )}
-          {previousMessages.map((m) => {
+          {previousMessages.map((m, idx) => {
             if (m.sender === "system") {
-              return <SystemMessage message={m.message} />;
+              return <SystemMessage message={m.message} key={idx}/>;
             }
 
-            return <UserMessage message={m.message} />;
+            return <UserMessage message={m.message} key={idx}/>;
           })}
-          {currentMessages.map((m) => {
+          {initialMessages.map((m, idx) => {
             if (m.sender === "system") {
-              return <SystemMessage message={m.message} />;
+              return <SystemMessage message={m.message} key={idx}/>;
             }
 
-            return <UserMessage message={m.message} />;
+            return <UserMessage message={m.message} key={idx}/>;
+          })}
+          {currentMessages.map((m, idx) => {
+            if (m.sender === "system") {
+              return <SystemMessage message={m.message} key={idx}/>;
+            }
+
+            return <UserMessage message={m.message} key={idx}/>;
           })}
           {isLoading && (
             <div className="flex flex-col items-center justify-center my-4">
@@ -224,7 +179,7 @@ const ChatContainer: FC<Props> = ({ documentId, documentTitle }) => {
         chatDisabled={isLoading || isLoadingMessagesError}
         documentTitle={documentTitle}
         handleSendMessage={(message) => {
-          setCurrentMessages([...currentMessages, { message, sender: "user" }]);
+          handleAppendNewMessage(message, "user");
           scrollToBottomOfChat();
 
           sendMessage({

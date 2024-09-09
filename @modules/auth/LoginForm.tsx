@@ -68,6 +68,7 @@ const LoginForm: FC = () => {
           <div className="flex flex-col gap-6">
             <TextField
               label="EMAIL ADDRESS"
+              type="email"
               placeholder="Enter your email address"
               {...formik.getFieldProps("email")}
               error={formik.touched.email ? formik.errors.email : undefined}

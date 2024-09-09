@@ -113,6 +113,7 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
               {...question}
               key={question.id}
               questionNumber={idx + 1}
+              totalQuestionsCount={data.length}
               handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
               submitted={isSubmitted}
               isResetSelection={resetAllSelectionsTrigger}

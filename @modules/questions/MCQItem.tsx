@@ -63,7 +63,7 @@ const MCQItem: FC<Props> = ({
   }
 
   return (
-    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[10px]">
+    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[15px]">
       {submitted && (
         <p className={correctAnswerMarkerStyling}>
           {isCorrect ? "Correct!" : "Wrong"}

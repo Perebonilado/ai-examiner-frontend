@@ -11,6 +11,7 @@ import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
+  totalQuestionsCount: number;
   handleSetQuestionAnswer: (id: string, value: boolean) => void;
   submitted: boolean;
   isResetSelection: boolean;
@@ -27,6 +28,7 @@ const MCQItem: FC<Props> = ({
   submitted,
   isResetSelection,
   documentId,
+  totalQuestionsCount,
   handleSetQuestionAnswer,
 }) => {
   const [selectedOption, setSelectedOption] = useState<QuestionOption | null>(
@@ -61,13 +63,13 @@ const MCQItem: FC<Props> = ({
   }
 
   return (
-    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 ">
+    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[10px]">
       {submitted && (
         <p className={correctAnswerMarkerStyling}>
           {isCorrect ? "Correct!" : "Wrong"}
         </p>
       )}
-      <p className="text-lg text-[#360B58]">Question {questionNumber}</p>
+      <p className="text-base text-[#939393]">{questionNumber} of {totalQuestionsCount}</p>
       <p className="my-8 font-semibold text-lg">{question}</p>
       <div className="py-4 flex flex-col gap-6">
         {options.map((opt, idx) => {

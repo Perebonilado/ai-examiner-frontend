@@ -15,9 +15,9 @@ const Jumbotron: FC = () => {
   return (
     <section>
       <Container>
-        <div className="min-h-screen gap-4 flex max-md:flex-col">
-          <div style={{ flex: 1 }} className="flex flex-col justify-center">
-            <h1 className="text-5xl max-md:text-4xl leading-relaxed font-bold text-left">
+        <div className="min-h-screen gap-4 flex max-md:flex-col max-md:min-h-[calc(100vh-150px)] max-md:pb-8">
+          <div style={{ flex: 1 }} className="flex flex-col justify-center max-md:justify-normal max-md:pt-8">
+            <h1 className="text-5xl max-md:text-4xl leading-relaxed font-bold text-left max-md:pb-4">
               The <span className="text-[#9A67E2]">smart practice</span> tool to
               boost your exam scores.
             </h1>
@@ -81,7 +81,7 @@ const Jumbotron: FC = () => {
                 </Link>
               </div>
             </div>
-            <div className="max-lg:flex flex-col gap-3 pt-20 hidden ">
+            <div className="max-lg:flex flex-col gap-3 pt-20 hidden max-md:mt-6">
               <Link href={"/auth/login"}>
                 <Button
                   title="Sign in"

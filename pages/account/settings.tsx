@@ -62,7 +62,6 @@ const Settings: NextPage = () => {
     <>
       <AppHead title="Account Settings" />
       <AppLayout>
-        <UserManagementBar pageTitle="Account settings" />
 
         {data && (
           <>

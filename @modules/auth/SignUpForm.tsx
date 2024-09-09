@@ -83,6 +83,7 @@ const SignUpForm: FC = () => {
 
             <TextField
               label="Email"
+              type="email"
               placeholder="Enter your email address"
               {...formik.getFieldProps("email")}
               error={formik.touched.email ? formik.errors.email : undefined}

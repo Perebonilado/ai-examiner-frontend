@@ -88,9 +88,17 @@ const support: FooterLink = {
   title: "Support",
   links: [
     {
-      title: "Contact",
-      link: "aiexaminerapp@gmail.com",
+      title: "Email: aiexaminerapp@gmail.com",
+      link: "",
+    },
+    {
+      title: "Call: +2348106879478",
+      link: "",
+    },
+    {
+      title: "Whatsapp: +2347081271903",
+      link: "",
     },
   ],
-  type: "email",
+  // type: "email",
 };

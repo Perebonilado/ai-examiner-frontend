@@ -9,7 +9,6 @@ import Button from "../ui/Button";
 import LogoutIcon from "@/icons/LogoutIcon";
 import { logout } from "@/utils";
 import NewDocumentIcon from "@/icons/NewDocumentIcon";
-import { useRouter } from "next/router";
 
 interface Props {
   isSideNav: boolean;
@@ -20,7 +19,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
   const sideNavClasses = cn(
     `fixed transition-all duration-[.3s] z-50 w-[95vw] h-[calc(100vh-100px)] top-[90px] bg-[#2F004F] left-[2.5vw] flex flex-col md:hidden`,
     {
-      "translate-x-[calc(100%+2.5vw)]": !isSideNav,
+      "-translate-x-[calc(100%+2.5vw)]": !isSideNav,
     }
   );
 

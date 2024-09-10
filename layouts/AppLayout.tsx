@@ -3,6 +3,7 @@ import FadeIn from "@/transitions/FadeIn";
 import React, { FC, PropsWithChildren, useState } from "react";
 import MobileAppNav from "../@shared/components/MobileAppNav";
 import MobileSidebar from "@/@shared/components/MobileSidebar";
+import UserManagementBox from "@/@shared/components/UserManagementBox";
 
 const AppLayout: FC<PropsWithChildren> = ({ children }) => {
   const [isSideNav, setIsSideNav] = useState(false);
@@ -26,7 +27,14 @@ const AppLayout: FC<PropsWithChildren> = ({ children }) => {
 
         <Sidebar />
         <main className="h-full max-md:pt-[120px] w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 px-10 pt-4 max-md:px-4">
-          <FadeIn>{children}</FadeIn>
+          <FadeIn>
+            <>
+              <div className="flex justify-end pb-6 max-md:hidden">
+                <UserManagementBox />
+              </div>
+              {children}
+            </>
+          </FadeIn>
         </main>
       </div>
     </>

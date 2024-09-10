@@ -47,7 +47,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
 
   return (
     <div className={sideNavClasses}>
-      <div style={{ flex: 8 }} className="flex flex-col gap-6 pt-10 px-4">
+      <div style={{ flex: 3 }} className="flex flex-col gap-6 pt-10 px-4">
         <SidebarItem
           icon={<NewDocumentIcon />}
           isActive={activeNavLink === "/new-document"}

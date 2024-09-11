@@ -40,14 +40,14 @@ const UploadFileBox: FC<Props> = ({
       if (e.target.files) {
         const file = e.target.files[0];
         if (validateFileSize(file)) {
-          const extension = file.name.split(".").pop();
-          if (extension === "pdf") {
-            setPdfProcessing(true);
-            const processedFile = await convertPDFToTxt(file);
-            setPdfProcessing(false);
-            handleSelectFile(processedFile as File);
-            return;
-          }
+          // const extension = file.name.split(".").pop();
+          // if (extension === "pdf") {
+          //   setPdfProcessing(true);
+          //   const processedFile = await convertPDFToTxt(file);
+          //   setPdfProcessing(false);
+          //   handleSelectFile(processedFile as File);
+          //   return;
+          // }
           handleSelectFile(e.target.files[0]);
           return;
         } else {

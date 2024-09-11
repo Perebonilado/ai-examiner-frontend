@@ -1,5 +1,6 @@
 import CloseIcon from "@/icons/CloseIcon";
 import CourseDocumentIcon from "@/icons/CourseDocumentIcon";
+import { getFileNameWithoutExtension } from "@/utils";
 import React, { FC } from "react";
 
 interface Props {
@@ -22,7 +23,7 @@ const AttachedFileInfo: FC<Props> = ({ fileName, handleDelete }) => {
         <CourseDocumentIcon fill="#2F004F" width={25} height={25} />
       </div>
       <div style={{ flex: 4 }} className="overflow-hidden">
-        <p className="font-semibold truncate">{fileName}</p>
+        <p className="font-semibold truncate">{getFileNameWithoutExtension(fileName)}</p>
       </div>
     </div>
   );

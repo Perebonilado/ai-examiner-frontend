@@ -4,7 +4,7 @@ import Button from "../ui/Button";
 import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
-import { convertMegaBytesToBytes, convertPDFToTxt } from "@/utils";
+import { convertMegaBytesToBytes } from "@/utils";
 import Spinner from "./Spinner";
 
 interface Props {
@@ -40,14 +40,6 @@ const UploadFileBox: FC<Props> = ({
       if (e.target.files) {
         const file = e.target.files[0];
         if (validateFileSize(file)) {
-          // const extension = file.name.split(".").pop();
-          // if (extension === "pdf") {
-          //   setPdfProcessing(true);
-          //   const processedFile = await convertPDFToTxt(file);
-          //   setPdfProcessing(false);
-          //   handleSelectFile(processedFile as File);
-          //   return;
-          // }
           handleSelectFile(e.target.files[0]);
           return;
         } else {
@@ -56,7 +48,7 @@ const UploadFileBox: FC<Props> = ({
       }
     } catch (error) {
       setPdfProcessing(false);
-      toast.error("An error occured while attaching file");
+      toast.error("An error occured while attaching file " + error as string);
     }
   };
 

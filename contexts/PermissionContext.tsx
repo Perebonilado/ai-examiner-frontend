@@ -6,8 +6,7 @@ import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-interface ContextOptions {
-}
+interface ContextOptions {}
 
 const PermissionContext = React.createContext<ContextOptions | null>(null);
 

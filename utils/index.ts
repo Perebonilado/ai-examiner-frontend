@@ -67,7 +67,7 @@ export const convertPDFToTxt = async (file: File) => {
   if (extension === "pdf") {
     try {
       const pdfToTextConverter_ = (await import("react-pdftotext"));
-      const pdfToTextConverter = pdfToTextConverter_.default
+      const pdfToTextConverter = pdfToTextConverter_.default as any
 
       const text: string = await pdfToTextConverter(file);
       if (!text.length) {

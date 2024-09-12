@@ -58,37 +58,6 @@ export const getFileNameWithoutExtension = (name: string) => {
   return name.substring(0, name.lastIndexOf(".")) || name;
 };
 
-export const convertPDFToTxt = async (file: File) => {
-
-  const extension = file.name.split(".").pop();
-  const fileName =
-    file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
-
-  let processedFile: File | null = null;
-
-  if (extension === "pdf") {
-    try {
-      const pdfToTextConverter = (await import("react-pdftotext")).default;
-
-      const text: string = await pdfToTextConverter(file);
-      if (!text.length) {
-        toast.error("Scanned PDFs or PDFs containing only images are invalid");
-        throw new Error("Failed to attach file");
-      }
-      const blob = new Blob([text], { type: "text/plain" });
-      processedFile = new File([blob], `${fileName}.txt`, {
-        type: "text/plain",
-      });
-
-      return processedFile; // Return the processed file after the conversion
-    } catch (error) {
-      toast.error((error as string) || "Failed to attach file");
-      throw new Error((error as string) || "Failed to attach file");
-    }
-  } else {
-    return file; // Return the original file if not a PDF
-  }
-};
 
 export const secondsToMilliSeconds = (seconds: number): number => {
   return seconds * milliSecondToSecondConversionRate;

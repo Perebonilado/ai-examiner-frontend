@@ -56,7 +56,7 @@ const UploadFileBox: FC<Props> = ({
       }
     } catch (error) {
       setPdfProcessing(false);
-      toast.error("An error occured while attaching file");
+      toast.error("An error occured while attaching file " + error as string);
     }
   };
 

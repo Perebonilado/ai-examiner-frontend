@@ -58,37 +58,49 @@ export const getFileNameWithoutExtension = (name: string) => {
   return name.substring(0, name.lastIndexOf(".")) || name;
 };
 
-export const convertPDFToTxt = (file: File) => {
+export const convertPDFToTxt = async (file: File) => {
+  if (typeof Promise.withResolvers === "undefined") {
+    if (window)
+      // @ts-expect-error This does not exist outside of polyfill which this is doing
+      window.Promise.withResolvers = function () {
+        let resolve, reject;
+        const promise = new Promise((res, rej) => {
+          resolve = res;
+          reject = rej;
+        });
+        return { promise, resolve, reject };
+      };
+  }
+  
   const extension = file.name.split(".").pop();
-  const fileName = getFileNameWithoutExtension(file.name);
+  const fileName =
+    file.name.substring(0, file.name.lastIndexOf(".")) || file.name;
 
   let processedFile: File | null = null;
 
   if (extension === "pdf") {
-    return import("react-pdftotext")
-      .then((pdfToTextConverter_) => {
-        const pdfToTextConverter = pdfToTextConverter_.default;
-        return pdfToTextConverter(file); // Return the promise
-      })
-      .then((text: string) => {
-        if (!text.length) {
-          toast.error("Scanned PDFs or PDFs containing only images are invalid");
-          throw new Error("Failed to attach file");
-        }
-        const blob = new Blob([text], { type: "text/plain" });
-        processedFile = new File([blob], `${fileName}.txt`, { type: "text/plain" });
+    try {
+      const pdfToTextConverter = (await import("react-pdftotext")).default;
 
-        return processedFile; // Return the processed file after the conversion
-      })
-      .catch((error) => {
-        toast.error((error as string) || "Failed to attach file");
-        throw new Error((error as string) || "Failed to attach file");
+      const text: string = await pdfToTextConverter(file);
+      if (!text.length) {
+        toast.error("Scanned PDFs or PDFs containing only images are invalid");
+        throw new Error("Failed to attach file");
+      }
+      const blob = new Blob([text], { type: "text/plain" });
+      processedFile = new File([blob], `${fileName}.txt`, {
+        type: "text/plain",
       });
+
+      return processedFile; // Return the processed file after the conversion
+    } catch (error) {
+      toast.error((error as string) || "Failed to attach file");
+      throw new Error((error as string) || "Failed to attach file");
+    }
   } else {
-    return Promise.resolve(file); // Return a resolved promise with the original file if not a PDF
+    return file; // Return the original file if not a PDF
   }
 };
-
 
 export const secondsToMilliSeconds = (seconds: number): number => {
   return seconds * milliSecondToSecondConversionRate;

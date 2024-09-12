@@ -56,7 +56,7 @@ const UploadFileBox: FC<Props> = ({
       }
     } catch (error) {
       setPdfProcessing(false);
-      toast.error(("An error occured while attaching file " + error) as string);
+      toast.error("An error occured while attaching file " + error as string);
     }
   };
 
@@ -65,17 +65,17 @@ const UploadFileBox: FC<Props> = ({
       <input
         ref={inputRef}
         type="file"
-        onChange={(e) => {
-          handleFileChange(e);
+        onChange={async (e) => {
+          await handleFileChange(e);
         }}
         className="hidden"
         accept={allowedTypes.map((t) => `.${t}`).join(", ")}
       />
       <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
-        {!attachedFile && !uploadLoading && !pdfProcessing && (
+        {!attachedFile && !uploadLoading && !pdfProcessing  && (
           <UploadIcon width={80} height={80} />
         )}
-        {!attachedFile && !uploadLoading && !pdfProcessing && (
+        {!attachedFile && !uploadLoading && !pdfProcessing  && (
           <div className="flex flex-col justify-center gap-3">
             <Button
               onClick={() => {
@@ -93,7 +93,7 @@ const UploadFileBox: FC<Props> = ({
           </div>
         )}
 
-        {attachedFile && !uploadLoading && !pdfProcessing && (
+        {attachedFile && !uploadLoading && !pdfProcessing  && (
           <TransitionUp>
             <AttachedFileInfo
               handleDelete={() => {

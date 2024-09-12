@@ -6,8 +6,7 @@ import React, { useEffect } from "react";
 import Cookies from "js-cookie";
 import { toast } from "react-toastify";
 
-interface ContextOptions {
-}
+interface ContextOptions {}
 
 const PermissionContext = React.createContext<ContextOptions | null>(null);
 
@@ -26,6 +25,21 @@ const PermissionProvider: React.FC<React.PropsWithChildren> = ({
       } else toast.error("Oops! Something went wrong");
     }
   }, [error]);
+
+  useEffect(() => {
+    if (typeof Promise.withResolvers === "undefined") {
+      if (window)
+        // @ts-expect-error This does not exist outside of polyfill which this is doing
+        window.Promise.withResolvers = function () {
+          let resolve, reject;
+          const promise = new Promise((res, rej) => {
+            resolve = res;
+            reject = rej;
+          });
+          return { promise, resolve, reject };
+        };
+    }
+  }, []);
 
   return (
     <PermissionContext.Provider value={{}}>

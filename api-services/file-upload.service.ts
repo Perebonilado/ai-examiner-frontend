@@ -31,10 +31,15 @@ export const FileUploadService = createApi({
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   endpoints: (build) => ({
     uploadFile: build.mutation<FileUploadModel, FileUploadPayloadModel>({
-      query: ({ payload }) => ({
+      query: ({ payload, pages = "", end = "", start = "" }) => ({
         url: "",
         body: payload,
         method: "POST",
+        params: {
+          pages,
+          end,
+          start,
+        },
       }),
       extraOptions: { triggerLoading: false },
       transformResponse: (res: FileUploadDto) => {

@@ -111,12 +111,17 @@ const GenerateQuestionsForm: FC = () => {
     });
   };
 
-  const handleFileUpload = (file: File) => {
+  const handleFileUpload = (
+    file: File,
+    pages?: string,
+    start?: string,
+    end?: string
+  ) => {
     const formData = new FormData();
 
     formData.append("document", file);
 
-    uploadFile({ payload: formData });
+    uploadFile({ payload: formData, pages, end, start });
   };
 
   useEffect(() => {
@@ -148,7 +153,6 @@ const GenerateQuestionsForm: FC = () => {
       toast.success("Questions Successfully generated for document");
     }
   }, [isSuccess]);
-
 
   useEffect(() => {
     if (uploadFileError && "status" in uploadFileError) {
@@ -187,9 +191,9 @@ const GenerateQuestionsForm: FC = () => {
             <UploadFileBox
               allowedTypes={allowedMimeTypes}
               attachedFile={file}
-              handleSelectFile={(file) => {
+              handleSelectFile={(file, pages, start, end) => {
                 setFile(file);
-                handleFileUpload(file);
+                handleFileUpload(file, pages, start, end);
               }}
               uploadLoading={uploadfileLoading}
               handleDeleteFile={() => {
@@ -258,10 +262,7 @@ const GenerateQuestionsForm: FC = () => {
                   label="Select Topics"
                 />
 
-                <ToolTip
-                  id="adv"
-                  message="Enable to generate topics"
-                />
+                <ToolTip id="adv" message="Enable to generate topics" />
               </div>
             )}
 

@@ -2,6 +2,9 @@ export interface FileUploadModel {
   fileId: string;
 }
 
-export interface FileUploadPayloadModel { 
-    payload: FormData
+export interface FileUploadPayloadModel {
+  payload: FormData;
+  pages?: string;
+  start?: string;
+  end?: string;
 }

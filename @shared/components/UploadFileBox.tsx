@@ -6,6 +6,8 @@ import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
 import { convertMegaBytesToBytes } from "@/utils";
 import Spinner from "./Spinner";
+import { useModalContext } from "@/contexts/ModalContext";
+import PDFViewer from "@/@modules/home/PDFViewer";
 
 interface Props {
   handleSelectFile: (file: File) => void;
@@ -35,12 +37,18 @@ const UploadFileBox: FC<Props> = ({
   };
   const [pdfProcessing, setPdfProcessing] = useState(false);
 
+  const { setModalContent } = useModalContext()
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (e.target.files) {
         const file = e.target.files[0];
         if (validateFileSize(file)) {
-          handleSelectFile(e.target.files[0]);
+          if(file.type.includes('pdf')){
+            const fileUrl = URL.createObjectURL(file)
+            setModalContent(<PDFViewer fileUrl={fileUrl}/>)
+          }
+          // handleSelectFile(e.target.files[0]);
           return;
         } else {
           toast.error(`File Size must be ${maxFileSizeMB}mb or less`);

@@ -4,11 +4,11 @@ const withPWA = require("@ducanh2912/next-pwa").default({
   aggressiveFrontEndNavCaching: true,
   reloadOnOnline: true,
   swcMinify: true,
-  disable:false,
+  disable: false,
   workboxOptions: {
     disableDevLogs: true,
   },
- 
+
   // ... other options you like
 });
 
@@ -18,14 +18,19 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'avatar.iran.liara.run',
-        port: '',
-        pathname: '/**', // Allow all paths under this hostname
+        protocol: "https",
+        hostname: "avatar.iran.liara.run",
+        port: "",
+        pathname: "/**", // Allow all paths under this hostname
       },
     ],
   },
-  pageExtensions: ['ts', 'tsx']
+  webpack: (config) => {
+    config.resolve.alias.canvas = false;
+
+    return config;
+  },
+  pageExtensions: ["ts", "tsx"],
 };
 
 module.exports = withPWA(nextConfig);

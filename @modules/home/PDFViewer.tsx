@@ -7,9 +7,10 @@ import { FC, useEffect, useState } from "react";
 
 interface Props {
   fileUrl: string;
+  handleUploadPDF: (pages: string, start: string, end: string) => void;
 }
 
-const PDFViewer: FC<Props> = ({ fileUrl }) => {
+const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
   const { setModalContent } = useModalContext();
   const [pages, setPages] = useState("all");
   const [startPage, setStartPage] = useState("");
@@ -124,6 +125,9 @@ const PDFViewer: FC<Props> = ({ fileUrl }) => {
               ? "bg-gray-300"
               : ""
           }`}
+          onClick={() => {
+            handleUploadPDF(pages, startPage, endPage);
+          }}
         />
       </div>
     </div>

@@ -10,7 +10,12 @@ import { useModalContext } from "@/contexts/ModalContext";
 import PDFViewer from "@/@modules/home/PDFViewer";
 
 interface Props {
-  handleSelectFile: (file: File) => void;
+  handleSelectFile: (
+    file: File,
+    pages?: string,
+    start?: string,
+    end?: string
+  ) => void;
   handleDeleteFile: () => void;
   attachedFile: File | null;
   allowedTypes: string[];
@@ -37,18 +42,27 @@ const UploadFileBox: FC<Props> = ({
   };
   const [pdfProcessing, setPdfProcessing] = useState(false);
 
-  const { setModalContent } = useModalContext()
+  const { setModalContent } = useModalContext();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (e.target.files) {
         const file = e.target.files[0];
-        if (validateFileSize(file)) {
-          if(file.type.includes('pdf')){
-            const fileUrl = URL.createObjectURL(file)
-            setModalContent(<PDFViewer fileUrl={fileUrl}/>)
+        if (validateFileSize(file) && file) {
+          if (file.type.includes("pdf")) {
+            const fileUrl = URL.createObjectURL(file);
+            setModalContent(
+              <PDFViewer
+                fileUrl={fileUrl}
+                handleUploadPDF={(pages, start, end) => {
+                  handleSelectFile(file, pages, start, end);
+                  setModalContent(null);
+                }}
+              />
+            );
+          } else {
+            handleSelectFile(e.target.files[0]);
           }
-          // handleSelectFile(e.target.files[0]);
           return;
         } else {
           toast.error(`File Size must be ${maxFileSizeMB}mb or less`);
@@ -56,7 +70,7 @@ const UploadFileBox: FC<Props> = ({
       }
     } catch (error) {
       setPdfProcessing(false);
-      toast.error("An error occured while attaching file " + error as string);
+      toast.error(("An error occured while attaching file " + error) as string);
     }
   };
 
@@ -72,10 +86,10 @@ const UploadFileBox: FC<Props> = ({
         accept={allowedTypes.map((t) => `.${t}`).join(", ")}
       />
       <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
-        {!attachedFile && !uploadLoading && !pdfProcessing  && (
+        {!attachedFile && !uploadLoading && !pdfProcessing && (
           <UploadIcon width={80} height={80} />
         )}
-        {!attachedFile && !uploadLoading && !pdfProcessing  && (
+        {!attachedFile && !uploadLoading && !pdfProcessing && (
           <div className="flex flex-col justify-center gap-3">
             <Button
               onClick={() => {
@@ -93,7 +107,7 @@ const UploadFileBox: FC<Props> = ({
           </div>
         )}
 
-        {attachedFile && !uploadLoading && !pdfProcessing  && (
+        {attachedFile && !uploadLoading && !pdfProcessing && (
           <TransitionUp>
             <AttachedFileInfo
               handleDelete={() => {

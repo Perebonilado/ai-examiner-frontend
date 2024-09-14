@@ -69,6 +69,13 @@ const UploadFileBox: FC<Props> = ({
           if (file.type.includes("pdf")) {
             setPdfProcessing(true);
             const text = await extractText(file);
+            if (!text.trim()) {
+              setPdfProcessing(false);
+              toast.error(
+                "Scanned PDFs or PDFs with only images are not allowed"
+              );
+              return;
+            }
             const newTxtFile = createFileFromText(
               text,
               `${getFileNameWithoutExtension(file.name)}.txt`

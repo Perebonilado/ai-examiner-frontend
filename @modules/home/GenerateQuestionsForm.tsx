@@ -1,7 +1,10 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import React, { FC, useState } from "react";
 import { Form, useFormik, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
-import UploadFileBox from "@/@shared/components/UploadFileBox";
+// import UploadFileBox from "@/@shared/components/UploadFileBox";
 import Button from "@/@shared/ui/Button";
 import { useAddDocumentMutation } from "@/api-services/document.service";
 import { toast } from "react-toastify";
@@ -27,6 +30,11 @@ import {
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "../../config/redux-config";
+
+const UploadFileBox = dynamic(
+  () => import("@/@shared/components/UploadFileBox"),
+  { ssr: false }
+);
 
 const initialValues = {
   title: "",

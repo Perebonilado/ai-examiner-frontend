@@ -1,13 +1,16 @@
 import UploadIcon from "@/icons/UploadIcon";
-import React, { ElementRef, FC, useRef, useState } from "react";
+import React, { ElementRef, FC, useEffect, useRef, useState } from "react";
 import Button from "../ui/Button";
 import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
-import { convertMegaBytesToBytes } from "@/utils";
+import { convertMegaBytesToBytes, getFileNameWithoutExtension } from "@/utils";
 import Spinner from "./Spinner";
 import { useModalContext } from "@/contexts/ModalContext";
 import PDFViewer from "@/@modules/home/PDFViewer";
+
+import { pdfjs } from "react-pdf";
+pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 interface Props {
   handleSelectFile: (
@@ -41,25 +44,54 @@ const UploadFileBox: FC<Props> = ({
     }
   };
   const [pdfProcessing, setPdfProcessing] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const { setModalContent } = useModalContext();
+
+  const createFileFromText = (text: string, fileName: string) => {
+    // Create a new File object using the text
+    const file = new File([text], fileName, {
+      type: "text/plain",
+    });
+
+    return file;
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (e.target.files) {
         const file = e.target.files[0];
-        if (validateFileSize(file) && file) {
+        if (file && validateFileSize(file)) {
           if (file.type.includes("pdf")) {
-            const fileUrl = URL.createObjectURL(file);
-            setModalContent(
-              <PDFViewer
-                fileUrl={fileUrl}
-                handleUploadPDF={(pages, start, end) => {
-                  handleSelectFile(file, pages, start, end);
-                  setModalContent(null);
-                }}
-              />
+            setPdfProcessing(true);
+            const text = await extractText(file);
+            if (!text.trim()) {
+              setPdfProcessing(false);
+              toast.error(
+                "Scanned PDFs or PDFs with only images are not allowed"
+              );
+              return;
+            }
+            const newTxtFile = createFileFromText(
+              text,
+              `${getFileNameWithoutExtension(file.name)}.txt`
             );
+            setPdfProcessing(false);
+            // const fileUrl = URL.createObjectURL(file);
+            // setModalContent(
+            //   <PDFViewer
+            //     fileUrl={fileUrl}
+            //     handleUploadPDF={(pages, start, end) => {
+            //       handleSelectFile(file, pages, start, end);
+            //       setModalContent(null);
+            //     }}
+            //   />
+            // );
+            handleSelectFile(newTxtFile);
           } else {
             handleSelectFile(e.target.files[0]);
           }
@@ -74,7 +106,39 @@ const UploadFileBox: FC<Props> = ({
     }
   };
 
-  return (
+  const extractText = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      let extractedText = "";
+
+      reader.onload = async (e) => {
+        try {
+          const typedarray = new Uint8Array(e.target?.result as ArrayBuffer);
+          const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
+          const numPages = pdf.numPages;
+
+          for (let i = 1; i <= numPages; i++) {
+            const page = await pdf.getPage(i);
+            const textContent = await page.getTextContent();
+            textContent.items.forEach((item: any) => {
+              const { str } = item;
+              extractedText += str + " ";
+            });
+          }
+
+          resolve(extractedText);
+        } catch (error) {
+          reject(error);
+        }
+      };
+
+      reader.onerror = (error) => reject(error);
+
+      reader.readAsArrayBuffer(file);
+    });
+  };
+
+  return isClient ? (
     <>
       <input
         ref={inputRef}
@@ -137,6 +201,8 @@ const UploadFileBox: FC<Props> = ({
         )}
       </div>
     </>
+  ) : (
+    <></>
   );
 };
 

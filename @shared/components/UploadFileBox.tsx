@@ -65,13 +65,15 @@ const UploadFileBox: FC<Props> = ({
     try {
       if (e.target.files) {
         const file = e.target.files[0];
-        if (validateFileSize(file) && file) {
+        if (file && validateFileSize(file)) {
           if (file.type.includes("pdf")) {
+            setPdfProcessing(true);
             const text = await extractText(file);
             const newTxtFile = createFileFromText(
               text,
               `${getFileNameWithoutExtension(file.name)}.txt`
             );
+            setPdfProcessing(false);
             // const fileUrl = URL.createObjectURL(file);
             // setModalContent(
             //   <PDFViewer

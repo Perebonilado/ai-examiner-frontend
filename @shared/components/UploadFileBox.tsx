@@ -67,31 +67,31 @@ const UploadFileBox: FC<Props> = ({
         const file = e.target.files[0];
         if (file && validateFileSize(file)) {
           if (file.type.includes("pdf")) {
-            setPdfProcessing(true);
-            const text = await extractText(file);
-            if (!text.trim()) {
-              setPdfProcessing(false);
-              toast.error(
-                "Scanned PDFs or PDFs with only images are not allowed"
-              );
-              return;
-            }
-            const newTxtFile = createFileFromText(
-              text,
-              `${getFileNameWithoutExtension(file.name)}.txt`
-            );
-            setPdfProcessing(false);
-            // const fileUrl = URL.createObjectURL(file);
-            // setModalContent(
-            //   <PDFViewer
-            //     fileUrl={fileUrl}
-            //     handleUploadPDF={(pages, start, end) => {
-            //       handleSelectFile(file, pages, start, end);
-            //       setModalContent(null);
-            //     }}
-            //   />
+            // setPdfProcessing(true);
+            // const text = await extractText(file);
+            // if (!text.trim()) {
+            //   setPdfProcessing(false);
+            //   toast.error(
+            //     "Scanned PDFs or PDFs with only images are not allowed"
+            //   );
+            //   return;
+            // }
+            // const newTxtFile = createFileFromText(
+            //   text,
+            //   `${getFileNameWithoutExtension(file.name)}.txt`
             // );
-            handleSelectFile(newTxtFile);
+            // setPdfProcessing(false);
+            const fileUrl = URL.createObjectURL(file);
+            setModalContent(
+              <PDFViewer
+                fileUrl={fileUrl}
+                handleUploadPDF={(pages, start, end) => {
+                  handleSelectFile(file, pages, start, end);
+                  setModalContent(null);
+                }}
+              />
+            );
+            // handleSelectFile(newTxtFile);
           } else {
             handleSelectFile(e.target.files[0]);
           }

@@ -89,6 +89,14 @@ const DropDown: FC<Props> = ({
     }
   );
 
+  useEffect(()=>{
+    if(!props.value){
+      if (mirrorInputRef.current) {
+        mirrorInputRef.current.value = "";
+      }
+    }
+  },[props.value])
+
   return (
     <div>
       {label && (
@@ -102,7 +110,6 @@ const DropDown: FC<Props> = ({
           className={inputStyleBasedOnVariant}
           onClick={() => setOptionsOpen(true)}
           placeholder={placeholder}
-          value={props.value}
           readOnly
         />
         <input className="hidden" ref={mainInputRef} {...props} />

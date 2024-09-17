@@ -20,6 +20,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   isRequired?: boolean;
   variant?: "regular" | "alt";
+  openFromTop?: boolean;
 }
 
 const DropDown: FC<Props> = ({
@@ -29,6 +30,7 @@ const DropDown: FC<Props> = ({
   label,
   error,
   isRequired,
+  openFromTop = false,
   variant = "alt",
   ...props
 }) => {
@@ -40,7 +42,7 @@ const DropDown: FC<Props> = ({
   const mainInputRef = useRef<ElementRef<"input">>(null);
 
   const inputStyleBasedOnVariant = cn(
-    `cursor-pointer w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-3  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`
+    `cursor-pointer w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-2  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`
   );
 
   const onSelect = (val: {
@@ -79,6 +81,22 @@ const DropDown: FC<Props> = ({
     }
   }, [JSON.stringify(options)]);
 
+  const dropDownStyles = cn(
+    `w-full absolute left-0 px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto`,
+    {
+      ['bottom-[calc(100%+5px)]']: openFromTop,
+      ['top-[calc(100%+5px)]']: !openFromTop
+    }
+  );
+
+  useEffect(()=>{
+    if(!props.value && !options.some(o=>o.defaultSelected)){
+      if (mirrorInputRef.current) {
+        mirrorInputRef.current.value = "";
+      }
+    }
+  },[props.value])
+
   return (
     <div>
       {label && (
@@ -99,7 +117,7 @@ const DropDown: FC<Props> = ({
         <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2" />
 
         {isOptionsOpen && (
-          <div className="w-full absolute left-0 top-[calc(100%+5px)] px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto">
+          <div className={dropDownStyles}>
             {options.map((opt, idx) => (
               <DropDownItem {...opt} onSelect={(e) => onSelect(e)} key={idx} />
             ))}

@@ -67,31 +67,32 @@ const UploadFileBox: FC<Props> = ({
         const file = e.target.files[0];
         if (file && validateFileSize(file)) {
           if (file.type.includes("pdf")) {
-            setPdfProcessing(true);
-            const text = await extractText(file);
-            if (!text.trim()) {
-              setPdfProcessing(false);
-              toast.error(
-                "Scanned PDFs or PDFs with only images are not allowed"
-              );
-              return;
-            }
-            const newTxtFile = createFileFromText(
-              text,
-              `${getFileNameWithoutExtension(file.name)}.txt`
+            const fileUrl = URL.createObjectURL(file);
+            setModalContent(
+              <PDFViewer
+                fileUrl={fileUrl}
+                handleUploadPDF={async (pages, start, end) => {
+                  setModalContent(null);
+                  setPdfProcessing(true);
+                  const text = await extractText(file, Number(start), Number(end));
+                  if (!text.trim()) {
+                    setPdfProcessing(false);
+                    toast.error(
+                      "Scanned PDFs or PDFs with only images are not allowed"
+                    );
+                    return;
+                  }
+                  const newTxtFile = createFileFromText(
+                    text,
+                    `${getFileNameWithoutExtension(file.name)}.txt`
+                  );
+                  setPdfProcessing(false);
+                  handleSelectFile(newTxtFile);
+                  setModalContent(null);
+                }}
+              />
             );
-            setPdfProcessing(false);
-            // const fileUrl = URL.createObjectURL(file);
-            // setModalContent(
-            //   <PDFViewer
-            //     fileUrl={fileUrl}
-            //     handleUploadPDF={(pages, start, end) => {
-            //       handleSelectFile(file, pages, start, end);
-            //       setModalContent(null);
-            //     }}
-            //   />
-            // );
-            handleSelectFile(newTxtFile);
+          
           } else {
             handleSelectFile(e.target.files[0]);
           }
@@ -106,7 +107,11 @@ const UploadFileBox: FC<Props> = ({
     }
   };
 
-  const extractText = (file: File): Promise<string> => {
+  const extractText = (
+    file: File,
+    startPage = 1,
+    endPage?: number
+  ): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       let extractedText = "";
@@ -117,7 +122,7 @@ const UploadFileBox: FC<Props> = ({
           const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
           const numPages = pdf.numPages;
 
-          for (let i = 1; i <= numPages; i++) {
+          for (let i = startPage; i <= (endPage || numPages); i++) {
             const page = await pdf.getPage(i);
             const textContent = await page.getTextContent();
             textContent.items.forEach((item: any) => {

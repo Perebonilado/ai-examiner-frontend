@@ -90,7 +90,7 @@ const DropDown: FC<Props> = ({
   );
 
   useEffect(()=>{
-    if(!props.value){
+    if(!props.value && !options.some(o=>o.defaultSelected)){
       if (mirrorInputRef.current) {
         mirrorInputRef.current.value = "";
       }

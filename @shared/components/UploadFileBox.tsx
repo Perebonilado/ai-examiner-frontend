@@ -121,9 +121,13 @@ const UploadFileBox: FC<Props> = ({
           const typedarray = new Uint8Array(e.target?.result as ArrayBuffer);
           const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
           const numPages = pdf.numPages;
+          const endIndex = endPage ? endPage : numPages
+          const startIndex = startPage ? startPage : 1
 
-          for (let i = startPage; i <= (endPage || numPages); i++) {
-            const page = await pdf.getPage(i);
+          console.log(startIndex, endIndex)
+
+          for (let i = startIndex; i <= endIndex; i++) {
+            const page = await pdf.getPage(startIndex);
             const textContent = await page.getTextContent();
             textContent.items.forEach((item: any) => {
               const { str } = item;

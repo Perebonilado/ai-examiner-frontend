@@ -124,11 +124,16 @@ const UploadFileBox: FC<Props> = ({
           const endIndex = endPage ? endPage : numPages
           const startIndex = startPage ? startPage : 1
 
-          console.log(startIndex, endIndex)
+          const pages: number[] = []
 
-          for (let i = startIndex; i <= endIndex; i++) {
-            const page = await pdf.getPage(startIndex);
+          for (let i = startIndex; i <= endIndex; i++){
+            pages.push(i)
+          }
+
+          for (const pageNumber of pages) {
+            const page = await pdf.getPage(pageNumber);
             const textContent = await page.getTextContent();
+            
             textContent.items.forEach((item: any) => {
               const { str } = item;
               extractedText += str + " ";

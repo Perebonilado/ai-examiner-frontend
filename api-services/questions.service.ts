@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
   CreateScorePayloadModel,
+  DeleteQuestionModel,
   GenerateQuestionsPayloadModel,
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
@@ -73,6 +74,13 @@ export const QuestionsService = createApi({
         } catch (error) {}
       },
     }),
+    deleteQuestion: build.mutation<any, DeleteQuestionModel>({
+      query: ({ questionId }) => ({
+        url: `/${questionId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["question-summary"],
+    }),
     getQuestionSummaries: build.query<
       GetQuestionSummaryModel,
       GetQuestionsQueryModel
@@ -143,4 +151,5 @@ export const {
   useGetQuestionSummariesQuery,
   useGenerateQuestionsMutation,
   useSaveScoreMutation,
+  useDeleteQuestionMutation
 } = QuestionsService;

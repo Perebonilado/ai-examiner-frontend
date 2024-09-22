@@ -16,7 +16,6 @@ export interface GetQuestionByIdModel {
   topics: string[];
   documentId: string;
   createdOn: Date;
-  
 }
 
 export interface QuestionOption {
@@ -57,5 +56,9 @@ export interface GenerateQuestionsPayloadModel {
 export interface CreateScorePayloadModel {
   score: number;
   documentId: string;
+  questionId: string;
+}
+
+export interface DeleteQuestionModel {
   questionId: string;
 }

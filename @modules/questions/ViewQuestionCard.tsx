@@ -10,6 +10,9 @@ import ArrowRight from "@/icons/ArrowRight";
 import ChevronDownAlt from "@/icons/ChevronDownAlt";
 import TopicPill from "./TopicPill";
 import TopicPillContainer from "./TopicPillContainer";
+import { TrashIcon } from "@/icons/TrashIcon";
+import { useModalContext } from "@/contexts/ModalContext";
+import DeleteQuestionConfirmation from "./DeleteQuestionConfirmation";
 
 interface Props extends QuestionSummaryModel {}
 
@@ -32,6 +35,8 @@ const ViewQuestionCard: FC<Props> = ({
   const chevronClasses = cn(`cursor-pointer transition-all duration-[.6s]`, {
     "rotate-180": topicsExpanded,
   });
+
+  const { setModalContent } = useModalContext();
 
   return (
     <div className={rootClassName}>
@@ -62,17 +67,27 @@ const ViewQuestionCard: FC<Props> = ({
         <div>
           <TopicPillContainer data={topics} isOpen={topicsExpanded} />
         </div>
-        <Link
-          href={`/questions/practise-questions/${hyphenateString(
-            type.toLowerCase()
-          )}/${id}`}
-        >
-          <Button
-            title={score !== null ? "Retry" : "Start Assessment"}
-            variant="text"
-            endicon={<ArrowRight />}
-          />
-        </Link>
+        <div className="flex items-center justify-between">
+          <Link
+            href={`/questions/practise-questions/${hyphenateString(
+              type.toLowerCase()
+            )}/${id}`}
+          >
+            <Button
+              title={score !== null ? "Retry" : "Start Assessment"}
+              variant="text"
+              endicon={<ArrowRight />}
+            />
+          </Link>
+
+          <button
+            onClick={() => {
+              setModalContent(<DeleteQuestionConfirmation questionId={id} />);
+            }}
+          >
+            <TrashIcon fill="#C9190B" />
+          </button>
+        </div>
       </div>
     </div>
   );

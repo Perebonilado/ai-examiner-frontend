@@ -6,6 +6,7 @@ import Button from "@/@shared/ui/Button";
 import {
   useCancelSubscriptionMutation,
   useGetSubscriptionDetailsQuery,
+  useInitiateSubscriptionMutation,
   useRestartSubscriptionMutation,
   useUpdateCardInformationMutation,
 } from "@/api-services/subscription.service";
@@ -23,11 +24,13 @@ const Settings: NextPage = () => {
   const { setModalContent } = useModalContext();
   const router = useRouter();
 
-  const activeSubscriptionStatuses = ["active", "attention"];
+  const inactiveSubscriptionStatuses = ["completed", "cancelled", "attention", "non-renewing"];
   const [cancelSubscription, { data: subCancelledData }] =
     useCancelSubscriptionMutation();
   const [updateCardDetails, { data: updateCardDetailsData }] =
     useUpdateCardInformationMutation();
+  const [inititateSubscription, { data: initiateSubscriptionData }] =
+    useInitiateSubscriptionMutation();
 
   useEffect(() => {
     if (updateCardDetailsData) {
@@ -40,6 +43,12 @@ const Settings: NextPage = () => {
       router.push("/new-document");
     }
   }, [subCancelledData]);
+
+  useEffect(() => {
+    if (initiateSubscriptionData) {
+      window.location.assign(initiateSubscriptionData.redirectUrl);
+    }
+  }, [initiateSubscriptionData]);
 
   useEffect(() => {
     if (isLoading) {
@@ -62,7 +71,6 @@ const Settings: NextPage = () => {
     <>
       <AppHead title="Account Settings" />
       <AppLayout>
-
         {data && (
           <>
             <div className="mt-8">
@@ -90,7 +98,8 @@ const Settings: NextPage = () => {
               )}
 
               {data.status &&
-                activeSubscriptionStatuses.includes(
+                data.status !== "non-renewing" &&
+                !inactiveSubscriptionStatuses.includes(
                   data.status.toLowerCase()
                 ) && (
                   <div className="mt-3">
@@ -102,6 +111,21 @@ const Settings: NextPage = () => {
                           emailToken: data.emailToken,
                           subscriptionCode: data.subscriptionCode,
                         });
+                      }}
+                    />
+                  </div>
+                )}
+
+              {data.status &&
+                inactiveSubscriptionStatuses.includes(
+                  data.status.toLowerCase()
+                ) && (
+                  <div className="mt-3">
+                    <Button
+                      variant="outlined"
+                      title="Resume Subscription"
+                      onClick={() => {
+                        inititateSubscription({ planId: data.planCode });
                       }}
                     />
                   </div>

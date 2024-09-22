@@ -30,6 +30,7 @@ export interface SubscriptionDetailsModel {
   status: "completed" | "cancelled" | "active" | "non-renewing" | "attention";
   subscriptionCode: string;
   emailToken: string;
+  planCode: string;
 }
 
 export interface UpdateSubscriptionCardModel {

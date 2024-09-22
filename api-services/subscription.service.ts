@@ -163,6 +163,7 @@ export const SubscriptionService = createApi({
               status: res.subscrptionInformation.status,
               subscriptionCode: res.subscrptionInformation.code,
               emailToken: res.subscrptionInformation.token,
+              planCode: res.planInformation.planCode
             };
           }
         },

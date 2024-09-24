@@ -1,4 +1,5 @@
 import { AppLoader } from "@/@shared/components/AppLoader";
+import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import Dialog from "@/@shared/components/Dialog";
 import Button from "@/@shared/ui/Button";
 import { useDeleteQuestionMutation } from "@/api-services/questions.service";
@@ -29,52 +30,60 @@ const DeleteQuestionConfirmation: FC<Props> = ({ questionId }) => {
     }
   }, [error]);
 
-//   useEffect(() => {
-//     if (isLoading) {
-//       setModalContent(<AppLoader loaderMessage="Deleting Questions" />);
-//     } 
-//   }, [isLoading]);
+  //   useEffect(() => {
+  //     if (isLoading) {
+  //       setModalContent(<AppLoader loaderMessage="Deleting Questions" />);
+  //     }
+  //   }, [isLoading]);
 
   useEffect(() => {
     if (isSuccess) {
-      setModalContent(null)
+      setModalContent(null);
       toast.success("Question Successfully deleted");
       setModalContent(null);
     }
   }, [isSuccess]);
 
   return (
-    <Dialog ref={ref}>
-      <div
-        className="w-full flex flex-col gap-5 justify-center bg-white"
-        ref={ref}
-      >
-        <h1 className="text-lg font-bold text-center">
-          Are you sure you want to delete these set of questions?
-        </h1>
+    <ConfirmationDialog
+      title="Delete Questions ?"
+      message="This can't be undone"
+      confirmationText="Delete"
+      onConfirm={() => {
+        deleteQuestion({ questionId });
+      }}
+    />
+    // <Dialog ref={ref}>
+    //   <div
+    //     className="w-full flex flex-col gap-5 justify-center bg-white"
+    //     ref={ref}
+    //   >
+    //     <h1 className="text-lg font-bold text-center">
+    //       Are you sure you want to delete these set of questions?
+    //     </h1>
 
-        <div className="flex gap-2">
-          <Button
-            title="Yes"
-            fullWidth
-            variant="contained"
-            size="large"
-            onClick={() => {
-              deleteQuestion({ questionId });
-            }}
-          />
-          <Button
-            title="No"
-            onClick={() => {
-              setModalContent(null);
-            }}
-            fullWidth
-            variant="outlined"
-            size="large"
-          />
-        </div>
-      </div>
-    </Dialog>
+    //     <div className="flex gap-2">
+    //       <Button
+    //         title="Yes"
+    //         fullWidth
+    //         variant="contained"
+    //         size="large"
+    //         onClick={() => {
+    //           deleteQuestion({ questionId });
+    //         }}
+    //       />
+    //       <Button
+    //         title="No"
+    //         onClick={() => {
+    //           setModalContent(null);
+    //         }}
+    //         fullWidth
+    //         variant="outlined"
+    //         size="large"
+    //       />
+    //     </div>
+    //   </div>
+    // </Dialog>
   );
 };
 

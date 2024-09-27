@@ -51,11 +51,12 @@ export const SubscriptionService = createApi({
         InitiateSubscriptionModel,
         InitiateSubscriptionPayloadModel
       >({
-        query: ({ planId }) => ({
+        query: ({ planId, oneTimeSubscription }) => ({
           url: `/initiate`,
           method: "POST",
           body: {
             planId,
+            oneTimeSubscription
           },
         }),
         transformResponse: (res: InitiateSubscriptionDto) => {
@@ -63,6 +64,7 @@ export const SubscriptionService = createApi({
           else {
             return {
               redirectUrl: res.data.redirectUrl,
+              accessCode: res.data.accessCode
             };
           }
         },
@@ -163,7 +165,12 @@ export const SubscriptionService = createApi({
               status: res.subscrptionInformation.status,
               subscriptionCode: res.subscrptionInformation.code,
               emailToken: res.subscrptionInformation.token,
-              planCode: res.planInformation.planCode
+              planCode: res.planInformation.planCode,
+              paymentMode: !res.mode
+                ? "None"
+                : res.mode === "one_time"
+                ? "One Time Payment"
+                : "Recurring Payment",
             };
           }
         },
@@ -177,5 +184,5 @@ export const {
   useInitiateSubscriptionMutation,
   useRestartSubscriptionMutation,
   useGetSubscriptionDetailsQuery,
-  useUpdateCardInformationMutation
+  useUpdateCardInformationMutation,
 } = SubscriptionService;

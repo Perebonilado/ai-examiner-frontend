@@ -7,7 +7,7 @@ const Dialog = forwardRef<HTMLDivElement, PropsWithChildren>(
     const { setModalContent } = useModalContext();
     return (
       <div
-        className="w-full relative max-w-[400px] max-md:max-w-[320px] rounded-xl shadow-lg p-8 py-14 flex flex-col gap-10 items-center justify-center bg-white"
+        className="w-full relative max-w-[400px] max-md:max-w-[320px] rounded-xl shadow-lg p-4 py-14 flex flex-col gap-10 items-center justify-center bg-white"
         ref={ref}
       >
         <span

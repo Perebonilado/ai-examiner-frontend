@@ -1,8 +1,13 @@
 import React, { FC, useState, useEffect } from "react";
-import PlanCard from "./PlanCard";
 import { PlanModel } from "@/models/plan.model";
 import Cookies from "js-cookie";
 import { accessToken } from "@/constants";
+import dynamic from "next/dynamic";
+
+const PlanCard = dynamic(
+  () => import("./PlanCard").then((comp) => comp.default),
+  { ssr: false, loading: () => <></> }
+);
 
 interface Props {
   plans: PlanModel[];

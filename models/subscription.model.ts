@@ -1,9 +1,11 @@
 export interface InitiateSubscriptionPayloadModel {
   planId: string;
+  oneTimeSubscription: boolean;
 }
 
 export interface InitiateSubscriptionModel {
   redirectUrl: string;
+  accessCode: string;
 }
 
 export interface CancelSubscriptionPayloadModel {
@@ -31,6 +33,7 @@ export interface SubscriptionDetailsModel {
   subscriptionCode: string;
   emailToken: string;
   planCode: string;
+  paymentMode: "Recurring Payment" | "One Time Payment" | "None";
 }
 
 export interface UpdateSubscriptionCardModel {

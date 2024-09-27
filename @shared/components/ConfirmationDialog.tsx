@@ -7,11 +7,12 @@ interface Props {
   title: string;
   message: string;
   confirmationText: string;
+  cancelText?: string
   onConfirm: () => any;
 }
 
 const ConfirmationDialog = forwardRef<HTMLDivElement, Props>(
-  ({ title, confirmationText, message, onConfirm }, ref) => {
+  ({ title, confirmationText, message, onConfirm, cancelText = 'Cancel' }, ref) => {
     const { setModalContent } = useModalContext();
     return (
       <div
@@ -34,7 +35,7 @@ const ConfirmationDialog = forwardRef<HTMLDivElement, Props>(
 
         <div className="flex items-center justify-end gap-2 p-4">
           <Button
-            title="Cancel"
+            title={cancelText}
             variant="outlined"
             size="medium"
             onClick={() => {

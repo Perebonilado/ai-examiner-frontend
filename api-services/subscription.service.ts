@@ -51,11 +51,12 @@ export const SubscriptionService = createApi({
         InitiateSubscriptionModel,
         InitiateSubscriptionPayloadModel
       >({
-        query: ({ planId }) => ({
+        query: ({ planId, oneTimeSubscription }) => ({
           url: `/initiate`,
           method: "POST",
           body: {
             planId,
+            oneTimeSubscription,
           },
         }),
         transformResponse: (res: InitiateSubscriptionDto) => {
@@ -63,6 +64,7 @@ export const SubscriptionService = createApi({
           else {
             return {
               redirectUrl: res.data.redirectUrl,
+              accessCode: res.data.accessCode,
             };
           }
         },
@@ -123,6 +125,47 @@ export const SubscriptionService = createApi({
         transformResponse: (res: SubscriptionDetailsDto) => {
           if (!res) return <SubscriptionDetailsModel>{};
           else {
+            const getRecurringBillingState = (
+              status:
+                | "completed"
+                | "cancelled"
+                | "active"
+                | "non-renewing"
+                | "attention"
+            ) => {
+              switch (status) {
+                case "active":
+                  return "Yes";
+                case "attention":
+                  return "We ran into issues billing your card";
+                default:
+                  return "No";
+              }
+            };
+
+            const getPaymentModeDescription = (
+              mode: "one_time" | "recurring"
+            ) => {
+              switch (mode) {
+                case "one_time":
+                  return "One Time Payment";
+                case "recurring":
+                  return "Recurring Payment";
+                default:
+                  return "None";
+              }
+            };
+
+            const recurringBillingState = getRecurringBillingState(
+              res.subscrptionInformation.status
+            );
+            const paymentModeDescription = getPaymentModeDescription(res.mode);
+
+            const automaticBillingInfo =
+              paymentModeDescription === "Recurring Payment"
+                ? recurringBillingState
+                : "No";
+
             return {
               billing: [
                 ["Account name", res.cardInformation.accountName || "N/A"],
@@ -141,6 +184,9 @@ export const SubscriptionService = createApi({
                     ? `**** **** **** ${res.cardInformation.last4}`
                     : null || "N/A",
                 ],
+                paymentModeDescription === "Recurring Payment"
+                  ? ["Automatic Billing", `${automaticBillingInfo}`]
+                  : ['', '']
               ],
               subscription: [
                 ["Plan", res.planInformation.name || "N/A"],
@@ -159,11 +205,15 @@ export const SubscriptionService = createApi({
                       )
                     : "N/A",
                 ],
+                paymentModeDescription !== "Recurring Payment"
+                  ? ["Automatic Billing", `${automaticBillingInfo}`]
+                  : ['', ''],
               ],
               status: res.subscrptionInformation.status,
               subscriptionCode: res.subscrptionInformation.code,
               emailToken: res.subscrptionInformation.token,
-              planCode: res.planInformation.planCode
+              planCode: res.planInformation.planCode,
+              paymentMode: paymentModeDescription,
             };
           }
         },
@@ -177,5 +227,5 @@ export const {
   useInitiateSubscriptionMutation,
   useRestartSubscriptionMutation,
   useGetSubscriptionDetailsQuery,
-  useUpdateCardInformationMutation
+  useUpdateCardInformationMutation,
 } = SubscriptionService;

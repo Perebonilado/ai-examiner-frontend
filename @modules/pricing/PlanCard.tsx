@@ -2,9 +2,12 @@ import Button from "@/@shared/ui/Button";
 import { useInitiateSubscriptionMutation } from "@/api-services/subscription.service";
 import CheckMark from "@/icons/CheckMark";
 import { PlanModel } from "@/models/plan.model";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import CancelIcon from "@/icons/CancelIcon";
+import { useModalContext } from "@/contexts/ModalContext";
+import Dialog from "@/@shared/components/Dialog";
+import PaystackPop from "@paystack/inline-js";
 
 interface Props extends PlanModel {
   isLoggedIn: boolean;
@@ -39,6 +42,16 @@ const PlanCard: FC<Props> = ({
     }
   }, [data]);
 
+  const { setModalContent } = useModalContext();
+
+  const handlePayWithCard = () => {
+    inititateSubscription({ planId: `${planId}`, oneTimeSubscription: false });
+  };
+
+  const handlePayWithTransfer = () => {
+    inititateSubscription({ planId: `${planId}`, oneTimeSubscription: true });
+  };
+
   return (
     <div className="rounded-lg w-full max-w-[280px] px-4 flex flex-col py-6 h-[470px] bg-white border border-black">
       <div style={{ flex: 1 }}>
@@ -63,14 +76,38 @@ const PlanCard: FC<Props> = ({
         })}
       </div>
 
-      <div style={{ flex: 1 }} className="pt-5"> 
+      <div style={{ flex: 1 }} className="pt-5">
         <Button
           title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
           onClick={() => {
             if (isLoggedIn) {
-              type.toLowerCase() === "free"
-                ? router.push("/new-document")
-                : inititateSubscription({ planId: `${planId}` });
+              if (type.toLowerCase() === "free") {
+                router.push("/new-document");
+              } else {
+                // set modal to either pay w trnf/card
+                setModalContent(
+                  <Dialog>
+                    <div className="flex flex-col gap-5 w-full min-w-[240px]">
+                      <Button
+                        title="Pay with card"
+                        fullWidth
+                        onClick={handlePayWithCard}
+                      />
+                      <div>
+                        <Button
+                          title="Pay with transfer"
+                          variant="outlined"
+                          fullWidth
+                          onClick={handlePayWithTransfer}
+                        />
+                        <p className="text-xs text-rose-600 mt-1">
+                          Pay with transfer is only available in Nigeria
+                        </p>
+                      </div>
+                    </div>
+                  </Dialog>
+                );
+              }
             } else {
               router.push(
                 `/auth/login?returnUrl=${encodeURIComponent(router.asPath)}`

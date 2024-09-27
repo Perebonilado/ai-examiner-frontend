@@ -18,13 +18,19 @@ import Link from "next/link";
 import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
+import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 
 const Settings: NextPage = () => {
   const { data, isLoading, error } = useGetSubscriptionDetailsQuery("");
   const { setModalContent } = useModalContext();
   const router = useRouter();
 
-  const inactiveSubscriptionStatuses = ["completed", "cancelled", "attention", "non-renewing"];
+  const inactiveSubscriptionStatuses = [
+    "completed",
+    "cancelled",
+    "attention",
+    "non-renewing",
+  ];
   const [cancelSubscription, { data: subCancelledData }] =
     useCancelSubscriptionMutation();
   const [updateCardDetails, { data: updateCardDetailsData }] =
@@ -73,20 +79,24 @@ const Settings: NextPage = () => {
       <AppLayout>
         {data && (
           <>
-            <div className="mt-8">
-              <AccountSettingInformationItemContainer
-                data={data.billing}
-                title="Billing"
-              />
-            </div>
+            {data && data.paymentMode === "Recurring Payment" && (
+              <div className="mt-8">
+                <AccountSettingInformationItemContainer
+                  data={data.billing}
+                  title="Billing"
+                />
+              </div>
+            )}
 
-            <div className="bg-gray-300 h-[1px] my-14"></div>
+            {data && data.paymentMode === "Recurring Payment" && (
+              <div className="bg-gray-300 h-[1px] my-14"></div>
+            )}
 
             <AccountSettingInformationItemContainer
               title="Subscription"
               data={data.subscription}
             >
-              {data.status && (
+              {data.status && data.paymentMode === "Recurring Payment" && (
                 <Button
                   title="Update Card Information"
                   onClick={() => {
@@ -99,6 +109,7 @@ const Settings: NextPage = () => {
 
               {data.status &&
                 data.status !== "non-renewing" &&
+                data.paymentMode === "Recurring Payment" &&
                 !inactiveSubscriptionStatuses.includes(
                   data.status.toLowerCase()
                 ) && (
@@ -116,20 +127,29 @@ const Settings: NextPage = () => {
                   </div>
                 )}
 
-              {data.status &&
-                inactiveSubscriptionStatuses.includes(
-                  data.status.toLowerCase()
-                ) && (
-                  <div className="mt-3">
-                    <Button
-                      variant="outlined"
-                      title="Resume Subscription"
-                      onClick={() => {
-                        inititateSubscription({ planId: data.planCode });
-                      }}
-                    />
-                  </div>
-                )}
+              {data.status && data.paymentMode === "One Time Payment" && (
+                <div className="mt-3">
+                  <Button
+                    variant="contained"
+                    title="Cancel Plan"
+                    onClick={() => {
+                      setModalContent(
+                        <ConfirmationDialog
+                          title="Discontinue Plan?"
+                          message="You will lose access to the features on your current plan."
+                          confirmationText="Proceed"
+                          onConfirm={() => {
+                            cancelSubscription({
+                              emailToken: "",
+                              subscriptionCode: "",
+                            });
+                          }}
+                        />
+                      );
+                    }}
+                  />
+                </div>
+              )}
 
               <Link href={"/pricing"}>
                 <Button

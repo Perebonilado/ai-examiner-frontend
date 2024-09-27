@@ -32,8 +32,9 @@ export interface SubscriptionDetailsDto {
   subscrptionInformation: {
     code: string;
     token: string;
-    status: 'active' | 'non-renewing' | 'attention' | 'completed' | 'cancelled';
-  }
+    status: "active" | "non-renewing" | "attention" | "completed" | "cancelled";
+  };
+  mode: "one_time" | "recurring";
 }
 
 export interface UpdateSubscriptionCardDto {

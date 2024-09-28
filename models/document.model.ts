@@ -37,4 +37,5 @@ export interface AddDocumentPayloadModel {
   };
   questionCount: string;
   questionType: string;
+  includeUseCases: boolean
 }

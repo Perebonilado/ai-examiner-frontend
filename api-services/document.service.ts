@@ -65,13 +65,14 @@ export const DocumentService = createApi({
       },
     }),
     addDocument: build.mutation<CreateDocumentModel, AddDocumentPayloadModel>({
-      query: ({ payload, questionCount, questionType }) => ({
+      query: ({ payload, questionCount, questionType, includeUseCases }) => ({
         url: ``,
         body: payload,
         method: "POST",
         params: {
           questionCount,
           questionType,
+          includeUseCases
         },
       }),
       extraOptions: { triggerLoading: false },

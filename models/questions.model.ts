@@ -51,6 +51,7 @@ export interface GenerateQuestionsPayloadModel {
   questionType: string;
   topics?: string[];
   selectedQuestionTopics?: string[];
+  includeUseCases: boolean
 }
 
 export interface CreateScorePayloadModel {

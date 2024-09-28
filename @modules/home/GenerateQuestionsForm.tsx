@@ -52,6 +52,7 @@ const GenerateQuestionsForm: FC = () => {
   const [fileId, setFileId] = useState<string | null>(null);
   const [isAdvanced, setIsAdvanced] = useState(false);
   const [isFocusAreaData, setIsFocusAreaData] = useState(false);
+  const [includeUseCases, setIncludeUseCases] = useState(false);
   const [
     fetchTopics,
     { data: topics, isLoading: topicsLoading, error: topicsError },
@@ -116,6 +117,7 @@ const GenerateQuestionsForm: FC = () => {
       },
       questionCount: values.questionCount,
       questionType: values.questionType,
+      includeUseCases
     });
   };
 
@@ -254,6 +256,21 @@ const GenerateQuestionsForm: FC = () => {
                     ? formik.errors.questionCount
                     : undefined
                 }
+              />
+            </div>
+
+            <div className="flex items-center gap-3">
+              <Switch
+                disabled={!file || !fileId}
+                handleChecked={() => {
+                  setIncludeUseCases(!includeUseCases);
+                }}
+                label="Include Medical Use Cases"
+                isChecked={includeUseCases}
+              />
+              <ToolTip
+                id="use_case"
+                message="Only available to medical students. Generate real life hospital scenarios based on concepts in your study document"
               />
             </div>
 

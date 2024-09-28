@@ -1,18 +1,15 @@
 import PlanContainer from "@/@modules/pricing/PlanContainer";
 import AppHead from "@/@shared/components/AppHead";
-import Footer from "@/@shared/components/Footer";
-import Navbar from "@/@shared/components/Navbar";
+import WebLayout from "@/layouts/WebLayout";
 import { NextPage } from "next";
 import React from "react";
 
 const Pricing: NextPage = () => {
   return (
-    <>
+    <WebLayout backgroundColor="#FAFAFA">
       <AppHead />
-      <Navbar />
       <PlanContainer />
-      <Footer />
-    </>
+    </WebLayout>
   );
 };
 

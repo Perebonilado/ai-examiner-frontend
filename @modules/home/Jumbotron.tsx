@@ -16,14 +16,17 @@ const Jumbotron: FC = () => {
     <section>
       <Container>
         <div className="min-h-screen gap-4 flex max-md:flex-col max-md:min-h-[calc(100vh-150px)] max-md:pb-8">
-          <div style={{ flex: 1 }} className="flex flex-col justify-center max-md:justify-normal max-md:pt-8">
+          <div
+            style={{ flex: 1 }}
+            className="flex flex-col justify-center max-md:justify-normal max-md:pt-8"
+          >
             <h1 className="text-5xl max-md:text-4xl leading-relaxed font-bold text-left max-md:pb-4">
-              The <span className="text-[#9A67E2]">smart practice</span> tool to
-              boost your exam scores.
+              Turn your study materials into{" "}
+              <span className="text-[#9A67E2]">practice tests</span> in minutes
             </h1>
             <h3 className="text-base mt-4 leading-relaxed text-left  max-md:text-xl w-full max-w-[560px]">
-              Just upload your study materials, and our free AI tool will create
-              the perfect challenging questions for you.
+              Simply upload your study material and AI Examiner will generate
+              the perfect challenging questions for you.
             </h3>
 
             <div className="flex items-center max-lg:hidden max-lg:flex-col max-lg:w-full gap-4 justify-center pt-20">
@@ -96,7 +99,10 @@ const Jumbotron: FC = () => {
               </Link>
             </div>
           </div>
-          <div style={{ flex: 1 }} className="max-md:hidden flex items-center justify-center">
+          <div
+            style={{ flex: 1 }}
+            className="max-md:hidden flex items-center justify-center"
+          >
             <div
               className="w-full h-full relative max-w-[550px]"
               style={{

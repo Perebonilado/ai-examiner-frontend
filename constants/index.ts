@@ -21,10 +21,10 @@ export const navLinks = [
     title: "Home",
     link: "/",
   },
-  {
-    title: "About Us",
-    link: "/about-us",
-  },
+  // {
+  //   title: "About Us",
+  //   link: "/about-us",
+  // },
   {
     title: "Pricing",
     link: "/pricing",

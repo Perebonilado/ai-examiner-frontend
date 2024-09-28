@@ -8,6 +8,7 @@ import CancelIcon from "@/icons/CancelIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import Dialog from "@/@shared/components/Dialog";
 import PaystackPop from "@paystack/inline-js";
+import PaymentMethodSelection from "./PaymentMethodSelection";
 
 interface Props extends PlanModel {
   isLoggedIn: boolean;
@@ -86,26 +87,15 @@ const PlanCard: FC<Props> = ({
               } else {
                 // set modal to either pay w trnf/card
                 setModalContent(
-                  <Dialog>
-                    <div className="flex flex-col gap-5 w-full min-w-[240px]">
-                      <Button
-                        title="Pay with card"
-                        fullWidth
-                        onClick={handlePayWithCard}
-                      />
-                      <div>
-                        <Button
-                          title="Pay with transfer"
-                          variant="outlined"
-                          fullWidth
-                          onClick={handlePayWithTransfer}
-                        />
-                        <p className="text-xs text-rose-600 mt-1">
-                          Pay with transfer is only available in Nigeria
-                        </p>
-                      </div>
-                    </div>
-                  </Dialog>
+                  <PaymentMethodSelection
+                    handleContinue={(paymentOption) => {
+                      if (paymentOption === "card") {
+                        handlePayWithCard();
+                      } else {
+                        handlePayWithTransfer();
+                      }
+                    }}
+                  />
                 );
               }
             } else {

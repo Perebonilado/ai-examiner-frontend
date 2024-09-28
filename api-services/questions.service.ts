@@ -113,12 +113,13 @@ export const QuestionsService = createApi({
       },
     }),
     generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
-      query: ({ documentId, questionCount, questionType, ...body }) => ({
+      query: ({ documentId, questionCount, questionType, includeUseCases, ...body }) => ({
         url: `/${documentId}/generate-questions`,
         method: "POST",
         params: {
           questionCount,
           questionType,
+          includeUseCases
         },
         body,
       }),

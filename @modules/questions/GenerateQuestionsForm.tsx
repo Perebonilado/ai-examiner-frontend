@@ -39,6 +39,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
   const [documentId, setdocumentId] = useState<string>("");
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [isAdvanced, setIsAdvanced] = useState(false);
+  const [includeUseCases, setIncludeUseCases] = useState(false);
 
   const { setModalContent } = useModalContext();
   const permissions = useSelector(
@@ -76,6 +77,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
         questionCount: values.questionCount,
         questionType: values.questionType,
         selectedQuestionTopics: selectedTopics,
+        includeUseCases
       });
     },
   });
@@ -159,6 +161,21 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                 />
               </div>
 
+              <div className="flex items-center gap-3">
+                <Switch
+                  disabled={false}
+                  handleChecked={() => {
+                    setIncludeUseCases(!includeUseCases);
+                  }}
+                  label="Include Medical Use Cases"
+                  isChecked={includeUseCases}
+                />
+                <ToolTip
+                  id="use_case"
+                  message="Only available to medical students. Generate real life hospital scenarios based on concepts in your study document"
+                />
+              </div>
+
               {permissions.canUseAdvancedPreferences && (
                 <div>
                   {topics.length || focusAreas?.topics.length ? (
@@ -196,9 +213,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                       {focusAreasLoading && isAdvanced && (
                         <div className="flex flex-col gap-2 items-center">
                           <Spinner size="sm" />
-                          <p className="text-xs">
-                            Loading topics...
-                          </p>
+                          <p className="text-xs">Loading topics...</p>
                         </div>
                       )}
                       {focusAreasError && isAdvanced && (

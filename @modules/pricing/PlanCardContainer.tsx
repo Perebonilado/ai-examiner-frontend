@@ -25,7 +25,7 @@ const PlanCardContainer: FC<Props> = ({ plans }) => {
   }, []);
 
   return (
-    <div className="flex justify-center items-center gap-x-8 gap-y-5 py-20 max-md:flex-wrap">
+    <div className="flex justify-center items-center gap-x-8 gap-y-5 pb-20 max-lg:flex-wrap -mt-28">
       {plans.map((plan, idx) => {
         return <PlanCard {...plan} isLoggedIn={isUserLoggedIn} key={idx} />;
       })}

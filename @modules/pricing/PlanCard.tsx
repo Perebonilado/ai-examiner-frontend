@@ -2,12 +2,10 @@ import Button from "@/@shared/ui/Button";
 import { useInitiateSubscriptionMutation } from "@/api-services/subscription.service";
 import CheckMark from "@/icons/CheckMark";
 import { PlanModel } from "@/models/plan.model";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect } from "react";
 import { useRouter } from "next/router";
 import CancelIcon from "@/icons/CancelIcon";
 import { useModalContext } from "@/contexts/ModalContext";
-import Dialog from "@/@shared/components/Dialog";
-import PaystackPop from "@paystack/inline-js";
 import PaymentMethodSelection from "./PaymentMethodSelection";
 
 interface Props extends PlanModel {
@@ -54,27 +52,77 @@ const PlanCard: FC<Props> = ({
   };
 
   return (
-    <div className="rounded-lg w-full max-w-[280px] px-4 flex flex-col py-6 h-[470px] bg-white border border-black">
-      <div style={{ flex: 1 }}>
-        <p className="text-center font-bold mb-3">{type}</p>
-        <p className="text-center">
+    <div className="rounded-lg w-full max-w-[290px] px-6 flex flex-col py-6 h-[590px] bg-white shadow-lg">
+      <div style={{ flex: 1 }} className="pl-8">
+        <p className="font-bold mb-3 text-lg">{type}</p>
+        <p>
           <span className="text-2xl font-bold text-[#9A67C2]">
             {currencySignMap.get(currency)}
-            {costPerMonth}
+            {costPerMonth.toLocaleString()}
           </span>
           /month
         </p>
       </div>
 
       <div className="flex flex-col gap-3 pt-4" style={{ flex: 3 }}>
-        {offers?.map((offer, idx) => {
-          return (
-            <div key={idx} className="flex items-center gap-2">
-              {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
-              {offer.title}
-            </div>
-          );
-        })}
+        <p className="text-xs font-bold">Study with:</p>
+        <div className="pb-8 flex flex-col gap-3 border-b border-b-gray-200">
+          {offers?.slice(0, 4).map((offer, idx) => {
+            return (
+              <div key={idx} className="flex items-center gap-2 text-sm">
+                {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
+                {offer.title}
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="pt-4">
+          <p className="text-xs font-bold">Plan limits:</p>
+          <div className="mt-4 text-sm pl-6 flex flex-col gap-3">
+            {type.toLowerCase() === "free" && (
+              <>
+                <p>
+                  <span className="font-bold">2</span> practice tests per month
+                </p>
+                <p>
+                  <span className="font-bold">5 questions</span> per test
+                </p>
+                <p>
+                  Max file size <span className="font-bold">15mb</span>
+                </p>
+              </>
+            )}
+
+            {type.toLowerCase() === "standard" && (
+              <>
+                <p>
+                  <span className="font-bold">Unlimited</span> practice tests
+                </p>
+                <p>
+                  <span className="font-bold">20 questions</span> per test
+                </p>
+                <p>
+                  Max file size <span className="font-bold">50mb</span>
+                </p>
+              </>
+            )}
+
+            {type.toLowerCase() === "premium" && (
+              <>
+                <p>
+                  <span className="font-bold">Unlimited</span> practice tests
+                </p>
+                <p>
+                  <span className="font-bold">40 questions</span> per test
+                </p>
+                <p>
+                  Max file size <span className="font-bold">300mb</span>
+                </p>
+              </>
+            )}
+          </div>
+        </div>
       </div>
 
       <div style={{ flex: 1 }} className="pt-5">
@@ -106,6 +154,19 @@ const PlanCard: FC<Props> = ({
           }}
           fullWidth
         />
+
+        <p className="text-xs text-center mt-8">
+          {type.toLowerCase() === "free" && <>Good for testing purposes</>}
+          {type.toLowerCase() === "standard" && (
+            <>Best for boosting recall and mastering exam formats and pacing</>
+          )}
+          {type.toLowerCase() === "premium" && (
+            <>
+              Perfect for strengthening retention and identifying key areas for
+              improvement
+            </>
+          )}
+        </p>
       </div>
     </div>
   );

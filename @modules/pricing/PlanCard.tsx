@@ -52,7 +52,7 @@ const PlanCard: FC<Props> = ({
   };
 
   return (
-    <div className="rounded-lg w-full max-w-[290px] px-6 flex flex-col py-6 h-[590px] bg-white shadow-lg">
+    <div className="rounded-lg w-full max-w-[290px] px-6 flex flex-col py-6 h-[640px] bg-white shadow-lg">
       <div style={{ flex: 1 }} className="pl-8">
         <p className="font-bold mb-3 text-lg">{type}</p>
         <p>
@@ -64,14 +64,14 @@ const PlanCard: FC<Props> = ({
         </p>
       </div>
 
-      <div className="flex flex-col gap-3 pt-4" style={{ flex: 3 }}>
+      <div className="flex flex-col gap-3 pt-14" style={{ flex: 3 }}>
         <p className="text-xs font-bold">Study with:</p>
         <div className="pb-8 flex flex-col gap-3 border-b border-b-gray-200">
           {offers?.slice(0, 4).map((offer, idx) => {
             return (
               <div key={idx} className="flex items-center gap-2 text-sm">
                 {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
-                {offer.title}
+                <p style={{color: offer.isAvailable ? 'black' : '#939393'}}>{offer.title}</p>
               </div>
             );
           })}
@@ -125,7 +125,7 @@ const PlanCard: FC<Props> = ({
         </div>
       </div>
 
-      <div style={{ flex: 1 }} className="pt-5">
+      <div style={{ flex: 1 }} className="pt-12">
         <Button
           title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
           onClick={() => {
@@ -155,7 +155,7 @@ const PlanCard: FC<Props> = ({
           fullWidth
         />
 
-        <p className="text-xs text-center mt-8">
+        <p className="text-xs text-center mt-8 h-[50px]">
           {type.toLowerCase() === "free" && <>Good for testing purposes</>}
           {type.toLowerCase() === "standard" && (
             <>Best for boosting recall and mastering exam formats and pacing</>

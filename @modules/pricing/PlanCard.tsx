@@ -103,7 +103,7 @@ const PlanCard: FC<Props> = ({
                   <span className="font-bold">20 questions</span> per test
                 </p>
                 <p>
-                  Max file size <span className="font-bold">50mb</span>
+                  Max file size <span className="font-bold">30mb</span>
                 </p>
               </>
             )}

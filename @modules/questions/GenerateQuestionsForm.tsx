@@ -120,7 +120,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
             <div className="flex flex-col gap-[24px]">
               <div>
                 <label className="text-base font-semibold flex items-center gap-4">
-                  Question Type{" "}
+                  Study with{" "}
                   <ToolTip
                     id="q_generationuu"
                     message="Choose the type of questions you would love to generate"
@@ -144,7 +144,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
 
               <div>
                 <label className="text-base font-semibold flex items-center gap-4">
-                  Number of Questions{" "}
+                  Total questions{" "}
                   <ToolTip
                     id="q_generation"
                     message="Please note that generating more questions typically takes more time"

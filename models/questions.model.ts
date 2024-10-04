@@ -1,4 +1,5 @@
 import { MetaModel } from "./meta.model";
+import { QuestionProgressStatusType } from "./question-progress.model";
 
 export interface QuestionsModel {
   id: string;
@@ -29,6 +30,9 @@ export interface QuestionSummaryModel {
   createdAt: Date;
   count: number;
   documentId: string;
+  progressPercentage: number | null;
+  status: QuestionProgressStatusType;
+  totalAnswered: string | null;
   score: number | null;
   topics: string[];
 }

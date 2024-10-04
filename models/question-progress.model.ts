@@ -1,10 +1,14 @@
 export interface QuestionProgressPayloadModel {
-  data: {
+  data?: {
     selectedQuestionId: string;
     selectedOptionId: string;
   };
   id: string;
+  status?: QuestionProgressStatusType;
+  clearExistingProgress: boolean;
 }
+
+export type QuestionProgressStatusType = "in_progress" | "submitted";
 
 export interface QuestionProgressModel {
   data: {
@@ -12,6 +16,7 @@ export interface QuestionProgressModel {
     selectedOptionId: string;
   }[];
   score: number | null;
+  status: QuestionProgressStatusType
 }
 
 export interface QuestionProgressQueryModel {

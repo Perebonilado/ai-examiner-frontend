@@ -33,10 +33,14 @@ export const QuestionProgressService = createApi({
   tagTypes: [""],
   endpoints: (build) => ({
     saveProgress: build.mutation<any, QuestionProgressPayloadModel>({
-      query: ({ data, id }) => ({
+      query: ({ data, id, clearExistingProgress, status }) => ({
         url: `/${id}`,
         method: "POST",
         body: data,
+        params: {
+          status,
+          clearExistingProgress
+        }
       }),
       extraOptions: {
         triggerLoading: false,
@@ -56,6 +60,7 @@ export const QuestionProgressService = createApi({
             return {
               data: res.data,
               score: res.score,
+              status: res.status
             };
           }
         },

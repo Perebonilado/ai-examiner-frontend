@@ -1,5 +1,5 @@
 import Container from "@/@shared/ui/Container";
-import { QuestionsModel } from "@/models/questions.model";
+import { QuestionOption, QuestionsModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
 import MCQItem from "./MCQItem";
 import Button from "@/@shared/ui/Button";
@@ -9,15 +9,28 @@ import { toast } from "react-toastify";
 import { useSaveScoreMutation } from "@/api-services/questions.service";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useParams } from "next/navigation";
+import {
+  useGetProgressQuery,
+  useSaveProgressMutation,
+} from "@/api-services/question-progress.service";
 
 interface Props {
   data: QuestionsModel[];
   handleDone: () => void;
   documentId: string;
-  title: string
+  title: string;
+  isSubmitted: boolean;
+  handleSubmitted: (value: boolean) => void;
 }
 
-const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) => {
+const MCQItemContainer: FC<Props> = ({
+  data,
+  handleDone,
+  documentId,
+  title,
+  isSubmitted,
+  handleSubmitted,
+}) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
     boolean
@@ -33,12 +46,16 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
 
   const { setModalContent } = useModalContext();
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
-
   const [resetAllSelectionsTrigger, setResetAllSelectionsTrigger] =
     useState(false);
 
   const [saveScore, { isLoading, isSuccess }] = useSaveScoreMutation();
+  const [submitProgress, {}] = useSaveProgressMutation();
+
+  const { data: progress } = useGetProgressQuery(
+    { id: questionId },
+    { skip: !questionId, refetchOnMountOrArgChange: true }
+  );
 
   useEffect(() => {
     if (isLoading) {
@@ -53,7 +70,10 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
   useEffect(() => {
     if (isSuccess && !isLoading) {
       setModalContent(
-        <SubmissionModal title={title} scorePercentage={calculateScorePercentage()} />
+        <SubmissionModal
+          title={title}
+          scorePercentage={calculateScorePercentage()}
+        />
       );
     }
   }, [isSuccess, isLoading]);
@@ -94,32 +114,48 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
     return 0;
   };
 
-  const handleResetAnswers = () => {
-    const questionAnswerMapCopy = { ...questionAnswerMap };
-    for (const key in questionAnswerMapCopy) {
-      questionAnswerMapCopy[key] = false;
+  useEffect(() => {
+    if (progress && progress.status === "submitted") {
+      handleSubmitted(true);
     }
-    setQuestionAnswerMap(questionAnswerMapCopy);
-    setIsSubmitted(false);
-    setResetAllSelectionsTrigger(!resetAllSelectionsTrigger);
-  };
+  }, [progress]);
 
   return (
     <section>
       <Container className="py-10">
         <div className="flex flex-col gap-[80px]">
-          {data.map((question, idx) => (
-            <MCQItem
-              {...question}
-              key={question.id}
-              questionNumber={idx + 1}
-              totalQuestionsCount={data.length}
-              handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
-              submitted={isSubmitted}
-              isResetSelection={resetAllSelectionsTrigger}
-              documentId={documentId}
-            />
-          ))}
+          {progress &&
+            data.map((question, idx) => {
+              const selectedInProgress =
+                progress?.data?.find(
+                  (p) => p.selectedQuestionId === question.id
+                ) ?? null;
+              const selectedAnswer: QuestionOption | null = selectedInProgress
+                ? {
+                    id:
+                      question.options.find(
+                        (opt) => opt.id === selectedInProgress.selectedOptionId
+                      )?.id || "",
+                    value:
+                      question.options.find(
+                        (opt) => opt.id === selectedInProgress.selectedOptionId
+                      )?.value || "",
+                  }
+                : null;
+              return (
+                <MCQItem
+                  {...question}
+                  key={question.id}
+                  questionNumber={idx + 1}
+                  totalQuestionsCount={data.length}
+                  selectedOptionFromProgress={selectedAnswer ?? null}
+                  handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
+                  submitted={isSubmitted}
+                  isResetSelection={resetAllSelectionsTrigger}
+                  documentId={documentId}
+                />
+              );
+            })}
         </div>
 
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
@@ -129,19 +165,29 @@ const MCQItemContainer: FC<Props> = ({ data, handleDone, documentId, title }) =>
                 title="Submit"
                 size="large"
                 onClick={() => {
-                  setIsSubmitted(true);
+                  handleSubmitted(true);
                   saveScore({
                     documentId: documentId,
                     questionId,
                     score: calculateScorePercentage(),
                   });
+                  submitProgress({
+                    clearExistingProgress: false,
+                    id: questionId,
+                    status: "submitted",
+                  });
                 }}
               />
             </>
           ) : (
-            <>
-              <Button title="Done" onClick={handleDone} size="large" />
-            </>
+            <div>
+              <Button
+                title="Done"
+                onClick={handleDone}
+                size="large"
+                variant="outlined"
+              />
+            </div>
           )}
         </div>
       </Container>

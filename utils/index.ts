@@ -83,7 +83,7 @@ export const generateScoreColor = (percentage: number | null) => {
     switch (true) {
       case percentage >= 80:
         return {
-          scoreColor: "#16A34A",
+          scoreColor: "#89D152",
         } as const;
       case percentage >= 50 && percentage <= 79:
         return {
@@ -91,10 +91,10 @@ export const generateScoreColor = (percentage: number | null) => {
         } as const;
       default:
         return {
-          scoreColor: "#EF4444",
+          scoreColor: "#EE6161",
         } as const;
     }
-  } else return { scoreColor: "#F1F1F1" } as const;
+  } else return { scoreColor: "#000000" } as const;
 };
 
 export const generateDocumentCardColorFromScore = (

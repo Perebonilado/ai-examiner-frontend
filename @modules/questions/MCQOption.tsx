@@ -18,6 +18,7 @@ const MCQOption: FC<Props> = ({
   submitted,
   isRightOption,
 }) => {
+  
   const statusClass = cn(
     `border-2 border-gray-200 min-h-[50px] rounded-[12px] p-4 bg-white flex items-center`,
     {

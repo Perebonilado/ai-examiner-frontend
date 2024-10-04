@@ -18,9 +18,12 @@ import IconButton from "@/@shared/ui/IconButton";
 import DotsIcon from "@/icons/DotsIcon";
 import Dialog from "@/@shared/components/Dialog";
 import { AppLoader } from "@/@shared/components/AppLoader";
+import { useSaveProgressMutation } from "@/api-services/question-progress.service";
+import { progress } from "framer-motion";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const params = useParams();
   const { data, isLoading, error, refetch } = useGetQuestionsByIdQuery(id, {
     skip: !id,
@@ -29,6 +32,15 @@ const Practice: NextPage = () => {
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
+
+  const [
+    clearProgress,
+    {
+      isSuccess: progressCleared,
+      error: errorClearingProgress,
+      isLoading: progressClearing,
+    },
+  ] = useSaveProgressMutation();
 
   useEffect(() => {
     if (params) {
@@ -52,6 +64,39 @@ const Practice: NextPage = () => {
       setModalContent(null);
     }
   }, [isLoading]);
+
+  const handleResetAnswers = () => {
+    clearProgress({
+      clearExistingProgress: true,
+      id: id,
+      status: "in_progress",
+    });
+  };
+
+  useEffect(() => {
+    if (errorClearingProgress && "status" in errorClearingProgress) {
+      if ("data" in errorClearingProgress) {
+        const { message } = errorClearingProgress.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [errorClearingProgress]);
+
+
+  useEffect(() => {
+    if (progressClearing) {
+      setModalContent(<AppLoader loaderMessage="Clearing Progress" />);
+    } else {
+      setModalContent(null);
+    }
+  }, [progressClearing]);
+
+  useEffect(() => {
+    if (progressCleared) {
+      toast.success("Question reset successfully");
+      window.location.reload();
+    }
+  }, [progressCleared]);
 
   return (
     <>
@@ -96,16 +141,27 @@ const Practice: NextPage = () => {
         )}
         {data && (
           <>
-            <h1 className="text-center mb-3 text-xl font-semibold">
+            <h1 className="text-center text-xl font-semibold">
               {capitalizeFirstLetterOfEachWord(
                 data.documentTitle.toLowerCase()
               )}{" "}
               Questions
             </h1>
-            <p className="text-center text-sm text-gray-500">
+            <p className="text-center text-sm text-gray-500 my-3">
               Date Created:{" "}
               {moment.utc(data.createdOn).local().format("MMMM D, YYYY h:mma")}
             </p>
+            {isSubmitted && (
+              <div className="mx-auto w-full max-w-[300px]">
+                <Button
+                  title="Restart"
+                  variant="contained"
+                  size="large"
+                  fullWidth
+                  onClick={handleResetAnswers}
+                />
+              </div>
+            )}
           </>
         )}
         <div>
@@ -114,6 +170,10 @@ const Practice: NextPage = () => {
               data={data.data}
               handleDone={() => {
                 router.push(`/questions/view-questions/${data.documentId}`);
+              }}
+              isSubmitted={isSubmitted}
+              handleSubmitted={(value) => {
+                setIsSubmitted(value);
               }}
               documentId={data.documentId}
               title={capitalizeFirstLetterOfEachWord(

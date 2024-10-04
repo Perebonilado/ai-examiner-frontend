@@ -6,10 +6,19 @@ interface Props {
   data: QuestionsModel[];
   handleDone: () => void;
   documentId: string;
-  title: string
+  title: string;
+  isSubmitted: boolean;
+  handleSubmitted: (value: boolean) => void;
 }
 
-const MCQContainer: FC<Props> = ({ data, handleDone, documentId, title }) => {
+const MCQContainer: FC<Props> = ({
+  data,
+  handleDone,
+  documentId,
+  title,
+  isSubmitted,
+  handleSubmitted,
+}) => {
   return (
     <section>
       <MCQItemContainer
@@ -17,6 +26,8 @@ const MCQContainer: FC<Props> = ({ data, handleDone, documentId, title }) => {
         handleDone={handleDone}
         documentId={documentId}
         title={title}
+        isSubmitted={isSubmitted}
+        handleSubmitted={handleSubmitted}
       />
     </section>
   );

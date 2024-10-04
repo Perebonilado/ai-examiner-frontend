@@ -13,6 +13,7 @@ import TopicPillContainer from "./TopicPillContainer";
 import { TrashIcon } from "@/icons/TrashIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import DeleteQuestionConfirmation from "./DeleteQuestionConfirmation";
+import EditIcon from "@/icons/EditIcon";
 
 interface Props extends QuestionSummaryModel {}
 
@@ -23,11 +24,14 @@ const ViewQuestionCard: FC<Props> = ({
   id,
   type,
   topics,
+  progressPercentage,
+  status,
+  totalAnswered,
 }) => {
   const scoreColor = generateScoreColor(score).scoreColor;
 
   const rootClassName = cn(
-    `w-full flex flex-col py-4 gap-4 max-w-[450px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`
+    `w-full flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`
   );
 
   const [topicsExpanded, setTopicsExpanded] = useState(false);
@@ -38,14 +42,38 @@ const ViewQuestionCard: FC<Props> = ({
 
   const { setModalContent } = useModalContext();
 
+  const getButtonText = () => {
+    if (status === "submitted") {
+      return "Review";
+    }
+
+    if (progressPercentage) {
+      return "Continue";
+    }
+
+    return "Start Assessment";
+  };
+
   return (
     <div className={rootClassName}>
       <div className="flex flex-col">
-        <div className="flex items-center justify-between">
-          <p className="font-bold">{type}</p>
-          {type.toLowerCase() !== "flash cards" && <ScorePill score={score} />}
+        <div className="flex items-center justify-between py-1">
+          <div className="flex items-center gap-3">
+            <p className="font-bold">{type}</p>
+          </div>
+
+          <div>
+            {type.toLowerCase() !== "flash cards" && (
+              <ScorePill
+                score={score}
+                uncompleted={
+                  status === "in_progress" && progressPercentage !== null
+                }
+              />
+            )}
+          </div>
         </div>
-        <p className="text-sm font-semibold">{count} Question(s)</p>
+        <p className="text-sm font-semibold">{type.toLowerCase() == "flash cards" ? `${count} Cards` :`${totalAnswered} Questions`}</p>
         <div className="flex items-center gap-3 mt-4 min-h-[30px]">
           <p className="text-xs text-[#8E8E8E]">
             Created on:{" "}
@@ -67,26 +95,26 @@ const ViewQuestionCard: FC<Props> = ({
         <div>
           <TopicPillContainer data={topics} isOpen={topicsExpanded} />
         </div>
-        <div className="flex items-center justify-between">
-          <Link
-            href={`/questions/practise-questions/${hyphenateString(
-              type.toLowerCase()
-            )}/${id}`}
-          >
-            <Button
-              title={score !== null ? "Retry" : "Start Assessment"}
-              variant="text"
-              endicon={<ArrowRight />}
-            />
-          </Link>
+        <div className="flex items-center justify-between gap-2">
+          <div>
+            <Link
+              href={`/questions/practise-questions/${hyphenateString(
+                type.toLowerCase()
+              )}/${id}`}
+            >
+              <Button title={getButtonText()} size="small" variant="text" />
+            </Link>
+          </div>
 
-          <button
-            onClick={() => {
-              setModalContent(<DeleteQuestionConfirmation questionId={id} />);
-            }}
-          >
-            <TrashIcon fill="#C9190B" />
-          </button>
+          <div>
+            <button
+              onClick={() => {
+                setModalContent(<DeleteQuestionConfirmation questionId={id} />);
+              }}
+            >
+              <TrashIcon fill="#d1d5db" />
+            </button>
+          </div>
         </div>
       </div>
     </div>

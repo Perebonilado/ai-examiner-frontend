@@ -14,6 +14,7 @@ import { setupListeners } from "@reduxjs/toolkit/query";
 import PermissionsReducer from "../features/permissionSlice";
 import LoadingAndErrorReducer from "../features/loaderSlice";
 import { DocumentMessageService } from "@/api-services/document-message.service";
+import { QuestionProgressService } from "@/api-services/question-progress.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -29,6 +30,7 @@ export const reduxStore = configureStore({
     [UserService.reducerPath]: UserService.reducer,
     [PermissionService.reducerPath]: PermissionService.reducer,
     [DocumentMessageService.reducerPath]: DocumentMessageService.reducer,
+    [QuestionProgressService.reducerPath]: QuestionProgressService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
   },
@@ -46,6 +48,7 @@ export const reduxStore = configureStore({
       UserService.middleware,
       PermissionService.middleware,
       DocumentMessageService.middleware,
+      QuestionProgressService.middleware
     ]),
 });
 

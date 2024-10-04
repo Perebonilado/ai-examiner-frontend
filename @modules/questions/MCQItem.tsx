@@ -8,6 +8,9 @@ import { useModalContext } from "@/contexts/ModalContext";
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
+import { useRouter } from "next/router";
+import { useParams } from "next/navigation";
+import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -16,6 +19,7 @@ interface Props extends QuestionsModel {
   submitted: boolean;
   isResetSelection: boolean;
   documentId: string;
+  selectedOptionFromProgress: QuestionOption | null;
 }
 
 const MCQItem: FC<Props> = ({
@@ -29,11 +33,31 @@ const MCQItem: FC<Props> = ({
   isResetSelection,
   documentId,
   totalQuestionsCount,
+  selectedOptionFromProgress,
   handleSetQuestionAnswer,
 }) => {
+  const [questionId, setQuestionId] = useState("");
+
   const [selectedOption, setSelectedOption] = useState<QuestionOption | null>(
     null
   );
+
+  useEffect(()=>{
+    if(selectedOptionFromProgress){
+      setSelectedOption(selectedOptionFromProgress)
+    }
+  },[JSON.stringify(selectedOptionFromProgress)])
+
+  const [saveProgress, {}] = useSaveProgressMutation();
+
+  const params = useParams();
+
+  useEffect(() => {
+    const id = params["id"] as string;
+    if (id) {
+      setQuestionId(id);
+    }
+  }, []);
 
   const [isCorrect, setIsCorrect] = useState(false);
 
@@ -41,11 +65,6 @@ const MCQItem: FC<Props> = ({
     [`text-green-600`]: isCorrect,
     [`text-rose-600`]: !isCorrect,
   });
-
-  useEffect(() => {
-    // reset it as long as this state changes
-    setSelectedOption(null);
-  }, [isResetSelection]);
 
   const permissions = useSelector(
     (state: RootState) => state.permissionsState.permissions
@@ -60,7 +79,7 @@ const MCQItem: FC<Props> = ({
         body="Please, subscribe to a paid plan to continue"
       />
     );
-  }
+  };
 
   return (
     <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[15px]">
@@ -69,7 +88,9 @@ const MCQItem: FC<Props> = ({
           {isCorrect ? "Correct!" : "Wrong"}
         </p>
       )}
-      <p className="text-base text-[#939393]">{questionNumber} of {totalQuestionsCount}</p>
+      <p className="text-base text-[#939393]">
+        {questionNumber} of {totalQuestionsCount}
+      </p>
       <p className="my-8 font-semibold text-lg">{question}</p>
       <div className="py-4 flex flex-col gap-6">
         {options.map((opt, idx) => {
@@ -82,6 +103,14 @@ const MCQItem: FC<Props> = ({
               isRightOption={correctAnswerId === opt.id}
               handleChecked={(option) => {
                 setSelectedOption(option);
+
+                //save the progress
+                saveProgress({
+                  id: questionId,
+                  data: { selectedOptionId: option.id, selectedQuestionId: id },
+                  status: "in_progress",
+                  clearExistingProgress: false,
+                });
 
                 if (correctAnswerId === option.id) {
                   handleSetQuestionAnswer(id, true);
@@ -112,7 +141,11 @@ const MCQItem: FC<Props> = ({
             target="_blank"
           >
             <div className="mt-3 flex justify-center gap-2">
-              <Button title="Not Sure?" variant="text" className="hover:underline"/>
+              <Button
+                title="Not Sure?"
+                variant="text"
+                className="hover:underline"
+              />
             </div>
           </Link>
         ))}

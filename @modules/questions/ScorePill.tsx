@@ -4,19 +4,33 @@ import cn from "classnames";
 
 interface Props {
   score: number | null;
+  uncompleted?: boolean;
 }
 
-const ScorePill: FC<Props> = ({ score }) => {
-  const scoreColor = generateScoreColor(score).scoreColor
+const ScorePill: FC<Props> = ({ score, uncompleted = false }) => {
+  const scoreColor = generateScoreColor(score).scoreColor;
 
-  const rootClassName = cn(
-    `px-6 py-1 rounded-xl`,
-  );
+  const rootClassName = cn(`px-2 py-1 rounded-xl`);
+
+  const getCardText = () => {
+    if (uncompleted) {
+      return "Uncompleted";
+    }
+
+    if (score !== null) {
+      return `Score ${score.toFixed(0)}%`;
+    }
+
+    return `Not Started`;
+  };
 
   return (
-    <div className={rootClassName} style={{backgroundColor: scoreColor}}>
+    <div
+      className={rootClassName}
+      style={{ backgroundColor: uncompleted ? "#939393" : scoreColor }}
+    >
       <p className="text-xs text-white">
-        {score !== null ? `Recent Grade: ${score.toFixed(2)}%` : <span className="text-gray-500">Unattempted</span>}
+        {<span className="text-white">{getCardText()}</span>}
       </p>
     </div>
   );

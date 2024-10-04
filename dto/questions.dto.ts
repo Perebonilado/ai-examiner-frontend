@@ -1,3 +1,4 @@
+import { QuestionProgressStatusType } from "@/models/question-progress.model";
 import { MetaDto } from "./meta.dto";
 
 export interface QuestionsDto {
@@ -26,6 +27,9 @@ export interface QuestionSummaryDto {
   id: string;
   count: number;
   score: number | null;
+  status: QuestionProgressStatusType;
+  totalAnswered: string | null;
+  progressPercentage: number | null
   topics: { id: number; title: string }[];
   type: string;
 }

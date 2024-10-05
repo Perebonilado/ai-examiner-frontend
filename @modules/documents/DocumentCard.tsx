@@ -7,7 +7,6 @@ import { TrashIcon } from "@/icons/TrashIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import { useUpdateDocumentMutation } from "@/api-services/document.service";
-import { toast } from "react-toastify";
 
 interface Props extends AllDocumentsModel {}
 
@@ -16,12 +15,6 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
   const { setModalContent } = useModalContext();
   const [deleteDocument, { isSuccess: deleteDocumentSuccess }] =
     useUpdateDocumentMutation();
-
-  useEffect(() => {
-    if (deleteDocumentSuccess) {
-      toast.success("Document Deleted Successfully");
-    }
-  }, [deleteDocumentSuccess]);
 
   return (
     <div
@@ -56,7 +49,7 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
               );
             }}
           >
-            <TrashIcon fill="grey" width="20" height="20"/>
+            <TrashIcon width="20" height="20" fill="#d1d5db" />
           </button>
         </div>
       </div>

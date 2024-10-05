@@ -37,5 +37,11 @@ export interface AddDocumentPayloadModel {
   };
   questionCount: string;
   questionType: string;
-  includeUseCases: boolean
+  includeUseCases: boolean;
+}
+
+export interface UpdateDocumentPayloadModel {
+  title?: string;
+  isDeleted?: boolean;
+  id: string;
 }

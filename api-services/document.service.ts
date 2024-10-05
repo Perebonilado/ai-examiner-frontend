@@ -12,6 +12,7 @@ import {
   AllDocumentsQueryModel,
   CreateDocumentModel,
   GetAllDocumentsModel,
+  UpdateDocumentPayloadModel,
 } from "@/models/document.model";
 import { AllDocumentsDto, CreateDocumentDto } from "@/dto/document.dto";
 
@@ -72,7 +73,7 @@ export const DocumentService = createApi({
         params: {
           questionCount,
           questionType,
-          includeUseCases
+          includeUseCases,
         },
       }),
       extraOptions: { triggerLoading: false },
@@ -87,8 +88,19 @@ export const DocumentService = createApi({
           };
       },
     }),
+    updateDocument: build.mutation<any, UpdateDocumentPayloadModel>({
+      query: (body) => ({
+        url: "",
+        method: "PUT",
+        body,
+      }),
+      invalidatesTags: ["all-documents"],
+    }),
   }),
 });
 
-export const { useGetAllUserDocumentsQuery, useAddDocumentMutation } =
-  DocumentService;
+export const {
+  useGetAllUserDocumentsQuery,
+  useAddDocumentMutation,
+  useUpdateDocumentMutation,
+} = DocumentService;

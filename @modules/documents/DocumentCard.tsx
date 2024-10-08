@@ -7,14 +7,26 @@ import { TrashIcon } from "@/icons/TrashIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import { useUpdateDocumentMutation } from "@/api-services/document.service";
+import EditIcon from "@/icons/EditIcon";
+import DotsIcon from "@/icons/DotsIcon";
+import MoreActions from "./MoreActions";
+import { toast } from "react-toastify";
+import DotsCircular from "@/icons/DotsCircular";
 
 interface Props extends AllDocumentsModel {}
 
 const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
   const router = useRouter();
   const { setModalContent } = useModalContext();
-  const [deleteDocument, { isSuccess: deleteDocumentSuccess }] =
+  const [deleteDocument] = useUpdateDocumentMutation();
+  const [editDocument, { isSuccess: editDocumentSuccess }] =
     useUpdateDocumentMutation();
+
+  useEffect(() => {
+    if (editDocumentSuccess) {
+      toast.success("Successful");
+    }
+  }, [editDocumentSuccess]);
 
   return (
     <div
@@ -23,8 +35,27 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
       }}
       className="w-full cursor-pointer p-4 py-5 max-w-[350px] h-[180px] rounded-xl bg-white drop-shadow-sm border border-gray-200"
     >
-      <div className="h-[60%] flex gap-2">
+      <div className="h-[60%] flex items-start justify-between gap-2">
         <FileIcon />
+
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            setModalContent(
+              <MoreActions
+                deleteDocument={() => {
+                  deleteDocument({ id, isDeleted: true });
+                }}
+                documentTitle={title}
+                editTitle={(newTitle) => {
+                  editDocument({ id, title: newTitle, isDeleted: false });
+                }}
+              />
+            );
+          }}
+        >
+          <DotsCircular fill="#6C757D" width={28} height={28} />
+        </button>
       </div>
       <div className="h-[40%] flex flex-col justify-end gap-1 overflow-hidden px-2">
         <p className="text-sm font-bold truncate">{title}</p>
@@ -33,24 +64,6 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
             Created{" "}
             {moment.utc(createdAt).local().format("ddd, MMM D YYYY h:mma")}
           </p>
-
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setModalContent(
-                <ConfirmationDialog
-                  title="Delete Document ?"
-                  message="This can't be undone"
-                  confirmationText="Delete"
-                  onConfirm={() => {
-                    deleteDocument({ id, isDeleted: true });
-                  }}
-                />
-              );
-            }}
-          >
-            <TrashIcon width="20" height="20" fill="#d1d5db" />
-          </button>
         </div>
       </div>
     </div>

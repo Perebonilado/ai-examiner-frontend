@@ -11,6 +11,9 @@ import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
+import SpeakerIcon from "@/icons/SpeakerIcon";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
+import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -20,6 +23,7 @@ interface Props extends QuestionsModel {
   isResetSelection: boolean;
   documentId: string;
   selectedOptionFromProgress: QuestionOption | null;
+  speak: (text: string) => void
 }
 
 const MCQItem: FC<Props> = ({
@@ -35,6 +39,7 @@ const MCQItem: FC<Props> = ({
   totalQuestionsCount,
   selectedOptionFromProgress,
   handleSetQuestionAnswer,
+  speak
 }) => {
   const [questionId, setQuestionId] = useState("");
 
@@ -42,11 +47,11 @@ const MCQItem: FC<Props> = ({
     null
   );
 
-  useEffect(()=>{
-    if(selectedOptionFromProgress){
-      setSelectedOption(selectedOptionFromProgress)
+  useEffect(() => {
+    if (selectedOptionFromProgress) {
+      setSelectedOption(selectedOptionFromProgress);
     }
-  },[JSON.stringify(selectedOptionFromProgress)])
+  }, [JSON.stringify(selectedOptionFromProgress)]);
 
   const [saveProgress, {}] = useSaveProgressMutation();
 
@@ -88,9 +93,12 @@ const MCQItem: FC<Props> = ({
           {isCorrect ? "Correct!" : "Wrong"}
         </p>
       )}
-      <p className="text-base text-[#939393]">
-        {questionNumber} of {totalQuestionsCount}
-      </p>
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-base text-[#939393]">
+          {questionNumber} of {totalQuestionsCount}
+        </p>
+        <SpeechButtonWithProgress question={question}/>
+      </div>
       <p className="my-8 font-semibold text-lg">{question}</p>
       <div className="py-4 flex flex-col gap-6">
         {options.map((opt, idx) => {

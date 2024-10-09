@@ -265,7 +265,7 @@ const GenerateQuestionsForm: FC = () => {
                 handleChecked={() => {
                   setIncludeUseCases(!includeUseCases);
                 }}
-                label="Include Medical Use Cases"
+                label="Include Case Studies"
                 isChecked={includeUseCases}
               />
               <ToolTip

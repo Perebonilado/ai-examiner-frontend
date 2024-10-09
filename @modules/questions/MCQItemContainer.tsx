@@ -13,6 +13,7 @@ import {
   useGetProgressQuery,
   useSaveProgressMutation,
 } from "@/api-services/question-progress.service";
+import { useSpeechToText } from "@/hooks/useSpeechToText";
 
 interface Props {
   data: QuestionsModel[];
@@ -120,6 +121,8 @@ const MCQItemContainer: FC<Props> = ({
     }
   }, [progress]);
 
+  const { speak } = useSpeechToText()
+
   return (
     <section>
       <Container className="py-10">
@@ -153,6 +156,7 @@ const MCQItemContainer: FC<Props> = ({
                   submitted={isSubmitted}
                   isResetSelection={resetAllSelectionsTrigger}
                   documentId={documentId}
+                  speak={speak}
                 />
               );
             })}

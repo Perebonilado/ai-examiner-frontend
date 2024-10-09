@@ -172,7 +172,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                 />
                 <ToolTip
                   id="use_case"
-                  message="Only available to medical students. Generate real life hospital scenarios based on concepts in your study document"
+                  message="This will generate questions with real life scenarios"
                 />
               </div>
 

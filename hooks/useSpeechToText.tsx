@@ -10,7 +10,6 @@ export const useSpeechToText = () => {
   useEffect(() => {
     const speechSynthesis = new SpeechSynthesisUtterance();
     const voices = window.speechSynthesis.getVoices();
-    console.log(voices);
     speechSynthesis.voice =
       voices[voices.findIndex((v)=>v.name==="Google UK English Female") || 0] ||
       null;

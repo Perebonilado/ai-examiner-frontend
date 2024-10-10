@@ -3,6 +3,7 @@ import SpeakerIcon from "@/icons/SpeakerIcon";
 import cn from "classnames";
 import StopIcon from "@/icons/StopIcon";
 import { useConvertTextToSpeechMutation } from "@/api-services/speech.service";
+import Spinner from "./Spinner";
 
 interface SpeechButtonWithProgressProps {
   question: string;
@@ -15,11 +16,11 @@ export const SpeechButtonWithProgress: React.FC<
   const [audioUrl, setAudioUrl] = useState<string | null>(null);
   const audioRef = useRef<ElementRef<"audio">>(null);
 
-  const [convertTextToSpeech, { data, isLoading }] = useConvertTextToSpeechMutation();
+  const [convertTextToSpeech, { data, isLoading }] =
+    useConvertTextToSpeechMutation();
 
-  const classNames = cn(``, {
-    ["animate-pulse bg-[#ffcccc]"]: isSpeaking,
-    ["bg-[#f0f0f0]"]: !isSpeaking,
+  const classNames = cn("bg-[#E5E5E5]", {
+    ["animate-pulse"]: isSpeaking,
   });
 
   const handleClick = () => {
@@ -58,49 +59,61 @@ export const SpeechButtonWithProgress: React.FC<
 
   useEffect(() => {
     if (audioUrl && audioRef.current) {
-      audioRef.current.play().catch((err) => {
-        console.error("Audio play error:", err);
-      });
+      // Add a slight delay before playing to account for iOS quirks
+      const playAudio = async () => {
+        await new Promise((resolve) => setTimeout(resolve, 100)); // Delay for 100 ms
+        audioRef.current?.play().catch((err) => {
+          console.error("Audio play error:", err);
+        });
+      };
+
+      playAudio();
       setIsSpeaking(true);
     }
   }, [audioUrl]);
 
   return (
-    <div className="relative">
+    <div className="relative min-h-[65px] flex items-center">
       {audioUrl && (
         <audio
           className="absolute hidden"
           ref={audioRef} // Attach ref to audio element
           onEnded={() => setIsSpeaking(false)} // Stop speaking when audio ends
-          controls
         >
           <source src={audioUrl} type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
       )}
-      <div style={{ position: "relative", width: "60px", height: "60px" }}>
-        <button
-          onClick={handleClick}
-          className={classNames}
-          style={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
-            width: "35px",
-            height: "35px",
-            borderRadius: "50%",
-            border: "none",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            cursor: "pointer",
-          }}
-          disabled={isLoading}
-        >
-          {isSpeaking ? <StopIcon /> : <SpeakerIcon />}
-        </button>
-      </div>
+      {!isLoading && (
+        <div style={{ position: "relative", width: "60px", height: "60px" }}>
+          <button
+            onClick={handleClick}
+            className={classNames}
+            style={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "35px",
+              height: "35px",
+              borderRadius: "50%",
+              border: "none",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              cursor: "pointer",
+            }}
+            disabled={isLoading}
+          >
+            {isSpeaking ? (
+              <StopIcon  />
+            ) : (
+              <SpeakerIcon />
+            )}
+          </button>
+        </div>
+      )}
+      {isLoading && <Spinner size="sm" />}
     </div>
   );
 };

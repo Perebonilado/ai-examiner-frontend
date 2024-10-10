@@ -97,7 +97,14 @@ const MCQItem: FC<Props> = ({
         <p className="text-base text-[#939393]">
           {questionNumber} of {totalQuestionsCount}
         </p>
-        <SpeechButtonWithProgress question={question}/>
+        <SpeechButtonWithProgress question={`
+          ${question}
+
+          Option A: ${options[0].value},
+          Option B: ${options[1].value},
+          Option C: ${options[2].value},
+          Option D: ${options[3].value}.
+          `}/>
       </div>
       <p className="my-8 font-semibold text-lg">{question}</p>
       <div className="py-4 flex flex-col gap-6">

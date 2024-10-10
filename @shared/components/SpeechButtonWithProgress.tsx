@@ -4,6 +4,7 @@ import cn from "classnames";
 import StopIcon from "@/icons/StopIcon";
 import { useConvertTextToSpeechMutation } from "@/api-services/speech.service";
 import Spinner from "./Spinner";
+import PlayIcon from "@/icons/PlayIcon";
 
 interface SpeechButtonWithProgressProps {
   question: string;
@@ -57,23 +58,8 @@ export const SpeechButtonWithProgress: React.FC<
     }
   }, [data]);
 
-  useEffect(() => {
-    if (audioUrl && audioRef.current) {
-      // Add a slight delay before playing to account for iOS quirks
-      const playAudio = async () => {
-        await new Promise((resolve) => setTimeout(resolve, 100)); // Delay for 100 ms
-        audioRef.current?.play().catch((err) => {
-          console.error("Audio play error:", err);
-        });
-      };
-
-      playAudio();
-      setIsSpeaking(true);
-    }
-  }, [audioUrl]);
-
   return (
-    <div className="relative min-h-[65px] flex items-center">
+    <div className="relative min-h-[65px] flex items-center justify-center">
       {audioUrl && (
         <audio
           className="absolute hidden"
@@ -106,7 +92,9 @@ export const SpeechButtonWithProgress: React.FC<
             disabled={isLoading}
           >
             {isSpeaking ? (
-              <StopIcon  />
+              <StopIcon />
+            ) : audioUrl ? (
+              <PlayIcon />
             ) : (
               <SpeakerIcon />
             )}

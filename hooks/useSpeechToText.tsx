@@ -2,14 +2,18 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 export const useSpeechToText = () => {
-  const [speechSynthesis, setSpeechSynthesis] = useState<SpeechSynthesisUtterance | null>(null);
+  const [speechSynthesis, setSpeechSynthesis] =
+    useState<SpeechSynthesisUtterance | null>(null);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
     const speechSynthesis = new SpeechSynthesisUtterance();
     const voices = window.speechSynthesis.getVoices();
-    speechSynthesis.voice = voices[5] || null;
+    console.log(voices);
+    speechSynthesis.voice =
+      voices[voices.findIndex((v)=>v.name==="Google UK English Female") || 0] ||
+      null;
 
     const handleBoundary = (event: SpeechSynthesisEvent) => {
       if (event.name === "word") {

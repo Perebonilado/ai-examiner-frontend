@@ -15,6 +15,7 @@ import PermissionsReducer from "../features/permissionSlice";
 import LoadingAndErrorReducer from "../features/loaderSlice";
 import { DocumentMessageService } from "@/api-services/document-message.service";
 import { QuestionProgressService } from "@/api-services/question-progress.service";
+import { SpeechService } from "@/api-services/speech.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -31,6 +32,7 @@ export const reduxStore = configureStore({
     [PermissionService.reducerPath]: PermissionService.reducer,
     [DocumentMessageService.reducerPath]: DocumentMessageService.reducer,
     [QuestionProgressService.reducerPath]: QuestionProgressService.reducer,
+    [SpeechService.reducerPath]: SpeechService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
   },
@@ -48,7 +50,8 @@ export const reduxStore = configureStore({
       UserService.middleware,
       PermissionService.middleware,
       DocumentMessageService.middleware,
-      QuestionProgressService.middleware
+      QuestionProgressService.middleware,
+      SpeechService.middleware,
     ]),
 });
 

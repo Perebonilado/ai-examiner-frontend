@@ -1,6 +1,10 @@
 import React, { FC } from "react";
 
-const StopIcon: FC = () => {
+interface Props {
+  fill?: string;
+}
+
+const StopIcon: FC<Props> = ({ fill = "#939393" }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,7 +17,7 @@ const StopIcon: FC = () => {
       xmlSpace="preserve"
       width="15"
       height="15"
-      fill="#939393"
+      fill={fill}
     >
       <path d="M106.667,0h298.667C464.244,0,512,47.756,512,106.667v298.667C512,464.244,464.244,512,405.333,512H106.667  C47.756,512,0,464.244,0,405.333V106.667C0,47.756,47.756,0,106.667,0z" />
     </svg>

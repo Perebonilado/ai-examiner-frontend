@@ -1,6 +1,10 @@
 import React, { FC } from "react";
 
-const SpeakerIcon:FC = () => {
+interface Props {
+  fill?: string;
+}
+
+const SpeakerIcon: FC<Props> = ({ fill = "#939393" }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -8,7 +12,7 @@ const SpeakerIcon:FC = () => {
       viewBox="0 0 24 24"
       width="15"
       height="15"
-      fill="#939393"
+      fill={fill}
     >
       <path d="M20.8,4.293A1,1,0,0,0,19.39,5.707a8.911,8.911,0,0,1,0,12.586A1,1,0,1,0,20.8,19.707,10.911,10.911,0,0,0,20.8,4.293Z" />
       <path d="M18.093,7.293a1,1,0,1,0-1.414,1.414,4.664,4.664,0,0,1,0,6.586,1,1,0,1,0,1.414,1.414A6.665,6.665,0,0,0,18.093,7.293Z" />

@@ -32,17 +32,30 @@ export const SpeechButtonWithProgress: React.FC<
       if (isSpeaking) {
         // Stop the audio
         if (audioRef.current) {
-          audioRef.current.pause();
-          audioRef.current.currentTime = 0;
-          setIsSpeaking(false);
+          stop();
         }
       } else {
         // Play the audio
         if (audioRef.current) {
-          audioRef.current.play();
-          setIsSpeaking(true);
+          play();
         }
       }
+    }
+  };
+
+  const play = () => {
+    if (audioRef.current) {
+      audioRef.current.currentTime = 0;
+      audioRef.current.play();
+      setIsSpeaking(true);
+    }
+  };
+
+  const stop = () => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+      audioRef.current.currentTime = 0;
+      setIsSpeaking(false);
     }
   };
 
@@ -56,6 +69,10 @@ export const SpeechButtonWithProgress: React.FC<
         console.error("Error creating audio blob:", err);
       }
     }
+
+    return () => {
+      stop();
+    };
   }, [data]);
 
   return (

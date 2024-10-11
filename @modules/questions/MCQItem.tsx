@@ -64,11 +64,9 @@ const MCQItem: FC<Props> = ({
     }
   }, []);
 
-  const [isCorrect, setIsCorrect] = useState(false);
-
   const correctAnswerMarkerStyling = cn(`font-bold pb-4`, {
-    [`text-green-600`]: isCorrect,
-    [`text-rose-600`]: !isCorrect,
+    [`text-green-600`]: selectedOption?.id === correctAnswerId,
+    [`text-rose-600`]: selectedOption?.id !== correctAnswerId,
   });
 
   const permissions = useSelector(
@@ -90,7 +88,7 @@ const MCQItem: FC<Props> = ({
     <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[15px]">
       {submitted && (
         <p className={correctAnswerMarkerStyling}>
-          {isCorrect ? "Correct!" : "Wrong"}
+          {selectedOption?.id === correctAnswerId ? "Correct!" : "Wrong"}
         </p>
       )}
       <div className="flex items-center justify-between gap-2">
@@ -129,10 +127,8 @@ const MCQItem: FC<Props> = ({
 
                 if (correctAnswerId === option.id) {
                   handleSetQuestionAnswer(id, true);
-                  setIsCorrect(true);
                 } else {
                   handleSetQuestionAnswer(id, false);
-                  setIsCorrect(false);
                 }
               }}
             />

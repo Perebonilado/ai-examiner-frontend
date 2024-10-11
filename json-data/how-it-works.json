@@ -1,0 +1,26 @@
+[
+  {
+    "title": "Upload study document",
+    "description": "Browse your device for the file you want to upload.",
+    "index": "1",
+    "image": "/home/upload-doc.png"
+  },
+  {
+    "title": "Choost study method",
+    "description": "Flashcards, Multiple Choice Questions.",
+    "index": "2",
+    "image": "/home/study-with.png"
+  },
+  {
+    "title": "Generate practice test",
+    "description": "Create a test to begin your assessment.",
+    "index": "3",
+    "image": "/home/generate-test.png"
+  },
+  {
+    "title": "Start practising",
+    "description": "Use hints for guided support and AI discussions to deepen understanding.",
+    "index": "4",
+    "image": "/home/start-practising.png"
+  }
+]

@@ -74,7 +74,11 @@ const UploadFileBox: FC<Props> = ({
                 handleUploadPDF={async (pages, start, end) => {
                   setModalContent(null);
                   setPdfProcessing(true);
-                  const text = await extractText(file, Number(start), Number(end));
+                  const text = await extractText(
+                    file,
+                    Number(start),
+                    Number(end)
+                  );
                   if (!text.trim()) {
                     setPdfProcessing(false);
                     toast.error(
@@ -92,7 +96,6 @@ const UploadFileBox: FC<Props> = ({
                 }}
               />
             );
-          
           } else {
             handleSelectFile(e.target.files[0]);
           }
@@ -121,19 +124,19 @@ const UploadFileBox: FC<Props> = ({
           const typedarray = new Uint8Array(e.target?.result as ArrayBuffer);
           const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
           const numPages = pdf.numPages;
-          const endIndex = endPage ? endPage : numPages
-          const startIndex = startPage ? startPage : 1
+          const endIndex = endPage ? endPage : numPages;
+          const startIndex = startPage ? startPage : 1;
 
-          const pages: number[] = []
+          const pages: number[] = [];
 
-          for (let i = startIndex; i <= endIndex; i++){
-            pages.push(i)
+          for (let i = startIndex; i <= endIndex; i++) {
+            pages.push(i);
           }
 
           for (const pageNumber of pages) {
             const page = await pdf.getPage(pageNumber);
             const textContent = await page.getTextContent();
-            
+
             textContent.items.forEach((item: any) => {
               const { str } = item;
               extractedText += str + " ";
@@ -163,56 +166,61 @@ const UploadFileBox: FC<Props> = ({
         className="hidden"
         accept={allowedTypes.map((t) => `.${t}`).join(", ")}
       />
-      <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
-        {!attachedFile && !uploadLoading && !pdfProcessing && (
-          <UploadIcon width={80} height={80} />
-        )}
-        {!attachedFile && !uploadLoading && !pdfProcessing && (
-          <div className="flex flex-col justify-center gap-3">
-            <Button
-              onClick={() => {
-                inputRef.current?.click();
-              }}
-              title="Click to upload file"
-              size="large"
-              variant="outlined"
-              type="button"
-            />
-            <p className="text-xs italic">
-              Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf,
-              docx, pptx, txt
-            </p>
-          </div>
-        )}
+      <div>
+        <label className={`text-base font-semibold mb-2 block`}>
+          Upload Study Document
+        </label>
+        <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
+          {!attachedFile && !uploadLoading && !pdfProcessing && (
+            <UploadIcon width={80} height={80} />
+          )}
+          {!attachedFile && !uploadLoading && !pdfProcessing && (
+            <div className="flex flex-col justify-center gap-3">
+              <Button
+                onClick={() => {
+                  inputRef.current?.click();
+                }}
+                title="Click to upload file"
+                size="large"
+                variant="outlined"
+                type="button"
+              />
+              <p className="text-xs italic">
+                Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf,
+                docx, pptx, txt
+              </p>
+            </div>
+          )}
 
-        {attachedFile && !uploadLoading && !pdfProcessing && (
-          <TransitionUp>
-            <AttachedFileInfo
-              handleDelete={() => {
-                handleDeleteFile();
-                if (inputRef.current && inputRef.current.value)
-                  inputRef.current.value = "";
-              }}
-              fileName={attachedFile.name}
-            />
-          </TransitionUp>
-        )}
-        {attachedFile && uploadLoading && (
-          <div className="flex flex-col items-center justify-center gap-3">
-            <Spinner />
-            <p className="text-center truncate text-xs font-semibold">
-              File upload in progess...
-            </p>
-          </div>
-        )}
-        {pdfProcessing && (
-          <div className="flex flex-col items-center justify-center gap-3">
-            <Spinner />
-            <p className="text-center truncate text-xs font-semibold">
-              Processing File
-            </p>
-          </div>
-        )}
+          {attachedFile && !uploadLoading && !pdfProcessing && (
+            <TransitionUp>
+              <AttachedFileInfo
+                handleDelete={() => {
+                  handleDeleteFile();
+                  if (inputRef.current && inputRef.current.value)
+                    inputRef.current.value = "";
+                }}
+                fileName={attachedFile.name}
+              />
+            </TransitionUp>
+          )}
+          {attachedFile && uploadLoading && (
+            <div className="flex flex-col items-center justify-center gap-3">
+              <Spinner />
+              <p className="text-center truncate text-xs font-semibold">
+                File upload in progess...
+              </p>
+            </div>
+          )}
+          {pdfProcessing && (
+            <div className="flex flex-col items-center justify-center gap-3">
+              <Spinner />
+              <p className="text-center truncate text-xs font-semibold">
+                Processing File
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </>
   ) : (

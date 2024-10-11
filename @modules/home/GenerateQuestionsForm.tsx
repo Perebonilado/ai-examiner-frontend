@@ -24,6 +24,7 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
 import {
   generateQustionCountOptions,
+  getFileNameWithoutExtension,
   getQuestionTypeBasedOnPermission,
   hyphenateString,
 } from "@/utils";
@@ -109,7 +110,7 @@ const GenerateQuestionsForm: FC = () => {
     createDocAndGenerateQuestions({
       payload: {
         fileId: fileId,
-        title: values.title,
+        title: values.title || getFileNameWithoutExtension(file.name),
         selectedQuestionTopics: focusAreas.length
           ? focusAreas.map((f) => f.label)
           : undefined,
@@ -117,7 +118,7 @@ const GenerateQuestionsForm: FC = () => {
       },
       questionCount: values.questionCount,
       questionType: values.questionType,
-      includeUseCases
+      includeUseCases,
     });
   };
 
@@ -191,13 +192,6 @@ const GenerateQuestionsForm: FC = () => {
       <FormikProvider value={formik}>
         <Form>
           <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
-            <TextField
-              label="Document Title"
-              placeholder="Enter the title of the document you want to upload"
-              {...formik.getFieldProps("title")}
-              error={formik.touched.title ? formik.errors.title : undefined}
-            />
-
             <UploadFileBox
               allowedTypes={allowedMimeTypes}
               attachedFile={file}
@@ -213,6 +207,13 @@ const GenerateQuestionsForm: FC = () => {
                 }
               }}
               maxFileSizeMB={permissions.maxFileSizeAllowed}
+            />
+
+            <TextField
+              label="Document Title"
+              placeholder="Enter the title of the document you want to upload"
+              {...formik.getFieldProps("title")}
+              error={formik.touched.title ? formik.errors.title : undefined}
             />
 
             <div>

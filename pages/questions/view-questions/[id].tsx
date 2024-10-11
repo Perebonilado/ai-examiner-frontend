@@ -255,7 +255,7 @@ const ViewQuestions: NextPage = () => {
 
         <div className="flex items-center justify-between w-full pb-4 max-md:flex-col max-md:gap-12">
           {document && (
-            <h2 className="text-2xl font-bold max-md:text-center">
+            <h2 className="text-2xl font-bold max-md:text-center max-w-[60%] md:truncate max-md:max-w-full">
               {capitalizeFirstLetterOfEachWord(
                 document.documents[0].title.toLowerCase()
               )}{" "}

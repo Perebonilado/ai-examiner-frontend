@@ -19,7 +19,7 @@ const HowItWorksItemContainer: FC<Props> = ({ data }) => {
         ))}
       </section>
       <div className="pb-32 flex justify-center">
-        <Link href={"/auth/signup"}>
+        <Link href={"/auth/login"}>
           <Button
             title="Get Started"
             size="large"

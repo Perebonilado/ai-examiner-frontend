@@ -15,7 +15,7 @@ const Jumbotron: FC = () => {
   return (
     <section>
       <Container>
-        <div className="min-h-screen gap-4 flex max-md:flex-col max-md:min-h-[calc(100vh-150px)] max-md:pb-8">
+        <div className="min-h-screen gap-4 flex max-md:flex-col max-md:min-h-[calc(100vh-200px)] max-md:pb-8">
           <div
             style={{ flex: 1 }}
             className="flex flex-col justify-center max-md:justify-normal max-md:pt-8"

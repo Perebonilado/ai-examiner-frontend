@@ -7,11 +7,15 @@ import {
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
+  GetSharedQuestionModel,
+  GetSharedQuestionQueryModel,
+  SaveSharedQuestionQueryModel,
 } from "@/models/questions.model";
 import Cookies from "js-cookie";
 import {
   AllQuestionSummaryDto,
   GetQuestionsByIdDto,
+  SharedQuestionDto,
 } from "@/dto/questions.dto";
 import { baseQueryWithLogoutOnTokenExpiration } from "@/utils";
 import { PermissionService } from "./permission.service";
@@ -116,13 +120,19 @@ export const QuestionsService = createApi({
       },
     }),
     generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
-      query: ({ documentId, questionCount, questionType, includeUseCases, ...body }) => ({
+      query: ({
+        documentId,
+        questionCount,
+        questionType,
+        includeUseCases,
+        ...body
+      }) => ({
         url: `/${documentId}/generate-questions`,
         method: "POST",
         params: {
           questionCount,
           questionType,
-          includeUseCases
+          includeUseCases,
         },
         body,
       }),
@@ -146,7 +156,7 @@ export const QuestionsService = createApi({
       }),
       extraOptions: { triggerLoading: false },
       invalidatesTags: ["question-summary", "single-question"],
-    }),
+    })
   }),
 });
 
@@ -155,5 +165,5 @@ export const {
   useGetQuestionSummariesQuery,
   useGenerateQuestionsMutation,
   useSaveScoreMutation,
-  useDeleteQuestionMutation
+  useDeleteQuestionMutation,
 } = QuestionsService;

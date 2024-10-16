@@ -9,6 +9,9 @@ interface Props {
   title: string;
   isSubmitted: boolean;
   handleSubmitted: (value: boolean) => void;
+  allowSaveProgress?: boolean;
+  allowSaveScore?: boolean;
+  allowNotSure?: boolean;
 }
 
 const MCQContainer: FC<Props> = ({
@@ -18,6 +21,9 @@ const MCQContainer: FC<Props> = ({
   title,
   isSubmitted,
   handleSubmitted,
+  allowSaveProgress = true,
+  allowNotSure = true,
+  allowSaveScore = true
 }) => {
   return (
     <section>
@@ -28,6 +34,9 @@ const MCQContainer: FC<Props> = ({
         title={title}
         isSubmitted={isSubmitted}
         handleSubmitted={handleSubmitted}
+        allowSaveProgress={allowSaveProgress}
+        allowNotSure={allowNotSure}
+        allowSaveScore={allowSaveScore}
       />
     </section>
   );

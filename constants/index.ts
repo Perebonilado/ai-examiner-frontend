@@ -13,6 +13,7 @@ export const typeBasedRoutes: {
   type: "web" | "web_and_app";
 }[] = [
   { route: "/", type: "web" },
+  { route: "/questions/shared/multiple-choice/[id]", type: "web_and_app" },
   { route: "/pricing", type: "web_and_app" },
 ];
 

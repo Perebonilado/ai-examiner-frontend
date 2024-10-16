@@ -16,6 +16,7 @@ import LoadingAndErrorReducer from "../features/loaderSlice";
 import { DocumentMessageService } from "@/api-services/document-message.service";
 import { QuestionProgressService } from "@/api-services/question-progress.service";
 import { SpeechService } from "@/api-services/speech.service";
+import { SharedQuestionsService } from "@/api-services/shared-questions.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -33,6 +34,7 @@ export const reduxStore = configureStore({
     [DocumentMessageService.reducerPath]: DocumentMessageService.reducer,
     [QuestionProgressService.reducerPath]: QuestionProgressService.reducer,
     [SpeechService.reducerPath]: SpeechService.reducer,
+    [SharedQuestionsService.reducerPath]: SharedQuestionsService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
   },
@@ -52,6 +54,7 @@ export const reduxStore = configureStore({
       DocumentMessageService.middleware,
       QuestionProgressService.middleware,
       SpeechService.middleware,
+      SharedQuestionsService.middleware
     ]),
 });
 

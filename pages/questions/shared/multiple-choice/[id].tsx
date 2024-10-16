@@ -9,8 +9,6 @@ import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { FC, PropsWithChildren, useEffect, useState } from "react";
-import * as moment from "moment";
-import Dialog from "@/@shared/components/Dialog";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useGetSharedQuestionQuery } from "@/api-services/shared-questions.service";
 import { accessToken } from "@/constants";

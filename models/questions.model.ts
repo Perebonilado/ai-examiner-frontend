@@ -19,6 +19,24 @@ export interface GetQuestionByIdModel {
   createdOn: Date;
 }
 
+export interface GetSharedQuestionModel {
+  data: QuestionsModel[];
+  documentTitle: string;
+  createdOn: Date;
+  sharedBy: {
+    firstname: string;
+    lastName: string;
+  };
+}
+
+export interface GetSharedQuestionQueryModel {
+  questionId: string;
+}
+
+export interface SaveSharedQuestionQueryModel {
+  questionId: string;
+}
+
 export interface QuestionOption {
   value: string;
   id: string;
@@ -55,7 +73,7 @@ export interface GenerateQuestionsPayloadModel {
   questionType: string;
   topics?: string[];
   selectedQuestionTopics?: string[];
-  includeUseCases: boolean
+  includeUseCases: boolean;
 }
 
 export interface CreateScorePayloadModel {

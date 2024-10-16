@@ -14,6 +14,9 @@ import { TrashIcon } from "@/icons/TrashIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import DeleteQuestionConfirmation from "./DeleteQuestionConfirmation";
 import EditIcon from "@/icons/EditIcon";
+import ShareIcon from "@/icons/ShareIcon";
+import ShareQuestionDialog from "./ShareQuestionDialog";
+import { toast } from "react-toastify";
 
 interface Props extends QuestionSummaryModel {}
 
@@ -54,6 +57,22 @@ const ViewQuestionCard: FC<Props> = ({
     return "Start Assessment";
   };
 
+  const handleCopyShareLink = () => {
+    try {
+      navigator.clipboard.writeText(
+        `${window.location.origin}/questions/shared/${hyphenateString(
+          type.toLowerCase()
+        )}/${id}`
+      );
+
+      toast.success("Copied to clipboard");
+      setModalContent(null);
+    } catch (error) {
+      toast.error(`Oops! Let's try that again`);
+      setModalContent(null);
+    }
+  };
+
   return (
     <div className={rootClassName}>
       <div className="flex flex-col">
@@ -73,7 +92,11 @@ const ViewQuestionCard: FC<Props> = ({
             )}
           </div>
         </div>
-        <p className="text-sm font-semibold">{type.toLowerCase() == "flash cards" ? `${count} Cards` :`${totalAnswered} Questions`}</p>
+        <p className="text-sm font-semibold">
+          {type.toLowerCase() == "flash cards"
+            ? `${count} Cards`
+            : `${totalAnswered} Questions`}
+        </p>
         <div className="flex items-center gap-3 mt-4 min-h-[30px]">
           <p className="text-xs text-[#8E8E8E]">
             Created on:{" "}
@@ -106,7 +129,16 @@ const ViewQuestionCard: FC<Props> = ({
             </Link>
           </div>
 
-          <div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => {
+                setModalContent(
+                  <ShareQuestionDialog handleCopy={handleCopyShareLink} />
+                );
+              }}
+            >
+              <ShareIcon fill="#d1d5db" />
+            </button>
             <button
               onClick={() => {
                 setModalContent(<DeleteQuestionConfirmation questionId={id} />);

@@ -19,7 +19,6 @@ import DotsIcon from "@/icons/DotsIcon";
 import Dialog from "@/@shared/components/Dialog";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
-import { progress } from "framer-motion";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");

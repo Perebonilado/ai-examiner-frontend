@@ -23,7 +23,9 @@ interface Props extends QuestionsModel {
   isResetSelection: boolean;
   documentId: string;
   selectedOptionFromProgress: QuestionOption | null;
-  speak: (text: string) => void
+  speak: (text: string) => void;
+  allowSaveProgress?: boolean;
+  allowNotSure?: boolean;
 }
 
 const MCQItem: FC<Props> = ({
@@ -39,7 +41,8 @@ const MCQItem: FC<Props> = ({
   totalQuestionsCount,
   selectedOptionFromProgress,
   handleSetQuestionAnswer,
-  speak
+  allowSaveProgress = true,
+  allowNotSure = true,
 }) => {
   const [questionId, setQuestionId] = useState("");
 
@@ -95,14 +98,16 @@ const MCQItem: FC<Props> = ({
         <p className="text-base text-[#939393]">
           {questionNumber} of {totalQuestionsCount}
         </p>
-        <SpeechButtonWithProgress question={`
+        <SpeechButtonWithProgress
+          question={`
           ${question}
 
           Option A: ${options[0].value},
           Option B: ${options[1].value},
           Option C: ${options[2].value},
           Option D: ${options[3].value}.
-          `}/>
+          `}
+        />
       </div>
       <p className="my-8 font-semibold text-lg">{question}</p>
       <div className="py-4 flex flex-col gap-6">
@@ -117,13 +122,19 @@ const MCQItem: FC<Props> = ({
               handleChecked={(option) => {
                 setSelectedOption(option);
 
-                //save the progress
-                saveProgress({
-                  id: questionId,
-                  data: { selectedOptionId: option.id, selectedQuestionId: id },
-                  status: "in_progress",
-                  clearExistingProgress: false,
-                });
+                if (allowSaveProgress) {
+                  //save the progress
+
+                  saveProgress({
+                    id: questionId,
+                    data: {
+                      selectedOptionId: option.id,
+                      selectedQuestionId: id,
+                    },
+                    status: "in_progress",
+                    clearExistingProgress: false,
+                  });
+                }
 
                 if (correctAnswerId === option.id) {
                   handleSetQuestionAnswer(id, true);
@@ -136,30 +147,32 @@ const MCQItem: FC<Props> = ({
         })}
       </div>
       {!submitted &&
-        (!permissions.canDiscuss ? (
-          <div className="mt-3 flex justify-center gap-2">
-            <Button
-              title="Not Sure?"
-              className="hover:underline"
-              variant="text"
-              onClick={showSubscribeModalOnDiscussionUnavailable}
-            />
-          </div>
-        ) : (
-          <Link
-            href={`/questions/view-questions/${documentId}?tab=Discussions&question=${question}`}
-            passHref
-            target="_blank"
-          >
-            <div className="mt-3 flex justify-center gap-2">
-              <Button
-                title="Not Sure?"
-                variant="text"
-                className="hover:underline"
-              />
-            </div>
-          </Link>
-        ))}
+        (!permissions.canDiscuss
+          ? allowNotSure && (
+              <div className="mt-3 flex justify-center gap-2">
+                <Button
+                  title="Not Sure?"
+                  className="hover:underline"
+                  variant="text"
+                  onClick={showSubscribeModalOnDiscussionUnavailable}
+                />
+              </div>
+            )
+          : allowNotSure && (
+              <Link
+                href={`/questions/view-questions/${documentId}?tab=Discussions&question=${question}`}
+                passHref
+                target="_blank"
+              >
+                <div className="mt-3 flex justify-center gap-2">
+                  <Button
+                    title="Not Sure?"
+                    variant="text"
+                    className="hover:underline"
+                  />
+                </div>
+              </Link>
+            ))}
       {submitted && (
         <p className="text-sm font-semibold text-blue-600">
           Explanation: {explanation}

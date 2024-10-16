@@ -18,7 +18,6 @@ export interface GetQuestionsByIdDto {
   questions: QuestionsDto[];
   score: number | null;
   topics: { title: string; id: number }[];
-  
 }
 
 export interface QuestionSummaryDto {
@@ -29,7 +28,7 @@ export interface QuestionSummaryDto {
   score: number | null;
   status: QuestionProgressStatusType;
   totalAnswered: string | null;
-  progressPercentage: number | null
+  progressPercentage: number | null;
   topics: { id: number; title: string }[];
   type: string;
 }
@@ -41,4 +40,18 @@ export interface AllQuestionSummaryDto {
   };
   status: number;
   meta: MetaDto;
+}
+
+export interface SharedQuestionDto {
+  id: string;
+  documentTitle: string;
+  questions: QuestionsDto[];
+  createdOn: Date;
+  fileId: string;
+  type: string;
+  typeId: number;
+  sharedBy: {
+    firstname: string;
+    lastName: string;
+  };
 }

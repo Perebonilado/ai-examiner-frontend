@@ -81,7 +81,6 @@ const Practice: NextPage = () => {
     }
   }, [errorClearingProgress]);
 
-
   useEffect(() => {
     if (progressClearing) {
       setModalContent(<AppLoader loaderMessage="Clearing Progress" />);
@@ -96,6 +95,20 @@ const Practice: NextPage = () => {
       window.location.reload();
     }
   }, [progressCleared]);
+
+  const handleCopyShareLink = () => {
+    try {
+      navigator.clipboard.writeText(
+        `${window.location.origin}/questions/shared/multiple-choice/${id}`
+      );
+
+      toast.success("Copied to clipboard");
+      setModalContent(null);
+    } catch (error) {
+      toast.error(`Oops! Let's try that again`);
+      setModalContent(null);
+    }
+  };
 
   return (
     <>
@@ -125,6 +138,7 @@ const Practice: NextPage = () => {
                       title={capitalizeFirstLetterOfEachWord(
                         data.documentTitle.toLowerCase()
                       )}
+                      handleCopyShareLink={handleCopyShareLink}
                     />
                   </Dialog>
                 );

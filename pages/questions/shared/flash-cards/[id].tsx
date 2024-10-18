@@ -13,6 +13,7 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import Button from "@/@shared/ui/Button";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import FlashCardItemContainer from "@/@modules/questions/FlashCardItemContainer";
+import Container from "@/@shared/ui/Container";
 
 const FlashcardsShared: NextPage = () => {
   const [id, setId] = useState("");
@@ -52,51 +53,55 @@ const FlashcardsShared: NextPage = () => {
 
   return (
     <LayoutToUse isLoggedIn={isUserLoggedIn}>
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get questions" />
-          <Button title="Reload Questions" onClick={refetch} />
-        </div>
-      )}
-
-      {data && (
-        <>
-          <h1 className="text-center mb-3 text-xl font-semibold">
-            {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
-            Questions
-          </h1>
-          <p className="text-center text-sm text-gray-500 my-3">
-            Shared By:{" "}
-            {capitalizeFirstLetterOfEachWord(
-              `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
-            )}
-          </p>
-        </>
-      )}
-
-      <div className="mt-14 mb-14 min-h-[75vh]">
-        {data && (
-          <FlashCardItemContainer
-            data={data.data.map((d) => {
-              const answer = d.options.find(
-                (opt) => opt.id === d.correctAnswerId
-              )?.value;
-              return {
-                question: d.question,
-                answer: answer || "",
-                hint: d.hint,
-              };
-            })}
-            handleDone={() => {
-              if (isUserLoggedIn) {
-                router.push("/documents");
-              } else {
-                router.push("/auth/login");
-              }
-            }}
-          />
+      <Container>
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get questions" />
+            <Button title="Reload Questions" onClick={refetch} />
+          </div>
         )}
-      </div>
+
+        {data && (
+          <>
+            <h1 className="text-center mb-3 text-xl font-semibold">
+              {capitalizeFirstLetterOfEachWord(
+                data.documentTitle.toLowerCase()
+              )}{" "}
+              Questions
+            </h1>
+            <p className="text-center text-sm text-gray-500 my-3">
+              Shared By:{" "}
+              {capitalizeFirstLetterOfEachWord(
+                `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
+              )}
+            </p>
+          </>
+        )}
+
+        <div className="mt-14 mb-14 min-h-[75vh]">
+          {data && (
+            <FlashCardItemContainer
+              data={data.data.map((d) => {
+                const answer = d.options.find(
+                  (opt) => opt.id === d.correctAnswerId
+                )?.value;
+                return {
+                  question: d.question,
+                  answer: answer || "",
+                  hint: d.hint,
+                };
+              })}
+              handleDone={() => {
+                if (isUserLoggedIn) {
+                  router.push("/documents");
+                } else {
+                  router.push("/auth/login");
+                }
+              }}
+            />
+          )}
+        </div>
+      </Container>
     </LayoutToUse>
   );
 };

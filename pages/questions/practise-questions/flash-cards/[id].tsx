@@ -14,6 +14,11 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import * as moment from "moment";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { toast } from "react-toastify";
+import IconButton from "@/@shared/ui/IconButton";
+import DotsIcon from "@/icons/DotsIcon";
+import Dialog from "@/@shared/components/Dialog";
+import ShareIcon from "@/icons/ShareIcon";
+import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
@@ -49,20 +54,62 @@ const FlashCards: NextPage = () => {
     }
   }, [isLoading]);
 
+  const handleCopyShareLink = () => {
+    try {
+      navigator.clipboard.writeText(
+        `${window.location.origin}/questions/shared/flash-cards/${id}`
+      );
+
+      toast.success("Copied to clipboard");
+      setModalContent(null);
+    } catch (error) {
+      toast.error(`Oops! Let's try that again`);
+      setModalContent(null);
+    }
+  };
+
   return (
     <>
       <AppHead title="Flash Cards" />
       <AppLayout>
         {data && (
-          <Button
-            title="Back"
-            variant="text"
-            starticon={<ChevronLeft />}
-            className="!gap-1 mb-6 mt-7"
-            onClick={() => {
-              router.push(`/questions/view-questions/${data?.documentId}`);
-            }}
-          />
+          <div className="flex items-center justify-between mb-6">
+            <Button
+              title="Back"
+              variant="text"
+              starticon={<ChevronLeft />}
+              className="!gap-1 mb-6 mt-7"
+              onClick={() => {
+                router.push(`/questions/view-questions/${data?.documentId}`);
+              }}
+            />
+
+            <IconButton
+              icon={<DotsIcon />}
+              title="More"
+              onClick={() => {
+                setModalContent(
+                  <Dialog>
+                    <div className="min-w-[165px]">
+                      <Button
+                        title="Share"
+                        variant="contained"
+                        endicon={<ShareIcon fill="#FFFFFF" />}
+                        fullWidth
+                        onClick={() => {
+                          setModalContent(
+                            <ShareQuestionDialog
+                              handleCopy={handleCopyShareLink}
+                            />
+                          );
+                        }}
+                      />
+                    </div>
+                  </Dialog>
+                );
+              }}
+            />
+          </div>
         )}
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">

@@ -1,6 +1,7 @@
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
 import CloseIcon from "@/icons/CloseIcon";
+import CopyIcon from "@/icons/CopyIcon";
 import React, { FC } from "react";
 
 interface Props {
@@ -22,7 +23,7 @@ const ShareQuestionDialog: FC<Props> = ({ handleCopy }) => {
       <section className="pt-4">
         <div className="flex flex-col items-center justify-center gap-4">
           <h3 className="text-lg font-bold">Share Question</h3>
-          <Button title="Copy Link" size="large" onClick={handleCopy} />
+          <Button title="Copy Link" size="large" onClick={handleCopy} starticon={<CopyIcon width={20} height={20}/>}/>
         </div>
       </section>
     </div>

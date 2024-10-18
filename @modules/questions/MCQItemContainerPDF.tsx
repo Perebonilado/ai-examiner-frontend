@@ -42,7 +42,7 @@ const MCQItemContainerPDF: FC<Props> = ({ data, title, handleCopyShareLink }) =>
         <Button
           title="Share"
           variant="contained"
-          endicon={<ShareIcon fill="#FFFFFF" />}
+          starticon={<ShareIcon fill="#FFFFFF" />}
           fullWidth
           onClick={() => {
             setModalContent(
@@ -53,7 +53,7 @@ const MCQItemContainerPDF: FC<Props> = ({ data, title, handleCopyShareLink }) =>
         <Button
           title="Download Q&A"
           variant="outlined"
-          endicon={<PDFIcon />}
+          starticon={<PDFIcon />}
           onClick={handleDownloadQandA}
         />
 

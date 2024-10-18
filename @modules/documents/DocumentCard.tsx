@@ -54,7 +54,7 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
             );
           }}
         >
-          <DotsCircular fill="#6C757D" width={28} height={28} />
+          <DotsIcon fill="#6C757D" width={28} height={28} />
         </button>
       </div>
       <div className="h-[40%] flex flex-col justify-end gap-1 overflow-hidden px-2">

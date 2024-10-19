@@ -7,7 +7,7 @@ import React from "react";
 
 const Pricing: NextPage = () => {
   return (
-    <WebLayout backgroundColor="#FAFAFA">
+    <WebLayout backgroundColor="#f7f4ff">
       <AppHead />
       <PlanContainer />
       <ReviewsContainer />

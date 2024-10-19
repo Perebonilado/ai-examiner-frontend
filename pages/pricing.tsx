@@ -1,4 +1,5 @@
 import PlanContainer from "@/@modules/pricing/PlanContainer";
+import ReviewsContainer from "@/@modules/pricing/ReviewsContainer";
 import AppHead from "@/@shared/components/AppHead";
 import WebLayout from "@/layouts/WebLayout";
 import { NextPage } from "next";
@@ -9,6 +10,7 @@ const Pricing: NextPage = () => {
     <WebLayout backgroundColor="#FAFAFA">
       <AppHead />
       <PlanContainer />
+      <ReviewsContainer />
     </WebLayout>
   );
 };

@@ -4,9 +4,20 @@ import React, { FC, PropsWithChildren, useState } from "react";
 import MobileAppNav from "../@shared/components/MobileAppNav";
 import MobileSidebar from "@/@shared/components/MobileSidebar";
 import UserManagementBox from "@/@shared/components/UserManagementBox";
+import { useGetUserProfileQuery } from "@/api-services/user.service";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
-const AppLayout: FC<PropsWithChildren> = ({ children }) => {
+interface Props {
+  showWelcomeMessage?: boolean;
+}
+
+const AppLayout: FC<PropsWithChildren<Props>> = ({
+  children,
+  showWelcomeMessage = false,
+}) => {
   const [isSideNav, setIsSideNav] = useState(false);
+
+  const { data } = useGetUserProfileQuery("", { skip: !showWelcomeMessage });
 
   return (
     <>
@@ -29,8 +40,21 @@ const AppLayout: FC<PropsWithChildren> = ({ children }) => {
         <main className="h-full max-md:pt-[120px] w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 px-10 pt-4 max-md:px-4">
           <FadeIn>
             <>
-              <div className="flex justify-end pb-6 max-md:hidden">
-                <UserManagementBox />
+              <div className="flex justify-between items-center pb-6">
+                {data && data.firstName && showWelcomeMessage ? (
+                  <p className="text-xl font-bold">
+                    <span className="text-[#939393]">Welcome, </span>
+                    {capitalizeFirstLetterOfEachWord(
+                      data.firstName.toLowerCase()
+                    )}
+                  </p>
+                ) : (
+                  <div></div>
+                )}
+
+                <div className="max-md:hidden">
+                  <UserManagementBox />
+                </div>
               </div>
               {children}
             </>

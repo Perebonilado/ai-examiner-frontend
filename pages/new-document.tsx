@@ -6,7 +6,7 @@ import React from "react";
 
 const NewDocument: NextPage = () => {
   return (
-    <AppLayout>
+    <AppLayout showWelcomeMessage={true}>
       <AppHead title="New Document" />
       <GenerateQuestionsForm />
     </AppLayout>

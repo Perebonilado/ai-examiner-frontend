@@ -3,13 +3,17 @@ import { motion } from "framer-motion";
 
 interface Props {
   className?: string;
-  style?: Object
+  style?: Object;
 }
 
-const TransitionUp:FC<PropsWithChildren<Props>> = ({ children, className = '', style = {} }) => {
+const TransitionDown: FC<PropsWithChildren<Props>> = ({
+  children,
+  className = "",
+  style = {},
+}) => {
   return (
     <motion.div
-      initial={{ translateY: 20 }}
+      initial={{ translateY: -20 }}
       whileInView={{ translateY: 0, transition: { duration: 0.8 } }}
       viewport={{ once: true }}
       className={className}
@@ -17,7 +21,6 @@ const TransitionUp:FC<PropsWithChildren<Props>> = ({ children, className = '', s
     >
       {children}
     </motion.div>
-  )
-}
-
-export default TransitionUp
+  );
+};
+export default TransitionDown;

@@ -13,7 +13,7 @@ const HowItWorksItemContainer: FC<Props> = ({ data }) => {
   return (
     <Container>
       <h1 className="pb-24 pt-20 text-center text-4xl font-semibold text-[#2F004F]">How it works</h1>
-      <section className="flex flex-col gap-28 pb-20">
+      <section className="flex flex-col gap-28 pb-20 overflow-x-hidden">
         {data.map((d, idx) => (
           <HowItWorksItem {...d} key={idx} />
         ))}

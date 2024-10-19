@@ -5,6 +5,7 @@ import ReviewItem from "./ReviewItem";
 import Button from "@/@shared/ui/Button";
 import ArrowDiagonalRightIcon from "@/icons/ArrowDiagonalRightIcon";
 import Link from "next/link";
+import StatisticsContainer from "./StatisticsContainer";
 
 const ReviewsContainer: FC = () => {
   return (
@@ -20,10 +21,8 @@ const ReviewsContainer: FC = () => {
             jobs and so much more!
           </p>
 
-          <div className="flex justify-between max-md:justify-center max-md:flex-col gap-y-14 gap-6 flex-wrap w-full max-w-[900px] mx-auto mt-10">
-            <StatisticItem count={6000} title="users" />
-            <StatisticItem count={100000} title="questions generated" />
-            <StatisticItem count={5000} title="grades improved" />
+          <div className="mt-10">
+            <StatisticsContainer />
           </div>
 
           <div className="mt-20 flex items-center justify-between w-full max-w-[1100px] max-md:justify-center gap-8 flex-wrap mx-auto">

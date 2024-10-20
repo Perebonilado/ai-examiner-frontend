@@ -1,24 +1,24 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import * as moment from "moment";
 import Button from "@/@shared/ui/Button";
-import ScorePill from "./ScorePill";
+import ScorePill from "../ScorePill";
 import { generateScoreColor, hyphenateString } from "@/utils";
 import cn from "classnames";
 import { QuestionSummaryModel } from "@/models/questions.model";
 import Link from "next/link";
-import ArrowRight from "@/icons/ArrowRight";
 import ChevronDownAlt from "@/icons/ChevronDownAlt";
-import TopicPill from "./TopicPill";
-import TopicPillContainer from "./TopicPillContainer";
+import TopicPillContainer from "../TopicPillContainer";
 import { TrashIcon } from "@/icons/TrashIcon";
 import { useModalContext } from "@/contexts/ModalContext";
-import DeleteQuestionConfirmation from "./DeleteQuestionConfirmation";
-import EditIcon from "@/icons/EditIcon";
+import DeleteQuestionConfirmation from "../DeleteQuestionConfirmation";
 import ShareIcon from "@/icons/ShareIcon";
-import ShareQuestionDialog from "./ShareQuestionDialog";
+import ShareQuestionDialog from "../ShareQuestionDialog";
 import { toast } from "react-toastify";
+import styles from "./styles.module.css";
 
-interface Props extends QuestionSummaryModel {}
+interface Props extends QuestionSummaryModel {
+  index: number
+}
 
 const ViewQuestionCard: FC<Props> = ({
   count,
@@ -30,11 +30,16 @@ const ViewQuestionCard: FC<Props> = ({
   progressPercentage,
   status,
   totalAnswered,
+  index
 }) => {
   const scoreColor = generateScoreColor(score).scoreColor;
+  const [isNew, setIsNew] = useState(false);
 
   const rootClassName = cn(
-    `w-full flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`
+    `w-full flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`,
+    {
+      [`${styles["animate-border"]} animate-bounce`]: isNew,
+    }
   );
 
   const [topicsExpanded, setTopicsExpanded] = useState(false);
@@ -44,6 +49,25 @@ const ViewQuestionCard: FC<Props> = ({
   });
 
   const { setModalContent } = useModalContext();
+
+  useEffect(() => {
+    const createdMoment = new Date(createdAt).getTime();
+    const now = new Date().getTime();
+    const difference = now - createdMoment;
+    const thirtySeconds = 60000; // 30 seconds in milliseconds
+
+    if ((difference < thirtySeconds) && index === 0) {
+      setIsNew(true);
+      const timeout = setTimeout(() => {
+        setIsNew(false);
+      }, 10000);
+
+      // Clean up the timeout
+      return () => clearTimeout(timeout);
+    } else {
+      setIsNew(false);
+    }
+  }, [createdAt]);
 
   const getButtonText = () => {
     if (status === "submitted") {

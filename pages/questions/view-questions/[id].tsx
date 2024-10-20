@@ -22,6 +22,7 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import Tab from "@/@shared/components/Tab";
 import ChatContainer from "@/@modules/chat/ChatContainer";
 import { useGetDocumentMessagesQuery } from "@/api-services/document-message.service";
+import Spinner from "@/@shared/components/Spinner";
 
 interface SearchParams {
   lastMessageCreatedOn?: Date;
@@ -254,13 +255,12 @@ const ViewQuestions: NextPage = () => {
         />
 
         <div className="flex items-center justify-between w-full pb-4 max-md:flex-col max-md:gap-12">
-          {document && (
-            <h2 className="text-2xl font-bold max-md:text-center max-w-[60%] md:truncate max-md:max-w-full">
-              {capitalizeFirstLetterOfEachWord(
+          <h2 className="text-2xl font-bold max-md:text-center max-w-[60%] md:truncate max-md:max-w-full">
+            {document &&
+              capitalizeFirstLetterOfEachWord(
                 document.documents[0].title.toLowerCase()
               )}{" "}
-            </h2>
-          )}
+          </h2>
           {permissions && activeTab === "Questions" && (
             <Button
               title="Generate New Questions"
@@ -309,7 +309,21 @@ const ViewQuestions: NextPage = () => {
                 <Button title="Reload Question Summaries" onClick={refetch} />
               </div>
             )}
+            {!data && isLoading && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <Spinner size="sm" />
+                <p className="text-center font-semibold">
+                  Fetching your questions
+                </p>
+              </div>
+            )}
             {data && <ViewQuestionCardContainer data={data?.questions} />}
+
+            {!data && !isLoading && !error && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <p className="text-center font-semibold">No questions found</p>
+              </div>
+            )}
 
             {data && (
               <Pagination

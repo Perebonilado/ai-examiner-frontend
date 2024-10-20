@@ -68,6 +68,9 @@ export const DocumentTopicService = createApi({
           documentId,
         },
       }),
+      extraOptions: {
+        triggerLoading: false,
+      },
       providesTags: ["document-topics"],
       transformResponse: (res: SavedDocumentTopicDto[]) => {
         if (!res) return <DocumentTopicModel>{};

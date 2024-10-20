@@ -1,6 +1,8 @@
 import DocumentCardContainer from "@/@modules/documents/DocumentCardContainer";
 import AppHead from "@/@shared/components/AppHead";
+import { AppLoader } from "@/@shared/components/AppLoader";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
+import Spinner from "@/@shared/components/Spinner";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import TextField from "@/@shared/ui/Input/TextField";
@@ -19,23 +21,28 @@ const AllDocuments: NextPage = () => {
     { refetchOnMountOrArgChange: true }
   );
 
-
-  useEffect(()=>{
-    if(page !== 1) {
-      setPage(1)
+  useEffect(() => {
+    if (page !== 1) {
+      setPage(1);
     }
-  },[title])
+  }, [title]);
 
   return (
     <>
       <AppHead title="All Documents" />
       <AppLayout>
-        <div className="flex items-start justify-between w-full pb-10 gap-3 max-lg:flex-col max-lg:gap-12 mt-7">
+        <div className="flex items-start justify-between w-full pb-10 gap-3 max-lg:items-center max-lg:flex-col max-lg:gap-12 mt-7">
           <h2 className="text-2xl font-bold">All Documents</h2>
           <div className="w-full max-w-[350px]">
-            <TextField label="Search" placeholder="Search by title" starticon={<SearchIcon />} value={title} onChange={(e)=>{
-              setTitle(e.target.value)
-            }}/>
+            <TextField
+              label="Search"
+              placeholder="Search by title"
+              starticon={<SearchIcon />}
+              value={title}
+              onChange={(e) => {
+                setTitle(e.target.value);
+              }}
+            />
           </div>
         </div>
         {!data && error && (
@@ -45,7 +52,24 @@ const AllDocuments: NextPage = () => {
           </div>
         )}
 
-        <DocumentCardContainer data={data?.documents}/>
+        {!data && isLoading && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <Spinner size="sm"/>
+            <p className="text-center font-semibold">
+              Fetching your documents
+            </p>
+          </div>
+        )}
+
+        {!data && !isLoading && !error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <p className="text-center mt-3 font-semibold text-lg">
+              No documents found
+            </p>
+          </div>
+        )}
+
+        <DocumentCardContainer data={data?.documents} />
         {data && (
           <Pagination
             className=""

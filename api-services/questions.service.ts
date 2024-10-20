@@ -136,6 +136,9 @@ export const QuestionsService = createApi({
         },
         body,
       }),
+      extraOptions: {
+        triggerLoading: false
+      },
       invalidatesTags: ["question-summary"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {

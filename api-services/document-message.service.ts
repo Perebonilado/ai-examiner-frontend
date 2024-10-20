@@ -62,6 +62,9 @@ export const DocumentMessageService = createApi({
         params: { ...rest },
         extraOptions: { triggerLoading: false },
       }),
+      extraOptions: {
+        triggerLoading: false
+      },
       transformResponse: (res: DocumentMessagesDTO) => {
         if (!res) return <DocumentMessagesModel>{};
         else {

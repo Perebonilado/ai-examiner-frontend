@@ -1,0 +1,24 @@
+@keyframes borderAnimation {
+  0% {
+    border-color: #6A5ACD; 
+  }
+  25% {
+    border-color: #20B2AA; 
+  }
+  50% {
+    border-color: #DAA520; 
+  }
+  75% {
+    border-color: #9370DB; 
+  }
+  100% {
+    border-color: #3CB371; 
+  }
+}
+
+.animate-border {
+  border: 2px solid;
+  border-radius: 12px;
+  animation: borderAnimation 6s linear infinite;
+  transition: transform 0.2s ease-in-out;
+}

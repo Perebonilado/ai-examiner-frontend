@@ -43,6 +43,9 @@ export const DocumentService = createApi({
         url: "",
         params: { ...queryParams },
       }),
+      extraOptions: {
+        triggerLoading: false,
+      },
       providesTags: ["all-documents"],
 
       transformResponse: (res: AllDocumentsDto) => {

@@ -54,9 +54,9 @@ const ViewQuestionCard: FC<Props> = ({
     const createdMoment = new Date(createdAt).getTime();
     const now = new Date().getTime();
     const difference = now - createdMoment;
-    const thirtySeconds = 60000; // 30 seconds in milliseconds
+    const fifteenSeconds = 15000; // 15 seconds in milliseconds
 
-    if ((difference < thirtySeconds) && index === 0) {
+    if ((difference < fifteenSeconds) && index === 0) {
       setIsNew(true);
       const timeout = setTimeout(() => {
         setIsNew(false);
@@ -123,7 +123,6 @@ const ViewQuestionCard: FC<Props> = ({
         </p>
         <div className="flex items-center gap-3 mt-4 min-h-[30px]">
           <p className="text-xs text-[#8E8E8E]">
-            Created on:{" "}
             {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}
           </p>
           {topics.length ? (

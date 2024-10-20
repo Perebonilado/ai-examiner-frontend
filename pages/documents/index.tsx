@@ -61,7 +61,7 @@ const AllDocuments: NextPage = () => {
           </div>
         )}
 
-        {!data && !isLoading && !error && (
+        {data && !data.documents.length && !isLoading && !error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
             <p className="text-center mt-3 font-semibold text-lg">
               No documents found

@@ -319,7 +319,7 @@ const ViewQuestions: NextPage = () => {
             )}
             {data && <ViewQuestionCardContainer data={data?.questions} />}
 
-            {!data && !isLoading && !error && (
+            {data && !data.questions.length && !isLoading && !error && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <p className="text-center font-semibold">No questions found</p>
               </div>

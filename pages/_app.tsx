@@ -29,17 +29,27 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <Provider store={reduxStore}>
-      <PermissionProvider>
-        <ModalProvider>
-          <LoaderProvider>
-            <Component {...pageProps} />
-          </LoaderProvider>
-        </ModalProvider>
-      </PermissionProvider>
-      <ToastContainer />
-      <Analytics />
-      <SpeedInsights />
-    </Provider>
+    <>
+      <noscript>
+        <iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-WXV3SGHG"
+          height="0"
+          width="0"
+          style={{ display: "none", visibility: "hidden" }}
+        ></iframe>
+      </noscript>
+      <Provider store={reduxStore}>
+        <PermissionProvider>
+          <ModalProvider>
+            <LoaderProvider>
+              <Component {...pageProps} />
+            </LoaderProvider>
+          </ModalProvider>
+        </PermissionProvider>
+        <ToastContainer />
+        <Analytics />
+        <SpeedInsights />
+      </Provider>
+    </>
   );
 }

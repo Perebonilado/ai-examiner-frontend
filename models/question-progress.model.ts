@@ -2,6 +2,7 @@ export interface QuestionProgressPayloadModel {
   data?: {
     selectedQuestionId: string;
     selectedOptionId: string;
+    selectedAnswer?: boolean;
   };
   id: string;
   status?: QuestionProgressStatusType;
@@ -14,6 +15,7 @@ export interface QuestionProgressModel {
   data: {
     selectedQuestionId: string;
     selectedOptionId: string;
+    selectedAnswer?: boolean;
   }[];
   score: number | null;
   status: QuestionProgressStatusType

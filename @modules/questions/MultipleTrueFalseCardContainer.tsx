@@ -11,6 +11,7 @@ import {
   useGetProgressQuery,
   useSaveProgressMutation,
 } from "@/api-services/question-progress.service";
+import { QuestionProgressModel } from "@/models/question-progress.model";
 
 interface Props {
   data: MultipleTrueFalseQuestionModel[];
@@ -113,9 +114,17 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
     }
   }, [isSuccess, isLoading]);
 
+  useEffect(() => {
+    if (progress && progress.status === "submitted") {
+      handleSubmitted();
+    }
+  }, [progress]);
+
   return (
     <section className="flex flex-col gap-12">
       {data.map((d, idx) => {
+        const questionProgress =
+          progress?.data.filter((p) => p.selectedQuestionId === d.id) || null;
         return (
           <MultipleTrueFalseCard
             {...d}
@@ -123,6 +132,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
             questionId={questionId}
             totalQuestionsCount={data.length}
             submitted={submitted}
+            progress={questionProgress}
             allowSaveProgress={allowSaveProgress}
             handleSetQuestionAnswer={({
               id,

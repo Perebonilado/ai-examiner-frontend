@@ -20,6 +20,7 @@ import { GetMultipleTrueFalseQuestionByIdModel } from "@/models/questions.model"
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
+import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -48,6 +49,39 @@ const MultipleTrueFalse: NextPage = () => {
     }
   }, [error]);
 
+  const [
+    clearProgress,
+    {
+      isSuccess: progressCleared,
+      error: errorClearingProgress,
+      isLoading: progressClearing,
+    },
+  ] = useSaveProgressMutation();
+
+  useEffect(() => {
+    if (errorClearingProgress && "status" in errorClearingProgress) {
+      if ("data" in errorClearingProgress) {
+        const { message } = errorClearingProgress.data as { message: string };
+        toast.error(message);
+      } else toast.error("Oops! Something went wrong");
+    }
+  }, [errorClearingProgress]);
+
+  useEffect(() => {
+    if (progressClearing) {
+      setModalContent(<AppLoader loaderMessage="Clearing Progress" />);
+    } else {
+      setModalContent(null);
+    }
+  }, [progressClearing]);
+
+  useEffect(() => {
+    if (progressCleared) {
+      toast.success("Question reset successfully");
+      window.location.reload();
+    }
+  }, [progressCleared]);
+
   useEffect(() => {
     if (isLoading) {
       setModalContent(<AppLoader loaderMessage="Loading test" />);
@@ -55,6 +89,14 @@ const MultipleTrueFalse: NextPage = () => {
       setModalContent(null);
     }
   }, [isLoading]);
+
+  const handleResetAnswers = () => {
+    clearProgress({
+      clearExistingProgress: true,
+      id: id,
+      status: "in_progress",
+    });
+  };
 
   return (
     <AppLayout>
@@ -113,7 +155,7 @@ const MultipleTrueFalse: NextPage = () => {
                 variant="contained"
                 size="large"
                 fullWidth
-                // onClick={handleResetAnswers}
+                onClick={handleResetAnswers}
               />
             </div>
           )}

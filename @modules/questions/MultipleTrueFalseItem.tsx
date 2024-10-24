@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import cn from "classnames";
 import CheckIcon from "@/icons/CheckIcon";
 import CancelIcon from "@/icons/CancelIcon";
@@ -16,15 +16,30 @@ interface Props {
     selectedAnswer: boolean;
     correctAnswer: boolean;
   }) => void;
+  selectedAnswerInProgress: boolean | null;
 }
 
 const MultipleTrueFalseItem: FC<Props> = ({
   submitted,
   option,
   handleSetQuestionAnswer,
+  selectedAnswerInProgress,
 }) => {
   const [selectedOption, setSelectedOption] = useState<boolean | null>(null);
   const [isRightOption, setIsRightOption] = useState(false);
+
+  useEffect(() => {
+    if (
+      selectedAnswerInProgress !== null
+    ) {
+      setSelectedOption(selectedAnswerInProgress);
+      if (selectedAnswerInProgress === option.answer) {
+        setIsRightOption(true);
+      } else {
+        setIsRightOption(false);
+      }
+    }
+  }, [selectedAnswerInProgress]);
 
   const rootClassName = cn(
     `
@@ -32,11 +47,9 @@ const MultipleTrueFalseItem: FC<Props> = ({
     `,
     {
       ["!border-[#36CE10]"]: submitted && isRightOption,
-      ["!border-[#EE6161]"]:
-        submitted && !isRightOption,
+      ["!border-[#EE6161]"]: submitted && !isRightOption,
     }
   );
-  
 
   return (
     <div>

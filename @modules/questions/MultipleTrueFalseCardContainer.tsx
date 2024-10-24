@@ -51,6 +51,8 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   const { setModalContent } = useModalContext();
 
+  const [calculatedScore, setCalculatedScore] = useState<number | null>(null);
+
   const [questionId, setQuestionId] = useState("");
 
   const params = useParams();
@@ -124,18 +126,20 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   return (
     <>
       <div className="mt-3 mb-12 flex items-center justify-center">
-       {submitted && <Button
-          title="View Score"
-          variant="text"
-          onClick={() => {
-            setModalContent(
-              <SubmissionModal
-                title={title}
-                scorePercentage={progress?.score || 0}
-              />
-            );
-          }}
-        />}
+        {submitted && (
+          <Button
+            title="View Score"
+            variant="text"
+            onClick={() => {
+              setModalContent(
+                <SubmissionModal
+                  title={title}
+                  scorePercentage={calculatedScore || progress?.score || 0}
+                />
+              );
+            }}
+          />
+        )}
       </div>
       <section className="flex flex-col gap-12">
         {data.map((d, idx) => {
@@ -182,6 +186,8 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
                 size="large"
                 onClick={() => {
                   handleSubmitted();
+
+                  setCalculatedScore(calculateScorePercentage());
 
                   if (allowSaveScore) {
                     saveScore({

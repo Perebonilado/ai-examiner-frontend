@@ -4,7 +4,6 @@ import dynamic from "next/dynamic";
 import React, { FC, useState } from "react";
 import { Form, useFormik, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
-// import UploadFileBox from "@/@shared/components/UploadFileBox";
 import Button from "@/@shared/ui/Button";
 import { useAddDocumentMutation } from "@/api-services/document.service";
 import { toast } from "react-toastify";
@@ -14,7 +13,6 @@ import { useRouter } from "next/router";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQuestionFormValidation";
-import ToolTip from "@/@shared/components/ToolTip";
 import { useUploadFileMutation } from "@/api-services/file-upload.service";
 import Switch from "@/@shared/components/Switch";
 import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
@@ -219,10 +217,6 @@ const GenerateQuestionsForm: FC = () => {
             <div>
               <label className="text-base font-semibold flex items-center gap-4">
                 Study with{" "}
-                <ToolTip
-                  id="q_generationuu"
-                  message="Choose the type of questions you would love to generate"
-                />
               </label>
               <DropDown
                 options={
@@ -243,10 +237,6 @@ const GenerateQuestionsForm: FC = () => {
             <div>
               <label className="text-base font-semibold flex items-center gap-4">
                 Total questions{" "}
-                <ToolTip
-                  id="q_generation"
-                  message="Please note that generating more questions typically takes more time"
-                />
               </label>
 
               <DropDown
@@ -260,7 +250,7 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <div className="flex items-center gap-3">
+            {formik.values.questionType == "3" && <div className="flex items-center gap-3">
               <Switch
                 disabled={!file || !fileId}
                 handleChecked={() => {
@@ -269,11 +259,7 @@ const GenerateQuestionsForm: FC = () => {
                 label="Include Case Studies"
                 isChecked={includeUseCases}
               />
-              <ToolTip
-                id="use_case"
-                message="This will generate questions with real life scenarios"
-              />
-            </div>
+            </div>}
 
             {permissions.canUseAdvancedPreferences && (
               <div className="flex items-center gap-3">
@@ -287,8 +273,6 @@ const GenerateQuestionsForm: FC = () => {
                   isChecked={isAdvanced}
                   label="Select Topics"
                 />
-
-                <ToolTip id="adv" message="Enable to generate topics" />
               </div>
             )}
 

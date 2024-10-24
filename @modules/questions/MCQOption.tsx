@@ -1,4 +1,3 @@
-import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
 import { QuestionOption } from "@/models/questions.model";
 import React, { FC } from "react";
 import cn from "classnames";

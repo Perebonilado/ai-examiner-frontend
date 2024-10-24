@@ -11,6 +11,19 @@ export interface QuestionsModel {
   hint?: string;
 }
 
+export interface MultipleTrueFalseQuestionModel {
+  id: string;
+  question: string;
+  options: MultipleTrueFalseQuestionOption[];
+  explanation: string;
+  hint?: string;
+}
+
+export interface GetMultipleTrueFalseQuestionByIdModel
+  extends Omit<GetQuestionByIdModel, "data"> {
+  data: MultipleTrueFalseQuestionModel[];
+}
+
 export interface GetQuestionByIdModel {
   data: QuestionsModel[];
   documentTitle: string;
@@ -40,6 +53,10 @@ export interface SaveSharedQuestionQueryModel {
 export interface QuestionOption {
   value: string;
   id: string;
+}
+
+export interface MultipleTrueFalseQuestionOption extends QuestionOption {
+  answer: boolean;
 }
 
 export interface QuestionSummaryModel {

@@ -1,6 +1,10 @@
 import React, { FC } from "react";
 
-const CheckIcon:FC = () => {
+interface Props {
+  fill?: string;
+}
+
+const CheckIcon: FC<Props> = ({ fill = "#2C00B9" }) => {
   return (
     <svg
       width="50"
@@ -11,7 +15,7 @@ const CheckIcon:FC = () => {
     >
       <path
         d="M2 24.503L28.6129 51.1159C29.3499 51.8529 30.5294 51.9003 31.3232 51.2249L88 3"
-        stroke="#2C00B9"
+        stroke={fill}
         stroke-width="5.31767"
       />
     </svg>

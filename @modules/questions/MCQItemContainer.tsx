@@ -64,6 +64,9 @@ const MCQItemContainer: FC<Props> = ({
     { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true }
   );
 
+  const [calculatedScore, setCalculatedScore] = useState<number | null>(null);
+
+
   useEffect(() => {
     if (isLoading) {
       setModalContent(
@@ -131,7 +134,23 @@ const MCQItemContainer: FC<Props> = ({
 
   return (
     <section>
-      <Container className="py-10">
+      <div className="mt-3 mb-12 flex items-center justify-center">
+        {isSubmitted && (
+          <Button
+            title="View Score"
+            variant="text"
+            onClick={() => {
+              setModalContent(
+                <SubmissionModal
+                  title={title}
+                  scorePercentage={calculatedScore || progress?.score || 0}
+                />
+              );
+            }}
+          />
+        )}
+      </div>
+      <Container className="pb-10">
         <div className="flex flex-col gap-[80px]">
           {data.map((question, idx) => {
             const selectedInProgress =
@@ -177,6 +196,8 @@ const MCQItemContainer: FC<Props> = ({
                 size="large"
                 onClick={() => {
                   handleSubmitted(true);
+
+                  setCalculatedScore(calculateScorePercentage());
 
                   if (allowSaveScore) {
                     saveScore({

@@ -21,6 +21,9 @@ import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
+import Dialog from "@/@shared/components/Dialog";
+import ShareIcon from "@/icons/ShareIcon";
+import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -98,6 +101,20 @@ const MultipleTrueFalse: NextPage = () => {
     });
   };
 
+  const handleCopyShareLink = () => {
+    try {
+      navigator.clipboard.writeText(
+        `${window.location.origin}/questions/shared/multiple-true-false/${id}`
+      );
+
+      toast.success("Copied to clipboard");
+      setModalContent(null);
+    } catch (error) {
+      toast.error(`Oops! Let's try that again`);
+      setModalContent(null);
+    }
+  };
+
   return (
     <AppLayout>
       <AppHead title="Multiple True False" />
@@ -113,23 +130,31 @@ const MultipleTrueFalse: NextPage = () => {
             }}
           />
 
-          {/* <IconButton
+          <IconButton
             icon={<DotsIcon />}
             title="More"
             onClick={() => {
               setModalContent(
                 <Dialog>
-                  <MCQItemContainerPDF
-                    data={(data as GetQuestionByIdModel).data}
-                    title={capitalizeFirstLetterOfEachWord(
-                      data.documentTitle.toLowerCase()
-                    )}
-                    handleCopyShareLink={handleCopyShareLink}
-                  />
+                  <div className="min-w-[165px]">
+                    <Button
+                      title="Share"
+                      variant="contained"
+                      endicon={<ShareIcon fill="#FFFFFF" />}
+                      fullWidth
+                      onClick={() => {
+                        setModalContent(
+                          <ShareQuestionDialog
+                            handleCopy={handleCopyShareLink}
+                          />
+                        );
+                      }}
+                    />
+                  </div>
                 </Dialog>
               );
             }}
-          /> */}
+          />
         </div>
       )}
       {!data && error && (

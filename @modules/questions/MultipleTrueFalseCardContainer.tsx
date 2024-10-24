@@ -71,7 +71,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         let totalScore = 0;
         for (const key in score) {
           if (score[key].isCorrect) {
-            totalScore += 0.25;
+            totalScore += 1;
           }
         }
 
@@ -83,7 +83,8 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         0
       );
 
-      const totalQuestions = data.length;
+      const weightOfEachQuestion = 4
+      const totalQuestions = data.length * weightOfEachQuestion;
 
       return (totalScoreForAllQuestions / totalQuestions) * 100;
     }
@@ -124,7 +125,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
     <section className="flex flex-col gap-12">
       {data.map((d, idx) => {
         const questionProgress =
-          progress?.data.filter((p) => p.selectedQuestionId === d.id) || null;
+          progress?.data?.filter((p) => p.selectedQuestionId === d.id) || null;
         return (
           <MultipleTrueFalseCard
             {...d}

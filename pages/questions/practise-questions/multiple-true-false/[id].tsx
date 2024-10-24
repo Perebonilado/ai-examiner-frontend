@@ -139,7 +139,7 @@ const MultipleTrueFalse: NextPage = () => {
         </div>
       )}
       {data && (
-        <div className="mb-12">
+        <div>
           <h1 className="text-center text-xl font-semibold">
             {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
             Questions

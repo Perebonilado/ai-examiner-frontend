@@ -83,7 +83,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         0
       );
 
-      const weightOfEachQuestion = 4
+      const weightOfEachQuestion = 4;
       const totalQuestions = data.length * weightOfEachQuestion;
 
       return (totalScoreForAllQuestions / totalQuestions) * 100;
@@ -122,88 +122,105 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   }, [progress]);
 
   return (
-    <section className="flex flex-col gap-12">
-      {data.map((d, idx) => {
-        const questionProgress =
-          progress?.data?.filter((p) => p.selectedQuestionId === d.id) || null;
-        return (
-          <MultipleTrueFalseCard
-            {...d}
-            questionNumber={idx + 1}
-            questionId={questionId}
-            totalQuestionsCount={data.length}
-            submitted={submitted}
-            progress={questionProgress}
-            allowSaveProgress={allowSaveProgress}
-            handleSetQuestionAnswer={({
-              id,
-              questionIndex,
-              selectedAnswer,
-              correctAnswer,
-            }) => {
-              const newQuestionAnswerMap = questionAnswerMap
-                ? { ...questionAnswerMap }
-                : ({} as QuestionAnswerMap);
+    <>
+      <div className="mt-3 mb-12 flex items-center justify-center">
+       {submitted && <Button
+          title="View Score"
+          variant="text"
+          onClick={() => {
+            setModalContent(
+              <SubmissionModal
+                title={title}
+                scorePercentage={progress?.score || 0}
+              />
+            );
+          }}
+        />}
+      </div>
+      <section className="flex flex-col gap-12">
+        {data.map((d, idx) => {
+          const questionProgress =
+            progress?.data?.filter((p) => p.selectedQuestionId === d.id) ||
+            null;
+          return (
+            <MultipleTrueFalseCard
+              {...d}
+              questionNumber={idx + 1}
+              questionId={questionId}
+              totalQuestionsCount={data.length}
+              submitted={submitted}
+              progress={questionProgress}
+              allowSaveProgress={allowSaveProgress}
+              handleSetQuestionAnswer={({
+                id,
+                questionIndex,
+                selectedAnswer,
+                correctAnswer,
+              }) => {
+                const newQuestionAnswerMap = questionAnswerMap
+                  ? { ...questionAnswerMap }
+                  : ({} as QuestionAnswerMap);
 
-              newQuestionAnswerMap[questionIndex] = {
-                ...newQuestionAnswerMap[questionIndex],
-                [id]: {
-                  isCorrect: selectedAnswer === correctAnswer,
-                },
-              };
+                newQuestionAnswerMap[questionIndex] = {
+                  ...newQuestionAnswerMap[questionIndex],
+                  [id]: {
+                    isCorrect: selectedAnswer === correctAnswer,
+                  },
+                };
 
-              setQuestionAnswerMap(newQuestionAnswerMap);
-            }}
-          />
-        );
-      })}
-
-      <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
-        {!submitted ? (
-          <>
-            <Button
-              title="Submit"
-              size="large"
-              onClick={() => {
-                handleSubmitted();
-
-                if (allowSaveScore) {
-                  saveScore({
-                    documentId: documentId,
-                    questionId,
-                    score: calculateScorePercentage(),
-                  });
-                } else {
-                  setModalContent(
-                    <SubmissionModal
-                      title={title}
-                      scorePercentage={calculateScorePercentage()}
-                    />
-                  );
-                }
-
-                if (allowSaveProgress) {
-                  submitProgress({
-                    clearExistingProgress: false,
-                    id: questionId,
-                    status: "submitted",
-                  });
-                }
+                setQuestionAnswerMap(newQuestionAnswerMap);
               }}
             />
-          </>
-        ) : (
-          <div>
-            <Button
-              title="Done"
-              onClick={handleDone}
-              size="large"
-              variant="outlined"
-            />
-          </div>
-        )}
-      </div>
-    </section>
+          );
+        })}
+
+        <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
+          {!submitted ? (
+            <>
+              <Button
+                title="Submit"
+                size="large"
+                onClick={() => {
+                  handleSubmitted();
+
+                  if (allowSaveScore) {
+                    saveScore({
+                      documentId: documentId,
+                      questionId,
+                      score: calculateScorePercentage(),
+                    });
+                  } else {
+                    setModalContent(
+                      <SubmissionModal
+                        title={title}
+                        scorePercentage={calculateScorePercentage()}
+                      />
+                    );
+                  }
+
+                  if (allowSaveProgress) {
+                    submitProgress({
+                      clearExistingProgress: false,
+                      id: questionId,
+                      status: "submitted",
+                    });
+                  }
+                }}
+              />
+            </>
+          ) : (
+            <div>
+              <Button
+                title="Done"
+                onClick={handleDone}
+                size="large"
+                variant="outlined"
+              />
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   );
 };
 

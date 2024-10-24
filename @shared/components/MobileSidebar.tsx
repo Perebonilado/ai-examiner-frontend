@@ -61,7 +61,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
     const activeRoute = typeBasedRoutes.find(
       (r) => r.route === router.pathname
     );
-    console.log(activeRoute, router.pathname)
+    
     if (activeRoute) {
       if (activeRoute.type === "web") {
         setIsWebRoute(true);

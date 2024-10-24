@@ -1,4 +1,3 @@
-import ToolTip from "@/@shared/components/ToolTip";
 import DropDown from "@/@shared/ui/Input/DropDown";
 import React, { FC, useEffect, useState } from "react";
 import { useFormik, FormikProvider, Form } from "formik";
@@ -121,10 +120,6 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
               <div>
                 <label className="text-base font-semibold flex items-center gap-4">
                   Study with{" "}
-                  <ToolTip
-                    id="q_generationuu"
-                    message="Choose the type of questions you would love to generate"
-                  />
                 </label>
                 <DropDown
                   options={
@@ -145,10 +140,6 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
               <div>
                 <label className="text-base font-semibold flex items-center gap-4">
                   Total questions{" "}
-                  <ToolTip
-                    id="q_generation"
-                    message="Please note that generating more questions typically takes more time"
-                  />
                 </label>
                 <DropDown
                   options={generateQustionCountOptions(permissions.maxQA)}
@@ -161,7 +152,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                 />
               </div>
 
-              <div className="flex items-center gap-3">
+              {formik.values.questionType == "3" && <div className="flex items-center gap-3">
                 <Switch
                   disabled={false}
                   handleChecked={() => {
@@ -170,11 +161,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                   label="Include Case Studies"
                   isChecked={includeUseCases}
                 />
-                <ToolTip
-                  id="use_case"
-                  message="This will generate questions with real life scenarios"
-                />
-              </div>
+              </div>}
 
               {permissions.canUseAdvancedPreferences && (
                 <div>
@@ -203,10 +190,6 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                             }}
                             isChecked={isAdvanced}
                             label="Select Topics"
-                          />
-                          <ToolTip
-                            id="adv"
-                            message="Enable to generate topics"
                           />
                         </div>
                       }

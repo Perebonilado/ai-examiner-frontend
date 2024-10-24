@@ -15,6 +15,7 @@ export const typeBasedRoutes: {
   { route: "/", type: "web" },
   { route: "/questions/shared/multiple-choice/[id]", type: "web_and_app" },
   { route: "/questions/shared/flash-cards/[id]", type: "web_and_app" },
+  { route: "/questions/shared/multiple-true-false/[id]", type: "web_and_app" },
   { route: "/pricing", type: "web_and_app" },
 ];
 

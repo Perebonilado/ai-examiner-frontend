@@ -19,6 +19,7 @@ import DotsIcon from "@/icons/DotsIcon";
 import Dialog from "@/@shared/components/Dialog";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
+import { GetQuestionByIdModel } from "@/models/questions.model";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -58,7 +59,7 @@ const Practice: NextPage = () => {
 
   useEffect(() => {
     if (isLoading) {
-      setModalContent(<AppLoader />);
+      setModalContent(<AppLoader loaderMessage="Loading test" />);
     } else {
       setModalContent(null);
     }
@@ -134,7 +135,7 @@ const Practice: NextPage = () => {
                 setModalContent(
                   <Dialog>
                     <MCQItemContainerPDF
-                      data={data.data}
+                      data={(data as GetQuestionByIdModel).data}
                       title={capitalizeFirstLetterOfEachWord(
                         data.documentTitle.toLowerCase()
                       )}
@@ -180,7 +181,7 @@ const Practice: NextPage = () => {
         <div>
           {data && (
             <MCQContainer
-              data={data.data}
+              data={(data as GetQuestionByIdModel).data}
               handleDone={() => {
                 router.push(`/questions/view-questions/${data.documentId}`);
               }}

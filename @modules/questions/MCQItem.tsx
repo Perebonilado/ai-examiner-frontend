@@ -36,7 +36,6 @@ const MCQItem: FC<Props> = ({
   questionNumber,
   correctAnswerId,
   submitted,
-  isResetSelection,
   documentId,
   totalQuestionsCount,
   selectedOptionFromProgress,

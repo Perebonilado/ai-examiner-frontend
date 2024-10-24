@@ -4,6 +4,7 @@ import {
   CreateScorePayloadModel,
   DeleteQuestionModel,
   GenerateQuestionsPayloadModel,
+  GetMultipleTrueFalseQuestionByIdModel,
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
@@ -38,7 +39,7 @@ export const QuestionsService = createApi({
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["question-summary", "single-question"],
   endpoints: (build) => ({
-    getQuestionsById: build.query<GetQuestionByIdModel, string>({
+    getQuestionsById: build.query<GetQuestionByIdModel | GetMultipleTrueFalseQuestionByIdModel, string>({
       query: (id) => ({
         url: `/${id}`,
         method: "GET",
@@ -136,6 +137,9 @@ export const QuestionsService = createApi({
         },
         body,
       }),
+      extraOptions: {
+        triggerLoading: false
+      },
       invalidatesTags: ["question-summary"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
         try {

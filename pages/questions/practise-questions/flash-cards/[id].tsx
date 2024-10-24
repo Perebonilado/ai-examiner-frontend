@@ -19,6 +19,7 @@ import DotsIcon from "@/icons/DotsIcon";
 import Dialog from "@/@shared/components/Dialog";
 import ShareIcon from "@/icons/ShareIcon";
 import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
+import { GetQuestionByIdModel } from "@/models/questions.model";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
@@ -136,7 +137,7 @@ const FlashCards: NextPage = () => {
         {data && (
           <div className="mt-14">
             <FlashCardItemContainer
-              data={data.data.map((d) => {
+              data={(data as GetQuestionByIdModel).data.map((d) => {
                 const answer = d.options.find(
                   (opt) => opt.id === d.correctAnswerId
                 )?.value;

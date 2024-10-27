@@ -9,6 +9,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { setLoading, setLoadingMessage } from "@/features/loaderSlice";
 import { toast } from "react-toastify";
+import { parse } from "ppt-parser";
 
 export const baseQueryWithLogoutOnTokenExpiration = (
   baseQuery: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError>
@@ -57,7 +58,6 @@ export const baseQueryWithLogoutOnTokenExpiration = (
 export const getFileNameWithoutExtension = (name: string) => {
   return name.substring(0, name.lastIndexOf(".")) || name;
 };
-
 
 export const secondsToMilliSeconds = (seconds: number): number => {
   return seconds * milliSecondToSecondConversionRate;
@@ -230,3 +230,22 @@ export const removeHyphens = (input: string): string =>
 
 export const capitalizeWords = (input: string): string =>
   input.replace(/\b\w/g, (char) => char.toUpperCase());
+
+export const convertPPTFilesToText = async (file: File) => {
+  try {
+    const reader = new FileReader();
+    const  options  =  { 
+      slideFactor : 75  /  914400 ,  // Slide size conversion factor, default 96 / 914400 
+      fontsizeFactor : 100  /  96 ,  // Font size conversion factor, default 100 / 75 
+    }
+    console.log('called')
+    reader.onload = async () => {
+      const json = await parse(file, options);
+      console.log(json);
+    };
+    reader.readAsArrayBuffer(file)
+  } catch (error) {
+    console.log(error)
+    toast.error("Error converting file");
+  }
+};

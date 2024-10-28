@@ -86,7 +86,7 @@ const GenerateQuestionsForm: FC = () => {
     },
   ] = useUploadFileMutation();
 
-  const allowedMimeTypes = ["docx", "doc", "pdf", "pptx", "txt"];
+  const allowedMimeTypes = ["docx", "doc", "pdf", "pptx", "txt", "ppt"];
 
   const [file, setFile] = useState<File | null>(null);
 

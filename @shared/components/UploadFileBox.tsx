@@ -232,8 +232,18 @@ async function extractTextFromScannedPdf(
     let fullText = "";
     let pendingOCRPromises: Promise<string>[] = [];
 
-    for (let i = start; i < end; i++) {
-      const page = await pdf.getPage(i + 1);
+    const numPages = pdf.numPages;
+    const endIndex = end ? end : numPages;
+    const startIndex = start ? start : 1;
+
+    const pages: number[] = [];
+
+    for (let i = startIndex; i <= endIndex; i++) {
+      pages.push(i);
+    }
+
+    for (const pageNumber of pages) {
+      const page = await pdf.getPage(pageNumber);
       const viewport = page.getViewport({ scale: SCALE });
 
       // Set canvas size to match page viewport dimensions
@@ -262,14 +272,17 @@ async function extractTextFromScannedPdf(
           return text;
         })
         .catch((error) => {
-          console.error(`Error processing page ${i + 1}:`, error);
+          console.error(`Error processing page ${pageNumber}:`, error);
           return ""; // Skip this page on error
         });
 
       pendingOCRPromises.push(ocrPromise);
 
       // Limit concurrent OCR operations
-      if (pendingOCRPromises.length >= MAX_CONCURRENT_OCR || i === end - 1) {
+      if (
+        pendingOCRPromises.length >= MAX_CONCURRENT_OCR ||
+        pageNumber === endIndex
+      ) {
         const ocrResults = await Promise.all(pendingOCRPromises);
         fullText += ocrResults.join("\n\n");
         pendingOCRPromises = []; // Reset for next batch
@@ -277,7 +290,7 @@ async function extractTextFromScannedPdf(
 
       // Progress tracking (for browsers)
       if (typeof window !== "undefined") {
-        const progress = Math.round(((i + 1) / end) * 100);
+        const progress = Math.round((pageNumber / endIndex) * 100);
         if (handleProgress) handleProgress(`${progress}%`);
       }
     }

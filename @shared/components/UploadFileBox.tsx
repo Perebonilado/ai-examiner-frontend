@@ -8,9 +8,15 @@ import { convertMegaBytesToBytes, getFileNameWithoutExtension } from "@/utils";
 import Spinner from "./Spinner";
 import { useModalContext } from "@/contexts/ModalContext";
 import PDFViewer from "@/@modules/home/PDFViewer";
+import Tesseract from "tesseract.js";
 
 import { pdfjs } from "react-pdf";
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
+
+const options = {
+  cMapUrl: "/cmaps/",
+  standardFontDataUrl: "/standard_fonts/",
+};
 
 interface Props {
   handleSelectFile: (
@@ -45,21 +51,13 @@ const UploadFileBox: FC<Props> = ({
   };
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [ocrProgress, setOcrProgress] = useState<string | null>(null);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   const { setModalContent } = useModalContext();
-
-  const createFileFromText = (text: string, fileName: string) => {
-    // Create a new File object using the text
-    const file = new File([text], fileName, {
-      type: "text/plain",
-    });
-
-    return file;
-  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -79,19 +77,46 @@ const UploadFileBox: FC<Props> = ({
                     Number(start),
                     Number(end)
                   );
-                  if (!text.trim()) {
-                    setPdfProcessing(false);
-                    toast.error(
-                      "Scanned PDFs or PDFs with only images are not allowed"
+                  if (!text.trim().length) {
+                    const scannedText = await extractTextFromScannedPdf(
+                      file,
+                      Number(start),
+                      Number(end),
+                      (progress) => {
+                        setOcrProgress(progress);
+                      }
                     );
-                    return;
+
+                    if (!scannedText.trim().length) {
+                      toast.error("Error processing file");
+                      setOcrProgress(null);
+                      setPdfProcessing(false);
+                      return;
+                    }
+
+                    const newTxtFile = createFileFromText(
+                      scannedText.trim(),
+                      `${getFileNameWithoutExtension(file.name)}.txt`
+                    );
+
+                    setPdfProcessing(false);
+                    setOcrProgress(null);
+
+                    if (newTxtFile) {
+                      handleSelectFile(newTxtFile);
+
+                      return;
+                    }
                   }
+
                   const newTxtFile = createFileFromText(
                     text,
                     `${getFileNameWithoutExtension(file.name)}.txt`
                   );
                   setPdfProcessing(false);
-                  handleSelectFile(newTxtFile);
+                  if (newTxtFile) {
+                    handleSelectFile(newTxtFile);
+                  }
                   setModalContent(null);
                 }}
               />
@@ -108,51 +133,6 @@ const UploadFileBox: FC<Props> = ({
       setPdfProcessing(false);
       toast.error(("An error occured while attaching file " + error) as string);
     }
-  };
-
-  const extractText = (
-    file: File,
-    startPage = 1,
-    endPage?: number
-  ): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      let extractedText = "";
-
-      reader.onload = async (e) => {
-        try {
-          const typedarray = new Uint8Array(e.target?.result as ArrayBuffer);
-          const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
-          const numPages = pdf.numPages;
-          const endIndex = endPage ? endPage : numPages;
-          const startIndex = startPage ? startPage : 1;
-
-          const pages: number[] = [];
-
-          for (let i = startIndex; i <= endIndex; i++) {
-            pages.push(i);
-          }
-
-          for (const pageNumber of pages) {
-            const page = await pdf.getPage(pageNumber);
-            const textContent = await page.getTextContent();
-
-            textContent.items.forEach((item: any) => {
-              const { str } = item;
-              extractedText += str + " ";
-            });
-          }
-
-          resolve(extractedText);
-        } catch (error) {
-          reject(error);
-        }
-      };
-
-      reader.onerror = (error) => reject(error);
-
-      reader.readAsArrayBuffer(file);
-    });
   };
 
   return isClient ? (
@@ -216,7 +196,7 @@ const UploadFileBox: FC<Props> = ({
             <div className="flex flex-col items-center justify-center gap-3">
               <Spinner />
               <p className="text-center truncate text-xs font-semibold">
-                Processing File
+                Processing File {ocrProgress && ocrProgress}
               </p>
             </div>
           )}
@@ -229,3 +209,164 @@ const UploadFileBox: FC<Props> = ({
 };
 
 export default UploadFileBox;
+
+async function extractTextFromScannedPdf(
+  pdfFile: File,
+  start: number,
+  end: number,
+  handleProgress?: (progress: string) => void
+): Promise<string> {
+  const SCALE = 1.2; // Slightly downscaled for better memory efficiency
+  const MAX_CONCURRENT_OCR = 3; // Limit OCR concurrency for memory optimization
+
+  const canvas = document.createElement("canvas");
+  try {
+    const pdfData = new Uint8Array(await pdfFile.arrayBuffer());
+    const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
+
+    const context = canvas.getContext("2d", {
+      alpha: false,
+      willReadFrequently: true,
+    });
+
+    let fullText = "";
+    let pendingOCRPromises: Promise<string>[] = [];
+
+    for (let i = start; i < end; i++) {
+      const page = await pdf.getPage(i + 1);
+      const viewport = page.getViewport({ scale: SCALE });
+
+      // Set canvas size to match page viewport dimensions
+      canvas.width = viewport.width;
+      canvas.height = viewport.height;
+
+      // Render page to canvas
+      await page.render({
+        canvasContext: context!,
+        viewport,
+      }).promise;
+
+      // Compress and prepare blob
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob(
+          (blob) =>
+            blob ? resolve(blob) : reject(new Error("Blob conversion failed")),
+          "image/jpeg",
+          0.6
+        );
+      });
+
+      // OCR operation with limited concurrency
+      const ocrPromise = Tesseract.recognize(blob, "eng")
+        .then(({ data: { text } }) => {
+          return text;
+        })
+        .catch((error) => {
+          console.error(`Error processing page ${i + 1}:`, error);
+          return ""; // Skip this page on error
+        });
+
+      pendingOCRPromises.push(ocrPromise);
+
+      // Limit concurrent OCR operations
+      if (pendingOCRPromises.length >= MAX_CONCURRENT_OCR || i === end - 1) {
+        const ocrResults = await Promise.all(pendingOCRPromises);
+        fullText += ocrResults.join("\n\n");
+        pendingOCRPromises = []; // Reset for next batch
+      }
+
+      // Progress tracking (for browsers)
+      if (typeof window !== "undefined") {
+        const progress = Math.round(((i + 1) / end) * 100);
+        if (handleProgress) handleProgress(`${progress}%`);
+      }
+    }
+
+    return fullText.trim();
+  } catch (error) {
+    throw new Error(`Failed to extract text: ${(error as Error).message}`);
+  } finally {
+    // Clean up
+    canvas.width = 0;
+    canvas.height = 0;
+  }
+}
+
+const createFileFromText = (
+  text: string,
+  fileName: string,
+  mimeType: string = "text/plain"
+) => {
+  // Validate text content is non-empty
+  if (!text?.trim().length) {
+    toast.error("Text content cannot be empty or contain only whitespace");
+    return;
+  }
+
+  if (!fileName || typeof fileName !== "string") {
+    toast.error("File name is required and must be a string");
+    return;
+  }
+
+  // Create Blob with the validated text content
+  const blob = new Blob([text], { type: mimeType });
+
+  // Verify blob size as a safety check
+  if (blob.size === 0) {
+    toast.error("Failed to create file: resulting blob is empty");
+    return;
+  }
+
+  // Create File object from Blob
+  const file = new File([blob], fileName, {
+    type: mimeType,
+    lastModified: new Date().getTime(),
+  });
+
+  return file;
+};
+
+const extractText = (
+  file: File,
+  startPage = 1,
+  endPage?: number
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    let extractedText = "";
+
+    reader.onload = async (e) => {
+      try {
+        const typedarray = new Uint8Array(e.target?.result as ArrayBuffer);
+        const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
+        const numPages = pdf.numPages;
+        const endIndex = endPage ? endPage : numPages;
+        const startIndex = startPage ? startPage : 1;
+
+        const pages: number[] = [];
+
+        for (let i = startIndex; i <= endIndex; i++) {
+          pages.push(i);
+        }
+
+        for (const pageNumber of pages) {
+          const page = await pdf.getPage(pageNumber);
+          const textContent = await page.getTextContent();
+
+          textContent.items.forEach((item: any) => {
+            const { str } = item;
+            extractedText += str + " ";
+          });
+        }
+
+        resolve(extractedText);
+      } catch (error) {
+        reject(error);
+      }
+    };
+
+    reader.onerror = (error) => reject(error);
+
+    reader.readAsArrayBuffer(file);
+  });
+};

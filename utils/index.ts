@@ -170,6 +170,13 @@ export const convertMegaBytesToBytes = (byte: number): number => {
   return byte * Math.pow(conversationRate, 2);
 };
 
+
+export const bytesToMegabytes = (bytes: number): number => {
+  const BYTES_IN_KILOBYTE = 1024;
+  const KILOBYTES_IN_MEGABYTE = 1024;
+  return bytes / (BYTES_IN_KILOBYTE * KILOBYTES_IN_MEGABYTE);
+}
+
 export const generateQustionCountOptions = (maxCount: number) => {
   if (maxCount <= 5) {
     return [

@@ -4,7 +4,11 @@ import Button from "../ui/Button";
 import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
-import { bytesToMegabytes, convertMegaBytesToBytes, getFileNameWithoutExtension } from "@/utils";
+import {
+  bytesToMegabytes,
+  convertMegaBytesToBytes,
+  getFileNameWithoutExtension,
+} from "@/utils";
 import Spinner from "./Spinner";
 import { useModalContext } from "@/contexts/ModalContext";
 import PDFViewer from "@/@modules/home/PDFViewer";
@@ -106,8 +110,13 @@ const UploadFileBox: FC<Props> = ({
 
   useEffect(() => {
     if (stagedImages) {
-      const currentFileSizeBytes = stagedImages.reduce((acc, b)=>acc + b.file.size, 0)
-      const currentFileSizeMb = Number(bytesToMegabytes(currentFileSizeBytes).toFixed(2))
+      const currentFileSizeBytes = stagedImages.reduce(
+        (acc, b) => acc + b.file.size,
+        0
+      );
+      const currentFileSizeMb = Number(
+        bytesToMegabytes(currentFileSizeBytes).toFixed(2)
+      );
 
       setModalContent(
         <StagedImagesDialog
@@ -130,9 +139,9 @@ const UploadFileBox: FC<Props> = ({
 
               setStagedImages(filteredStagedFiles);
 
-              if(filteredStagedFiles.length === 0) {
-                setModalContent(null)
-                setStagedImages(null)
+              if (filteredStagedFiles.length === 0) {
+                setModalContent(null);
+                setStagedImages(null);
               }
             }}
           />
@@ -300,8 +309,13 @@ const UploadFileBox: FC<Props> = ({
               <AttachedFileInfo
                 handleDelete={() => {
                   handleDeleteFile();
-                  if (filesRef.current && filesRef.current.value)
+                  if (filesRef.current && filesRef.current.value) {
                     filesRef.current.value = "";
+                  }
+
+                  if (imagesRef.current && imagesRef.current.value) {
+                    imagesRef.current.value = "";
+                  }
                 }}
                 fileName={attachedFile.name}
               />

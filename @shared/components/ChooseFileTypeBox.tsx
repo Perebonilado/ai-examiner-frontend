@@ -11,7 +11,7 @@ const ChooseFileTypeBox: FC<Props> = ({
   handleSelectImages,
 }) => {
   return (
-    <div className="bg-white rounded-xl border border-grey-200 absolute bottom-full -right-8 w-full max-w-[145px] flex flex-col px-2">
+    <div className="bg-white rounded-xl border border-grey-200 absolute bottom-full right-1/2 translate-x-1/2 w-full max-w-[180px] flex flex-col px-2">
       <div className="border-b border-b-gray-300 p-4">
         <Button
           title="Select Images"

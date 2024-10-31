@@ -4,13 +4,22 @@ import Button from "../ui/Button";
 import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
-import { convertMegaBytesToBytes, getFileNameWithoutExtension } from "@/utils";
+import { bytesToMegabytes, convertMegaBytesToBytes, getFileNameWithoutExtension } from "@/utils";
 import Spinner from "./Spinner";
 import { useModalContext } from "@/contexts/ModalContext";
 import PDFViewer from "@/@modules/home/PDFViewer";
 import Tesseract from "tesseract.js";
 
 import { pdfjs } from "react-pdf";
+import ChooseFileTypeBox from "./ChooseFileTypeBox";
+import useClickOutside from "@/hooks/useClickOutside";
+import StagedImageItemContainer from "./StagedImageItemContainer";
+import Dialog from "./Dialog";
+import StagedImagesDialog from "./StagedImagesDialog";
+import { StagedImage } from "./StagedImageItem";
+import { progress } from "framer-motion";
+import { useSelector } from "react-redux";
+import { RootState } from "@/config/redux-config";
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 const options = {
@@ -40,10 +49,11 @@ const UploadFileBox: FC<Props> = ({
   uploadLoading,
   maxFileSizeMB = 10,
 }) => {
-  const inputRef = useRef<ElementRef<"input">>(null);
-  const validateFileSize = (file: File) => {
+  const filesRef = useRef<ElementRef<"input">>(null);
+  const imagesRef = useRef<ElementRef<"input">>(null);
+  const validateFileSize = (fileSize: number) => {
     const maxSizeInBytes = convertMegaBytesToBytes(maxFileSizeMB);
-    if (file.size > maxSizeInBytes) {
+    if (fileSize > maxSizeInBytes) {
       return false;
     } else {
       return true;
@@ -52,6 +62,11 @@ const UploadFileBox: FC<Props> = ({
   const [pdfProcessing, setPdfProcessing] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [ocrProgress, setOcrProgress] = useState<string | null>(null);
+  const [isChooseFileTypePopUp, setIsChooseFileTypePopUp] = useState(false);
+  const uploadButtonContainerRef = useClickOutside<ElementRef<"div">>(() => {
+    setIsChooseFileTypePopUp(false);
+  });
+  const [stagedImages, setStagedImages] = useState<StagedImage[] | null>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -59,11 +74,95 @@ const UploadFileBox: FC<Props> = ({
 
   const { setModalContent } = useModalContext();
 
+  const handleUploadExtractedTextFromImages = async () => {
+    setModalContent(null);
+    setPdfProcessing(true);
+    const text = await extractTextFromImages(
+      stagedImages as StagedImage[],
+      (progress) => {
+        setOcrProgress(progress);
+      }
+    );
+
+    if (!text.trim().length) {
+      toast.error("Error processing images");
+      setOcrProgress(null);
+      setPdfProcessing(false);
+      return;
+    }
+
+    const fileName = "Untitled.txt";
+    const newTxtFile = createFileFromText(text.trim(), fileName);
+
+    setPdfProcessing(false);
+    setOcrProgress(null);
+
+    if (newTxtFile) {
+      handleSelectFile(newTxtFile);
+
+      return;
+    }
+  };
+
+  useEffect(() => {
+    if (stagedImages) {
+      const currentFileSizeBytes = stagedImages.reduce((acc, b)=>acc + b.file.size, 0)
+      const currentFileSizeMb = Number(bytesToMegabytes(currentFileSizeBytes).toFixed(2))
+
+      setModalContent(
+        <StagedImagesDialog
+          handleUploadFiles={async () => {
+            await handleUploadExtractedTextFromImages();
+          }}
+          allowedFileSize={maxFileSizeMB}
+          currentFileSize={currentFileSizeMb}
+          handleCancel={() => {
+            setModalContent(null);
+            setStagedImages(null);
+          }}
+        >
+          <StagedImageItemContainer
+            data={stagedImages}
+            handleDelete={(id) => {
+              const filteredStagedFiles = stagedImages.filter(
+                (img) => img.id !== id
+              );
+
+              setStagedImages(filteredStagedFiles);
+
+              if(filteredStagedFiles.length === 0) {
+                setModalContent(null)
+                setStagedImages(null)
+              }
+            }}
+          />
+        </StagedImagesDialog>
+      );
+    }
+  }, [stagedImages]);
+
+  const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      if (e.target.files?.length) {
+        const stagedFiles: { id: number; file: File }[] = [];
+        for (let i = 0; i < e.target.files.length; i++) {
+          stagedFiles.push({
+            id: i,
+            file: e.target.files[i],
+          });
+        }
+        setStagedImages(stagedFiles);
+      }
+    } catch (error) {
+      toast.error(("An error occured while attaching file " + error) as string);
+    }
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
       if (e.target.files) {
         const file = e.target.files[0];
-        if (file && validateFileSize(file)) {
+        if (file && validateFileSize(file.size)) {
           if (file.type.includes("pdf")) {
             const fileUrl = URL.createObjectURL(file);
             setModalContent(
@@ -138,13 +237,23 @@ const UploadFileBox: FC<Props> = ({
   return isClient ? (
     <>
       <input
-        ref={inputRef}
+        ref={filesRef}
         type="file"
         onChange={async (e) => {
           await handleFileChange(e);
         }}
         className="hidden"
         accept={allowedTypes.map((t) => `.${t}`).join(", ")}
+      />
+      <input
+        ref={imagesRef}
+        type="file"
+        onChange={async (e) => {
+          await handleImagesChange(e);
+        }}
+        className="hidden"
+        accept=".png, .jpeg, .jpg"
+        multiple
       />
       <div>
         <label className={`text-base font-semibold mb-2 block`}>
@@ -155,10 +264,24 @@ const UploadFileBox: FC<Props> = ({
             <UploadIcon width={80} height={80} />
           )}
           {!attachedFile && !uploadLoading && !pdfProcessing && (
-            <div className="flex flex-col justify-center gap-3">
+            <div
+              className="flex flex-col justify-center gap-3 relative"
+              ref={uploadButtonContainerRef}
+            >
+              {isChooseFileTypePopUp && (
+                <ChooseFileTypeBox
+                  handleSelectFiles={() => {
+                    filesRef.current?.click();
+                    setIsChooseFileTypePopUp(false);
+                  }}
+                  handleSelectImages={() => {
+                    imagesRef?.current?.click();
+                  }}
+                />
+              )}
               <Button
                 onClick={() => {
-                  inputRef.current?.click();
+                  setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
                 }}
                 title="Click to upload file"
                 size="large"
@@ -177,8 +300,8 @@ const UploadFileBox: FC<Props> = ({
               <AttachedFileInfo
                 handleDelete={() => {
                   handleDeleteFile();
-                  if (inputRef.current && inputRef.current.value)
-                    inputRef.current.value = "";
+                  if (filesRef.current && filesRef.current.value)
+                    filesRef.current.value = "";
                 }}
                 fileName={attachedFile.name}
               />
@@ -209,6 +332,53 @@ const UploadFileBox: FC<Props> = ({
 };
 
 export default UploadFileBox;
+
+async function extractTextFromImages(
+  files: StagedImage[],
+  handleProgress: (progress: string) => void
+) {
+  try {
+    let fullText = "";
+    let pendingOCRPromises: Promise<string>[] = [];
+    const MAX_CONCURRENT_OCR = 3; // Limit OCR concurrency for memory optimization
+    let filesProcessed = 0;
+
+    for (const file of files) {
+      const blob = new Blob([file.file], { type: file.file.type });
+
+      const ocrPromise = Tesseract.recognize(blob, "eng")
+        .then(({ data: { text } }) => {
+          return text;
+        })
+        .catch((error) => {
+          console.error(`Error processing page Image`);
+          return ""; // Skip this page on error
+        });
+
+      pendingOCRPromises.push(ocrPromise);
+
+      filesProcessed += 1;
+      if (
+        pendingOCRPromises.length >= MAX_CONCURRENT_OCR ||
+        filesProcessed === files.length
+      ) {
+        const ocrResults = await Promise.all(pendingOCRPromises);
+        fullText += ocrResults.join("\n\n");
+        pendingOCRPromises = []; // Reset for next batch
+      }
+
+      // Progress tracking (for browsers)
+      if (typeof window !== "undefined") {
+        const progress = Math.round((filesProcessed / files.length) * 100);
+        if (handleProgress) handleProgress(`${progress}%`);
+      }
+    }
+
+    return fullText.trim();
+  } catch (error) {
+    throw new Error(`Failed to extract text: ${(error as Error).message}`);
+  }
+}
 
 async function extractTextFromScannedPdf(
   pdfFile: File,

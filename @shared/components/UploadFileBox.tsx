@@ -297,9 +297,9 @@ const UploadFileBox: FC<Props> = ({
                 variant="outlined"
                 type="button"
               />
-              <p className="text-xs italic">
+              <p className="text-xs text-center italic">
                 Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf,
-                docx, pptx, txt
+                docx, pptx, ppt, jpeg, png, jpg, txt
               </p>
             </div>
           )}

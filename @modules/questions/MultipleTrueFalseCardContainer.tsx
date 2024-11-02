@@ -62,9 +62,57 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
     { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true }
   );
 
+  const handleSetQuestionAnswerMap = () => {
+    if (progress && progress?.data && data) {
+
+      // get the questions that have been answered
+      const answeredQuestionIds = Array.from(
+        new Set(progress.data.map((d) => d.selectedQuestionId))
+      );
+
+      // initialize an object to add the answered progress
+      const newQuestionAnswerMapItem: QuestionAnswerMap = {};
+
+      answeredQuestionIds.forEach((questionId) => {
+
+        // get the question number
+        const questionNumber = data.findIndex((q) => q.id === questionId) + 1;
+        newQuestionAnswerMapItem[questionNumber] = {};
+
+        // get the users answering progress for current question
+        const questionAnswers = progress.data.filter(
+          (qa) => qa.selectedQuestionId === questionId
+        );
+
+
+        for (const selectionOption of questionAnswers) {
+          // get the option from data to evaluate if user selected correct answer
+          const optionFromData = data.filter((d)=>d.id === questionId)[0]?.options.filter((options)=>options.id === selectionOption.selectedOptionId)
+          const isCorrect = optionFromData[0]?.answer === selectionOption.selectedAnswer
+
+          // add progress to new map//
+          newQuestionAnswerMapItem[questionNumber] = {
+            ...newQuestionAnswerMapItem[questionNumber],
+            [selectionOption.selectedOptionId]: {
+              isCorrect,
+            },
+          };
+        }
+      });
+      
+      setQuestionAnswerMap(newQuestionAnswerMapItem)
+    }
+  };
+
   useEffect(() => {
     if (params.id) setQuestionId(params.id as string);
   }, [params]);
+
+  useEffect(() => {
+    if (progress?.data && data) {
+      handleSetQuestionAnswerMap();
+    }
+  }, [progress, data]);
 
   const calculateScorePercentage = () => {
     if (questionAnswerMap) {

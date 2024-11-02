@@ -66,7 +66,6 @@ const MCQItemContainer: FC<Props> = ({
 
   const [calculatedScore, setCalculatedScore] = useState<number | null>(null);
 
-
   useEffect(() => {
     if (isLoading) {
       setModalContent(
@@ -91,16 +90,22 @@ const MCQItemContainer: FC<Props> = ({
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
 
-    for (const item of data) {
-      map[`${item.id}`] = false;
-    }
+    if (progress?.data && data) {
+      for (const item of progress.data) {
+        const questionInfo = data.find((q)=>q?.id === item?.selectedQuestionId)
+        const answerEvaluation = item?.selectedOptionId === questionInfo?.correctAnswerId ? true : false
+        map[`${item.selectedQuestionId}`] = answerEvaluation;
+      }
 
-    setQuestionAnswerMap(map);
+      setQuestionAnswerMap(map);
+    }
   };
 
   useEffect(() => {
-    handleSetQuestionAnswerMap();
-  }, [data]);
+    if (progress?.data && data) {
+      handleSetQuestionAnswerMap();
+    }
+  }, [progress, data]);
 
   const handleSetQuestionAnswerMapItem = (id: string, value: boolean) => {
     const newMap = { ...questionAnswerMap };
@@ -112,7 +117,7 @@ const MCQItemContainer: FC<Props> = ({
     if (questionAnswerMap) {
       const answersArr = Object.values(questionAnswerMap);
 
-      const totalQuestions = answersArr.length;
+      const totalQuestions = data.length;
 
       const totalCorrectAnswers = answersArr.filter((ans) => ans).length;
 

@@ -4,6 +4,7 @@ import MultipleTrueFalseItem from "./MultipleTrueFalseItem";
 import { MultipleTrueFalseQuestionModel } from "@/models/questions.model";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 import { QuestionProgressModel } from "@/models/question-progress.model";
+import QuestionExplanation from "./QuestionExplanation";
 
 interface Props extends MultipleTrueFalseQuestionModel {
   questionNumber: number;
@@ -114,9 +115,9 @@ const MultipleTrueFalseCard: FC<Props> = ({
       </div>
 
       {submitted && (
-        <p className="text-sm font-semibold text-blue-600">
-          Explanation: {explanation}
-        </p>
+        <div className="mt-3">
+          <QuestionExplanation explanation={explanation} />
+        </div>
       )}
     </div>
   );

@@ -32,6 +32,7 @@ interface Props {
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
+  allowViewSource?: boolean;
 }
 
 const MCQItemContainer: FC<Props> = ({
@@ -45,6 +46,7 @@ const MCQItemContainer: FC<Props> = ({
   allowSaveProgress = true,
   allowNotSure = true,
   allowSaveScore = true,
+  allowViewSource = true
 }) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
@@ -194,6 +196,7 @@ const MCQItemContainer: FC<Props> = ({
                 speak={speak}
                 allowSaveProgress={allowSaveProgress}
                 allowNotSure={allowNotSure}
+                allowViewSource={allowViewSource}
               />
             );
           })}

@@ -11,6 +11,15 @@ export interface QuestionsModel {
   hint?: string;
 }
 
+export interface QuestionSourceRequestPayloadModel {
+  question: string;
+  documentId: string;
+}
+
+export interface QuestionSourceRequestModel {
+  data: string;
+}
+
 export interface MultipleTrueFalseQuestionModel {
   id: string;
   question: string;

@@ -8,15 +8,14 @@ import {
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
   GetQuestionsQueryModel,
-  GetSharedQuestionModel,
-  GetSharedQuestionQueryModel,
-  SaveSharedQuestionQueryModel,
+  QuestionSourceRequestModel,
+  QuestionSourceRequestPayloadModel,
 } from "@/models/questions.model";
 import Cookies from "js-cookie";
 import {
   AllQuestionSummaryDto,
   GetQuestionsByIdDto,
-  SharedQuestionDto,
+  QuestionSourceRequestDto,
 } from "@/dto/questions.dto";
 import { baseQueryWithLogoutOnTokenExpiration } from "@/utils";
 import { PermissionService } from "./permission.service";
@@ -39,7 +38,10 @@ export const QuestionsService = createApi({
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["question-summary", "single-question"],
   endpoints: (build) => ({
-    getQuestionsById: build.query<GetQuestionByIdModel | GetMultipleTrueFalseQuestionByIdModel, string>({
+    getQuestionsById: build.query<
+      GetQuestionByIdModel | GetMultipleTrueFalseQuestionByIdModel,
+      string
+    >({
       query: (id) => ({
         url: `/${id}`,
         method: "GET",
@@ -85,6 +87,21 @@ export const QuestionsService = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["question-summary"],
+    }),
+    questionSourceRequest: build.mutation<
+      QuestionSourceRequestModel,
+      QuestionSourceRequestPayloadModel
+    >({
+      query: ({ documentId, question }) => ({
+        url: `/source/${documentId}`,
+        method: "POST",
+        body: {
+          question,
+        },
+      }),
+      extraOptions: {
+        triggerLoading: false
+      }
     }),
     getQuestionSummaries: build.query<
       GetQuestionSummaryModel,
@@ -138,7 +155,7 @@ export const QuestionsService = createApi({
         body,
       }),
       extraOptions: {
-        triggerLoading: false
+        triggerLoading: false,
       },
       invalidatesTags: ["question-summary"],
       onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
@@ -160,7 +177,7 @@ export const QuestionsService = createApi({
       }),
       extraOptions: { triggerLoading: false },
       invalidatesTags: ["question-summary", "single-question"],
-    })
+    }),
   }),
 });
 
@@ -170,4 +187,5 @@ export const {
   useGenerateQuestionsMutation,
   useSaveScoreMutation,
   useDeleteQuestionMutation,
+  useQuestionSourceRequestMutation
 } = QuestionsService;

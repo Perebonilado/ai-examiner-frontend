@@ -97,6 +97,7 @@ const MultipleChoiceShared: NextPage = () => {
             allowNotSure={false}
             allowSaveProgress={false}
             allowSaveScore={false}
+            allowViewSource={false}
             documentId={""}
             title={capitalizeFirstLetterOfEachWord(
               data.documentTitle.toLowerCase()

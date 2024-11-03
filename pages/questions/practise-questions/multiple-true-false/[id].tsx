@@ -12,7 +12,7 @@ import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 import * as moment from "moment";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -24,6 +24,7 @@ import { useSaveProgressMutation } from "@/api-services/question-progress.servic
 import Dialog from "@/@shared/components/Dialog";
 import ShareIcon from "@/icons/ShareIcon";
 import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
+import SubmissionModal from "@/@modules/questions/SubmissionModal";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -115,6 +116,8 @@ const MultipleTrueFalse: NextPage = () => {
     }
   };
 
+  const topOfContainerRef = useRef<ElementRef<"div">>(null);
+
   return (
     <AppLayout>
       <AppHead title="Multiple True False" />
@@ -163,6 +166,7 @@ const MultipleTrueFalse: NextPage = () => {
           <Button title="Reload Questions" onClick={refetch} />
         </div>
       )}
+      <div ref={topOfContainerRef}></div>
       {data && (
         <div>
           <h1 className="text-center text-xl font-semibold">
@@ -197,6 +201,21 @@ const MultipleTrueFalse: NextPage = () => {
           documentId={data.documentId}
           handleDone={() => {
             router.push(`/questions/view-questions/${data.documentId}`);
+          }}
+          handleShowSubmissionModal={({ score, title }) => {
+            setModalContent(
+              <SubmissionModal
+                title={title}
+                scorePercentage={score}
+                handleScrollToTop={() => {
+                  if (topOfContainerRef.current) {
+                    topOfContainerRef.current.scrollIntoView({
+                      behavior: "smooth",
+                    });
+                  }
+                }}
+              />
+            );
           }}
         />
       )}

@@ -245,14 +245,12 @@ export const convertPPTFilesToText = async (file: File) => {
       slideFactor : 75  /  914400 ,  // Slide size conversion factor, default 96 / 914400 
       fontsizeFactor : 100  /  96 ,  // Font size conversion factor, default 100 / 75 
     }
-    console.log('called')
+
     reader.onload = async () => {
       const json = await parse(file, options);
-      console.log(json);
     };
     reader.readAsArrayBuffer(file)
   } catch (error) {
-    console.log(error)
     toast.error("Error converting file");
   }
 };

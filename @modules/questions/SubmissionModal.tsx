@@ -2,14 +2,12 @@ import Avatar from "@/@shared/components/Avatar";
 import React, { forwardRef } from "react";
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
-import {
-  generateDocumentCardColorFromScore,
-  generateScoreColor,
-} from "@/utils";
+import { generateDocumentCardColorFromScore } from "@/utils";
 
 interface Props {
   scorePercentage: number;
   title: string;
+  handleScrollToTop: () => void;
 }
 
 const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
@@ -32,7 +30,9 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
           borderWidth: "2px",
         }}
       >
-        <p className="text-2xl text-center font-bold">{props.scorePercentage.toFixed()}%</p>
+        <p className="text-2xl text-center font-bold">
+          {props.scorePercentage.toFixed()}%
+        </p>
         <p className="text-xs font-semibold">{color.message}</p>
       </div>
 
@@ -42,6 +42,7 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
         title="Review answers"
         onClick={() => {
           setModalContent(null);
+          props.handleScrollToTop();
         }}
         size="large"
       />

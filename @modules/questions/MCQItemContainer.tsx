@@ -22,6 +22,13 @@ interface Props {
   title: string;
   isSubmitted: boolean;
   handleSubmitted: (value: boolean) => void;
+  handleShowSubmissionModal: ({
+    title,
+    score,
+  }: {
+    title: string;
+    score: number;
+  }) => void;
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
@@ -33,6 +40,7 @@ const MCQItemContainer: FC<Props> = ({
   documentId,
   title,
   isSubmitted,
+  handleShowSubmissionModal,
   handleSubmitted,
   allowSaveProgress = true,
   allowNotSure = true,
@@ -78,12 +86,7 @@ const MCQItemContainer: FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      setModalContent(
-        <SubmissionModal
-          title={title}
-          scorePercentage={calculateScorePercentage()}
-        />
-      );
+      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
     }
   }, [isSuccess, isLoading]);
 
@@ -92,8 +95,13 @@ const MCQItemContainer: FC<Props> = ({
 
     if (progress?.data && data) {
       for (const item of progress.data) {
-        const questionInfo = data.find((q)=>q?.id === item?.selectedQuestionId)
-        const answerEvaluation = item?.selectedOptionId === questionInfo?.correctAnswerId ? true : false
+        const questionInfo = data.find(
+          (q) => q?.id === item?.selectedQuestionId
+        );
+        const answerEvaluation =
+          item?.selectedOptionId === questionInfo?.correctAnswerId
+            ? true
+            : false;
         map[`${item.selectedQuestionId}`] = answerEvaluation;
       }
 
@@ -145,12 +153,10 @@ const MCQItemContainer: FC<Props> = ({
             title="View Score"
             variant="text"
             onClick={() => {
-              setModalContent(
-                <SubmissionModal
-                  title={title}
-                  scorePercentage={calculatedScore || progress?.score || 0}
-                />
-              );
+              handleShowSubmissionModal({
+                title,
+                score: calculateScorePercentage(),
+              });
             }}
           />
         )}
@@ -211,12 +217,10 @@ const MCQItemContainer: FC<Props> = ({
                       score: calculateScorePercentage(),
                     });
                   } else {
-                    setModalContent(
-                      <SubmissionModal
-                        title={title}
-                        scorePercentage={calculateScorePercentage()}
-                      />
-                    );
+                    handleShowSubmissionModal({
+                      title,
+                      score: calculateScorePercentage(),
+                    });
                   }
 
                   if (allowSaveProgress) {

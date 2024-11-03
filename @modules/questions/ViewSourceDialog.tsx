@@ -81,7 +81,12 @@ const ViewSourceDialog: FC<Props> = ({
 
         {!isLoading && error && (
           <div className="mx-auto my-4 flex flex-col items-center text-center justify-center">
-            <Button title="Reload References" />
+            <Button
+              title="Reload References"
+              onClick={() => {
+                getQuestionSource({ question, documentId });
+              }}
+            />
             <ErrorMessage message="Oops! let's give that another try" />
           </div>
         )}

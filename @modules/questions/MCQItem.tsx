@@ -14,6 +14,7 @@ import { useSaveProgressMutation } from "@/api-services/question-progress.servic
 import SpeakerIcon from "@/icons/SpeakerIcon";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
+import QuestionExplanation from "./QuestionExplanation";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -173,9 +174,10 @@ const MCQItem: FC<Props> = ({
               </Link>
             ))}
       {submitted && (
-        <p className="text-sm font-semibold text-blue-600">
-          Explanation: {explanation}
-        </p>
+        <div className="mt-3 flex flex-col gap-3 items-center">
+          <QuestionExplanation explanation={explanation} />
+          <Button title="View Source" size="medium" />
+        </div>
       )}
     </div>
   );

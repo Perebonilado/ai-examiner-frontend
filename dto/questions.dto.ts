@@ -20,6 +20,10 @@ export interface GetQuestionsByIdDto {
   topics: { title: string; id: number }[];
 }
 
+export interface QuestionSourceRequestDto {
+  data: string;
+}
+
 export interface QuestionSummaryDto {
   courseDocumentId: string;
   createdOn: Date;

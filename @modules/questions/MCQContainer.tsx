@@ -19,6 +19,7 @@ interface Props {
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
+  allowViewSource?: boolean;
 }
 
 const MCQContainer: FC<Props> = ({
@@ -31,7 +32,8 @@ const MCQContainer: FC<Props> = ({
   handleShowSubmissionModal,
   allowSaveProgress = true,
   allowNotSure = true,
-  allowSaveScore = true
+  allowSaveScore = true,
+  allowViewSource = true
 }) => {
   return (
     <section>
@@ -46,6 +48,7 @@ const MCQContainer: FC<Props> = ({
         allowSaveProgress={allowSaveProgress}
         allowNotSure={allowNotSure}
         allowSaveScore={allowSaveScore}
+        allowViewSource={allowViewSource}
       />
     </section>
   );

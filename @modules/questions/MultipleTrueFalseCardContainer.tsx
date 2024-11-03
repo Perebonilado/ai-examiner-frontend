@@ -19,6 +19,13 @@ interface Props {
   title: string;
   handleSubmitted: () => void;
   handleDone: () => void;
+  handleShowSubmissionModal: ({
+    title,
+    score,
+  }: {
+    title: string;
+    score: number;
+  }) => void;
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
@@ -41,6 +48,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   allowSaveProgress = true,
   allowNotSure = true,
   allowSaveScore = true,
+  handleShowSubmissionModal,
   handleDone,
   documentId,
 }) => {
@@ -64,7 +72,6 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   const handleSetQuestionAnswerMap = () => {
     if (progress && progress?.data && data) {
-
       // get the questions that have been answered
       const answeredQuestionIds = Array.from(
         new Set(progress.data.map((d) => d.selectedQuestionId))
@@ -74,7 +81,6 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
       const newQuestionAnswerMapItem: QuestionAnswerMap = {};
 
       answeredQuestionIds.forEach((questionId) => {
-
         // get the question number
         const questionNumber = data.findIndex((q) => q.id === questionId) + 1;
         newQuestionAnswerMapItem[questionNumber] = {};
@@ -84,11 +90,15 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
           (qa) => qa.selectedQuestionId === questionId
         );
 
-
         for (const selectionOption of questionAnswers) {
           // get the option from data to evaluate if user selected correct answer
-          const optionFromData = data.filter((d)=>d.id === questionId)[0]?.options.filter((options)=>options.id === selectionOption.selectedOptionId)
-          const isCorrect = optionFromData[0]?.answer === selectionOption.selectedAnswer
+          const optionFromData = data
+            .filter((d) => d.id === questionId)[0]
+            ?.options.filter(
+              (options) => options.id === selectionOption.selectedOptionId
+            );
+          const isCorrect =
+            optionFromData[0]?.answer === selectionOption.selectedAnswer;
 
           // add progress to new map//
           newQuestionAnswerMapItem[questionNumber] = {
@@ -99,8 +109,8 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
           };
         }
       });
-      
-      setQuestionAnswerMap(newQuestionAnswerMapItem)
+
+      setQuestionAnswerMap(newQuestionAnswerMapItem);
     }
   };
 
@@ -156,12 +166,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      setModalContent(
-        <SubmissionModal
-          title={title}
-          scorePercentage={calculateScorePercentage()}
-        />
-      );
+      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
     }
   }, [isSuccess, isLoading]);
 
@@ -179,12 +184,10 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
             title="View Score"
             variant="text"
             onClick={() => {
-              setModalContent(
-                <SubmissionModal
-                  title={title}
-                  scorePercentage={calculatedScore || progress?.score || 0}
-                />
-              );
+              handleShowSubmissionModal({
+                title,
+                score: calculateScorePercentage(),
+              });
             }}
           />
         )}
@@ -244,12 +247,10 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
                       score: calculateScorePercentage(),
                     });
                   } else {
-                    setModalContent(
-                      <SubmissionModal
-                        title={title}
-                        scorePercentage={calculateScorePercentage()}
-                      />
-                    );
+                    handleShowSubmissionModal({
+                      title,
+                      score: calculateScorePercentage(),
+                    });
                   }
 
                   if (allowSaveProgress) {

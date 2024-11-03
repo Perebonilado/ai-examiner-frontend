@@ -15,6 +15,8 @@ import SpeakerIcon from "@/icons/SpeakerIcon";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
 import QuestionExplanation from "./QuestionExplanation";
+import ViewSourceDialog from "./ViewSourceDialog";
+import { useQuestionSourceRequestMutation } from "@/api-services/questions.service";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -27,6 +29,7 @@ interface Props extends QuestionsModel {
   speak: (text: string) => void;
   allowSaveProgress?: boolean;
   allowNotSure?: boolean;
+  allowViewSource?: boolean;
 }
 
 const MCQItem: FC<Props> = ({
@@ -43,12 +46,15 @@ const MCQItem: FC<Props> = ({
   handleSetQuestionAnswer,
   allowSaveProgress = true,
   allowNotSure = true,
+  allowViewSource = true,
 }) => {
   const [questionId, setQuestionId] = useState("");
 
   const [selectedOption, setSelectedOption] = useState<QuestionOption | null>(
     null
   );
+
+  const [source, setSource] = useState<string | null>(null);
 
   useEffect(() => {
     if (selectedOptionFromProgress) {
@@ -77,6 +83,26 @@ const MCQItem: FC<Props> = ({
   );
 
   const { setModalContent } = useModalContext();
+
+  const [getQuestionSource, { data, isLoading, error }] =
+    useQuestionSourceRequestMutation();
+
+  useEffect(() => {
+    if (data) {
+      console.log(data.data);
+      setSource(data.data);
+      setModalContent(
+        <ViewSourceDialog
+          question={question}
+          documentId={documentId}
+          handleSourceText={(text) => {
+            setSource(text);
+          }}
+          sourceText={`${data.data}`}
+        />
+      );
+    }
+  }, [data]);
 
   const showSubscribeModalOnDiscussionUnavailable = () => {
     setModalContent(
@@ -175,8 +201,28 @@ const MCQItem: FC<Props> = ({
             ))}
       {submitted && (
         <div className="mt-3 flex flex-col gap-3 items-center">
+          <div className="w-full max-w-[200px]">
+            {allowViewSource && (
+              <Button
+                title="View Source"
+                size="medium"
+                fullWidth
+                onClick={() => {
+                  setModalContent(
+                    <ViewSourceDialog
+                      question={question}
+                      documentId={documentId}
+                      handleSourceText={(text) => {
+                        setSource(text);
+                      }}
+                      sourceText={source}
+                    />
+                  );
+                }}
+              />
+            )}
+          </div>
           <QuestionExplanation explanation={explanation} />
-          <Button title="View Source" size="medium" />
         </div>
       )}
     </div>

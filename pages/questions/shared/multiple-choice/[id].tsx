@@ -8,12 +8,13 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { FC, PropsWithChildren, useEffect, useState } from "react";
+import React, { ElementRef, FC, PropsWithChildren, useEffect, useRef, useState } from "react";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useGetSharedQuestionQuery } from "@/api-services/shared-questions.service";
 import { accessToken } from "@/constants";
 import Cookies from "js-cookie";
 import WebLayout from "@/layouts/WebLayout";
+import SubmissionModal from "@/@modules/questions/SubmissionModal";
 
 const MultipleChoiceShared: NextPage = () => {
   const [id, setId] = useState("");
@@ -51,6 +52,8 @@ const MultipleChoiceShared: NextPage = () => {
     }
   }, [isLoading]);
 
+  const topOfContainerRef = useRef<ElementRef<"div">>(null);
+
   return (
     <LayoutToUse>
       <AppHead title="Multiple Choice" />
@@ -61,7 +64,7 @@ const MultipleChoiceShared: NextPage = () => {
           <Button title="Reload Questions" onClick={refetch} />
         </div>
       )}
-
+      <div ref={topOfContainerRef}></div>
       {data && (
         <>
           <h1 className="text-center text-xl font-semibold">
@@ -98,6 +101,21 @@ const MultipleChoiceShared: NextPage = () => {
             title={capitalizeFirstLetterOfEachWord(
               data.documentTitle.toLowerCase()
             )}
+            handleShowSubmissionModal={({ title, score }) => {
+              setModalContent(
+                <SubmissionModal
+                  title={title}
+                  scorePercentage={score}
+                  handleScrollToTop={() => {
+                    if (topOfContainerRef.current) {
+                      topOfContainerRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                />
+              );
+            }}
           />
         )}
       </div>

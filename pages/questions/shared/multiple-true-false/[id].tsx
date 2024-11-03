@@ -1,4 +1,11 @@
-import React, { FC, PropsWithChildren, useEffect, useState } from "react";
+import React, {
+  ElementRef,
+  FC,
+  PropsWithChildren,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Cookies from "js-cookie";
 import AppLayout from "@/layouts/AppLayout";
 import WebLayout from "@/layouts/WebLayout";
@@ -14,6 +21,7 @@ import Button from "@/@shared/ui/Button";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import MultipleTrueFalseCardContainer from "@/@modules/questions/MultipleTrueFalseCardContainer";
 import { GetMultipleTrueFalseQuestionByIdModel } from "@/models/questions.model";
+import SubmissionModal from "@/@modules/questions/SubmissionModal";
 
 const SharedMultipleTrueFalse: FC = () => {
   const [id, setId] = useState("");
@@ -51,6 +59,8 @@ const SharedMultipleTrueFalse: FC = () => {
     }
   }, [isLoading]);
 
+  const topOfContainerRef = useRef<ElementRef<"div">>(null);
+
   return (
     <LayoutToUse isLoggedIn={isUserLoggedIn}>
       <AppHead title="Multiple Choice" />
@@ -61,7 +71,7 @@ const SharedMultipleTrueFalse: FC = () => {
           <Button title="Reload Questions" onClick={refetch} />
         </div>
       )}
-
+      <div ref={topOfContainerRef}></div>
       {data && (
         <>
           <h1 className="text-center text-xl font-semibold">
@@ -97,6 +107,21 @@ const SharedMultipleTrueFalse: FC = () => {
               } else {
                 router.push("/auth/login");
               }
+            }}
+            handleShowSubmissionModal={({ title, score }) => {
+              setModalContent(
+                <SubmissionModal
+                  title={title}
+                  scorePercentage={score}
+                  handleScrollToTop={() => {
+                    if (topOfContainerRef.current) {
+                      topOfContainerRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                />
+              );
             }}
           />
         )}

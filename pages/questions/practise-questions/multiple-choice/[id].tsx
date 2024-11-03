@@ -9,7 +9,7 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import * as moment from "moment";
 import ChevronLeft from "@/icons/ChevronLeft";
@@ -20,6 +20,7 @@ import Dialog from "@/@shared/components/Dialog";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 import { GetQuestionByIdModel } from "@/models/questions.model";
+import SubmissionModal from "@/@modules/questions/SubmissionModal";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -111,6 +112,8 @@ const Practice: NextPage = () => {
     }
   };
 
+  const topOfContainerRef = useRef<ElementRef<"div">>(null);
+
   return (
     <>
       <AppHead title="Multiple Choice" />
@@ -153,6 +156,7 @@ const Practice: NextPage = () => {
             <Button title="Reload Questions" onClick={refetch} />
           </div>
         )}
+        <div ref={topOfContainerRef}></div>
         {data && (
           <>
             <h1 className="text-center text-xl font-semibold">
@@ -193,6 +197,21 @@ const Practice: NextPage = () => {
               title={capitalizeFirstLetterOfEachWord(
                 data.documentTitle.toLowerCase()
               )}
+              handleShowSubmissionModal={({ title, score }) => {
+                setModalContent(
+                  <SubmissionModal
+                    title={title}
+                    scorePercentage={score}
+                    handleScrollToTop={() => {
+                      if (topOfContainerRef.current) {
+                        topOfContainerRef.current.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                  />
+                );
+              }}
             />
           )}
         </div>

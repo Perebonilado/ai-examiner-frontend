@@ -15,7 +15,6 @@ import Cookies from "js-cookie";
 import {
   AllQuestionSummaryDto,
   GetQuestionsByIdDto,
-  QuestionSourceRequestDto,
 } from "@/dto/questions.dto";
 import { baseQueryWithLogoutOnTokenExpiration } from "@/utils";
 import { PermissionService } from "./permission.service";

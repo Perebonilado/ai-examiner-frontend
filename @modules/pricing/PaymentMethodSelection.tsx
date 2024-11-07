@@ -25,7 +25,7 @@ const PaymentMethodSelection: FC<Props> = ({ handleContinue }) => {
           className="!cursor-pointer w-fit flex items-center text-sm"
         >
           <Checkbox shape="round" checked={selectionOption === "card"} />
-          <p>Debit Card</p>
+          <p>Card</p>
         </div>
 
         <div

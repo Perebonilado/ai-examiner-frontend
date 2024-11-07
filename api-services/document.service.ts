@@ -3,7 +3,6 @@ import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
 import {
   baseQueryWithLogoutOnTokenExpiration,
-  logout,
   secondsToMilliSeconds,
 } from "@/utils";
 import {
@@ -18,6 +17,7 @@ import { AllDocumentsDto, CreateDocumentDto } from "@/dto/document.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
+  timeout: secondsToMilliSeconds(3000),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 

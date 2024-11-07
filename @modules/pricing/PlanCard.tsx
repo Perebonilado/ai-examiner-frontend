@@ -67,14 +67,19 @@ const PlanCard: FC<Props> = ({
       <div className="flex flex-col gap-3 pt-14" style={{ flex: 3 }}>
         <p className="text-xs font-bold">Study with:</p>
         <div className="pb-8 flex flex-col gap-3 border-b border-b-gray-200">
-          {offers?.filter((offer)=>offer.title !== "Region")?.slice(0, 4).map((offer, idx) => {
-            return (
-              <div key={idx} className="flex items-center gap-2 text-sm">
-                {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
-                <p style={{color: offer.isAvailable ? 'black' : '#939393'}}>{offer.title}</p>
-              </div>
-            );
-          })}
+          {offers
+            ?.filter((offer) => offer.title !== "Region")
+            ?.slice(0, 4)
+            .map((offer, idx) => {
+              return (
+                <div key={idx} className="flex items-center gap-2 text-sm">
+                  {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
+                  <p style={{ color: offer.isAvailable ? "black" : "#939393" }}>
+                    {offer.title}
+                  </p>
+                </div>
+              );
+            })}
         </div>
 
         <div className="pt-4">
@@ -134,17 +139,21 @@ const PlanCard: FC<Props> = ({
                 router.push("/new-document");
               } else {
                 // set modal to either pay w trnf/card
-                setModalContent(
-                  <PaymentMethodSelection
-                    handleContinue={(paymentOption) => {
-                      if (paymentOption === "card") {
-                        handlePayWithCard();
-                      } else {
-                        handlePayWithTransfer();
-                      }
-                    }}
-                  />
-                );
+                if (currency === "NGN") {
+                  setModalContent(
+                    <PaymentMethodSelection
+                      handleContinue={(paymentOption) => {
+                        if (paymentOption === "card") {
+                          handlePayWithCard();
+                        } else {
+                          handlePayWithTransfer();
+                        }
+                      }}
+                    />
+                  );
+                } else {
+                  handlePayWithCard();
+                }
               }
             } else {
               router.push(

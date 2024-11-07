@@ -16,11 +16,12 @@ import {
   AllQuestionSummaryDto,
   GetQuestionsByIdDto,
 } from "@/dto/questions.dto";
-import { baseQueryWithLogoutOnTokenExpiration } from "@/utils";
+import { baseQueryWithLogoutOnTokenExpiration, secondsToMilliSeconds } from "@/utils";
 import { PermissionService } from "./permission.service";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/questions`,
+  timeout: secondsToMilliSeconds(3000),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 

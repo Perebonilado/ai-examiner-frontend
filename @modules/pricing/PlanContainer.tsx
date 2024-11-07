@@ -1,10 +1,85 @@
 import Container from "@/@shared/ui/Container";
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import PlanCardContainer from "./PlanCardContainer";
 import { useGetPlansQuery } from "@/api-services/plans.service";
+import { useGetUserIpInfoQuery } from "@/api-services/ip.service";
+import { PlanModel } from "@/models/plan.model";
 
 const PlanContainer: FC = () => {
+  const { data: ipDetails } = useGetUserIpInfoQuery("");
   const { data: plans } = useGetPlansQuery("");
+  const [plansToDisplay, setPlansToDisplay] = useState<PlanModel[]>();
+
+  useEffect(() => {
+    if (ipDetails && plans) {
+      const plansToShow = getPlansToDisplay();
+
+      if (plansToShow) {
+        const freePlan = {
+          costPerMonth: 0,
+          currency: plansToShow[0].currency,
+          offers: [
+            { title: "Multiple choice questions", isAvailable: true },
+            { title: "Flashcards", isAvailable: true },
+            { title: "Topic selection", isAvailable: true },
+            { title: "AI Discussions", isAvailable: false },
+          ],
+          type: "Free",
+          planId: 4098888376,
+        };
+        setPlansToDisplay([freePlan, ...plansToShow]);
+      }
+    }
+  }, [ipDetails, plans]);
+
+  const getPlansToDisplay = () => {
+    if (plans && ipDetails) {
+      const nairaCurrencyCode = "NGN";
+      const usdCurrencyCode = "USD";
+      let isUsersCountryNigeria = true;
+      let isUsersContinentAfrica = true;
+
+      if (ipDetails && ipDetails.country?.toLowerCase() !== "ng") {
+        isUsersCountryNigeria = false;
+      }
+
+      if (ipDetails && !ipDetails.timezone?.toLowerCase().includes("africa")) {
+        isUsersContinentAfrica = false;
+      }
+
+      if (isUsersContinentAfrica) {
+        if (isUsersCountryNigeria) {
+          return plans.filter((plan) => plan.currency === nairaCurrencyCode);
+        } else {
+          return plans.filter((plan) => {
+            const africanRegionalPlans =
+              (
+                plan.offers as {
+                  title: string;
+                  isAvailable: boolean;
+                  continent?: string;
+                }[]
+              ).find((d) => d?.continent === "Africa") &&
+              plan.currency === usdCurrencyCode;
+
+            return africanRegionalPlans ? true : false;
+          });
+        }
+      } else {
+        return plans.filter((plan) => {
+          const northAmericanRegionalPlans = (
+            plan.offers as {
+              title: string;
+              isAvailable: boolean;
+              continent?: string;
+            }[]
+          ).find((d) => d?.continent === "North America");
+
+          return northAmericanRegionalPlans ? true : false;
+        });
+      }
+    }
+  };
 
   return (
     <section className="bg-[#FAFAFA]">
@@ -21,7 +96,7 @@ const PlanContainer: FC = () => {
         </div>
 
         <Container>
-          <PlanCardContainer plans={plans ?? []} />
+          <PlanCardContainer plans={plansToDisplay ?? []} />
         </Container>
       </div>
     </section>

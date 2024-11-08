@@ -30,12 +30,17 @@ const initialValues = {
 interface Props {
   topics: { label: string; value: string }[];
   fileId: string;
+  documentIdProp?: string;
 }
 
-const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
+const GenerateQuestionsForm: FC<Props> = ({
+  topics,
+  fileId,
+  documentIdProp = "",
+}) => {
   const params = useParams();
 
-  const [documentId, setdocumentId] = useState<string>("");
+  const [documentId, setdocumentId] = useState<string>(documentIdProp);
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
   const [isAdvanced, setIsAdvanced] = useState(false);
   const [includeUseCases, setIncludeUseCases] = useState(false);
@@ -51,6 +56,7 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
       isLoading: generateQuestionsLoading,
       error: generateQuestionsError,
       isSuccess: generateQuestionsSuccess,
+      data
     },
   ] = useGenerateQuestionsMutation();
 
@@ -76,23 +82,23 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
         questionCount: values.questionCount,
         questionType: values.questionType,
         selectedQuestionTopics: selectedTopics,
-        includeUseCases
+        includeUseCases,
       });
     },
   });
 
   useEffect(() => {
-    if (params) {
+    if (params && !documentIdProp) {
       setdocumentId(params.id as string);
     }
   }, [params]);
 
-  useEffect(() => {
-    if (generateQuestionsSuccess) {
+  useEffect(()=>{
+    if(data){
       toast.success("Questions successfully generated");
-      setModalContent(null);
+      window.location.href = `${window.location.origin}/questions/practise-questions/${data.type}/${data.id}`
     }
-  }, [generateQuestionsSuccess]);
+  },[data])
 
   useEffect(() => {
     if (isAdvanced) {
@@ -152,16 +158,18 @@ const GenerateQuestionsForm: FC<Props> = ({ topics, fileId }) => {
                 />
               </div>
 
-              {formik.values.questionType == "3" && <div className="flex items-center gap-3">
-                <Switch
-                  disabled={false}
-                  handleChecked={() => {
-                    setIncludeUseCases(!includeUseCases);
-                  }}
-                  label="Include Case Studies"
-                  isChecked={includeUseCases}
-                />
-              </div>}
+              {formik.values.questionType == "3" && (
+                <div className="flex items-center gap-3">
+                  <Switch
+                    disabled={false}
+                    handleChecked={() => {
+                      setIncludeUseCases(!includeUseCases);
+                    }}
+                    label="Include Case Studies"
+                    isChecked={includeUseCases}
+                  />
+                </div>
+              )}
 
               {permissions.canUseAdvancedPreferences && (
                 <div>

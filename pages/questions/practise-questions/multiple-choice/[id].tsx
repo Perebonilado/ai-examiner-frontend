@@ -21,18 +21,33 @@ import { AppLoader } from "@/@shared/components/AppLoader";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 import { GetQuestionByIdModel } from "@/models/questions.model";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
+import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
+import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const params = useParams();
+  const [documentId, setdocumentId] = useState<string>("");
   const { data, isLoading, error, refetch } = useGetQuestionsByIdQuery(id, {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
 
+  const { data: topics, isLoading: topicsLoading } =
+    useGetAllSavedDocumentTopicsQuery(
+      { documentId },
+      { skip: !documentId, refetchOnMountOrArgChange: true }
+    );
+
   const { setModalContent } = useModalContext();
   const router = useRouter();
+
+  useEffect(() => {
+    if (data) {
+      setdocumentId(data.documentId);
+    }
+  }, [data]);
 
   const [
     clearProgress,
@@ -193,6 +208,16 @@ const Practice: NextPage = () => {
               handleSubmitted={(value) => {
                 setIsSubmitted(value);
               }}
+              allowMoreQuestionGeneration={true}
+              handleGenerateMoreQuestions={() => {
+                setModalContent(
+                  <GenerateQuestionsForm
+                    fileId={data.fileId}
+                    topics={topics?.topics ?? []}
+                    documentIdProp={data.documentId}
+                  />
+                );
+              }}
               documentId={data.documentId}
               title={capitalizeFirstLetterOfEachWord(
                 data.documentTitle.toLowerCase()
@@ -208,6 +233,16 @@ const Practice: NextPage = () => {
                           behavior: "smooth",
                         });
                       }
+                    }}
+                    allowMoreQuestionGeneration={true}
+                    handleGenerateMoreQuestions={() => {
+                      setModalContent(
+                        <GenerateQuestionsForm
+                          fileId={data.fileId}
+                          topics={topics?.topics ?? []}
+                          documentIdProp={data.documentId}
+                        />
+                      );
                     }}
                   />
                 );

@@ -25,10 +25,13 @@ import Dialog from "@/@shared/components/Dialog";
 import ShareIcon from "@/icons/ShareIcon";
 import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
+import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
+import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [documentId, setdocumentId] = useState<string>("");
   const params = useParams();
   const router = useRouter();
   const { setModalContent } = useModalContext();
@@ -37,6 +40,18 @@ const MultipleTrueFalse: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
+
+  const { data: topics, isLoading: topicsLoading } =
+    useGetAllSavedDocumentTopicsQuery(
+      { documentId },
+      { skip: !documentId, refetchOnMountOrArgChange: true }
+    );
+
+  useEffect(() => {
+    if (data) {
+      setdocumentId(data.documentId);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (params) {
@@ -202,6 +217,16 @@ const MultipleTrueFalse: NextPage = () => {
           handleDone={() => {
             router.push(`/questions/view-questions/${data.documentId}`);
           }}
+          allowMoreQuestionGeneration={true}
+          handleGenerateMoreQuestions={() => {
+            setModalContent(
+              <GenerateQuestionsForm
+                fileId={data.fileId}
+                topics={topics?.topics ?? []}
+                documentIdProp={data.documentId}
+              />
+            );
+          }}
           handleShowSubmissionModal={({ score, title }) => {
             setModalContent(
               <SubmissionModal
@@ -213,6 +238,16 @@ const MultipleTrueFalse: NextPage = () => {
                       behavior: "smooth",
                     });
                   }
+                }}
+                allowMoreQuestionGeneration={true}
+                handleGenerateMoreQuestions={() => {
+                  setModalContent(
+                    <GenerateQuestionsForm
+                      fileId={data.fileId}
+                      topics={topics?.topics ?? []}
+                      documentIdProp={data.documentId}
+                    />
+                  );
                 }}
               />
             );

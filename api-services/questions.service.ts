@@ -14,6 +14,7 @@ import {
 import Cookies from "js-cookie";
 import {
   AllQuestionSummaryDto,
+  GenerateQuestionsDto,
   GetQuestionsByIdDto,
 } from "@/dto/questions.dto";
 import { baseQueryWithLogoutOnTokenExpiration, secondsToMilliSeconds } from "@/utils";
@@ -67,6 +68,8 @@ export const QuestionsService = createApi({
             documentId: res.documentId,
             createdOn: res.createdOn,
             topics: res.topics.map((t) => t.title),
+            allTopics: res.allTopics,
+            fileId: res.fileId
           };
         }
       },
@@ -137,7 +140,7 @@ export const QuestionsService = createApi({
         };
       },
     }),
-    generateQuestions: build.mutation<any, GenerateQuestionsPayloadModel>({
+    generateQuestions: build.mutation<GenerateQuestionsDto, GenerateQuestionsPayloadModel>({
       query: ({
         documentId,
         questionCount,

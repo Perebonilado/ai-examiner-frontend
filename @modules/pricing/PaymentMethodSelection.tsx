@@ -37,7 +37,6 @@ const PaymentMethodSelection: FC<Props> = ({ handleContinue }) => {
           <Checkbox shape="round" checked={selectionOption === "transfer"} />
           <div>
             <p>Transfer</p>
-            {/* <p className="text-xs text-[#939393]">Only available in Nigeria</p> */}
           </div>
         </div>
 

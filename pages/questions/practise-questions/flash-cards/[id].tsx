@@ -20,9 +20,12 @@ import Dialog from "@/@shared/components/Dialog";
 import ShareIcon from "@/icons/ShareIcon";
 import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 import { GetQuestionByIdModel } from "@/models/questions.model";
+import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
+  const [documentId, setdocumentId] = useState<string>("");
   const params = useParams();
   const { data, error, refetch, isLoading } = useGetQuestionsByIdQuery(id, {
     skip: !id,
@@ -31,6 +34,18 @@ const FlashCards: NextPage = () => {
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
+
+  const { data: topics, isLoading: topicsLoading } =
+  useGetAllSavedDocumentTopicsQuery(
+    { documentId },
+    { skip: !documentId, refetchOnMountOrArgChange: true }
+  );
+
+  useEffect(() => {
+    if (data) {
+      setdocumentId(data.documentId);
+    }
+  }, [data]);
 
   useEffect(() => {
     if (params) {
@@ -147,6 +162,16 @@ const FlashCards: NextPage = () => {
                   hint: d.hint,
                 };
               })}
+              allowMoreQuestionGeneration={true}
+                    handleGenerateMoreQuestions={() => {
+                      setModalContent(
+                        <GenerateQuestionsForm
+                          fileId={data.fileId}
+                          topics={topics?.topics ?? []}
+                          documentIdProp={data.documentId}
+                        />
+                      );
+                    }}
               handleDone={() => {
                 router.push(`/questions/view-questions/${data?.documentId}`);
               }}

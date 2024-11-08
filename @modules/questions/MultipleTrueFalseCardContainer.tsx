@@ -26,6 +26,8 @@ interface Props {
     title: string;
     score: number;
   }) => void;
+  handleGenerateMoreQuestions?: () => void;
+  allowMoreQuestionGeneration?: boolean;
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
@@ -51,6 +53,8 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   handleShowSubmissionModal,
   handleDone,
   documentId,
+  handleGenerateMoreQuestions,
+  allowMoreQuestionGeneration = false,
 }) => {
   const [questionAnswerMap, setQuestionAnswerMap] =
     useState<QuestionAnswerMap | null>(null);
@@ -178,7 +182,19 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   return (
     <>
-      <div className="mt-3 mb-12 flex items-center justify-center">
+      <div className="mt-3 mb-12 flex flex-col gap-3 items-center justify-center">
+        {submitted && allowMoreQuestionGeneration && (
+          <Button
+            title="Generate New Questions"
+            onClick={() => {
+              if (handleGenerateMoreQuestions) {
+                handleGenerateMoreQuestions();
+              }
+            }}
+            size="large"
+            variant="outlined"
+          />
+        )}
         {submitted && (
           <Button
             title="View Score"
@@ -231,10 +247,24 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!submitted ? (
-            <>
+            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col">
+              {allowMoreQuestionGeneration && (
+                <Button
+                  title="Generate New Questions"
+                  onClick={() => {
+                    if (handleGenerateMoreQuestions) {
+                      handleGenerateMoreQuestions();
+                    }
+                  }}
+                  size="large"
+                  variant="outlined"
+                  className="max-sm:w-full"
+                />
+              )}
               <Button
                 title="Submit"
                 size="large"
+                className="max-sm:w-full"
                 onClick={() => {
                   handleSubmitted();
 
@@ -262,14 +292,27 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
                   }
                 }}
               />
-            </>
+            </div>
           ) : (
-            <div>
+            <div className="flex  max-sm:flex-col max-sm:w-full max-sm:justify-center items-center gap-3">
+              {allowMoreQuestionGeneration && (
+                <Button
+                  title="Generate New Questions"
+                  onClick={() => {
+                    if (handleGenerateMoreQuestions) {
+                      handleGenerateMoreQuestions();
+                    }
+                  }}
+                  size="large"
+                  variant="outlined"
+                  className="max-sm:w-full"
+                />
+              )}
               <Button
+                className="max-sm:w-full"
                 title="Done"
                 onClick={handleDone}
                 size="large"
-                variant="outlined"
               />
             </div>
           )}

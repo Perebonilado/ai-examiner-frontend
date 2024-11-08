@@ -16,6 +16,8 @@ interface Props {
     title: string;
     score: number;
   }) => void;
+  handleGenerateMoreQuestions?: () => void;
+  allowMoreQuestionGeneration?: boolean;
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
@@ -30,10 +32,12 @@ const MCQContainer: FC<Props> = ({
   isSubmitted,
   handleSubmitted,
   handleShowSubmissionModal,
+  handleGenerateMoreQuestions,
   allowSaveProgress = true,
   allowNotSure = true,
   allowSaveScore = true,
-  allowViewSource = true
+  allowViewSource = true,
+  allowMoreQuestionGeneration = false,
 }) => {
   return (
     <section>
@@ -45,6 +49,8 @@ const MCQContainer: FC<Props> = ({
         isSubmitted={isSubmitted}
         handleSubmitted={handleSubmitted}
         handleShowSubmissionModal={handleShowSubmissionModal}
+        handleGenerateMoreQuestions={handleGenerateMoreQuestions}
+        allowMoreQuestionGeneration={allowMoreQuestionGeneration}
         allowSaveProgress={allowSaveProgress}
         allowNotSure={allowNotSure}
         allowSaveScore={allowSaveScore}

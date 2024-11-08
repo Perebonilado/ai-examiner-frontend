@@ -39,6 +39,8 @@ export interface GetQuestionByIdModel {
   topics: string[];
   documentId: string;
   createdOn: Date;
+  allTopics: string[];
+  fileId: string;
 }
 
 export interface GetSharedQuestionModel {

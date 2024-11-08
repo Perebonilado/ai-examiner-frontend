@@ -18,6 +18,8 @@ export interface GetQuestionsByIdDto {
   questions: QuestionsDto[];
   score: number | null;
   topics: { title: string; id: number }[];
+  allTopics: string[];
+  fileId: string;
 }
 
 export interface QuestionSourceRequestDto {
@@ -44,6 +46,11 @@ export interface AllQuestionSummaryDto {
   };
   status: number;
   meta: MetaDto;
+}
+
+export interface GenerateQuestionsDto {
+  id: string;
+  type: string;
 }
 
 export interface SharedQuestionDto {

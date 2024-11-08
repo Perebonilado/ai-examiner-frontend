@@ -8,46 +8,62 @@ interface Props {
   scorePercentage: number;
   title: string;
   handleScrollToTop: () => void;
+  allowMoreQuestionGeneration?: boolean;
+  handleGenerateMoreQuestions?: () => void;
 }
 
-const SubmissionModal = forwardRef<HTMLDivElement, Props>((props, ref) => {
-  const color = generateDocumentCardColorFromScore(props.scorePercentage);
+const SubmissionModal = forwardRef<HTMLDivElement, Props>(
+  ({ allowMoreQuestionGeneration = false, ...props }, ref) => {
+    const color = generateDocumentCardColorFromScore(props.scorePercentage);
 
-  const { setModalContent } = useModalContext();
+    const { setModalContent } = useModalContext();
 
-  return (
-    <div
-      ref={ref}
-      className="w-full max-w-[400px] max-md:max-w-[320px] rounded-xl shadow-lg p-8 py-14 flex flex-col gap-10 items-center justify-center bg-white"
-    >
-      <p className="text-lg text-center font-bold">{props.title} Scores</p>
-
+    return (
       <div
-        className="w-[150px] h-[150px] rounded-full flex flex-col items-center justify-center text-center gap-2"
-        style={{
-          borderColor: color.fill,
-          background: color.background,
-          borderWidth: "2px",
-        }}
+        ref={ref}
+        className="w-full max-w-[370px] max-md:max-w-[320px] rounded-xl shadow-lg p-8 py-14 flex flex-col gap-10 items-center justify-center bg-white"
       >
-        <p className="text-2xl text-center font-bold">
-          {props.scorePercentage.toFixed()}%
-        </p>
-        <p className="text-xs font-semibold">{color.message}</p>
+        <p className="text-lg text-center font-bold">{props.title} Scores</p>
+
+        <div
+          className="w-[150px] h-[150px] rounded-full flex flex-col items-center justify-center text-center gap-2"
+          style={{
+            borderColor: color.fill,
+            background: color.background,
+            borderWidth: "2px",
+          }}
+        >
+          <p className="text-2xl text-center font-bold">
+            {props.scorePercentage.toFixed()}%
+          </p>
+          <p className="text-xs font-semibold">{color.message}</p>
+        </div>
+
+        <p className="text-sm text-gray-500 text-center">{color.subMessage}</p>
+
+        <div className="w-full flex flex-col gap-3">
+          <Button
+            title="Review answers"
+            onClick={() => {
+              setModalContent(null);
+              props.handleScrollToTop();
+            }}
+            fullWidth
+            size="large"
+          />
+          {allowMoreQuestionGeneration && props.handleGenerateMoreQuestions && (
+            <Button
+              title="Generate New Questions"
+              fullWidth
+              onClick={props.handleGenerateMoreQuestions}
+              variant="outlined"
+              size="large"
+            />
+          )}
+        </div>
       </div>
-
-      <p className="text-sm text-gray-500 text-center">{color.subMessage}</p>
-
-      <Button
-        title="Review answers"
-        onClick={() => {
-          setModalContent(null);
-          props.handleScrollToTop();
-        }}
-        size="large"
-      />
-    </div>
-  );
-});
+    );
+  }
+);
 
 export default SubmissionModal;

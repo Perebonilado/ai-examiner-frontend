@@ -8,9 +8,16 @@ import ArrowAltRightIcon from "@/icons/ArrowAltRightIcon";
 interface Props {
   data: { question: string; answer: string }[];
   handleDone: () => void;
+  handleGenerateMoreQuestions?: () => void;
+  allowMoreQuestionGeneration?: boolean;
 }
 
-const FlashCardItemContainer: FC<Props> = ({ data, handleDone }) => {
+const FlashCardItemContainer: FC<Props> = ({
+  data,
+  handleDone,
+  handleGenerateMoreQuestions,
+  allowMoreQuestionGeneration = false,
+}) => {
   const [currIndex, setCurrIndex] = useState(0);
 
   return (
@@ -59,8 +66,26 @@ const FlashCardItemContainer: FC<Props> = ({ data, handleDone }) => {
         />
       </div>
 
-      <div className="flex justify-end mt-20">
-        <Button title="Done" size="large" onClick={handleDone}/>
+      <div className="flex max-sm:justify-center max-sm:items-center max-sm:flex-col gap-4 justify-end mt-20">
+        {allowMoreQuestionGeneration && (
+          <Button
+            title="Generate New Questions"
+            onClick={() => {
+              if (handleGenerateMoreQuestions) {
+                handleGenerateMoreQuestions();
+              }
+            }}
+            size="large"
+            variant="outlined"
+            className="max-sm:w-full"
+          />
+        )}
+        <Button
+          title="Done"
+          size="large"
+          onClick={handleDone}
+          className="max-sm:w-full"
+        />
       </div>
     </section>
   );

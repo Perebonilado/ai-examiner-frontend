@@ -29,6 +29,8 @@ interface Props {
     title: string;
     score: number;
   }) => void;
+  handleGenerateMoreQuestions?: () => void;
+  allowMoreQuestionGeneration?: boolean;
   allowSaveProgress?: boolean;
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
@@ -43,10 +45,12 @@ const MCQItemContainer: FC<Props> = ({
   isSubmitted,
   handleShowSubmissionModal,
   handleSubmitted,
+  handleGenerateMoreQuestions,
+  allowMoreQuestionGeneration = false,
   allowSaveProgress = true,
   allowNotSure = true,
   allowSaveScore = true,
-  allowViewSource = true
+  allowViewSource = true,
 }) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
@@ -149,7 +153,19 @@ const MCQItemContainer: FC<Props> = ({
 
   return (
     <section>
-      <div className="mt-3 mb-12 flex items-center justify-center">
+      <div className="mt-3 mb-12 flex flex-col gap-3 items-center justify-center">
+        {isSubmitted && allowMoreQuestionGeneration && (
+          <Button
+            title="Generate New Questions"
+            onClick={() => {
+              if (handleGenerateMoreQuestions) {
+                handleGenerateMoreQuestions();
+              }
+            }}
+            size="large"
+            variant="outlined"
+          />
+        )}
         {isSubmitted && (
           <Button
             title="View Score"
@@ -204,10 +220,24 @@ const MCQItemContainer: FC<Props> = ({
 
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!isSubmitted ? (
-            <>
+            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col">
+              {allowMoreQuestionGeneration && (
+                <Button
+                  title="Generate New Questions"
+                  onClick={() => {
+                    if (handleGenerateMoreQuestions) {
+                      handleGenerateMoreQuestions();
+                    }
+                  }}
+                  size="large"
+                  variant="outlined"
+                  className="max-sm:w-full"
+                />
+              )}
               <Button
                 title="Submit"
                 size="large"
+                className="max-sm:w-full"
                 onClick={() => {
                   handleSubmitted(true);
 
@@ -235,14 +265,27 @@ const MCQItemContainer: FC<Props> = ({
                   }
                 }}
               />
-            </>
+            </div>
           ) : (
-            <div>
+            <div className="flex  max-sm:flex-col max-sm:w-full max-sm:justify-center items-center gap-3">
+              {allowMoreQuestionGeneration && (
+                <Button
+                  title="Generate New Questions"
+                  onClick={() => {
+                    if (handleGenerateMoreQuestions) {
+                      handleGenerateMoreQuestions();
+                    }
+                  }}
+                  size="large"
+                  variant="outlined"
+                  className="max-sm:w-full"
+                />
+              )}
               <Button
+                className="max-sm:w-full"
                 title="Done"
                 onClick={handleDone}
                 size="large"
-                variant="outlined"
               />
             </div>
           )}

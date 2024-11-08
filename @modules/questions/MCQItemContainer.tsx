@@ -220,7 +220,7 @@ const MCQItemContainer: FC<Props> = ({
 
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!isSubmitted ? (
-            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col">
+            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
               {allowMoreQuestionGeneration && (
                 <Button
                   title="Generate New Questions"
@@ -267,7 +267,7 @@ const MCQItemContainer: FC<Props> = ({
               />
             </div>
           ) : (
-            <div className="flex  max-sm:flex-col max-sm:w-full max-sm:justify-center items-center gap-3">
+            <div className="flex max-sm:flex-col-reverse max-sm:w-full max-sm:justify-center items-center gap-3">
               {allowMoreQuestionGeneration && (
                 <Button
                   title="Generate New Questions"

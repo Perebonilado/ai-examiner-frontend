@@ -134,7 +134,7 @@ const MCQItemContainer: FC<Props> = ({
   const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
 
   useEffect(() => {
-    if (data && progress && progress?.status !== "submitted") {
+    if (data && progress && progress?.status !== "submitted" && !progress?.data?.length) {
       setModalContent(
         <QuestionSettingsDialog
           handleBeginTest={(selectedTime, isNegativeMarking) => {
@@ -236,7 +236,7 @@ const MCQItemContainer: FC<Props> = ({
   };
 
   useEffect(() => {
-    if (progress && progress.status === "submitted" && !progress?.data?.length) {
+    if (progress && progress.status === "submitted") {
       handleSubmitted(true);
     }
   }, [progress]);

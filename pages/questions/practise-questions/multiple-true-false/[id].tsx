@@ -1,9 +1,6 @@
-import MultipleTrueFalseCard from "@/@modules/questions/MultipleTrueFalseCard";
 import MultipleTrueFalseCardContainer from "@/@modules/questions/MultipleTrueFalseCardContainer";
-import MultipleTrueFalseItem from "@/@modules/questions/MultipleTrueFalseItem";
 import AppHead from "@/@shared/components/AppHead";
 import Button from "@/@shared/ui/Button";
-import Container from "@/@shared/ui/Container";
 import IconButton from "@/@shared/ui/IconButton";
 import { useGetQuestionsByIdQuery } from "@/api-services/questions.service";
 import ChevronLeft from "@/icons/ChevronLeft";

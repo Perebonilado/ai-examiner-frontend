@@ -39,8 +39,8 @@ export const QuestionProgressService = createApi({
         body: data,
         params: {
           status,
-          clearExistingProgress
-        }
+          clearExistingProgress,
+        },
       }),
       extraOptions: {
         triggerLoading: false,
@@ -51,6 +51,7 @@ export const QuestionProgressService = createApi({
         query: ({ id }) => ({
           url: `/${id}`,
         }),
+        keepUnusedDataFor: 0,
         extraOptions: {
           triggerLoading: false,
         },
@@ -60,7 +61,7 @@ export const QuestionProgressService = createApi({
             return {
               data: res.data,
               score: res.score,
-              status: res.status
+              status: res.status,
             };
           }
         },

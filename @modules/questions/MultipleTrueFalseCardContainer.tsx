@@ -12,6 +12,8 @@ import {
   useSaveProgressMutation,
 } from "@/api-services/question-progress.service";
 import { QuestionProgressModel } from "@/models/question-progress.model";
+import QuestionSettingsDialog from "./QuestionSettingsDialog";
+import CountdownTimer from "./CountDownTimer";
 
 interface Props {
   data: MultipleTrueFalseQuestionModel[];
@@ -69,7 +71,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   const params = useParams();
 
-  const { data: progress } = useGetProgressQuery(
+  const { data: progress, isLoading: progressLoading } = useGetProgressQuery(
     { id: questionId },
     { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true }
   );
@@ -132,29 +134,130 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
     if (questionAnswerMap) {
       const scoreValues = Object.values(questionAnswerMap);
       const totalScoreForEachQuestion = scoreValues.map((score) => {
-        let totalScore = 0;
+        let totalWrongScore = 0;
+        let totalCorrectScore = 0;
         for (const key in score) {
           if (score[key].isCorrect) {
-            totalScore += 1;
+            totalCorrectScore += 1;
+          } else {
+            totalWrongScore += 1;
           }
         }
 
-        return totalScore;
+        return { totalCorrectScore, totalWrongScore };
       });
 
-      const totalScoreForAllQuestions = totalScoreForEachQuestion.reduce(
-        (a, b) => a + b,
-        0
-      );
+      const totalCorrectScoreForAnsweredQuestions =
+        totalScoreForEachQuestion.reduce((a, b) => a + b.totalCorrectScore, 0);
+
+      const totalWrongScoreForAnsweredQuestions =
+        totalScoreForEachQuestion.reduce((a, b) => a + b.totalWrongScore, 0);
 
       const weightOfEachQuestion = 4;
       const totalQuestions = data.length * weightOfEachQuestion;
 
-      return (totalScoreForAllQuestions / totalQuestions) * 100;
+      let finalScore = 0;
+
+      if (isNegativeMarking) {
+        const totalScore =
+          totalCorrectScoreForAnsweredQuestions -
+          totalWrongScoreForAnsweredQuestions;
+        finalScore = (totalScore / totalQuestions) * 100;
+      } else {
+        finalScore =
+          (totalCorrectScoreForAnsweredQuestions / totalQuestions) * 100;
+      }
+
+      return finalScore;
     }
 
     return 0;
   };
+
+  const [isNegativeMarking, setIsNegativeMarking] = useState(false);
+  const [totalDuration, setTotalDuration] = useState<number | null>(null);
+  const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (
+      data &&
+      progress &&
+      progress?.status !== "submitted" &&
+      !progress?.data?.length
+    ) {
+      setModalContent(
+        <QuestionSettingsDialog
+          handleBeginTest={(selectedTime, isNegativeMarking) => {
+            setIsNegativeMarking(isNegativeMarking);
+            setTimeLeftSeconds(selectedTime);
+            setTotalDuration(Number(selectedTime));
+
+            setModalContent(null);
+          }}
+          maxTimeForEachQuestionInSeconds={40}
+          numberOfQuestions={data.length}
+        />
+      );
+    }
+  }, [data, progress]);
+
+  const resetTimer = () => {
+    if (interval) {
+      clearInterval(interval);
+      setTimeLeftSeconds(null);
+      setTotalDuration(null);
+    }
+  };
+
+  const submitTest = () => {
+    handleSubmitted();
+
+    setCalculatedScore(calculateScorePercentage());
+
+    if (allowSaveScore) {
+      saveScore({
+        documentId: documentId,
+        questionId,
+        score: calculateScorePercentage(),
+      });
+    } else {
+      handleShowSubmissionModal({
+        title,
+        score: calculateScorePercentage(),
+      });
+    }
+
+    if (allowSaveProgress) {
+      submitProgress({
+        clearExistingProgress: false,
+        id: questionId,
+        status: "submitted",
+      });
+    }
+  };
+
+  let interval: NodeJS.Timeout | null;
+
+  useEffect(() => {
+    if (timeLeftSeconds) {
+      interval = setInterval(() => {
+        if (timeLeftSeconds === 1 && interval) {
+          resetTimer();
+
+          submitTest();
+        }
+
+        const newTimeLeft = timeLeftSeconds - 1;
+        setTimeLeftSeconds(newTimeLeft);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [timeLeftSeconds]);
 
   const [saveScore, { isLoading, isSuccess }] = useSaveScoreMutation();
 
@@ -182,6 +285,12 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   return (
     <>
+      {timeLeftSeconds && totalDuration ? (
+        <CountdownTimer
+          timeLeft={timeLeftSeconds}
+          totalDuration={totalDuration}
+        />
+      ) : null}
       <div className="mt-3 mb-12 flex flex-col gap-3 items-center justify-center">
         {submitted && allowMoreQuestionGeneration && (
           <Button
@@ -248,48 +357,28 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!submitted ? (
             <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
-              {allowMoreQuestionGeneration && (
-                <Button
-                  title="Generate New Questions"
-                  onClick={() => {
-                    if (handleGenerateMoreQuestions) {
-                      handleGenerateMoreQuestions();
-                    }
-                  }}
-                  size="large"
-                  variant="outlined"
-                  className="max-sm:w-full"
-                />
-              )}
+              {allowMoreQuestionGeneration &&
+                !timeLeftSeconds &&
+                !totalDuration && (
+                  <Button
+                    title="Generate New Questions"
+                    onClick={() => {
+                      if (handleGenerateMoreQuestions) {
+                        handleGenerateMoreQuestions();
+                      }
+                    }}
+                    size="large"
+                    variant="outlined"
+                    className="max-sm:w-full"
+                  />
+                )}
               <Button
                 title="Submit"
                 size="large"
                 className="max-sm:w-full"
                 onClick={() => {
-                  handleSubmitted();
-
-                  setCalculatedScore(calculateScorePercentage());
-
-                  if (allowSaveScore) {
-                    saveScore({
-                      documentId: documentId,
-                      questionId,
-                      score: calculateScorePercentage(),
-                    });
-                  } else {
-                    handleShowSubmissionModal({
-                      title,
-                      score: calculateScorePercentage(),
-                    });
-                  }
-
-                  if (allowSaveProgress) {
-                    submitProgress({
-                      clearExistingProgress: false,
-                      id: questionId,
-                      status: "submitted",
-                    });
-                  }
+                  resetTimer();
+                  submitTest();
                 }}
               />
             </div>

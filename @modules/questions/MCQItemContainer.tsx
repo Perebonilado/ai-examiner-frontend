@@ -14,6 +14,8 @@ import {
   useSaveProgressMutation,
 } from "@/api-services/question-progress.service";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
+import QuestionSettingsDialog from "./QuestionSettingsDialog";
+import CountdownTimer from "./CountDownTimer";
 
 interface Props {
   data: QuestionsModel[];
@@ -127,6 +129,86 @@ const MCQItemContainer: FC<Props> = ({
     setQuestionAnswerMap(newMap);
   };
 
+  const [isNegativeMarking, setIsNegativeMarking] = useState(false);
+  const [totalDuration, setTotalDuration] = useState<number | null>(null);
+  const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (data && progress && progress?.status !== "submitted") {
+      setModalContent(
+        <QuestionSettingsDialog
+          handleBeginTest={(selectedTime, isNegativeMarking) => {
+            setIsNegativeMarking(isNegativeMarking);
+            setTimeLeftSeconds(selectedTime);
+            setTotalDuration(Number(selectedTime));
+
+            setModalContent(null);
+          }}
+          maxTimeForEachQuestionInSeconds={30}
+          numberOfQuestions={data.length}
+        />
+      );
+    }
+  }, [data, progress]);
+
+  const resetTimer = () => {
+    if (interval) {
+      clearInterval(interval);
+      setTimeLeftSeconds(null);
+      setTotalDuration(null);
+    }
+  };
+
+  const submitTest = () => {
+    handleSubmitted(true);
+
+    setCalculatedScore(calculateScorePercentage());
+
+    if (allowSaveScore) {
+      saveScore({
+        documentId: documentId,
+        questionId,
+        score: calculateScorePercentage(),
+      });
+    } else {
+      handleShowSubmissionModal({
+        title,
+        score: calculateScorePercentage(),
+      });
+    }
+
+    if (allowSaveProgress) {
+      submitProgress({
+        clearExistingProgress: false,
+        id: questionId,
+        status: "submitted",
+      });
+    }
+  };
+
+  let interval: NodeJS.Timeout | null;
+
+  useEffect(() => {
+    if (timeLeftSeconds) {
+      interval = setInterval(() => {
+        if (timeLeftSeconds === 1 && interval) {
+          resetTimer();
+
+          submitTest();
+        }
+
+        const newTimeLeft = timeLeftSeconds - 1;
+        setTimeLeftSeconds(newTimeLeft);
+      }, 1000);
+    }
+
+    return () => {
+      if (interval) {
+        clearInterval(interval);
+      }
+    };
+  }, [timeLeftSeconds]);
+
   const calculateScorePercentage = () => {
     if (questionAnswerMap) {
       const answersArr = Object.values(questionAnswerMap);
@@ -134,8 +216,18 @@ const MCQItemContainer: FC<Props> = ({
       const totalQuestions = data.length;
 
       const totalCorrectAnswers = answersArr.filter((ans) => ans).length;
+      const totalWrongAnswers = answersArr.filter(
+        (ans) => ans === false
+      ).length;
 
-      const scorePercentage = (totalCorrectAnswers / totalQuestions) * 100;
+      let scorePercentage = 0;
+
+      if (isNegativeMarking) {
+        const totalCorrect = totalCorrectAnswers - totalWrongAnswers;
+        scorePercentage = (totalCorrect / totalQuestions) * 100;
+      } else {
+        scorePercentage = (totalCorrectAnswers / totalQuestions) * 100;
+      }
 
       return scorePercentage;
     }
@@ -144,7 +236,7 @@ const MCQItemContainer: FC<Props> = ({
   };
 
   useEffect(() => {
-    if (progress && progress.status === "submitted") {
+    if (progress && progress.status === "submitted" && !progress?.data?.length) {
       handleSubmitted(true);
     }
   }, [progress]);
@@ -153,6 +245,12 @@ const MCQItemContainer: FC<Props> = ({
 
   return (
     <section>
+      {timeLeftSeconds && totalDuration ? (
+        <CountdownTimer
+          timeLeft={timeLeftSeconds}
+          totalDuration={totalDuration}
+        />
+      ) : null}
       <div className="mt-3 mb-12 flex flex-col gap-3 items-center justify-center">
         {isSubmitted && allowMoreQuestionGeneration && (
           <Button
@@ -239,30 +337,8 @@ const MCQItemContainer: FC<Props> = ({
                 size="large"
                 className="max-sm:w-full"
                 onClick={() => {
-                  handleSubmitted(true);
-
-                  setCalculatedScore(calculateScorePercentage());
-
-                  if (allowSaveScore) {
-                    saveScore({
-                      documentId: documentId,
-                      questionId,
-                      score: calculateScorePercentage(),
-                    });
-                  } else {
-                    handleShowSubmissionModal({
-                      title,
-                      score: calculateScorePercentage(),
-                    });
-                  }
-
-                  if (allowSaveProgress) {
-                    submitProgress({
-                      clearExistingProgress: false,
-                      id: questionId,
-                      status: "submitted",
-                    });
-                  }
+                  resetTimer();
+                  submitTest();
                 }}
               />
             </div>

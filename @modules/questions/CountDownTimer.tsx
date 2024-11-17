@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import cn from 'classnames'
 
 interface CountdownProps {
   timeLeft: number; // Time in seconds
@@ -28,11 +27,6 @@ const CountdownTimer: React.FC<CountdownProps> = ({
     setProgress(progressPercentage);
   }, [timeLeft, totalDuration]);
 
-  const strokeStyle = cn({
-    ['stroke-[#2F004F]']: progress > 20,
-    ['stroke-rose-600']: progress < 20
-  })
-
   // Calculate circle properties
   const radius = 35;
   const circumference = 2 * Math.PI * radius;
@@ -53,20 +47,37 @@ const CountdownTimer: React.FC<CountdownProps> = ({
             fill="transparent"
           />
           {/* Progress circle */}
-          <circle
-            cx="48"
-            cy="48"
-            r={radius}
-            className={strokeStyle}
-            strokeWidth="8"
-            fill="white"
-            strokeLinecap="round"
-            style={{
-              strokeDasharray: circumference,
-              strokeDashoffset: strokeDashoffset,
-              transition: "stroke-dashoffset 0.5s ease",
-            }}
-          />
+          {progress < 20 ? (
+            <circle
+              cx="48"
+              cy="48"
+              r={radius}
+              className={"stroke-rose-600"}
+              strokeWidth="8"
+              fill="white"
+              strokeLinecap="round"
+              style={{
+                strokeDasharray: circumference,
+                strokeDashoffset: strokeDashoffset,
+                transition: "stroke-dashoffset 0.5s ease",
+              }}
+            />
+          ) : (
+            <circle
+              cx="48"
+              cy="48"
+              r={radius}
+              className={"stroke-[#2F004F]"}
+              strokeWidth="8"
+              fill="white"
+              strokeLinecap="round"
+              style={{
+                strokeDasharray: circumference,
+                strokeDashoffset: strokeDashoffset,
+                transition: "stroke-dashoffset 0.5s ease",
+              }}
+            />
+          )}
         </svg>
         {/* Time display */}
         <span className="absolute text-lg font-semibold">{timeString}</span>

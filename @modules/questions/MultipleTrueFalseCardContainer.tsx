@@ -73,7 +73,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   const { data: progress, isLoading: progressLoading } = useGetProgressQuery(
     { id: questionId },
-    { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true, }
+    { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true }
   );
 
   const handleSetQuestionAnswerMap = () => {
@@ -147,10 +147,8 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         return { totalCorrectScore, totalWrongScore };
       });
 
-      const totalCorrectScoreForAnsweredQuestions = totalScoreForEachQuestion.reduce(
-        (a, b) => a + b.totalCorrectScore,
-        0
-      );
+      const totalCorrectScoreForAnsweredQuestions =
+        totalScoreForEachQuestion.reduce((a, b) => a + b.totalCorrectScore, 0);
 
       const totalWrongScoreForAnsweredQuestions =
         totalScoreForEachQuestion.reduce((a, b) => a + b.totalWrongScore, 0);
@@ -158,16 +156,19 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
       const weightOfEachQuestion = 4;
       const totalQuestions = data.length * weightOfEachQuestion;
 
-      let finalScore = 0
+      let finalScore = 0;
 
-      if(isNegativeMarking){
-        const totalScore = totalCorrectScoreForAnsweredQuestions - totalWrongScoreForAnsweredQuestions
-        finalScore = (totalScore/totalQuestions) * 100
+      if (isNegativeMarking) {
+        const totalScore =
+          totalCorrectScoreForAnsweredQuestions -
+          totalWrongScoreForAnsweredQuestions;
+        finalScore = (totalScore / totalQuestions) * 100;
       } else {
-        finalScore = (totalCorrectScoreForAnsweredQuestions / totalQuestions) * 100;
+        finalScore =
+          (totalCorrectScoreForAnsweredQuestions / totalQuestions) * 100;
       }
 
-      return finalScore
+      return finalScore;
     }
 
     return 0;
@@ -177,8 +178,13 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   const [totalDuration, setTotalDuration] = useState<number | null>(null);
   const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
 
-  useEffect(() => { 
-    if (data && progress && progress?.status !== "submitted" && !progress?.data?.length) {
+  useEffect(() => {
+    if (
+      data &&
+      progress &&
+      progress?.status !== "submitted" &&
+      !progress?.data?.length
+    ) {
       setModalContent(
         <QuestionSettingsDialog
           handleBeginTest={(selectedTime, isNegativeMarking) => {
@@ -351,19 +357,21 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!submitted ? (
             <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
-              {allowMoreQuestionGeneration && (
-                <Button
-                  title="Generate New Questions"
-                  onClick={() => {
-                    if (handleGenerateMoreQuestions) {
-                      handleGenerateMoreQuestions();
-                    }
-                  }}
-                  size="large"
-                  variant="outlined"
-                  className="max-sm:w-full"
-                />
-              )}
+              {allowMoreQuestionGeneration &&
+                !timeLeftSeconds &&
+                !totalDuration && (
+                  <Button
+                    title="Generate New Questions"
+                    onClick={() => {
+                      if (handleGenerateMoreQuestions) {
+                        handleGenerateMoreQuestions();
+                      }
+                    }}
+                    size="large"
+                    variant="outlined"
+                    className="max-sm:w-full"
+                  />
+                )}
               <Button
                 title="Submit"
                 size="large"

@@ -134,7 +134,12 @@ const MCQItemContainer: FC<Props> = ({
   const [timeLeftSeconds, setTimeLeftSeconds] = useState<number | null>(null);
 
   useEffect(() => {
-    if (data && progress && progress?.status !== "submitted" && !progress?.data?.length) {
+    if (
+      data &&
+      progress &&
+      progress?.status !== "submitted" &&
+      !progress?.data?.length
+    ) {
       setModalContent(
         <QuestionSettingsDialog
           handleBeginTest={(selectedTime, isNegativeMarking) => {
@@ -319,19 +324,21 @@ const MCQItemContainer: FC<Props> = ({
         <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
           {!isSubmitted ? (
             <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
-              {allowMoreQuestionGeneration && (
-                <Button
-                  title="Generate New Questions"
-                  onClick={() => {
-                    if (handleGenerateMoreQuestions) {
-                      handleGenerateMoreQuestions();
-                    }
-                  }}
-                  size="large"
-                  variant="outlined"
-                  className="max-sm:w-full"
-                />
-              )}
+              {allowMoreQuestionGeneration &&
+                !timeLeftSeconds &&
+                !totalDuration && (
+                  <Button
+                    title="Generate New Questions"
+                    onClick={() => {
+                      if (handleGenerateMoreQuestions) {
+                        handleGenerateMoreQuestions();
+                      }
+                    }}
+                    size="large"
+                    variant="outlined"
+                    className="max-sm:w-full"
+                  />
+                )}
               <Button
                 title="Submit"
                 size="large"

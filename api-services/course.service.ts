@@ -15,7 +15,7 @@ import { AllCoursesDto, GetCourseByIdDto } from "@/dto/course.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course`,
-  timeout: secondsToMilliSeconds(30),
+  timeout: secondsToMilliSeconds(3000),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 

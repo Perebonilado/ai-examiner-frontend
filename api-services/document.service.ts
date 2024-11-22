@@ -17,7 +17,7 @@ import { AllDocumentsDto, CreateDocumentDto } from "@/dto/document.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
-  timeout: secondsToMilliSeconds(3000),
+  timeout: secondsToMilliSeconds(6000),
   prepareHeaders(headers) {
     const token = Cookies.get(accessToken);
 

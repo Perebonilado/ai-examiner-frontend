@@ -7,8 +7,8 @@ interface Props {
 }
 
 const UploadIconAlt: FC<Props> = ({
-  width = 12,
-  height = 13,
+  width = 14,
+  height = 15,
   fill = "#9D6EC2",
 }) => {
   return (

@@ -5,7 +5,7 @@ interface Props {
   isChecked: boolean;
   handleChecked: () => void;
   disabled: boolean;
-  label?: string
+  label?: string;
 }
 
 const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
@@ -19,7 +19,7 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
   );
 
   const sliderContainerClass = cn(
-    `w-[40px] h-[14px] rounded-full relative transition-all`,
+    `w-[40px] h-[14px] cursor-pointer rounded-full relative transition-all`,
     {
       ["bg-[#B39BC4]"]: isChecked,
       ["bg-gray-400"]: !isChecked,
@@ -33,16 +33,18 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
 
   return (
     <div className="flex items-center justify-center gap-2 w-fit">
-      <div className={sliderContainerClass}>
+      <div
+        className={sliderContainerClass}
+        onClick={() => {
+          if (!disabled) handleChecked();
+        }}
+      >
         <div
           style={{
             boxShadow:
               "#00000033 0px 2px 1px -1px, #00000024 0px 1px 1px 0px, #0000001F 0px 1px 3px 0px",
           }}
           className={sliderClass}
-          onClick={() => {
-            if (!disabled) handleChecked();
-          }}
         ></div>
       </div>
       <label className={labelStyling}>{label}</label>

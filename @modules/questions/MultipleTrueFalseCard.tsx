@@ -64,7 +64,7 @@ const MultipleTrueFalseCard: FC<Props> = ({
         />
       </div>
 
-      <p className="my-3 font-semibold text-lg">{question}</p>
+      <p className="my-3 font-semibold text-base">{question}</p>
 
       <div className="py-4">
         <div className="text-sm font-semibold flex gap-2 p-4 py-2">
@@ -116,7 +116,7 @@ const MultipleTrueFalseCard: FC<Props> = ({
 
       {submitted && (
         <div className="mt-3">
-          <QuestionExplanation explanation={explanation} />
+          <QuestionExplanation explanation={explanation} allowViewSource={false}/>
         </div>
       )}
     </div>

@@ -5,9 +5,15 @@ import cn from "classnames";
 
 interface Props {
   explanation: string;
+  allowViewSource?: boolean;
+  handleViewSource?: () => void;
 }
 
-const QuestionExplanation: FC<Props> = ({ explanation }) => {
+const QuestionExplanation: FC<Props> = ({
+  explanation,
+  allowViewSource = false,
+  handleViewSource,
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const expClassName = cn(
@@ -19,29 +25,41 @@ const QuestionExplanation: FC<Props> = ({ explanation }) => {
   );
 
   return (
-    <div className="flex flex-col items-center justify-center gap-3">
-      <div className="w-full max-w-[200px]">
-        <Button
-          title={!isExpanded ? "Show Explanation" : "Hide Explanation"}
-          variant="outlined"
-          fullWidth
-          className="!bg-transparent"
-          endicon={
-            !isExpanded ? (
-              <ChevronDown />
-            ) : (
-              <span className="rotate-180">
+    <>
+      <div className="flex flex-col items-center justify-center gap-3">
+        <div className="w-full max-w-[200px]">
+          <Button
+            title={!isExpanded ? "Show Explanation" : "Hide Explanation"}
+            variant="text"
+            fullWidth
+            className="!bg-transparent"
+            endicon={
+              !isExpanded ? (
                 <ChevronDown />
-              </span>
-            )
-          }
-          onClick={() => setIsExpanded(!isExpanded)}
-        />
+              ) : (
+                <span className="rotate-180">
+                  <ChevronDown />
+                </span>
+              )
+            }
+            onClick={() => setIsExpanded(!isExpanded)}
+          />
+        </div>
+        <div className={expClassName}>
+          <p className="text-sm font-semibold ">{explanation}</p>
+          {allowViewSource && <div className="flex justify-end w-full mt-6">
+            <Button
+              title="View Source"
+              className="!bg-transparent"
+              variant="outlined"
+              onClick={()=>{
+                if(handleViewSource) handleViewSource()
+              }}
+            />
+          </div>}
+        </div>
       </div>
-      <div className={expClassName}>
-        <p className="text-sm font-semibold ">{explanation}</p>
-      </div>
-    </div>
+    </>
   );
 };
 

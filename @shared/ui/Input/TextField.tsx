@@ -19,16 +19,16 @@ const TextField: FC<Props> = ({
   ...props
 }) => {
   const inputStyle = cn(
-    `min-h-[50px] w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`,
+    `min-h-[50px] !text-sm w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-1  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`,
     {
       "pl-11": starticon !== undefined,
       "pr-14": endicon !== undefined,
     }
   );
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full !text-sm">
       {label && (
-        <label className={`text-base font-semibold mb-2`}>
+        <label className={`text-sm font-semibold mb-2`}>
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}

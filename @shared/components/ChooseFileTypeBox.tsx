@@ -12,21 +12,24 @@ const ChooseFileTypeBox: FC<Props> = ({
 }) => {
   return (
     <div className="bg-white rounded-xl border border-grey-200 absolute bottom-full right-1/2 translate-x-1/2 w-full max-w-[180px] flex flex-col px-2">
-      <div className="border-b border-b-gray-300 p-4">
+      <div className="border-b border-b-gray-300 py-4">
         <Button
           title="Select Images"
           variant="text"
           type="button"
           size="small"
+          className="!text-left"
+          fullWidth
           onClick={handleSelectImages}
         />
       </div>
-      <div className="p-4">
+      <div className="py-4">
         <Button
           title="Select File"
           variant="text"
           size="small"
           type="button"
+          fullWidth
           onClick={handleSelectFiles}
         />
       </div>

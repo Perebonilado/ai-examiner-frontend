@@ -24,6 +24,7 @@ import { StagedImage } from "./StagedImageItem";
 import { progress } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
+import UploadIconAlt from "@/icons/UploadIconAlt";
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 const options = {
@@ -265,13 +266,10 @@ const UploadFileBox: FC<Props> = ({
         multiple
       />
       <div>
-        <label className={`text-base font-semibold mb-2 block`}>
+        <label className={`text-sm font-semibold mb-2 block`}>
           Upload Study Document
         </label>
-        <div className="w-full p-6 h-[300px] bg-gray-50 border border-opacity-45 border-gray-300 rounded-xl flex flex-col items-center justify-center gap-4">
-          {!attachedFile && !uploadLoading && !pdfProcessing && (
-            <UploadIcon width={80} height={80} />
-          )}
+        <div className="w-full p-6 h-[250px] shadow-lg bg-gray-50 border border-opacity-45 border-gray-300 rounded-lg flex flex-col items-center justify-center gap-4">
           {!attachedFile && !uploadLoading && !pdfProcessing && (
             <div
               className="flex flex-col justify-center gap-3 relative"
@@ -292,7 +290,8 @@ const UploadFileBox: FC<Props> = ({
                 onClick={() => {
                   setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
                 }}
-                title="Click to upload file"
+                starticon={<UploadIconAlt fill="#2F004F" />}
+                title="UPLOAD FILE"
                 size="large"
                 variant="outlined"
                 type="button"

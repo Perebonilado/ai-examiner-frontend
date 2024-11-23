@@ -60,7 +60,7 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
         </button>
       </div>
       <div className="h-[40%] flex flex-col justify-end gap-1 overflow-hidden px-2">
-        <p className="text-sm truncate text-[#1E1E1E]">{capitalizeFirstLetterOfEachWord(title)}</p>
+        <p className="text-sm truncate text-[#1E1E1E] font-semibold">{capitalizeFirstLetterOfEachWord(title)}</p>
         <div className="flex items-center gap-2 justify-between">
           <p className="text-xs text-[#8E8E8E]">
             Created{" "}

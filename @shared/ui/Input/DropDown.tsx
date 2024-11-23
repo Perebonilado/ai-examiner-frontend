@@ -42,7 +42,7 @@ const DropDown: FC<Props> = ({
   const mainInputRef = useRef<ElementRef<"input">>(null);
 
   const inputStyleBasedOnVariant = cn(
-    `cursor-pointer w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-2  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`
+    `cursor-pointer text-sm w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-2  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`
   );
 
   const onSelect = (val: {
@@ -82,7 +82,7 @@ const DropDown: FC<Props> = ({
   }, [JSON.stringify(options)]);
 
   const dropDownStyles = cn(
-    `w-full absolute left-0 px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto`,
+    `w-full !text-sm absolute left-0 px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto`,
     {
       ['bottom-[calc(100%+5px)]']: openFromTop,
       ['top-[calc(100%+5px)]']: !openFromTop
@@ -100,7 +100,7 @@ const DropDown: FC<Props> = ({
   return (
     <div>
       {label && (
-        <label className="text-base font-semibold">
+        <label className="text-sm font-semibold">
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}

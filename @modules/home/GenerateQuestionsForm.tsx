@@ -215,7 +215,7 @@ const GenerateQuestionsForm: FC = () => {
             />
 
             <div>
-              <label className="text-base font-semibold flex items-center gap-4">
+              <label className="text-sm font-semibold flex items-center gap-4">
                 Study with{" "}
               </label>
               <DropDown
@@ -235,7 +235,7 @@ const GenerateQuestionsForm: FC = () => {
             </div>
 
             <div>
-              <label className="text-base font-semibold flex items-center gap-4">
+              <label className="text-sm font-semibold flex items-center gap-4">
                 Total questions{" "}
               </label>
 

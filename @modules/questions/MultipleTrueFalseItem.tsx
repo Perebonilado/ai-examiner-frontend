@@ -43,7 +43,7 @@ const MultipleTrueFalseItem: FC<Props> = ({
 
   const rootClassName = cn(
     `
-    border-2 flex max-sm:flex-col max-sm:items-end items-center gap-2 max-sm:gap-6 border-gray-200 min-h-[50px] rounded-[12px] p-4 bg-white flex items-center
+    border-2 flex text-sm max-sm:flex-col max-sm:items-end items-center gap-2 max-sm:gap-6 border-gray-200 min-h-[50px] rounded-[12px] p-4 bg-white flex items-center
     `,
     {
       ["!border-[#36CE10]"]: submitted && isRightOption,

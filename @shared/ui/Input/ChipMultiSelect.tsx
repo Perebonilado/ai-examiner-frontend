@@ -68,7 +68,7 @@ const ChipMultiSelect: FC<Props> = ({
   return (
     <div className="relative cursor-pointer">
       {label && (
-        <label className="text-base font-semibold block mb-2">
+        <label className="text-sm font-semibold block mb-2">
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}

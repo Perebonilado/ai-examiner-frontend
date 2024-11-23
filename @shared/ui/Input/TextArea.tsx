@@ -11,7 +11,7 @@ const TextArea: FC<Props> = ({ isRequired, label, error, ...props }) => {
   return (
     <div className="flex flex-col w-full">
       {label && (
-        <label className="text-base font-semibold mb-2">
+        <label className="text-sm font-semibold mb-2">
           {label}{" "}
           {isRequired && <span className="text-rose-600">*</span>}
         </label>

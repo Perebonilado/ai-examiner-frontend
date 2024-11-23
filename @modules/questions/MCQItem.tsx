@@ -15,7 +15,7 @@ import SpeakerIcon from "@/icons/SpeakerIcon";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
 import QuestionExplanation from "./QuestionExplanation";
-import ViewSourceDialog from "./ViewSourceDialog";
+import ViewSourceDialog from "./ViewSource/ViewSourceDialog";
 import { useQuestionSourceRequestMutation } from "@/api-services/questions.service";
 
 interface Props extends QuestionsModel {
@@ -135,7 +135,7 @@ const MCQItem: FC<Props> = ({
           `}
         />
       </div>
-      <p className="my-8 font-semibold text-lg">{question}</p>
+      <p className="my-8 font-semibold text-base">{question}</p>
       <div className="py-4 flex flex-col gap-6">
         {options.map((opt, idx) => {
           return (
@@ -201,28 +201,22 @@ const MCQItem: FC<Props> = ({
             ))}
       {submitted && (
         <div className="mt-3 flex flex-col gap-3 items-center">
-          <div className="w-full max-w-[200px]">
-            {allowViewSource && (
-              <Button
-                title="View Source"
-                size="medium"
-                fullWidth
-                onClick={() => {
-                  setModalContent(
-                    <ViewSourceDialog
-                      question={question}
-                      documentId={documentId}
-                      handleSourceText={(text) => {
-                        setSource(text);
-                      }}
-                      sourceText={source}
-                    />
-                  );
-                }}
-              />
-            )}
-          </div>
-          <QuestionExplanation explanation={explanation} />
+          <QuestionExplanation
+            explanation={explanation}
+            allowViewSource={allowNotSure}
+            handleViewSource={() => {
+              setModalContent(
+                <ViewSourceDialog
+                  question={question}
+                  documentId={documentId}
+                  handleSourceText={(text) => {
+                    setSource(text);
+                  }}
+                  sourceText={source}
+                />
+              );
+            }}
+          />
         </div>
       )}
     </div>

@@ -7,6 +7,7 @@ import { useQuestionSourceRequestMutation } from "@/api-services/questions.servi
 import Spinner from "@/@shared/components/Spinner";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import s from './styles.module.css'
 
 interface Props {
   sourceText: string | null;
@@ -68,7 +69,7 @@ const ViewSourceDialog: FC<Props> = ({
       </div>
       <div className="h-[85%] overflow-auto prose-base overflow-x-hidden">
         {cleanedSourceText && !isLoading && !error && (
-          <div dangerouslySetInnerHTML={{ __html: cleanedSourceText }}></div>
+          <div className={s.highlight} dangerouslySetInnerHTML={{ __html: cleanedSourceText }}></div>
         )}
         {isLoading && (
           <div className="mx-auto my-4 flex flex-col items-center justify-center">

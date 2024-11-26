@@ -56,7 +56,7 @@ const GenerateQuestionsForm: FC<Props> = ({
       isLoading: generateQuestionsLoading,
       error: generateQuestionsError,
       isSuccess: generateQuestionsSuccess,
-      data
+      data,
     },
   ] = useGenerateQuestionsMutation();
 
@@ -93,12 +93,12 @@ const GenerateQuestionsForm: FC<Props> = ({
     }
   }, [params]);
 
-  useEffect(()=>{
-    if(data){
+  useEffect(() => {
+    if (data) {
       toast.success("Questions successfully generated");
-      window.location.href = `${window.location.origin}/questions/practise-questions/${data.type}/${data.id}`
+      window.location.href = `${window.location.origin}/questions/practise-questions/${data.type}/${data.id}`;
     }
-  },[data])
+  }, [data]);
 
   useEffect(() => {
     if (isAdvanced) {
@@ -111,9 +111,9 @@ const GenerateQuestionsForm: FC<Props> = ({
       {generateQuestionsLoading && (
         <AppLoader loaderMessage="Hang in there while we generate your questions" />
       )}
-      <div className="bg-white rounded-xl shadow-xl px-16 py-14  max-md:px-8 w-full max-w-[450px] relative">
+      <div className="bg-white rounded-xl max-sm:max-w-[95vw] shadow-xl py-12 px-6 w-full max-w-[380px] relative">
         <span
-          className="absolute top-2 right-2 cursor-pointer"
+          className="absolute top-5 right-8 cursor-pointer"
           onClick={() => {
             setModalContent(null);
           }}
@@ -225,7 +225,9 @@ const GenerateQuestionsForm: FC<Props> = ({
                 </div>
               )}
 
-              <Button title="Generate Questions" type="submit" size="large" />
+              <div className="mx-auto mt-8">
+                <Button title="Generate" type="submit" size="large" />
+              </div>
             </div>
           </Form>
         </FormikProvider>

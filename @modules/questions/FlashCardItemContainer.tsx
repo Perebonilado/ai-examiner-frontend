@@ -69,7 +69,7 @@ const FlashCardItemContainer: FC<Props> = ({
       <div className="flex max-sm:justify-center max-sm:items-center max-sm:flex-col-reverse gap-4 justify-end mt-20">
         {allowMoreQuestionGeneration && (
           <Button
-            title="Generate New Questions"
+            title="New Questions"
             onClick={() => {
               if (handleGenerateMoreQuestions) {
                 handleGenerateMoreQuestions();

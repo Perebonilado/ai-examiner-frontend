@@ -27,12 +27,13 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
     }
   );
 
-  const labelStyling = cn(`text-sm font-semibold`, {
-    ["text-gray-400"]: disabled,
+  const labelStyling = cn(`text-xs font-semibold`, {
+    ["text-[#858585]"]: disabled,
   });
 
   return (
-    <div className="flex items-center justify-center gap-2 w-fit">
+    <div className="flex items-center justify-between gap-2 w-full">
+      <label className={labelStyling}>{label}</label>
       <div
         className={sliderContainerClass}
         onClick={() => {
@@ -47,7 +48,6 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
           className={sliderClass}
         ></div>
       </div>
-      <label className={labelStyling}>{label}</label>
     </div>
   );
 };

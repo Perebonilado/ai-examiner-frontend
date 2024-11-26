@@ -263,7 +263,7 @@ const ViewQuestions: NextPage = () => {
           </h2>
           {permissions && activeTab === "Questions" && (
             <Button
-              title="Generate New Questions"
+              title="New Questions"
               onClick={handleGenerateQuestions}
               size="large"
             />

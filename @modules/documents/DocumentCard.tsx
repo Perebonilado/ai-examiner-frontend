@@ -1,18 +1,17 @@
 import FileIcon from "@/icons/FileIcon";
 import { AllDocumentsModel } from "@/models/document.model";
-import React, { FC, useEffect } from "react";
+import React, { ElementRef, FC, useEffect, useState } from "react";
 import * as moment from "moment";
 import { useRouter } from "next/router";
-import { TrashIcon } from "@/icons/TrashIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import { useUpdateDocumentMutation } from "@/api-services/document.service";
-import EditIcon from "@/icons/EditIcon";
 import DotsIcon from "@/icons/DotsIcon";
-import MoreActions from "./MoreActions";
 import { toast } from "react-toastify";
-import DotsCircular from "@/icons/DotsCircular";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
+import MoreActionsDefaultView from "./MoreActionsDefaultView";
+import EditDocumentForm from "./EditDocumentForm";
+import useClickOutside from "@/hooks/useClickOutside";
 
 interface Props extends AllDocumentsModel {}
 
@@ -22,6 +21,10 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
   const [deleteDocument] = useUpdateDocumentMutation();
   const [editDocument, { isSuccess: editDocumentSuccess }] =
     useUpdateDocumentMutation();
+  const [isMoreActions, setIsMoreActions] = useState(false);
+  const ref = useClickOutside<ElementRef<"button">>(() => {
+    setIsMoreActions(false)
+  });
 
   useEffect(() => {
     if (editDocumentSuccess) {
@@ -40,27 +43,53 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
         <FileIcon />
 
         <button
-        className="w-[45px] h-[45px] flex items-center justify-center"
+          ref={ref}
+          className="w-[45px] h-[45px] relative flex items-center justify-center"
           onClick={(e) => {
             e.stopPropagation();
-            setModalContent(
-              <MoreActions
-                deleteDocument={() => {
-                  deleteDocument({ id, isDeleted: true });
-                }}
-                documentTitle={title}
-                editTitle={(newTitle) => {
-                  editDocument({ id, title: newTitle, isDeleted: false });
-                }}
-              />
-            );
+            setIsMoreActions(!isMoreActions);
           }}
         >
+          {isMoreActions && (
+            <MoreActionsDefaultView
+              handleView={(viewTitle) => {
+                if (viewTitle === "delete") {
+                  setModalContent(
+                    <ConfirmationDialog
+                      title="Delete Document ?"
+                      message="This can't be undone"
+                      confirmationText="Delete"
+                      onConfirm={() => {
+                        deleteDocument({ id, isDeleted: true });
+                      }}
+                      onCancel={() => {
+                        setModalContent(null);
+                      }}
+                    />
+                  );
+                } else {
+                  setModalContent(
+                    <EditDocumentForm
+                      documentTitle={title}
+                      handleSubmit={(title) => {
+                        editDocument({ id, title, isDeleted: false });
+                      }}
+                      handleClose={() => {
+                        setModalContent(null);
+                      }}
+                    />
+                  );
+                }
+              }}
+            />
+          )}
           <DotsIcon fill="#939393" width={20} height={20} />
         </button>
       </div>
       <div className="h-[40%] flex flex-col justify-end gap-1 overflow-hidden px-2">
-        <p className="text-sm truncate text-[#1E1E1E] font-semibold">{capitalizeFirstLetterOfEachWord(title)}</p>
+        <p className="text-sm truncate text-[#1E1E1E] font-semibold">
+          {capitalizeFirstLetterOfEachWord(title)}
+        </p>
         <div className="flex items-center gap-2 justify-between">
           <p className="text-xs text-[#8E8E8E]">
             Created{" "}

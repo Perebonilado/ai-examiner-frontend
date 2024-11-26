@@ -14,17 +14,24 @@ interface Props {
 
 const ConfirmationDialog = forwardRef<HTMLDivElement, Props>(
   (
-    { title, confirmationText, message, onConfirm, onCancel, cancelText = "Cancel" },
+    {
+      title,
+      confirmationText,
+      message,
+      onConfirm,
+      onCancel,
+      cancelText = "Cancel",
+    },
     ref
   ) => {
     const { setModalContent } = useModalContext();
     return (
       <div
-        className="w-full relative overflow-hidden max-w-[400px] max-md:max-w-[350px] rounded-xl shadow-lg flex flex-col justify-center bg-white"
+        className="w-full relative overflow-hidden max-w-[350px] max-md:max-w-[350px] rounded-xl shadow-lg flex flex-col justify-center bg-white"
         ref={ref}
       >
-        <div className="flex items-center justify-between p-4 bg-gray-100">
-          <p className="font-medium text-left">{title}</p>
+        <div className="flex items-center justify-between p-4">
+          <div></div>
           <button
             className="cursor-pointer"
             onClick={() => {
@@ -35,9 +42,12 @@ const ConfirmationDialog = forwardRef<HTMLDivElement, Props>(
           </button>
         </div>
 
-        <p className="text-gray-500 text-sm border-b p-4">{message}</p>
+        <div className="p-4">
+          <p className="font-bold mb-1 text-left text-xl">{title}</p>
+          <p className="text-sm">{message}</p>
+        </div>
 
-        <div className="flex items-center justify-end gap-2 p-4">
+        <div className="flex items-center justify-end gap-2 p-4 pb-8">
           <Button
             title={cancelText}
             variant="outlined"

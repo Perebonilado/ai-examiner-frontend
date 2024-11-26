@@ -53,7 +53,7 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>(
           />
           {allowMoreQuestionGeneration && props.handleGenerateMoreQuestions && (
             <Button
-              title="Generate New Questions"
+              title="New Questions"
               fullWidth
               onClick={props.handleGenerateMoreQuestions}
               variant="outlined"

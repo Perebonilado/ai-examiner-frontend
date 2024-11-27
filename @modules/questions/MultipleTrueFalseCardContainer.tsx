@@ -291,7 +291,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
           totalDuration={totalDuration}
         />
       ) : null}
-      <div className="mt-3 mb-12 flex flex-col gap-3 items-center justify-center">
+      <div className="mt-3 mb-12 mx-auto w-full max-w-[300px] flex flex-col gap-3 items-center justify-center">
         {submitted && allowMoreQuestionGeneration && (
           <Button
             title="New Questions"
@@ -302,6 +302,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
             }}
             size="large"
             variant="outlined"
+            fullWidth
           />
         )}
         {submitted && (

@@ -11,8 +11,8 @@ interface Props {
 }
 
 const MaxGenerationModal: FC<Props> = ({
-  title = "Max Generation Reached!",
-  body = "Please, upgrade your plan to continue generating questions",
+  title = "You've hit the limit!",
+  body = "An upgrade is required to generate further questions",
 }) => {
   const { setModalContent } = useModalContext();
   const ref = useClickOutside<ElementRef<"div">>(() => {
@@ -22,19 +22,21 @@ const MaxGenerationModal: FC<Props> = ({
   return (
     <Dialog ref={ref}>
       <div
-        className="w-full flex flex-col gap-5 justify-center bg-white"
+        className="w-full flex flex-col gap-1 justify-center bg-white"
         ref={ref}
       >
-        <h1 className="text-lg font-bold text-center">{title}</h1>
-        <div>
-          <p className="text-base text-center">{body}</p>
+        <h1 className="text-xl font-bold text-center">{title}</h1>
+        <div className="mb-6">
+          <p className="text-sm text-center">{body}</p>
         </div>
 
-        <Button
-          title="Upgrade Plan"
-          onClick={() => router.push("/pricing")}
-          size="large"
-        />
+        <div className="mx-auto">
+          <Button
+            title="Upgrade Plan"
+            onClick={() => router.push("/pricing")}
+            size="large"
+          />
+        </div>
       </div>
     </Dialog>
   );

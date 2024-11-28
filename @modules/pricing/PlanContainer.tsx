@@ -6,7 +6,7 @@ import { useGetUserIpInfoQuery } from "@/api-services/ip.service";
 import { PlanModel } from "@/models/plan.model";
 
 const PlanContainer: FC = () => {
-  const { data: ipDetails } = useGetUserIpInfoQuery("");
+  const { data: ipDetails, isError: isIpDetailsError } = useGetUserIpInfoQuery("");
   const { data: plans } = useGetPlansQuery("");
   const [plansToDisplay, setPlansToDisplay] = useState<PlanModel[]>();
 
@@ -32,10 +32,34 @@ const PlanContainer: FC = () => {
     }
   }, [ipDetails, plans]);
 
+  useEffect(()=>{
+
+    if(isIpDetailsError && plans) {
+      const plansToShow = getPlansToDisplay();
+
+      if (plansToShow) {
+        const freePlan = {
+          costPerMonth: 0,
+          currency: plansToShow[0].currency,
+          offers: [
+            { title: "Multiple choice questions", isAvailable: true },
+            { title: "Flashcards", isAvailable: true },
+            { title: "Topic selection", isAvailable: true },
+            { title: "AI Discussions", isAvailable: false },
+          ],
+          type: "Free",
+          planId: 4098888376,
+        };
+        setPlansToDisplay([freePlan, ...plansToShow]);
+      }
+    }
+
+  }, [isIpDetailsError, plans])
+
   const getPlansToDisplay = () => {
+    const nairaCurrencyCode = "NGN";
+    const usdCurrencyCode = "USD";
     if (plans && ipDetails) {
-      const nairaCurrencyCode = "NGN";
-      const usdCurrencyCode = "USD";
       let isUsersCountryNigeria = true;
       let isUsersContinentAfrica = true;
 
@@ -78,6 +102,8 @@ const PlanContainer: FC = () => {
           return northAmericanRegionalPlans ? true : false;
         });
       }
+    } else if (plans && !ipDetails) {
+      return plans.filter((plan) => plan.currency === nairaCurrencyCode);
     }
   };
 

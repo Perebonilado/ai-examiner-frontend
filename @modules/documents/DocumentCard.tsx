@@ -52,6 +52,9 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
         >
           {isMoreActions && (
             <MoreActionsDefaultView
+            handleViewPerformanceReport={()=>{
+              router.push(`/documents/${id}/performance-tracking`)
+            }}
               handleView={(viewTitle) => {
                 if (viewTitle === "delete") {
                   setModalContent(

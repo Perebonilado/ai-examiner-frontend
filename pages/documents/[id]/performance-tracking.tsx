@@ -1,3 +1,4 @@
+import PerformanceTrackingBarItemContainer from "@/@modules/performance-tracking/PerformanceTrackingBarItemContainer";
 import AppHead from "@/@shared/components/AppHead";
 import Pill from "@/@shared/components/Pill";
 import { useGetCourseByIdQuery } from "@/api-services/course.service";
@@ -39,6 +40,17 @@ const PerformanceTracking: NextPage = () => {
             Retina
           </h3>
           <p className="text-sm text-[#939393]">Nov 19 - Nov 26</p>
+        </div>
+
+        <div className="w-full">
+          <PerformanceTrackingBarItemContainer
+            data={[
+              { title: "Photoreceptors", percentage: 30 },
+              { title: "Photoreceptors", percentage: 90 },
+              { title: "Photoreceptors", percentage: 3 },
+              { title: "Photoreceptors", percentage: 25 },
+            ]}
+          />
         </div>
       </AppLayout>
     </>

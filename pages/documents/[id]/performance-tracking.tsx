@@ -1,6 +1,8 @@
+import MoreDataAccordion from "@/@modules/performance-tracking/MoreDataAccordion";
 import PerformanceTrackingBarItemContainer from "@/@modules/performance-tracking/PerformanceTrackingBarItemContainer";
 import AppHead from "@/@shared/components/AppHead";
 import Pill from "@/@shared/components/Pill";
+import Button from "@/@shared/ui/Button";
 import { useGetCourseByIdQuery } from "@/api-services/course.service";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
@@ -29,20 +31,17 @@ const PerformanceTracking: NextPage = () => {
           <p className="px-3 text-center mt-2">Insights across all topics</p>
         </div>
 
-        <div className="w-full max-w-[500px] mx-auto pt-6 flex gap-3 flex-wrap max-sm:justify-center">
+        <div className="w-full max-w-[500px] mx-auto pt-6 flex gap-3 flex-wrap justify-center">
           <Pill title="Current" isActive={true} />
           <Pill title="Last Week" isActive={false} />
         </div>
 
         <div className="text-center mt-20 flex justify-center items-center flex-col gap-1">
-          <h3 className="font-bold text-xl">
-            {/* {course && course.title} */}
-            Retina
-          </h3>
+          <h3 className="font-bold text-xl">Retina</h3>
           <p className="text-sm text-[#939393]">Nov 19 - Nov 26</p>
         </div>
 
-        <div className="w-full">
+        <div className="w-full mt-8">
           <PerformanceTrackingBarItemContainer
             data={[
               { title: "Photoreceptors", percentage: 30 },
@@ -50,6 +49,17 @@ const PerformanceTracking: NextPage = () => {
               { title: "Photoreceptors", percentage: 3 },
               { title: "Photoreceptors", percentage: 25 },
             ]}
+          />
+        </div>
+
+        <div className="mt-6">
+          <MoreDataAccordion
+            data={[
+              { comment: "do better", score: 24, title: "testing" },
+              { comment: "do better", score: 24, title: "testing" },
+              { comment: "do better", score: 24, title: "testing" },
+            ]
+            }
           />
         </div>
       </AppLayout>

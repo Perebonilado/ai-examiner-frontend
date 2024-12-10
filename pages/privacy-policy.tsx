@@ -6,7 +6,7 @@ import React from "react";
 const PrivacyPolicy: NextPage = () => {
   return (
     <WebLayout>
-      <Container className="py-16">
+      <Container className="pb-16 pt-8">
         <div
           dangerouslySetInnerHTML={{
             __html: `

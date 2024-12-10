@@ -33,8 +33,4 @@ export const navLinks = [
     title: "Pricing",
     link: "/pricing",
   },
-  {
-    title: "Privacy Policy",
-    link: "/privacy-policy",
-  },
 ];

@@ -24,7 +24,7 @@ const MoreActionsDefaultView: FC<Props> = ({
           <EditIcon width={18} height={18} fill="#939393" />
           <p className="text-sm">Edit Title</p>
         </button>
-        <button
+        {/* <button
           className="flex items-center gap-5 p-4 w-full"
           onClick={() => {
             handleViewPerformanceReport();
@@ -32,7 +32,7 @@ const MoreActionsDefaultView: FC<Props> = ({
         >
           <PerformanceTrackingIcon />
           <p className="text-sm">View Performance Report</p>
-        </button>
+        </button> */}
         <button
           className="flex items-center gap-5 p-4 w-full"
           onClick={() => {

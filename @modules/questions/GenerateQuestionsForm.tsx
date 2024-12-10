@@ -30,18 +30,26 @@ const initialValues = {
 interface Props {
   topics: { label: string; value: string }[];
   fileId: string;
+  preSelectedTopics?: string[];
+  allowTopicSelection?: boolean;
   documentIdProp?: string;
+  saveSelectedTopics?: boolean;
 }
 
 const GenerateQuestionsForm: FC<Props> = ({
   topics,
   fileId,
+  preSelectedTopics = [],
+  allowTopicSelection = true,
+  saveSelectedTopics = true,
   documentIdProp = "",
 }) => {
   const params = useParams();
 
   const [documentId, setdocumentId] = useState<string>(documentIdProp);
-  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([
+    ...preSelectedTopics,
+  ]);
   const [isAdvanced, setIsAdvanced] = useState(false);
   const [includeUseCases, setIncludeUseCases] = useState(false);
 
@@ -83,6 +91,7 @@ const GenerateQuestionsForm: FC<Props> = ({
         questionType: values.questionType,
         selectedQuestionTopics: selectedTopics,
         includeUseCases,
+        saveSelectedTopics,
       });
     },
   });
@@ -171,7 +180,7 @@ const GenerateQuestionsForm: FC<Props> = ({
                 </div>
               )}
 
-              {permissions.canUseAdvancedPreferences && (
+              {permissions.canUseAdvancedPreferences && allowTopicSelection && (
                 <div>
                   {topics.length || focusAreas?.topics.length ? (
                     <ChipMultiSelect

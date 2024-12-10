@@ -18,6 +18,7 @@ import { QuestionProgressService } from "@/api-services/question-progress.servic
 import { SpeechService } from "@/api-services/speech.service";
 import { SharedQuestionsService } from "@/api-services/shared-questions.service";
 import { IpService } from "@/api-services/ip.service";
+import { PerformanceTrackingService } from "@/api-services/performance-tracking.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -37,6 +38,7 @@ export const reduxStore = configureStore({
     [SpeechService.reducerPath]: SpeechService.reducer,
     [SharedQuestionsService.reducerPath]: SharedQuestionsService.reducer,
     [IpService.reducerPath]: IpService.reducer,
+    [PerformanceTrackingService.reducerPath]: PerformanceTrackingService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
   },
@@ -57,7 +59,8 @@ export const reduxStore = configureStore({
       QuestionProgressService.middleware,
       SpeechService.middleware,
       SharedQuestionsService.middleware,
-      IpService.middleware
+      IpService.middleware,
+      PerformanceTrackingService.middleware
     ]),
 });
 

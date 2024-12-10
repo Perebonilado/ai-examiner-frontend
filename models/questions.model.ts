@@ -99,6 +99,7 @@ export interface GenerateQuestionsPayloadModel {
   documentId: string;
   questionCount: string;
   questionType: string;
+  saveSelectedTopics: boolean;
   topics?: string[];
   selectedQuestionTopics?: string[];
   includeUseCases: boolean;

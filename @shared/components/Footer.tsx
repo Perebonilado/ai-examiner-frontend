@@ -18,8 +18,8 @@ const Footer: FC = () => {
             style={{ flex: 1 }}
             className="flex justify-end gap-16 max-sm:gap-10 max-sm:flex-col max-md:justify-start max-md:mt-8"
           >
-            {/* <FooterLinksContainer {...product} /> */}
-            {/* <FooterLinksContainer {...company} /> */}
+            <FooterLinksContainer {...product} type="link"/>
+            <FooterLinksContainer {...company} type="link"/>
             <FooterLinksContainer {...support} />
           </div>
         </div>
@@ -53,11 +53,11 @@ const product: FooterLink = {
   links: [
     {
       title: "Pricing",
-      link: "",
+      link: "/pricing",
     },
     {
       title: "How it works",
-      link: "",
+      link: "/#how-it-works",
     },
   ],
 };
@@ -65,22 +65,22 @@ const product: FooterLink = {
 const company: FooterLink = {
   title: "Company",
   links: [
-    {
-      title: "About Us",
-      link: "",
-    },
-    {
-      title: "Community",
-      link: "",
-    },
+    // {
+    //   title: "About Us",
+    //   link: "",
+    // },
+    // {
+    //   title: "Community",
+    //   link: "",
+    // },
     {
       title: "Privacy Policy",
-      link: "",
+      link: "/privacy-policy",
     },
-    {
-      title: "Terms of Services",
-      link: "",
-    },
+    // {
+    //   title: "Terms of Services",
+    //   link: "",
+    // },
   ],
 };
 

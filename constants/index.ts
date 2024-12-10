@@ -17,6 +17,7 @@ export const typeBasedRoutes: {
   { route: "/questions/shared/flash-cards/[id]", type: "web_and_app" },
   { route: "/questions/shared/multiple-true-false/[id]", type: "web_and_app" },
   { route: "/pricing", type: "web_and_app" },
+  { route: "/privacy-policy", type: "web_and_app" },
 ];
 
 export const navLinks = [
@@ -31,5 +32,9 @@ export const navLinks = [
   {
     title: "Pricing",
     link: "/pricing",
+  },
+  {
+    title: "Privacy Policy",
+    link: "/privacy-policy",
   },
 ];

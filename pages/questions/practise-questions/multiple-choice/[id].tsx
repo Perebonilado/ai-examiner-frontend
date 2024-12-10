@@ -235,15 +235,9 @@ const Practice: NextPage = () => {
                         });
                       }
                     }}
-                    allowMoreQuestionGeneration={true}
-                    handleGenerateMoreQuestions={() => {
-                      setModalContent(
-                        <GenerateQuestionsForm
-                          fileId={data.fileId}
-                          topics={topics?.topics ?? []}
-                          documentIdProp={data.documentId}
-                        />
-                      );
+                    allowPerformanceOverview={true}
+                    handlePerformanceOverview={() => {
+                      router.push(`/performance-tracking/question/${id}`)
                     }}
                   />
                 );

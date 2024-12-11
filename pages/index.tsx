@@ -46,7 +46,6 @@ export default function Home() {
       <HowItWorksItemContainer data={howItWorksData} />
       <SupportLeaningContainer data={supportLearningData} />
       <ContactTeamMemberContainer />
-      {/* <TestKnowledge /> */}
       <FAQContainer />
     </WebLayout>
   );

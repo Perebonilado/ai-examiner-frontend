@@ -14,6 +14,7 @@ import FlashcardsIcon from "@/icons/FlashcardsIcon";
 import MCQIcon from "@/icons/MCQIcon";
 import TopicsIcon from "@/icons/TopicsIcon";
 import ContactTeamMemberContainer from "@/@modules/home/ContactTeamMemberContainer";
+import CaseStudyIcon from "@/icons/CaseStudyIcon";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -70,6 +71,6 @@ const supportLearningData = [
   {
     title: "Case Study Questions",
     body: "These questions go beyond rote memorization, encouraging critical thinking and problem-solving by presenting complex, practical cases.",
-    icon: <TopicsIcon />,
+    icon: <CaseStudyIcon />,
   },
 ];

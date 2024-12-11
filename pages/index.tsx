@@ -13,6 +13,7 @@ import SupportLeaningContainer from "@/@modules/home/SupportLeaningContainer";
 import FlashcardsIcon from "@/icons/FlashcardsIcon";
 import MCQIcon from "@/icons/MCQIcon";
 import TopicsIcon from "@/icons/TopicsIcon";
+import ContactTeamMemberContainer from "@/@modules/home/ContactTeamMemberContainer";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -44,7 +45,7 @@ export default function Home() {
       <Jumbotron />
       <HowItWorksItemContainer data={howItWorksData} />
       <SupportLeaningContainer data={supportLearningData} />
-      <TestKnowledge />
+      <ContactTeamMemberContainer />
       <FAQContainer />
     </WebLayout>
   );

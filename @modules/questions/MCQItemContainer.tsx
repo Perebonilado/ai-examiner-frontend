@@ -96,8 +96,16 @@ const MCQItemContainer: FC<Props> = ({
   }, [isLoading]);
 
   useEffect(() => {
-    if (isSuccess && !isLoading && !progressLoading && progressSaved) {
-      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+    if (isSuccess && !isLoading) {
+      if (allowSaveProgress) {
+        if (!progressLoading && progressSaved)
+          handleShowSubmissionModal({
+            title,
+            score: calculateScorePercentage(),
+          });
+      } else {
+        handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      }
     }
   }, [isSuccess, isLoading, progressSaved, progressLoading]);
 

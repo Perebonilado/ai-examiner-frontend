@@ -272,10 +272,18 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   }, [isLoading]);
 
   useEffect(() => {
-    if (isSuccess && !isLoading && !progressLoading && progressSuccess) {
-      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+    if (isSuccess && !isLoading) {
+      if (allowSaveProgress) {
+        if (!progressLoading && progressSuccess)
+          handleShowSubmissionModal({
+            title,
+            score: calculateScorePercentage(),
+          });
+      } else {
+        handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      }
     }
-  }, [isSuccess, isLoading, progressLoading, progressSuccess]);
+  }, [isSuccess, isLoading, progressSuccess, progressLoading]);
 
   useEffect(() => {
     if (progress && progress.status === "submitted") {

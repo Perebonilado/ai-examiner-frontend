@@ -109,7 +109,7 @@ const TopicInfoCard: FC<Props> = ({
           )}
         </div>
       </div>
-      <div className="w-full mx-auto max-w-[500px] mt-20 flex justify-center">
+      <div className="w-full mx-auto max-w-[500px] mt-14 flex justify-center">
         <Button
           title="Generate Test"
           size="large"

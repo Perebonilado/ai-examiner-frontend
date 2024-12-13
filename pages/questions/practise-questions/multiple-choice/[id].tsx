@@ -235,9 +235,11 @@ const Practice: NextPage = () => {
                         });
                       }
                     }}
-                    allowPerformanceOverview={true}
+                    allowPerformanceOverview={data.data.every(
+                      (q) => q["topic"] !== undefined
+                    )}
                     handlePerformanceOverview={() => {
-                      router.push(`/performance-tracking/question/${id}`)
+                      router.push(`/performance-tracking/question/${id}`);
                     }}
                   />
                 );

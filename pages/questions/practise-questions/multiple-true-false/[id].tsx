@@ -236,7 +236,9 @@ const MultipleTrueFalse: NextPage = () => {
                     });
                   }
                 }}
-                allowPerformanceOverview={true}
+                allowPerformanceOverview={data.data.every((q) => {
+                  return q["topic"] !== undefined;
+                })}
                 handlePerformanceOverview={() => {
                   router.push(`/performance-tracking/question/${id}`);
                 }}

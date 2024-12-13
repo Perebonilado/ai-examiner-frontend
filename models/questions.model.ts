@@ -9,6 +9,7 @@ export interface QuestionsModel {
   explanation: string;
   correctAnswerId: string;
   hint?: string;
+  topic?: string
 }
 
 export interface QuestionSourceRequestPayloadModel {
@@ -26,6 +27,7 @@ export interface MultipleTrueFalseQuestionModel {
   options: MultipleTrueFalseQuestionOption[];
   explanation: string;
   hint?: string;
+  topic?: string;
 }
 
 export interface GetMultipleTrueFalseQuestionByIdModel

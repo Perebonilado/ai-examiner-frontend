@@ -17,11 +17,6 @@ const TopicInfoCard: FC<Props> = ({
   groupedQuestions,
   handleGenerateQuestions,
 }) => {
-  const getNoDataMessage = () => {
-    if (status === "fail") return "No topics failed";
-    return "No topics passed";
-  };
-
   const calculateTotalQuestions = () => {
     let total = 0;
 
@@ -64,9 +59,9 @@ const TopicInfoCard: FC<Props> = ({
         </p>
       </div>
       <div
-        className={`w-full max-w-[500px] border border-grey-200 rounded-xl flex flex-col h-[500px] mx-auto`}
+        className={`w-full max-w-[500px] border border-grey-200 rounded-xl flex flex-col max-h-[500px] mx-auto`}
       >
-        <div className="flex items-center py-4 px-2 pl-6 text-xs text-[#939393] border-b border-b-gray-200">
+        <div className="flex items-center py-4 px-2 pl-6 text-xs text-[#939393] border-b  border-b-gray-200">
           <div style={{ flex: 3 }} className="pl-8">
             <p>Topics</p>
           </div>

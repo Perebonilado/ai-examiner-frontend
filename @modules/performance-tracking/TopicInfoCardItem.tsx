@@ -17,7 +17,7 @@ const TopicInfoCardItem: FC<Props> = ({
   isSelected,
 }) => {
   return (
-    <div className="flex items-center py-4 px-2 pl-6 text-xs text-[#000000] border-b border-b-gray-200">
+    <div className="flex items-center py-4 px-2 pl-6 text-xs text-[#000000] border-b border-b-gray-200 last:!border-b-0">
       <div style={{ flex: 3 }} className="flex items-center">
         <Checkbox
           checked={isSelected}

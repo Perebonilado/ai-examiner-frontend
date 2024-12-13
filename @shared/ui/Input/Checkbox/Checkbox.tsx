@@ -7,7 +7,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   customBorderColor?: string;
   customLabelColor?: string;
-  shape?: "round" | "square";
+  shape?: "round" | "square" | "unrounded";
 }
 
 const Checkbox: FC<Props> = ({
@@ -31,6 +31,7 @@ const Checkbox: FC<Props> = ({
     {
       ["rounded-full"]: shape === "round",
       ["rounded-md"]: shape === "square",
+      ["rounded-none"]: shape === "unrounded",
     }
   );
   return (

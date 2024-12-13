@@ -63,39 +63,18 @@ const PerformanceReviewPerQuestion: NextPage = () => {
 
         {data && (
           <div className="mt-16">
-            <div className="w-full mx-auto flex items-center justify-center gap-8 max-md:flex-col">
+            <div className="w-full mx-auto">
               <TopicInfoCard
-                title="Topics Failed"
-                data={data.topicsEvaluatedWrongly}
                 status="fail"
                 groupedQuestions={data.groupedQuestions}
-                handleGenerateQuestions={() => {
+                handleGenerateQuestions={(selectedTopics) => {
                   setModalContent(
                     <GenerateQuestionsForm
-                      topics={data.topicsEvaluatedWrongly.map((t)=>({label: t, value: t}))}
+                      topics={selectedTopics.map((t)=>({label: t, value: t}))}
                       fileId={""}
                       documentIdProp={data.documentId}
-                      allowTopicSelection={false}
-                      preSelectedTopics={data.topicsEvaluatedWrongly}
-                      saveSelectedTopics={false}
-                    />
-                  );
-                }}
-              />
-
-              <TopicInfoCard
-                title="Topics Passed"
-                data={data.topicsEvaluatedCorrectly}
-                status="pass"
-                groupedQuestions={data.groupedQuestions}
-                handleGenerateQuestions={() => {
-                  setModalContent(
-                    <GenerateQuestionsForm
-                      topics={data.topicsEvaluatedCorrectly.map((t)=>({label: t, value: t}))}
-                      fileId={""}
-                      documentIdProp={data.documentId}
-                      allowTopicSelection={false}
-                      preSelectedTopics={data.topicsEvaluatedCorrectly}
+                      allowTopicSelection={!selectedTopics.length}
+                      preSelectedTopics={selectedTopics}
                       saveSelectedTopics={false}
                     />
                   );

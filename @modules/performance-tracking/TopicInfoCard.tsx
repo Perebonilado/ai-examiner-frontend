@@ -1,103 +1,113 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import cn from "classnames";
 import Button from "@/@shared/ui/Button";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { PerformanceTrackingParsingData } from "@/dto/performane-tracking.dto";
+import TopicInfoCardItem from "./TopicInfoCardItem";
 
 interface Props {
-  title: string;
-  data: string[];
   status: "pass" | "fail";
   groupedQuestions: Record<
     string,
     Record<"correct" | "wrong", PerformanceTrackingParsingData[]>
   >;
-  handleGenerateQuestions: () => void;
+  handleGenerateQuestions: (selectedTopics: string[]) => void;
 }
 
 const TopicInfoCard: FC<Props> = ({
-  data,
-  title,
   status,
   groupedQuestions,
-  handleGenerateQuestions
+  handleGenerateQuestions,
 }) => {
-  const rootClassNames = cn(
-    `w-full max-w-[350px] border border-grey-200 shadow-xl rounded-xl  flex h-[500px]`
-    // {
-    //   ["border-[#FADCDC]"]: status === "fail",
-    //   ["border-[#c3e6cb]"]: status === "pass",
-    // }
-  );
-
   const getNoDataMessage = () => {
     if (status === "fail") return "No topics failed";
     return "No topics passed";
   };
 
+  const calculateTotalQuestions = () => {
+    let total = 0;
+
+    if (groupedQuestions) {
+      total = Object.values(groupedQuestions).reduce((acc, prev) => {
+        return prev.correct.length + prev.wrong.length + acc;
+      }, 0);
+    }
+
+    return total;
+  };
+
+  const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+
+  useEffect(() => {
+    const defaultSelectedTopics: string[] = [];
+
+    Object.entries(groupedQuestions).forEach(([topic, scoreInfo]) => {
+      if (scoreInfo.wrong.length) {
+        defaultSelectedTopics.push(topic);
+      }
+    });
+
+    if(defaultSelectedTopics.length){
+      setSelectedTopics(defaultSelectedTopics)
+    }
+  }, []);
+
   return (
-    <div className={rootClassNames}>
-      <div className=" w-full">
-        {status === "pass" && (
-          <h3 className="text-center text-[#198754] h-[10%] mb-4 p-4 font-medium">
-            {title}
-          </h3>
-        )}
-        {status === "fail" && (
-          <h3 className="text-center text-[#D24E4E] h-[10%] mb-4 p-4 font-medium">
-            {title}
-          </h3>
-        )}
-
-        <div className="flex flex-col gap-6 h-[65%] overflow-y-auto no-scrollbar w-full">
-          {data.length ? (
-            data.map((t, idx) => {
-              const wrongCount = groupedQuestions[t].wrong.length;
-              const correctCount = groupedQuestions[t].correct.length;
-              const totalCount =
-                groupedQuestions[t.toLowerCase()].wrong.length +
-                groupedQuestions[t.toLowerCase()].correct.length;
-              return (
-                <p className="px-4 text-xs w-full" key={idx}>
-                  {idx + 1}. {capitalizeFirstLetterOfEachWord(t)}{" "}
-                  {status === "fail" && (
-                    <span className="text-xs font-semibold text-gray-300">
-                      {" "}
-                      - {wrongCount} out of {totalCount}
-                    </span>
-                  )}
-                  {status === "pass" && (
-                    <span className="text-xs font-semibold text-gray-300">
-                      {" "}
-                      - {correctCount} out of {totalCount}
-                    </span>
-                  )}
-                </p>
-              );
-            })
-          ) : (
-            <span className="text-center text-gray-300 py-4 text-sm">
-              {getNoDataMessage()}
-            </span>
-          )}
+    <>
+      <div className="w-full mx-auto max-w-[500px]">
+        <h4 className="font-semibold">
+          Total questions ({calculateTotalQuestions()})
+        </h4>
+        <p className="text-xs mb-5">
+          Select topics you would like to generate questions
+        </p>
+      </div>
+      <div
+        className={`w-full max-w-[500px] border border-grey-200 rounded-xl flex flex-col h-[500px] mx-auto`}
+      >
+        <div className="flex items-center py-4 px-2 pl-6 text-xs text-[#939393] border-b border-b-gray-200">
+          <div style={{ flex: 3 }} className="pl-8">
+            <p>Topics</p>
+          </div>
+          <div style={{ flex: 1 }}>
+            <p>Score</p>
+          </div>
         </div>
-
-        <div className="h-[35%] px-4 pt-6">
-          <p className="italic text-xs text-center mb-1">
-            {status === "pass"
-              ? "Stregthen your understanding on topics passed"
-              : "Sharpen your skills on topics failed"}
-          </p>
-          <Button
-            title={"New Questions"}
-            fullWidth
-            variant={status === "fail" ? "contained" : "outlined"}
-            size="large"
-            onClick={handleGenerateQuestions}
-          />
+        <div className="flex flex-col overflow-auto">
+          {Object.entries(groupedQuestions).map((d, idx) => {
+            return (
+              <TopicInfoCardItem
+                correctQuestionsCount={d[1].correct.length}
+                topicTitle={d[0]}
+                totalQuestionsCount={d[1].correct.length + d[1].wrong.length}
+                isSelected={selectedTopics.includes(d[0])}
+                toggleTopicSelection={(topic) => {
+                  if (!selectedTopics.includes(topic)) {
+                    const newSelectedTopics = [...selectedTopics, topic];
+                    setSelectedTopics(newSelectedTopics);
+                  } else {
+                    const newSelectedTopics = selectedTopics.filter(
+                      (t) => t !== topic
+                    );
+                    setSelectedTopics(newSelectedTopics);
+                  }
+                }}
+              />
+            );
+          })}
         </div>
       </div>
-    </div>
+      <div className="w-full mx-auto max-w-[500px] mt-20 flex justify-center">
+        <Button
+          title="Generate Test"
+          size="large"
+          fullWidth
+          onClick={() => {
+            handleGenerateQuestions(selectedTopics);
+          }}
+        />
+      </div>
+    </>
   );
 };
 

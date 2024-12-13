@@ -3,12 +3,15 @@ import TopicInfoCard from "@/@modules/performance-tracking/TopicInfoCard";
 import TopicPerformancePieChart from "@/@modules/performance-tracking/TopicPerformancePieChart";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import AppHead from "@/@shared/components/AppHead";
+import Button from "@/@shared/ui/Button";
 import { useGetPerformanceTrackingForQuestionQuery } from "@/api-services/performance-tracking.service";
 import { useModalContext } from "@/contexts/ModalContext";
+import ChevronLeft from "@/icons/ChevronLeft";
 import AppLayout from "@/layouts/AppLayout";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 
 const PerformanceReviewPerQuestion: NextPage = () => {
@@ -29,10 +32,23 @@ const PerformanceReviewPerQuestion: NextPage = () => {
 
   const { setModalContent } = useModalContext();
 
+  const router = useRouter()
+  const { type } = router.query
+
   return (
     <>
       <AppLayout>
         <AppHead title="Performance Tracking" />
+        <Button
+          title="Back"
+          variant="text"
+          starticon={<ChevronLeft />}
+          className="!gap-1 mb-6 mt-7"
+          onClick={() => {
+            router.push(`/questions/practise-questions/${type}/${questionId}`);
+          }}
+        />
+
         <h2 className="text-center font-bold text-2xl px-4">
           Performance Overview
         </h2>
@@ -70,7 +86,10 @@ const PerformanceReviewPerQuestion: NextPage = () => {
                 handleGenerateQuestions={(selectedTopics) => {
                   setModalContent(
                     <GenerateQuestionsForm
-                      topics={selectedTopics.map((t)=>({label: t, value: t}))}
+                      topics={selectedTopics.map((t) => ({
+                        label: t,
+                        value: t,
+                      }))}
                       fileId={""}
                       documentIdProp={data.documentId}
                       allowTopicSelection={!selectedTopics.length}

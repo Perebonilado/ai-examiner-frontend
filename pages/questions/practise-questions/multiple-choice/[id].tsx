@@ -239,7 +239,7 @@ const Practice: NextPage = () => {
                       (q) => q["topic"] !== undefined
                     )}
                     handlePerformanceOverview={() => {
-                      router.push(`/performance-tracking/question/${id}`);
+                      router.push(`/performance-tracking/question/${id}?type=multiple-choice`);
                     }}
                   />
                 );

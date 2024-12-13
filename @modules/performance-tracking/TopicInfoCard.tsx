@@ -37,6 +37,9 @@ const TopicInfoCard: FC<Props> = ({
   };
 
   const [selectedTopics, setSelectedTopics] = useState<string[]>([]);
+  const [performanceData, setPerformanceData] = useState(
+    groupedQuestions ? Object.entries(groupedQuestions) : []
+  );
 
   useEffect(() => {
     const defaultSelectedTopics: string[] = [];
@@ -74,37 +77,43 @@ const TopicInfoCard: FC<Props> = ({
           </div>
         </div>
         <div className="flex flex-col overflow-auto">
-          {Object.entries(groupedQuestions)
-            .sort((a, b) => {
-              const wrongA = a[1].wrong.length;
-              const wrongB = b[1].wrong.length;
-              return wrongB - wrongA;
-            })
-            .map(([topic, performanceDetails], idx) => {
-              return (
-                <TopicInfoCardItem
-                  key={idx}
-                  correctQuestionsCount={performanceDetails.correct.length}
-                  topicTitle={topic}
-                  totalQuestionsCount={
-                    performanceDetails.correct.length +
-                    performanceDetails.wrong.length
-                  }
-                  isSelected={selectedTopics.includes(topic)}
-                  toggleTopicSelection={(topic) => {
-                    if (!selectedTopics.includes(topic)) {
-                      const newSelectedTopics = [...selectedTopics, topic];
-                      setSelectedTopics(newSelectedTopics);
-                    } else {
-                      const newSelectedTopics = selectedTopics.filter(
-                        (t) => t !== topic
-                      );
-                      setSelectedTopics(newSelectedTopics);
+          {performanceData[1].length ? (
+            performanceData
+              .sort((a, b) => {
+                const wrongA = a[1].wrong.length;
+                const wrongB = b[1].wrong.length;
+                return wrongB - wrongA;
+              })
+              .map(([topic, performanceDetails], idx) => {
+                return (
+                  <TopicInfoCardItem
+                    key={idx}
+                    correctQuestionsCount={performanceDetails.correct.length}
+                    topicTitle={topic}
+                    totalQuestionsCount={
+                      performanceDetails.correct.length +
+                      performanceDetails.wrong.length
                     }
-                  }}
-                />
-              );
-            })}
+                    isSelected={selectedTopics.includes(topic)}
+                    toggleTopicSelection={(topic) => {
+                      if (!selectedTopics.includes(topic)) {
+                        const newSelectedTopics = [...selectedTopics, topic];
+                        setSelectedTopics(newSelectedTopics);
+                      } else {
+                        const newSelectedTopics = selectedTopics.filter(
+                          (t) => t !== topic
+                        );
+                        setSelectedTopics(newSelectedTopics);
+                      }
+                    }}
+                  />
+                );
+              })
+          ) : (
+            <p className="py-6 text-center text-sm text-gray-400">
+              No performance data
+            </p>
+          )}
         </div>
       </div>
       <div className="w-full mx-auto max-w-[500px] mt-20 flex justify-center">

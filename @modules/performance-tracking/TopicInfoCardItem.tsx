@@ -1,5 +1,5 @@
 import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 
 interface Props {
   topicTitle: string;
@@ -14,9 +14,8 @@ const TopicInfoCardItem: FC<Props> = ({
   topicTitle,
   totalQuestionsCount,
   toggleTopicSelection,
-  isSelected
+  isSelected,
 }) => {
-
   return (
     <div className="flex items-center py-4 px-2 pl-6 text-xs text-[#000000] border-b border-b-gray-200">
       <div style={{ flex: 3 }} className="flex items-center">
@@ -26,7 +25,13 @@ const TopicInfoCardItem: FC<Props> = ({
             toggleTopicSelection(topicTitle);
           }}
         />
-        <p>{topicTitle}</p>
+        <p
+          style={{
+            color: correctQuestionsCount === totalQuestionsCount ? "#36CE10" : "#EE6161",
+          }}
+        >
+          {topicTitle}
+        </p>
       </div>
       <div style={{ flex: 1 }}>
         <p>

@@ -47,8 +47,8 @@ const TopicInfoCard: FC<Props> = ({
       }
     });
 
-    if(defaultSelectedTopics.length){
-      setSelectedTopics(defaultSelectedTopics)
+    if (defaultSelectedTopics.length) {
+      setSelectedTopics(defaultSelectedTopics);
     }
   }, []);
 
@@ -74,27 +74,37 @@ const TopicInfoCard: FC<Props> = ({
           </div>
         </div>
         <div className="flex flex-col overflow-auto">
-          {Object.entries(groupedQuestions).map((d, idx) => {
-            return (
-              <TopicInfoCardItem
-                correctQuestionsCount={d[1].correct.length}
-                topicTitle={d[0]}
-                totalQuestionsCount={d[1].correct.length + d[1].wrong.length}
-                isSelected={selectedTopics.includes(d[0])}
-                toggleTopicSelection={(topic) => {
-                  if (!selectedTopics.includes(topic)) {
-                    const newSelectedTopics = [...selectedTopics, topic];
-                    setSelectedTopics(newSelectedTopics);
-                  } else {
-                    const newSelectedTopics = selectedTopics.filter(
-                      (t) => t !== topic
-                    );
-                    setSelectedTopics(newSelectedTopics);
+          {Object.entries(groupedQuestions)
+            .sort((a, b) => {
+              const wrongA = a[1].wrong.length;
+              const wrongB = b[1].wrong.length;
+              return wrongB - wrongA;
+            })
+            .map(([topic, performanceDetails], idx) => {
+              return (
+                <TopicInfoCardItem
+                  key={idx}
+                  correctQuestionsCount={performanceDetails.correct.length}
+                  topicTitle={topic}
+                  totalQuestionsCount={
+                    performanceDetails.correct.length +
+                    performanceDetails.wrong.length
                   }
-                }}
-              />
-            );
-          })}
+                  isSelected={selectedTopics.includes(topic)}
+                  toggleTopicSelection={(topic) => {
+                    if (!selectedTopics.includes(topic)) {
+                      const newSelectedTopics = [...selectedTopics, topic];
+                      setSelectedTopics(newSelectedTopics);
+                    } else {
+                      const newSelectedTopics = selectedTopics.filter(
+                        (t) => t !== topic
+                      );
+                      setSelectedTopics(newSelectedTopics);
+                    }
+                  }}
+                />
+              );
+            })}
         </div>
       </div>
       <div className="w-full mx-auto max-w-[500px] mt-20 flex justify-center">

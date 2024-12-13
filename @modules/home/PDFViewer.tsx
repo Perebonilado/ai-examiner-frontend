@@ -198,7 +198,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
       >
         <Document
           file={url}
-          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadSuccess={onDocumentLoadSuccess as any}
           options={options}
           onItemClick={(e) => {
             setPageNumber(e.pageNumber);

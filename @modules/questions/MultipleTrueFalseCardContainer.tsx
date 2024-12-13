@@ -71,7 +71,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   const params = useParams();
 
-  const { data: progress, isLoading: progressLoading } = useGetProgressQuery(
+  const { data: progress, isLoading: progressLoading, isSuccess: progressSuccess } = useGetProgressQuery(
     { id: questionId },
     { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true }
   );
@@ -273,9 +273,17 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      if (allowSaveProgress) {
+        if (!progressLoading && progressSuccess)
+          handleShowSubmissionModal({
+            title,
+            score: calculateScorePercentage(),
+          });
+      } else {
+        handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      }
     }
-  }, [isSuccess, isLoading]);
+  }, [isSuccess, isLoading, progressSuccess, progressLoading]);
 
   useEffect(() => {
     if (progress && progress.status === "submitted") {

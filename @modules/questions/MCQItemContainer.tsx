@@ -73,7 +73,10 @@ const MCQItemContainer: FC<Props> = ({
     useState(false);
 
   const [saveScore, { isLoading, isSuccess }] = useSaveScoreMutation();
-  const [submitProgress, {}] = useSaveProgressMutation();
+  const [
+    submitProgress,
+    { isSuccess: progressSaved, isLoading: progressLoading },
+  ] = useSaveProgressMutation();
 
   const { data: progress } = useGetProgressQuery(
     { id: questionId },
@@ -94,9 +97,17 @@ const MCQItemContainer: FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      if (allowSaveProgress) {
+        if (!progressLoading && progressSaved)
+          handleShowSubmissionModal({
+            title,
+            score: calculateScorePercentage(),
+          });
+      } else {
+        handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      }
     }
-  }, [isSuccess, isLoading]);
+  }, [isSuccess, isLoading, progressSaved, progressLoading]);
 
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};

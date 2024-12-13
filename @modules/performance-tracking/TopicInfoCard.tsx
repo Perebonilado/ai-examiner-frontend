@@ -1,7 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import cn from "classnames";
 import Button from "@/@shared/ui/Button";
-import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { PerformanceTrackingParsingData } from "@/dto/performane-tracking.dto";
 import TopicInfoCardItem from "./TopicInfoCardItem";
 

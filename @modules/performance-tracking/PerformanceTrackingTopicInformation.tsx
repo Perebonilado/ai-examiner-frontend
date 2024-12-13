@@ -54,7 +54,7 @@ const PerformanceTrackingTopicInformation: FC<Props> = ({
         </div>
         <div className={expClassName}>
           <div className="w-full mx-auto flex items-center justify-center gap-8 max-md:flex-col-reverse">
-            <TopicInfoCard
+            {/* <TopicInfoCard
               title="Topics Passed"
               data={data.topicsPassed}
               status="pass"
@@ -63,7 +63,7 @@ const PerformanceTrackingTopicInformation: FC<Props> = ({
               title="Topics Failed"
               data={data.topicsFailed}
               status="fail"
-            />
+            /> */}
           </div>
         </div>
       </div>

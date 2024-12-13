@@ -182,7 +182,7 @@ export const SubscriptionService = createApi({
                   "Last 4 digits",
                   res.cardInformation.last4
                     ? `**** **** **** ${res.cardInformation.last4}`
-                    : null || "N/A",
+                    : "N/A",
                 ],
                 paymentModeDescription === "Recurring Payment"
                   ? ["Automatic Billing", `${automaticBillingInfo}`]
@@ -195,7 +195,7 @@ export const SubscriptionService = createApi({
                   "Amount",
                   res.planInformation?.amount
                     ? `${res.planInformation.currency}${res.planInformation.amount}`
-                    : null || "N/A",
+                    : "N/A",
                 ],
                 [
                   "Status",

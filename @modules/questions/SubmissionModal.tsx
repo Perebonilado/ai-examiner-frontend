@@ -9,12 +9,12 @@ interface Props {
   scorePercentage: number;
   title: string;
   handleScrollToTop: () => void;
-  allowMoreQuestionGeneration?: boolean;
-  handleGenerateMoreQuestions?: () => void;
+  allowPerformanceOverview?: boolean;
+  handlePerformanceOverview?: () => void;
 }
 
 const SubmissionModal = forwardRef<HTMLDivElement, Props>(
-  ({ allowMoreQuestionGeneration = false, ...props }, ref) => {
+  ({ allowPerformanceOverview = false, ...props }, ref) => {
     const color = generateDocumentCardColorFromScore(props.scorePercentage);
 
     const { setModalContent } = useModalContext();
@@ -61,11 +61,11 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>(
             fullWidth
             size="large"
           />
-          {allowMoreQuestionGeneration && props.handleGenerateMoreQuestions && (
+          {allowPerformanceOverview && props.handlePerformanceOverview && (
             <Button
-              title="New Questions"
+              title="Performance Overview"
               fullWidth
-              onClick={props.handleGenerateMoreQuestions}
+              onClick={props.handlePerformanceOverview}
               variant="outlined"
               size="large"
             />

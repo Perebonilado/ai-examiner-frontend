@@ -61,7 +61,10 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   const [questionAnswerMap, setQuestionAnswerMap] =
     useState<QuestionAnswerMap | null>(null);
 
-  const [submitProgress, {}] = useSaveProgressMutation();
+  const [
+    submitProgress,
+    { isLoading: progressSubmitting, data: progressSubmitted, isError: progressSubmittingError },
+  ] = useSaveProgressMutation();
 
   const { setModalContent } = useModalContext();
 
@@ -71,7 +74,11 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   const params = useParams();
 
-  const { data: progress, isLoading: progressLoading } = useGetProgressQuery(
+  const {
+    data: progress,
+    isLoading: progressLoading,
+    isSuccess: progressSuccess,
+  } = useGetProgressQuery(
     { id: questionId },
     { skip: !questionId || !allowSaveProgress, refetchOnMountOrArgChange: true }
   );
@@ -226,14 +233,6 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
         score: calculateScorePercentage(),
       });
     }
-
-    if (allowSaveProgress) {
-      submitProgress({
-        clearExistingProgress: false,
-        id: questionId,
-        status: "submitted",
-      });
-    }
   };
 
   let interval: NodeJS.Timeout | null;
@@ -273,9 +272,41 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      if (allowSaveProgress) {
+        setModalContent(<AppLoader loaderMessage="Submitting progress" />);
+        submitProgress({
+          clearExistingProgress: false,
+          id: questionId,
+          status: "submitted",
+        });
+      } else {
+        handleShowSubmissionModal({
+          title,
+          score: calculateScorePercentage(),
+        });
+      }
     }
   }, [isSuccess, isLoading]);
+
+  useEffect(() => {
+    if (
+      !progressSubmitting &&
+      progressSubmitted &&
+      progressSubmitted?.status == "submitted"
+    ) {
+      setModalContent(null)
+      handleShowSubmissionModal({
+        title,
+        score: calculateScorePercentage(),
+      });
+    }
+  }, [progressSubmitting, progressSubmitted]);
+
+  useEffect(()=>{
+    if(progressSubmittingError){
+      setModalContent(null)
+    }
+  },[progressSubmittingError])
 
   useEffect(() => {
     if (progress && progress.status === "submitted") {

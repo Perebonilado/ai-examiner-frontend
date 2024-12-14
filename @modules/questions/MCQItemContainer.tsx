@@ -16,6 +16,7 @@ import {
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import QuestionSettingsDialog from "./QuestionSettingsDialog";
 import CountdownTimer from "./CountDownTimer";
+import { tree } from "next/dist/build/templates/app-page";
 
 interface Props {
   data: QuestionsModel[];
@@ -73,7 +74,10 @@ const MCQItemContainer: FC<Props> = ({
     useState(false);
 
   const [saveScore, { isLoading, isSuccess }] = useSaveScoreMutation();
-  const [submitProgress, {}] = useSaveProgressMutation();
+  const [
+    submitProgress,
+    { isLoading: progressSubmitting, data: progressSubmitted, isError: progressSubmittingError },
+  ] = useSaveProgressMutation();
 
   const { data: progress } = useGetProgressQuery(
     { id: questionId },
@@ -94,9 +98,41 @@ const MCQItemContainer: FC<Props> = ({
 
   useEffect(() => {
     if (isSuccess && !isLoading) {
-      handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+      if (allowSaveProgress) {
+        setModalContent(<AppLoader loaderMessage="Submitting progress" />);
+        submitProgress({
+          clearExistingProgress: false,
+          id: questionId,
+          status: "submitted",
+        });
+      } else {
+        handleShowSubmissionModal({
+          title,
+          score: calculateScorePercentage(),
+        });
+      }
     }
   }, [isSuccess, isLoading]);
+
+  useEffect(() => {
+    if (
+      !progressSubmitting &&
+      progressSubmitted &&
+      progressSubmitted?.status == "submitted"
+    ) {
+      setModalContent(null)
+      handleShowSubmissionModal({
+        title,
+        score: calculateScorePercentage(),
+      });
+    }
+  }, [progressSubmitting, progressSubmitted]);
+
+  useEffect(()=>{
+    if(progressSubmittingError){
+      setModalContent(null)
+    }
+  },[progressSubmittingError])
 
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
@@ -179,14 +215,6 @@ const MCQItemContainer: FC<Props> = ({
       handleShowSubmissionModal({
         title,
         score: calculateScorePercentage(),
-      });
-    }
-
-    if (allowSaveProgress) {
-      submitProgress({
-        clearExistingProgress: false,
-        id: questionId,
-        status: "submitted",
       });
     }
   };

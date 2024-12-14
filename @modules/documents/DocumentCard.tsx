@@ -23,7 +23,7 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
     useUpdateDocumentMutation();
   const [isMoreActions, setIsMoreActions] = useState(false);
   const ref = useClickOutside<ElementRef<"button">>(() => {
-    setIsMoreActions(false)
+    setIsMoreActions(false);
   });
 
   useEffect(() => {
@@ -52,6 +52,9 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
         >
           {isMoreActions && (
             <MoreActionsDefaultView
+              handleViewPerformanceReport={() => {
+                router.push(`/performance-tracking/${id}`);
+              }}
               handleView={(viewTitle) => {
                 if (viewTitle === "delete") {
                   setModalContent(

@@ -236,15 +236,11 @@ const MultipleTrueFalse: NextPage = () => {
                     });
                   }
                 }}
-                allowMoreQuestionGeneration={true}
-                handleGenerateMoreQuestions={() => {
-                  setModalContent(
-                    <GenerateQuestionsForm
-                      fileId={data.fileId}
-                      topics={topics?.topics ?? []}
-                      documentIdProp={data.documentId}
-                    />
-                  );
+                allowPerformanceOverview={data.data.every((q) => {
+                  return q["topic"] !== undefined;
+                })}
+                handlePerformanceOverview={() => {
+                  router.push(`/performance-tracking/question/${id}?type=multiple-true-false`);
                 }}
               />
             );

@@ -8,6 +8,7 @@ export interface QuestionsDto {
   correctAnswerId: string;
   explanation: string;
   hint?: string;
+  topic?: string
 }
 
 export interface GetQuestionsByIdDto {

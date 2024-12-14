@@ -63,6 +63,7 @@ export const QuestionsService = createApi({
               question: q.question,
               correctAnswerId: q.correctAnswerId,
               hint: q.hint,
+              topic: q?.topic
             })),
             documentTitle: res.documentTitle,
             documentId: res.documentId,

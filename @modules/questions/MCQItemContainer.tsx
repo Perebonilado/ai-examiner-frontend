@@ -16,6 +16,7 @@ import {
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import QuestionSettingsDialog from "./QuestionSettingsDialog";
 import CountdownTimer from "./CountDownTimer";
+import { tree } from "next/dist/build/templates/app-page";
 
 interface Props {
   data: QuestionsModel[];
@@ -75,7 +76,7 @@ const MCQItemContainer: FC<Props> = ({
   const [saveScore, { isLoading, isSuccess }] = useSaveScoreMutation();
   const [
     submitProgress,
-    { isSuccess: progressSaved, isLoading: progressLoading },
+    { isLoading: progressSubmitting, data: progressSubmitted, isError: progressSubmittingError },
   ] = useSaveProgressMutation();
 
   const { data: progress } = useGetProgressQuery(
@@ -98,16 +99,40 @@ const MCQItemContainer: FC<Props> = ({
   useEffect(() => {
     if (isSuccess && !isLoading) {
       if (allowSaveProgress) {
-        if (!progressLoading && progressSaved)
-          handleShowSubmissionModal({
-            title,
-            score: calculateScorePercentage(),
-          });
+        setModalContent(<AppLoader loaderMessage="Submitting progress" />);
+        submitProgress({
+          clearExistingProgress: false,
+          id: questionId,
+          status: "submitted",
+        });
       } else {
-        handleShowSubmissionModal({ title, score: calculateScorePercentage() });
+        handleShowSubmissionModal({
+          title,
+          score: calculateScorePercentage(),
+        });
       }
     }
-  }, [isSuccess, isLoading, progressSaved, progressLoading]);
+  }, [isSuccess, isLoading]);
+
+  useEffect(() => {
+    if (
+      !progressSubmitting &&
+      progressSubmitted &&
+      progressSubmitted?.status == "submitted"
+    ) {
+      setModalContent(null)
+      handleShowSubmissionModal({
+        title,
+        score: calculateScorePercentage(),
+      });
+    }
+  }, [progressSubmitting, progressSubmitted]);
+
+  useEffect(()=>{
+    if(progressSubmittingError){
+      setModalContent(null)
+    }
+  },[progressSubmittingError])
 
   const handleSetQuestionAnswerMap = () => {
     const map: Record<string, boolean> = {};
@@ -190,14 +215,6 @@ const MCQItemContainer: FC<Props> = ({
       handleShowSubmissionModal({
         title,
         score: calculateScorePercentage(),
-      });
-    }
-
-    if (allowSaveProgress) {
-      submitProgress({
-        clearExistingProgress: false,
-        id: questionId,
-        status: "submitted",
       });
     }
   };

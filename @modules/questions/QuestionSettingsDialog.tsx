@@ -22,7 +22,7 @@ const QuestionSettingsDialog: FC<Props> = ({
     const timeForAllQuestions =
       maxTimeForEachQuestionInSeconds * numberOfQuestions;
     const extraTimeAdditionsInSeconds = 60;
-    const maxExtraTimes = 3;
+    const maxExtraTimes = 10;
     const options: {
       label: string;
       value: string;

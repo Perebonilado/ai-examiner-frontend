@@ -23,7 +23,6 @@ import { GetQuestionByIdModel } from "@/models/questions.model";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
-import QuestionSettingsDialog from "@/@modules/questions/QuestionSettingsDialog";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");

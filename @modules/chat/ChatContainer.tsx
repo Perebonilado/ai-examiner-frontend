@@ -127,7 +127,7 @@ const ChatContainer: FC<Props> = ({
   }, [router.query, initialMessagesFetched]);
 
   return (
-    <div className="relative">
+    <div className="relative w-full max-w-screen-md mx-auto">
       {/* <div className="absolute right-3 top-2 z-40">
         <IconButton
           icon={<FilterIcon />}

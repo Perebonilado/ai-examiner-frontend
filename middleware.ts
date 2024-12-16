@@ -6,7 +6,6 @@ import { cookies } from "next/headers";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const cookieStore = cookies();
-  console.log(req.headers.get("cookie"));
   const verifyCookie =
     cookieStore.get(accessToken) ||
     getAccessTokenFromCookiesString(req.headers.get("cookie"));

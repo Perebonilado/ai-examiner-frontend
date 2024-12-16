@@ -185,7 +185,7 @@ const MCQItemContainer: FC<Props> = ({
 
             setModalContent(null);
           }}
-          maxTimeForEachQuestionInSeconds={30}
+          maxTimeForEachQuestionInSeconds={60}
           numberOfQuestions={data.length}
         />
       );

@@ -201,7 +201,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
 
             setModalContent(null);
           }}
-          maxTimeForEachQuestionInSeconds={40}
+          maxTimeForEachQuestionInSeconds={90}
           numberOfQuestions={data.length}
         />
       );

@@ -6,7 +6,9 @@ import { cookies } from "next/headers";
 export function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const cookieStore = cookies();
-  const verifyCookie = cookieStore.get(accessToken);
+  const verifyCookie =
+    cookieStore.get(accessToken) ||
+    getAccessTokenFromCookiesString(req.headers.get("cookie"));
 
   if (pathname.startsWith("/_next")) return NextResponse.next();
 
@@ -37,6 +39,26 @@ export const config = {
     "/questions/:path",
     "/documents/:path",
     "/account/profile",
-    "/account/settings"
+    "/account/settings",
   ],
 };
+
+export function getAccessTokenFromCookiesString(input: string | null) {
+  if (!input) return undefined;
+
+  // Split the string by semicolons to get individual key-value pairs
+  const parts = input.split(";");
+
+  // Find the part containing "access_token"
+  const tokenPart = parts.find((part) =>
+    part.trim().startsWith("access_token=")
+  );
+
+  // Extract the token if the part is found
+  if (tokenPart) {
+    const accessToken = tokenPart.split("=")[1];
+    return accessToken;
+  } else {
+    return undefined;
+  }
+}

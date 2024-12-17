@@ -153,12 +153,10 @@ const FlashCards: NextPage = () => {
           <div className="mt-14">
             <FlashCardItemContainer
               data={(data as GetQuestionByIdModel).data.map((d) => {
-                const answer = d.options.find(
-                  (opt) => opt.id === d.correctAnswerId
-                )?.value;
+                
                 return {
                   question: d.question,
-                  answer: answer || "",
+                  answer: d.options[0].value,
                   hint: d.hint,
                 };
               })}

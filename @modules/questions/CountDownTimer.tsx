@@ -1,4 +1,8 @@
 import React, { useEffect, useState } from "react";
+import cn from "classnames";
+import ChevronLeft from "@/icons/ChevronLeft";
+import ChevronRight from "@/icons/ChevronRight";
+import ChevronRightAlt from "@/icons/ChevronRightAlt";
 
 interface CountdownProps {
   timeLeft: number; // Time in seconds
@@ -32,11 +36,35 @@ const CountdownTimer: React.FC<CountdownProps> = ({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (progress / 100) * circumference;
 
+  const [isHidden, setIsHidden] = useState(false);
+
+  const baseClassNames = cn(
+    `fixed top-24  z-[100] cursor-pointer transition-all`,
+    {
+      ["-right-7"]: !isHidden,
+      ["-right-24"]: isHidden,
+    }
+  );
+
+  useEffect(() => {
+    if (progress === 20 && isHidden) {
+      setIsHidden(false);
+    }
+  }, [progress, isHidden]);
+
   return (
-    <div className="fixed top-24  z-[100] right-0 ">
+    <div
+      className={baseClassNames}
+      onClick={() => {
+        setIsHidden(!isHidden);
+      }}
+    >
       <div className="relative inline-flex items-center justify-center shadow-md rounded-tl-full rounded-bl-full bg-white h-[70px]">
         {/* SVG for circular progress */}
-        <svg className="w-24 h-24 transform -rotate-90 -translate-x-[10px]">
+        <button className="pl-2">
+          {!isHidden ? <ChevronRightAlt />: <ChevronLeft />}
+        </button>
+        <svg className="w-24 h-24 transform -rotate-90 -translate-x-[12px]">
           {/* Background circle */}
           <circle
             cx="48"
@@ -80,7 +108,9 @@ const CountdownTimer: React.FC<CountdownProps> = ({
           )}
         </svg>
         {/* Time display */}
-        <span className="absolute -translate-x-[10px] text-xs font-semibold">{timeString}</span>
+        <span className="absolute translate-x-[4px] text-xs font-semibold">
+          {timeString}
+        </span>
       </div>
     </div>
   );

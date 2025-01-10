@@ -84,7 +84,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
     if (pageNumber > 1) {
       const decrement = pageNumber - 1;
       setPageNumber(() => decrement);
-      setPageInputVal(String(decrement))
+      setPageInputVal(String(decrement));
     }
   };
 
@@ -92,7 +92,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
     if (pageNumber < totalPages) {
       const increment = pageNumber + 1;
       setPageNumber(() => increment);
-      setPageInputVal(String(increment))
+      setPageInputVal(String(increment));
     }
   };
 
@@ -138,7 +138,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
             setModalContent(null);
           }}
         >
-          <CloseIcon />
+          <CloseIcon fill="black"/>
         </button>
       </div>
       <div className="h-[50px] flex gap-4 justify-between items-center px-4 bg-white border-b-[2px] border-b-gray-300">
@@ -155,18 +155,18 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
               <input
                 onBlur={(e) => {
                   const value = e.target.value.trim();
-                  if(Number(value) >=1 && Number(value) <= totalPages){
-                    setPageNumber(Number(value))
+                  if (Number(value) >= 1 && Number(value) <= totalPages) {
+                    setPageNumber(Number(value));
                   } else {
-                    setPageInputVal(String(pageNumber))
+                    setPageInputVal(String(pageNumber));
                   }
                 }}
                 className="w-[45px] bg-transparent text-center outline-none"
                 value={pageInputVal}
-                onChange={(e)=>{
+                onChange={(e) => {
                   const value = e.target.value.trim();
-                  if(/^\d+$/.test(value) || value === ""){
-                    setPageInputVal(value)
+                  if (/^\d+$/.test(value) || value === "") {
+                    setPageInputVal(value);
                   }
                 }}
                 type="text"
@@ -202,7 +202,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
           options={options}
           onItemClick={(e) => {
             setPageNumber(e.pageNumber);
-            setPageInputVal(String(e.pageNumber))
+            setPageInputVal(String(e.pageNumber));
           }}
         >
           <Page
@@ -229,33 +229,38 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
         />
 
         {pages === "custom" && (
-          <div className="flex gap-3">
-            <DropDown
-              options={startPageOptions}
-              label="Start Page"
-              value={startPage}
-              handleSelect={({ value }) => {
-                setStartPage(value);
+          <div className="flex gap-3 border">
+            <div style={{flex: 1}}>
+              <DropDown
+                options={startPageOptions}
+                label="Start Page"
+                value={startPage}
+                handleSelect={({ value }) => {
+                  setStartPage(value);
 
-                setEndPage("");
+                  setEndPage("");
 
-                const newEndPageOptions = generatePagesOptions(
-                  Number(value),
-                  totalPages
-                );
-                setEndPageOptions(newEndPageOptions);
-              }}
-              openFromTop={true}
-            />
-            <DropDown
-              options={endPageOptions}
-              label="End Page"
-              value={endPage}
-              handleSelect={({ value }) => {
-                setEndPage(value);
-              }}
-              openFromTop={true}
-            />
+                  const newEndPageOptions = generatePagesOptions(
+                    Number(value),
+                    totalPages
+                  );
+                  setEndPageOptions(newEndPageOptions);
+                }}
+                openFromTop={true}
+              />
+            </div>
+
+            <div style={{flex: 1}}>
+              <DropDown
+                options={endPageOptions}
+                label="End Page"
+                value={endPage}
+                handleSelect={({ value }) => {
+                  setEndPage(value);
+                }}
+                openFromTop={true}
+              />
+            </div>
           </div>
         )}
 

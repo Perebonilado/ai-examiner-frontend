@@ -187,35 +187,12 @@ const UploadFileBox: FC<Props> = ({
                     Number(end)
                   );
                   if (!text.trim().length) {
-                    const scannedText = await extractTextFromScannedPdf(
-                      file,
-                      Number(start),
-                      Number(end),
-                      (progress) => {
-                        setOcrProgress(progress);
-                      }
-                    );
 
-                    if (!scannedText.trim().length) {
-                      toast.error("Error processing file");
-                      setOcrProgress(null);
                       setPdfProcessing(false);
+                      setOcrProgress(null);
+                      handleSelectFile(file, pages, start, end);
+                      setModalContent(null);
                       return;
-                    }
-
-                    const newTxtFile = createFileFromText(
-                      scannedText.trim(),
-                      `${getFileNameWithoutExtension(file.name)}.txt`
-                    );
-
-                    setPdfProcessing(false);
-                    setOcrProgress(null);
-
-                    if (newTxtFile) {
-                      handleSelectFile(newTxtFile);
-
-                      return;
-                    }
                   }
 
                   const newTxtFile = createFileFromText(
@@ -467,6 +444,7 @@ async function extractTextFromScannedPdf(
         pageNumber === endIndex
       ) {
         const ocrResults = await Promise.all(pendingOCRPromises);
+        console.log(ocrResults);
         fullText += ocrResults.join("\n\n");
         pendingOCRPromises = []; // Reset for next batch
       }

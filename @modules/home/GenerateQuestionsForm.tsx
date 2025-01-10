@@ -130,7 +130,7 @@ const GenerateQuestionsForm: FC = () => {
 
     formData.append("document", file);
 
-    uploadFile({ payload: formData, pages, end, start });
+    uploadFile({ payload: formData, pages, start, end });
   };
 
   useEffect(() => {

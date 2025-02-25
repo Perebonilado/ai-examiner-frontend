@@ -13,7 +13,7 @@ const PlanIntervalPill: FC<Props> = ({ isActive, title, handleClick }) => {
   const classNames = cn(
     `px-5 py-2 text-sm font-semibold rounded-full`,
     {
-      ["bg-[#F1EA17]"]: isActive,
+      ["bg-[#2F004F] text-white"]: isActive,
       ["text-[#939393] bg-transparent"]: !isActive,
     }
   );

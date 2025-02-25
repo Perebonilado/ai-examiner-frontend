@@ -9,7 +9,7 @@ export interface QuestionsModel {
   explanation: string;
   correctAnswerId: string;
   hint?: string;
-  topic?: string
+  topic?: string;
 }
 
 export interface QuestionSourceRequestPayloadModel {
@@ -115,4 +115,10 @@ export interface CreateScorePayloadModel {
 
 export interface DeleteQuestionModel {
   questionId: string;
+}
+
+export interface NotSureQuestion {
+  question: string;
+  options: string[];
+  questionType: 'Flash Cards' | 'Multiple Choice' | 'Multiple True-False';
 }

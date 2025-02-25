@@ -16,7 +16,6 @@ import {
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import QuestionSettingsDialog from "./QuestionSettingsDialog";
 import CountdownTimer from "./CountDownTimer";
-import { tree } from "next/dist/build/templates/app-page";
 
 interface Props {
   data: QuestionsModel[];

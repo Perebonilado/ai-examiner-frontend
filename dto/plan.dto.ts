@@ -3,10 +3,26 @@ export interface PlanDto {
   planId: number;
   currency: string;
   amount: number;
-  description: Description[];
+  description: Description;
+  interval: PlanInterval
 }
 
+export type PlanInterval =
+  | "daily"
+  | "weekly"
+  | "monthly"
+  | "quarterly"
+  | "bianually"
+  | "annualy";
+
 interface Description {
-  title: string;
-  isAvailable: boolean;
+  features: {
+    "Multiple choice questions": boolean;
+    Flashcards: boolean;
+    "Topic selection": boolean;
+    "AI Discussions": boolean;
+  };
+  region: RegionType;
 }
+
+export type RegionType = "Africa" | "North America" | "Asia";

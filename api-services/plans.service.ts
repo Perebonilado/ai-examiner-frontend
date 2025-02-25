@@ -38,30 +38,26 @@ export const PlanService = createApi({
           else {
             const plans = res
               .map((plan) => {
+                const offers = Object.entries(plan.description.features).map(
+                  ([title, isAvailable]) => {
+                    return { title, isAvailable };
+                  }
+                );
                 return {
                   costPerMonth: plan.amount,
                   currency: plan.currency,
-                  offers: plan.description,
+                  offers,
                   type: plan.planName,
                   planId: plan.planId,
+                  region: plan.description.region,
+                  interval: plan.interval
                 };
               })
               .sort((a, b) => b.type.localeCompare(a.type));
 
-            const freePlan = {
-              costPerMonth: 0,
-              currency: plans[0].currency,
-              offers: [
-                { title: "Multiple choice questions", isAvailable: true },
-                { title: "Flashcards", isAvailable: true },
-                { title: "Topic selection", isAvailable: true },
-                { title: "AI Discussions", isAvailable: false },
-              ],
-              type: "Free",
-              planId: 4098888376,
-            };
+              console.log(plans)
 
-            return [freePlan, ...plans];
+            return [...plans];
           }
         },
       }),

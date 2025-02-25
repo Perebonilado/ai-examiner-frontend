@@ -89,7 +89,6 @@ const MCQItem: FC<Props> = ({
 
   useEffect(() => {
     if (data) {
-      console.log(data.data);
       setSource(data.data);
       setModalContent(
         <ViewSourceDialog

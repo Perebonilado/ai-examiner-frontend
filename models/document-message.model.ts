@@ -1,3 +1,5 @@
+import { NotSureQuestion } from "./questions.model";
+
 export interface DocumentMessageModel {
   id: string;
   message: string;
@@ -20,6 +22,7 @@ export interface SendMessagePayloadModel {
   message: string;
   courseDocumentId: string;
   responseFormat: string;
+  prefix?: NotSureQuestion
 }
 
 export interface SendMessageModel {

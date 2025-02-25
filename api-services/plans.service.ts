@@ -50,12 +50,10 @@ export const PlanService = createApi({
                   type: plan.planName,
                   planId: plan.planId,
                   region: plan.description.region,
-                  interval: plan.interval
+                  interval: plan.interval,
                 };
               })
               .sort((a, b) => b.type.localeCompare(a.type));
-
-              console.log(plans)
 
             return [...plans];
           }

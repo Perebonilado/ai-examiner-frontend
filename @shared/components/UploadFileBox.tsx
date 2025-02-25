@@ -444,7 +444,6 @@ async function extractTextFromScannedPdf(
         pageNumber === endIndex
       ) {
         const ocrResults = await Promise.all(pendingOCRPromises);
-        console.log(ocrResults);
         fullText += ocrResults.join("\n\n");
         pendingOCRPromises = []; // Reset for next batch
       }

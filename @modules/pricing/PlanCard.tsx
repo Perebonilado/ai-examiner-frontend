@@ -19,6 +19,7 @@ const PlanCard: FC<Props> = ({
   offers,
   planId,
   isLoggedIn,
+  interval
 }) => {
   const buttonTextBasedOnPlanType = new Map<string, string>([
     ["free", "Try Free Plan"],
@@ -60,7 +61,7 @@ const PlanCard: FC<Props> = ({
             {currencySignMap.get(currency)}
             {costPerMonth.toLocaleString()}
           </span>
-          /month
+          /{interval === 'monthly' ? 'month' : '3 months'}
         </p>
       </div>
 

@@ -4,10 +4,12 @@ import PlanCardContainer from "./PlanCardContainer";
 import { useGetPlansQuery } from "@/api-services/plans.service";
 import { useGetUserIpInfoQuery } from "@/api-services/ip.service";
 import { PlanModel } from "@/models/plan.model";
+import { AppLoader } from "@/@shared/components/AppLoader";
 
 const PlanContainer: FC = () => {
-  const { data: ipDetails, isError: isIpDetailsError } = useGetUserIpInfoQuery("");
-  const { data: plans } = useGetPlansQuery("");
+  const { data: ipDetails, isError: isIpDetailsError } =
+    useGetUserIpInfoQuery("");
+  const { data: plans, isLoading: plansLoading } = useGetPlansQuery("");
   const [plansToDisplay, setPlansToDisplay] = useState<PlanModel[]>();
 
   useEffect(() => {
@@ -26,15 +28,16 @@ const PlanContainer: FC = () => {
           ],
           type: "Free",
           planId: 4098888376,
+          region: "Africa" as const,
+          interval: "monthly" as const
         };
         setPlansToDisplay([freePlan, ...plansToShow]);
       }
     }
   }, [ipDetails, plans]);
 
-  useEffect(()=>{
-
-    if(isIpDetailsError && plans) {
+  useEffect(() => {
+    if (isIpDetailsError && plans) {
       const plansToShow = getPlansToDisplay();
 
       if (plansToShow) {
@@ -49,62 +52,40 @@ const PlanContainer: FC = () => {
           ],
           type: "Free",
           planId: 4098888376,
+          region: "Africa" as const,
+          interval: "monthly" as const
         };
         setPlansToDisplay([freePlan, ...plansToShow]);
       }
     }
-
-  }, [isIpDetailsError, plans])
+  }, [isIpDetailsError, plans]);
 
   const getPlansToDisplay = () => {
     const nairaCurrencyCode = "NGN";
-    const usdCurrencyCode = "USD";
-    if (plans && ipDetails) {
-      let isUsersCountryNigeria = true;
-      let isUsersContinentAfrica = true;
 
-      if (ipDetails && ipDetails.country?.toLowerCase() !== "ng") {
-        isUsersCountryNigeria = false;
+    if (plans && ipDetails) {
+      if (ipDetails && ipDetails.timezone?.toLowerCase().includes("africa")) {
+        if (ipDetails.country?.toLowerCase() === "ng") {
+          return plans.filter(
+            (plan) =>
+              plan.region === "Africa" && plan.currency === nairaCurrencyCode
+          );
+        }
+
+        return plans.filter(
+          (plan) =>
+            plan.region === "Africa" && plan.currency !== nairaCurrencyCode
+        );
       }
 
       if (ipDetails && !ipDetails.timezone?.toLowerCase().includes("africa")) {
-        isUsersContinentAfrica = false;
+        return plans.filter((plan) => plan.region !== "Africa");
       }
-
-      if (isUsersContinentAfrica) {
-        if (isUsersCountryNigeria) {
-          return plans.filter((plan) => plan.currency === nairaCurrencyCode);
-        } else {
-          return plans.filter((plan) => {
-            const africanRegionalPlans =
-              (
-                plan.offers as {
-                  title: string;
-                  isAvailable: boolean;
-                  continent?: string;
-                }[]
-              ).find((d) => d?.continent === "Africa") &&
-              plan.currency === usdCurrencyCode;
-
-            return africanRegionalPlans ? true : false;
-          });
-        }
-      } else {
-        return plans.filter((plan) => {
-          const northAmericanRegionalPlans = (
-            plan.offers as {
-              title: string;
-              isAvailable: boolean;
-              continent?: string;
-            }[]
-          ).find((d) => d?.continent === "North America");
-
-          return northAmericanRegionalPlans ? true : false;
-        });
-      }
-    } else if (plans && !ipDetails) {
-      return plans.filter((plan) => plan.currency === nairaCurrencyCode);
     }
+
+    return plans?.filter(
+      (p) => p.region === "Africa" && p.currency === nairaCurrencyCode
+    );
   };
 
   return (
@@ -122,7 +103,9 @@ const PlanContainer: FC = () => {
         </div>
 
         <Container>
-          <PlanCardContainer plans={plansToDisplay ?? []} />
+          
+          {plans && !plansLoading && <PlanCardContainer plans={plansToDisplay ?? []} />}
+          {!plans && plansLoading && <AppLoader />}
         </Container>
       </div>
     </section>

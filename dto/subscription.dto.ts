@@ -30,7 +30,7 @@ export interface SubscriptionDetailsDto {
     planCode: string;
     amount: number;
     currency: string;
-    interval: PlanInterval
+    interval: PlanInterval;
   };
   subscrptionInformation: {
     code: string;

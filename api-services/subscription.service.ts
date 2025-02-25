@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { API_BASE_URL, accessToken } from "../constants";
 import {
   baseQueryWithLogoutOnTokenExpiration,
+  capitalizeFirstLetterOfEachWord,
   capitalizeWords,
   removeHyphens,
   secondsToMilliSeconds,
@@ -186,11 +187,14 @@ export const SubscriptionService = createApi({
                 ],
                 paymentModeDescription === "Recurring Payment"
                   ? ["Automatic Billing", `${automaticBillingInfo}`]
-                  : ['', '']
+                  : ["", ""],
               ],
               subscription: [
                 ["Plan", res.planInformation.name || "N/A"],
-                ["Frequency", "Monthly"],
+                [
+                  "Frequency",
+                  capitalizeFirstLetterOfEachWord(res.planInformation.interval),
+                ],
                 [
                   "Amount",
                   res.planInformation?.amount
@@ -207,7 +211,7 @@ export const SubscriptionService = createApi({
                 ],
                 paymentModeDescription !== "Recurring Payment"
                   ? ["Automatic Billing", `${automaticBillingInfo}`]
-                  : ['', ''],
+                  : ["", ""],
               ],
               status: res.subscrptionInformation.status,
               subscriptionCode: res.subscrptionInformation.code,

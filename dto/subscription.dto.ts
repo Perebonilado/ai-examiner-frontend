@@ -1,3 +1,5 @@
+import { PlanInterval } from "./plan.dto";
+
 export interface InitiateSubscriptionDto {
   data: {
     redirectUrl: string;
@@ -28,6 +30,7 @@ export interface SubscriptionDetailsDto {
     planCode: string;
     amount: number;
     currency: string;
+    interval: PlanInterval
   };
   subscrptionInformation: {
     code: string;

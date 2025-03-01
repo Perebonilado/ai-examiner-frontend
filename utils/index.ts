@@ -136,7 +136,7 @@ export const capitalizeFirstLetterOfEachWordInString = (str: string) => {
 };
 
 export const capitalizeFirstLetterOfEachWord = (input: string): string => {
-  const words = input.split(" ");
+  const words = input?.split(" ");
 
   const capitalizedWords = words.map((word) => {
     if (word.length > 0) {

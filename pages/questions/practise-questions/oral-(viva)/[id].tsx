@@ -298,14 +298,22 @@ const VivaQuestion: NextPage = () => {
             }
             isActive={!callInProgress}
             activeColor="#008650"
-            handleClick={handleStartCall}
+            handleClick={async () => {
+              if (!callInProgress) {
+                await handleStartCall();
+              }
+            }}
           />
           <CallActionButton
             title="End call"
             icon={<EndCallIcon fill={callInProgress ? "#EE6161" : "#9ca3af"} />}
             isActive={callInProgress}
             activeColor="#EE6161"
-            handleClick={handleEndCall}
+            handleClick={() => {
+              if (callInProgress) {
+                handleEndCall();
+              }
+            }}
           />
         </div>
       )}

@@ -24,6 +24,7 @@ const CallActionButton: FC<Props> = ({
         onClick={handleClick}
         style={{
           borderColor: isActive ? activeColor : "#9ca3af",
+          cursor: isActive ? 'pointer' : 'not-allowed'
         }}
       >
         {icon}

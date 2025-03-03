@@ -21,6 +21,14 @@ export interface QuestionSourceRequestModel {
   data: string;
 }
 
+export interface StartVivaPayload {
+  questionId: string;
+}
+
+export interface StartVivaResponseModel {
+  id: string;
+}
+
 export interface MultipleTrueFalseQuestionModel {
   id: string;
   question: string;
@@ -120,5 +128,5 @@ export interface DeleteQuestionModel {
 export interface NotSureQuestion {
   question: string;
   options: string[];
-  questionType: 'Flash Cards' | 'Multiple Choice' | 'Multiple True-False';
+  questionType: "Flash Cards" | "Multiple Choice" | "Multiple True-False";
 }

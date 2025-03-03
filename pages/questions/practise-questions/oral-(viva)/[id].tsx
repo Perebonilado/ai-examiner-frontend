@@ -206,7 +206,7 @@ const VivaQuestion: NextPage = () => {
     if (vapi && callInProgress) {
       vapi.stop();
       buttonRef.current?.click();
-      setIsPlaying(true)
+      setIsPlaying(true);
     }
   };
 
@@ -241,14 +241,13 @@ const VivaQuestion: NextPage = () => {
         if (audioRef.current) {
           audioRef.current.pause();
           audioRef.current.currentTime = 0;
-          setIsPlaying(false)
+          setIsPlaying(false);
         }
       }, 1500); // 2.5 seconds
-  
+
       return () => clearTimeout(timeoutId);
     }
   }, [isPlaying]);
-  
 
   return (
     <AppLayout>
@@ -283,7 +282,9 @@ const VivaQuestion: NextPage = () => {
             {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
           </h1>
           <p className="text-center text-gray-500 my-3">
-            Just start the call when you're all set!
+            {callInProgress
+              ? "Test in progress..."
+              : "Just start the call when you are all set!"}
           </p>
         </div>
       )}

@@ -17,6 +17,7 @@ import { toast } from "react-toastify";
 import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
 import InitiateVivaContainer from "@/@modules/questions/InitiateVivaContainer";
 import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
+import { VivaAnalysisModel } from "@/models/viva.model";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -284,18 +285,29 @@ const VivaQuestion: NextPage = () => {
         </div>
       )}
 
-      <VivaAnalysisContainer />
+      <VivaAnalysisContainer data={vivaAnalysisData}/>
 
-      {/* <InitiateVivaContainer
-        callInProgress={callInProgress}
-        data={data}
-        handleEndCall={handleEndCall}
-        handleStartCall={handleStartCall}
-        systemSpeaking={systemSpeaking}
-        userSpeaking={userSpeaking}
-      /> */}
     </AppLayout>
   );
 };
 
 export default VivaQuestion;
+
+const vivaAnalysisData: VivaAnalysisModel[] = [
+  {
+      question: "What is the function of the mitochondria?",
+      questionNumber: 1,
+      totalQuestions: 2,
+      grade: "pass",
+      userResponse: "It produces energy for the cell.",
+      systemResponse: "Correct. The mitochondria generate ATP through cellular respiration."
+  },
+  {
+      question: "Explain the concept of osmosis.",
+      questionNumber: 2,
+      totalQuestions: 2,
+      grade: "fail",
+      userResponse: "It is the movement of molecules from high to low concentration.",
+      systemResponse: "Incorrect. Osmosis specifically refers to the movement of water molecules across a semi-permeable membrane."
+  }
+];

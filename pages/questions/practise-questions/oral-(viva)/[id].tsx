@@ -12,16 +12,11 @@ import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, useRef, ElementRef } from "react";
-import * as moment from "moment";
 import Vapi from "@vapi-ai/web";
 import { toast } from "react-toastify";
-import CallActionButton from "@/@modules/questions/CallActionButton";
-import StartCallIcon from "@/icons/StartCallIcon";
-import EndCallIcon from "@/icons/EndCallIcon";
-import CallProgressIndicator from "@/@modules/questions/CallProgressIndicator";
-import SoundWaveIcon from "@/icons/SoundWaveIcon";
-import MicIcon from "@/icons/MicIcon";
 import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
+import InitiateVivaContainer from "@/@modules/questions/InitiateVivaContainer";
+import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -278,7 +273,7 @@ const VivaQuestion: NextPage = () => {
       {data && (
         <div>
           <h1 className="text-center text-xl font-semibold">
-            Live AI Q&A -{" "}
+            Oral (Viva) Q&A -{" "}
             {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
           </h1>
           <p className="text-center text-gray-500 my-3">
@@ -289,47 +284,16 @@ const VivaQuestion: NextPage = () => {
         </div>
       )}
 
-      {data && (
-        <div className="mx-auto w-full max-w-[500px] flex justify-center gap-10 pb-6 border-b mt-10">
-          <CallActionButton
-            title="Start call"
-            icon={
-              <StartCallIcon fill={!callInProgress ? "#008650" : "#9ca3af"} />
-            }
-            isActive={!callInProgress}
-            activeColor="#008650"
-            handleClick={async () => {
-              if (!callInProgress) {
-                await handleStartCall();
-              }
-            }}
-          />
-          <CallActionButton
-            title="End call"
-            icon={<EndCallIcon fill={callInProgress ? "#EE6161" : "#9ca3af"} />}
-            isActive={callInProgress}
-            activeColor="#EE6161"
-            handleClick={() => {
-              if (callInProgress) {
-                handleEndCall();
-              }
-            }}
-          />
-        </div>
-      )}
+      <VivaAnalysisContainer />
 
-      <div className="mt-16 flex flex-col gap-10">
-        <CallProgressIndicator
-          icon={<SoundWaveIcon fill={systemSpeaking ? "#9A67E2" : undefined} />}
-          speaker="Examiner"
-          isSpeaking={systemSpeaking}
-        />
-        <CallProgressIndicator
-          icon={<MicIcon fill={userSpeaking ? "#9A67E2" : undefined} />}
-          speaker="You"
-          isSpeaking={userSpeaking}
-        />
-      </div>
+      {/* <InitiateVivaContainer
+        callInProgress={callInProgress}
+        data={data}
+        handleEndCall={handleEndCall}
+        handleStartCall={handleStartCall}
+        systemSpeaking={systemSpeaking}
+        userSpeaking={userSpeaking}
+      /> */}
     </AppLayout>
   );
 };

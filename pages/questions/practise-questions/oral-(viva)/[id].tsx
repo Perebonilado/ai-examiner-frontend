@@ -195,6 +195,8 @@ const VivaQuestion: NextPage = () => {
       setIsCallStarting(false);
     } catch (error) {
       toast.error("Something went wrong while initiating call");
+
+      setModalContent(null);
     }
   };
 
@@ -285,8 +287,16 @@ const VivaQuestion: NextPage = () => {
         </div>
       )}
 
-      <VivaAnalysisContainer data={vivaAnalysisData}/>
+      {/* <VivaAnalysisContainer data={vivaAnalysisData}/> */}
 
+      <InitiateVivaContainer
+        callInProgress={callInProgress}
+        data={data}
+        handleEndCall={handleEndCall}
+        handleStartCall={handleStartCall}
+        systemSpeaking={systemSpeaking}
+        userSpeaking={userSpeaking}
+      />
     </AppLayout>
   );
 };
@@ -295,19 +305,22 @@ export default VivaQuestion;
 
 const vivaAnalysisData: VivaAnalysisModel[] = [
   {
-      question: "What is the function of the mitochondria?",
-      questionNumber: 1,
-      totalQuestions: 2,
-      grade: "pass",
-      userResponse: "It produces energy for the cell.",
-      systemResponse: "Correct. The mitochondria generate ATP through cellular respiration."
+    question: "What is the function of the mitochondria?",
+    questionNumber: 1,
+    totalQuestions: 2,
+    grade: "pass",
+    userResponse: "It produces energy for the cell.",
+    systemResponse:
+      "Correct. The mitochondria generate ATP through cellular respiration.",
   },
   {
-      question: "Explain the concept of osmosis.",
-      questionNumber: 2,
-      totalQuestions: 2,
-      grade: "fail",
-      userResponse: "It is the movement of molecules from high to low concentration.",
-      systemResponse: "Incorrect. Osmosis specifically refers to the movement of water molecules across a semi-permeable membrane."
-  }
+    question: "Explain the concept of osmosis.",
+    questionNumber: 2,
+    totalQuestions: 2,
+    grade: "fail",
+    userResponse:
+      "It is the movement of molecules from high to low concentration.",
+    systemResponse:
+      "Incorrect. Osmosis specifically refers to the movement of water molecules across a semi-permeable membrane.",
+  },
 ];

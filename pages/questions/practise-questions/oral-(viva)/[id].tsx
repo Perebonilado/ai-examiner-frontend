@@ -11,7 +11,7 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, ElementRef } from "react";
 import * as moment from "moment";
 import Vapi from "@vapi-ai/web";
 import { toast } from "react-toastify";
@@ -205,6 +205,8 @@ const VivaQuestion: NextPage = () => {
   const handleEndCall = () => {
     if (vapi && callInProgress) {
       vapi.stop();
+      buttonRef.current?.click();
+      setIsPlaying(true)
     }
   };
 
@@ -216,9 +218,50 @@ const VivaQuestion: NextPage = () => {
     }
   }, [isCallStarting]);
 
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    const audio = new Audio("/sounds/call-ended.mp3");
+    audioRef.current = audio;
+
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    };
+  }, []);
+
+  const buttonRef = useRef<ElementRef<"button">>(null);
+
+  useEffect(() => {
+    if (isPlaying && audioRef.current) {
+      const timeoutId = setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.pause();
+          audioRef.current.currentTime = 0;
+          setIsPlaying(false)
+        }
+      }, 1500); // 2.5 seconds
+  
+      return () => clearTimeout(timeoutId);
+    }
+  }, [isPlaying]);
+  
+
   return (
     <AppLayout>
       <AppHead title="Viva" />
+      {!isPlaying && (
+        <button
+          ref={buttonRef}
+          onClick={() => audioRef.current?.play()}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hidden"
+        >
+          Play Sound
+        </button>
+      )}
       {data && (
         <div className="flex items-center justify-between mb-6">
           <Button

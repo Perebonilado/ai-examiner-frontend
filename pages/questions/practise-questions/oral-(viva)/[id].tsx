@@ -21,6 +21,7 @@ import EndCallIcon from "@/icons/EndCallIcon";
 import CallProgressIndicator from "@/@modules/questions/CallProgressIndicator";
 import SoundWaveIcon from "@/icons/SoundWaveIcon";
 import MicIcon from "@/icons/MicIcon";
+import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -150,16 +151,16 @@ const VivaQuestion: NextPage = () => {
 
     vapi?.on("call-end", () => {
       setCallInProgress(false);
-      setSystemSpeaking(false)
-      setUserSpeaking(false)
+      setSystemSpeaking(false);
+      setUserSpeaking(false);
       // Clean up microphone analysis when call ends
       cleanupMicrophoneAnalysis();
     });
 
     vapi?.on("error", (e) => {
       console.error(e);
-      setSystemSpeaking(false)
-      setUserSpeaking(false)
+      setSystemSpeaking(false);
+      setUserSpeaking(false);
     });
 
     vapi?.on("speech-start", () => {
@@ -206,6 +207,14 @@ const VivaQuestion: NextPage = () => {
       vapi.stop();
     }
   };
+
+  useEffect(() => {
+    if (isCallStarting) {
+      setModalContent(<CallInitiatingModal />);
+    } else {
+      setModalContent(null);
+    }
+  }, [isCallStarting]);
 
   return (
     <AppLayout>
@@ -264,7 +273,7 @@ const VivaQuestion: NextPage = () => {
           isSpeaking={systemSpeaking}
         />
         <CallProgressIndicator
-          icon={<MicIcon fill={userSpeaking ? "#9A67E2" : undefined}/>}
+          icon={<MicIcon fill={userSpeaking ? "#9A67E2" : undefined} />}
           speaker="You"
           isSpeaking={userSpeaking}
         />

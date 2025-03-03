@@ -103,6 +103,9 @@ export const QuestionsService = createApi({
         method: 'POST',
         body
       }),
+      extraOptions: {
+        triggerLoading: false,
+      },
     }),
     questionSourceRequest: build.mutation<
       QuestionSourceRequestModel,

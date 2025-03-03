@@ -76,6 +76,21 @@ export const QuestionsService = createApi({
             topics: res.topics.map((t) => t.title),
             allTopics: res.allTopics,
             fileId: res.fileId,
+            analysis: !res?.analysisData
+              ? null
+              : {
+                  analysisData: res.analysisData.analysis.map((d, i) => {
+                    return {
+                      grade: d.score > 5 ? "pass" : "fail",
+                      question: d.question,
+                      questionNumber: i + 1,
+                      totalQuestions: res.analysisData?.analysis?.length || 0,
+                      systemResponse: d.systemAnalysis,
+                      userResponse: d.userResponse,
+                    };
+                  }),
+                  callId: res.analysisData.callId,
+                },
           };
         }
       },
@@ -100,8 +115,8 @@ export const QuestionsService = createApi({
     startVivaCall: build.mutation<StartVivaResponseModel, StartVivaPayload>({
       query: (body) => ({
         url: `/viva/start-call`,
-        method: 'POST',
-        body
+        method: "POST",
+        body,
       }),
       extraOptions: {
         triggerLoading: false,
@@ -210,5 +225,5 @@ export const {
   useSaveScoreMutation,
   useDeleteQuestionMutation,
   useQuestionSourceRequestMutation,
-  useStartVivaCallMutation
+  useStartVivaCallMutation,
 } = QuestionsService;

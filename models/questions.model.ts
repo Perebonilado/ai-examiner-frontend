@@ -1,5 +1,6 @@
 import { MetaModel } from "./meta.model";
 import { QuestionProgressStatusType } from "./question-progress.model";
+import { VivaAnalysisModel } from "./viva.model";
 
 export interface QuestionsModel {
   id: string;
@@ -51,6 +52,10 @@ export interface GetQuestionByIdModel {
   createdOn: Date;
   allTopics: string[];
   fileId: string;
+  analysis: {
+    analysisData: VivaAnalysisModel[];
+    callId: string;
+  } | null
 }
 
 export interface GetSharedQuestionModel {

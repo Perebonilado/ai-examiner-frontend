@@ -287,16 +287,20 @@ const VivaQuestion: NextPage = () => {
         </div>
       )}
 
-      {/* <VivaAnalysisContainer data={vivaAnalysisData}/> */}
+      {data && data.analysis && (
+        <VivaAnalysisContainer data={data.analysis.analysisData} />
+      )}
 
-      <InitiateVivaContainer
-        callInProgress={callInProgress}
-        data={data}
-        handleEndCall={handleEndCall}
-        handleStartCall={handleStartCall}
-        systemSpeaking={systemSpeaking}
-        userSpeaking={userSpeaking}
-      />
+      {data && !data.analysis && (
+        <InitiateVivaContainer
+          callInProgress={callInProgress}
+          data={data}
+          handleEndCall={handleEndCall}
+          handleStartCall={handleStartCall}
+          systemSpeaking={systemSpeaking}
+          userSpeaking={userSpeaking}
+        />
+      )}
     </AppLayout>
   );
 };

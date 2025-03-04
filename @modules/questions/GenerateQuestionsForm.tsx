@@ -87,7 +87,7 @@ const GenerateQuestionsForm: FC<Props> = ({
 
       generateQuestions({
         documentId,
-        questionCount: values.questionCount,
+        questionCount: values.questionCount || '5',
         questionType: values.questionType,
         selectedQuestionTopics: selectedTopics,
         includeUseCases,
@@ -152,7 +152,7 @@ const GenerateQuestionsForm: FC<Props> = ({
                 />
               </div>
 
-              <div>
+              {formik.values.questionType !== '6' && <div>
                 <label className="text-base font-semibold flex items-center gap-4">
                   Total questions{" "}
                 </label>
@@ -165,7 +165,7 @@ const GenerateQuestionsForm: FC<Props> = ({
                       : undefined
                   }
                 />
-              </div>
+              </div>}
 
               {formik.values.questionType == "3" && (
                 <div className="flex items-center gap-3">

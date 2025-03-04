@@ -11,6 +11,18 @@ export interface QuestionsDto {
   topic?: string
 }
 
+export interface VivaAnalysisItemDTO {
+  question: string;
+  userResponse: string;
+  systemAnalysis: string;
+  score: number;
+}
+
+export interface VivaAnalysisReportDTO {
+  analysis: VivaAnalysisItemDTO[];
+  callId: string;
+}
+
 export interface GetQuestionsByIdDto {
   id: string;
   documentTitle: string;
@@ -21,6 +33,7 @@ export interface GetQuestionsByIdDto {
   topics: { title: string; id: number }[];
   allTopics: string[];
   fileId: string;
+  analysisData: VivaAnalysisReportDTO | null
 }
 
 export interface QuestionSourceRequestDto {

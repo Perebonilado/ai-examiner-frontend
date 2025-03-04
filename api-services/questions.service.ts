@@ -10,6 +10,8 @@ import {
   GetQuestionsQueryModel,
   QuestionSourceRequestModel,
   QuestionSourceRequestPayloadModel,
+  StartVivaPayload,
+  StartVivaResponseModel,
 } from "@/models/questions.model";
 import Cookies from "js-cookie";
 import {
@@ -17,7 +19,10 @@ import {
   GenerateQuestionsDto,
   GetQuestionsByIdDto,
 } from "@/dto/questions.dto";
-import { baseQueryWithLogoutOnTokenExpiration, secondsToMilliSeconds } from "@/utils";
+import {
+  baseQueryWithLogoutOnTokenExpiration,
+  secondsToMilliSeconds,
+} from "@/utils";
 import { PermissionService } from "./permission.service";
 
 const baseQuery = fetchBaseQuery({
@@ -63,14 +68,29 @@ export const QuestionsService = createApi({
               question: q.question,
               correctAnswerId: q.correctAnswerId,
               hint: q.hint,
-              topic: q?.topic
+              topic: q?.topic,
             })),
             documentTitle: res.documentTitle,
             documentId: res.documentId,
             createdOn: res.createdOn,
             topics: res.topics.map((t) => t.title),
             allTopics: res.allTopics,
-            fileId: res.fileId
+            fileId: res.fileId,
+            analysis: !res?.analysisData
+              ? null
+              : {
+                  analysisData: res.analysisData.analysis.map((d, i) => {
+                    return {
+                      grade: d.score > 5 ? "pass" : "fail",
+                      question: d.question,
+                      questionNumber: i + 1,
+                      totalQuestions: res.analysisData?.analysis?.length || 0,
+                      systemResponse: d.systemAnalysis,
+                      userResponse: d.userResponse,
+                    };
+                  }),
+                  callId: res.analysisData.callId,
+                },
           };
         }
       },
@@ -92,6 +112,16 @@ export const QuestionsService = createApi({
       }),
       invalidatesTags: ["question-summary"],
     }),
+    startVivaCall: build.mutation<StartVivaResponseModel, StartVivaPayload>({
+      query: (body) => ({
+        url: `/viva/start-call`,
+        method: "POST",
+        body,
+      }),
+      extraOptions: {
+        triggerLoading: false,
+      },
+    }),
     questionSourceRequest: build.mutation<
       QuestionSourceRequestModel,
       QuestionSourceRequestPayloadModel
@@ -104,8 +134,8 @@ export const QuestionsService = createApi({
         },
       }),
       extraOptions: {
-        triggerLoading: false
-      }
+        triggerLoading: false,
+      },
     }),
     getQuestionSummaries: build.query<
       GetQuestionSummaryModel,
@@ -141,7 +171,10 @@ export const QuestionsService = createApi({
         };
       },
     }),
-    generateQuestions: build.mutation<GenerateQuestionsDto, GenerateQuestionsPayloadModel>({
+    generateQuestions: build.mutation<
+      GenerateQuestionsDto,
+      GenerateQuestionsPayloadModel
+    >({
       query: ({
         documentId,
         questionCount,
@@ -191,5 +224,6 @@ export const {
   useGenerateQuestionsMutation,
   useSaveScoreMutation,
   useDeleteQuestionMutation,
-  useQuestionSourceRequestMutation
+  useQuestionSourceRequestMutation,
+  useStartVivaCallMutation,
 } = QuestionsService;

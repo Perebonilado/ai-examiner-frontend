@@ -1,5 +1,6 @@
 import { MetaModel } from "./meta.model";
 import { QuestionProgressStatusType } from "./question-progress.model";
+import { VivaAnalysisModel } from "./viva.model";
 
 export interface QuestionsModel {
   id: string;
@@ -19,6 +20,14 @@ export interface QuestionSourceRequestPayloadModel {
 
 export interface QuestionSourceRequestModel {
   data: string;
+}
+
+export interface StartVivaPayload {
+  questionId: string;
+}
+
+export interface StartVivaResponseModel {
+  id: string;
 }
 
 export interface MultipleTrueFalseQuestionModel {
@@ -43,6 +52,10 @@ export interface GetQuestionByIdModel {
   createdOn: Date;
   allTopics: string[];
   fileId: string;
+  analysis: {
+    analysisData: VivaAnalysisModel[];
+    callId: string;
+  } | null
 }
 
 export interface GetSharedQuestionModel {
@@ -120,5 +133,5 @@ export interface DeleteQuestionModel {
 export interface NotSureQuestion {
   question: string;
   options: string[];
-  questionType: 'Flash Cards' | 'Multiple Choice' | 'Multiple True-False';
+  questionType: "Flash Cards" | "Multiple Choice" | "Multiple True-False";
 }

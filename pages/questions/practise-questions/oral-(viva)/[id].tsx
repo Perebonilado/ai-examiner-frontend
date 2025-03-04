@@ -185,8 +185,24 @@ const VivaQuestion: NextPage = () => {
     };
   }, []);
 
+  const requestMicPermission = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      stream.getTracks().forEach(track => track.stop()); // Release stream immediately
+      return true;
+    } catch (error) {
+      console.error("Microphone permission denied:", error);
+      toast.error("Microphone permission is required to start the call.");
+      return false;
+    }
+  };
+  
+
   const handleStartCall = async () => {
     try {
+      const hasPermission = await requestMicPermission();
+      if (!hasPermission) return;
+      
       setIsCallStarting(true);
       const assistantData = await initiateCall({ questionId: id });
       if (vapi) {

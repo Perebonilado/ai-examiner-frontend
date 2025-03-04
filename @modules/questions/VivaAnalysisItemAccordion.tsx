@@ -40,7 +40,7 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
             <p className="flex items-center gap-4">
               <span className="font-semibold text-[#00000080]">Examiner</span>
               <span className="text-[#00000080]">|</span>
-              <span className="text-xl text-[#9A67E2]">
+              <span className="text-xl text-[#00000080]">
                 Question {questionNumber} of {totalQuestions}
               </span>
             </p>

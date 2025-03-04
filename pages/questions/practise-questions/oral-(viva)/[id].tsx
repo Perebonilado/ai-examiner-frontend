@@ -274,16 +274,18 @@ const VivaQuestion: NextPage = () => {
       )}
 
       {data && (
-        <div>
+        <div className="pb-6">
           <h1 className="text-center text-xl font-semibold">
             Oral (Viva) Q&A -{" "}
             {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
           </h1>
-          <p className="text-center text-gray-500 my-3">
-            {callInProgress
-              ? "Test in progress..."
-              : "Just start the call when you are all set!"}
-          </p>
+          {data && !data.analysis && (
+            <p className="text-center text-gray-500 my-3">
+              {callInProgress
+                ? "Test in progress..."
+                : "Just start the call when you are all set!"}
+            </p>
+          )}
         </div>
       )}
 

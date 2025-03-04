@@ -27,7 +27,7 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
   return (
     <div className="border-y py-4">
       <div
-        className="flex cursor-pointer"
+        className="flex cursor-pointer gap-3"
         onClick={() => {
           setIsExpanded(!isExpanded);
         }}

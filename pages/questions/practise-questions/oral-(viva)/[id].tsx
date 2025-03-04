@@ -51,7 +51,7 @@ const VivaQuestion: NextPage = () => {
 
   // Initialize Vapi
   useEffect(() => {
-    const newVapi = new Vapi("e5840097-a2db-47a2-8134-059421e03fe8");
+    const newVapi = new Vapi("74ed4301-89e7-4304-a325-4d88a54e2908");
     setVapi(newVapi);
   }, []);
 

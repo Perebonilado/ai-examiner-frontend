@@ -1,10 +1,10 @@
-import AIIcon from "@/icons/AIIcon";
 import ChevronDown from "@/icons/ChevronDown";
 import React, { FC, useState } from "react";
 import cn from "classnames";
 import VivaUserResponse from "./VivaUserResponse";
 import VivaSystemResponse from "./VivaSystemResponse";
 import { VivaAnalysisModel } from "@/models/viva.model";
+import ArticifialIntelligenceIcon from "@/icons/ArticifialIntelligenceIcon";
 
 interface Props extends VivaAnalysisModel {}
 
@@ -33,7 +33,7 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
         }}
       >
         <div className="flex items-center" style={{ flex: 1 }}>
-          <AIIcon />
+          <ArticifialIntelligenceIcon />
         </div>
         <div style={{ flex: 10 }}>
           <div>

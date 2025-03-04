@@ -11,7 +11,7 @@ const VivaAnalysisContainer: FC<Props> = ({ data }) => {
   return (
     <div className="w-full max-w-[900px] mx-auto">
       <div className="mx-auto w-fit mb-10">
-        <Button title="Replay Conversation" variant="contained" size="large" />
+        {/* <Button title="Replay Conversation" variant="contained" size="large" /> */}
       </div>
       {data.map((item, idx) => {
         return (

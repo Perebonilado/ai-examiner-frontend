@@ -114,7 +114,7 @@ const GenerateQuestionsForm: FC = () => {
           : undefined,
         topics: topics ? topics.topics.map((t) => t.label) : undefined,
       },
-      questionCount: values.questionCount,
+      questionCount: values.questionCount || '5',
       questionType: values.questionType,
       includeUseCases,
     });
@@ -234,7 +234,7 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            <div>
+            {formik.values.questionType !== '6' && <div>
               <label className="text-sm font-semibold flex items-center gap-4">
                 Total questions{" "}
               </label>
@@ -248,7 +248,7 @@ const GenerateQuestionsForm: FC = () => {
                     : undefined
                 }
               />
-            </div>
+            </div>}
 
             {formik.values.questionType == "3" && <div className="flex items-center gap-3">
               <Switch

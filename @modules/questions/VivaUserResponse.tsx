@@ -16,7 +16,7 @@ const VivaUserResponse: FC<Props> = ({ grade, userResponse, score }) => {
   const scoreClassNames = cn(`text-xs font-bold`, {
     ["text-[#EE6161]"]: grade === "fail",
     ["text-[#008650]"]: grade === "pass",
-  })
+  });
   return (
     <div className={classNames}>
       <div className="flex">
@@ -25,13 +25,13 @@ const VivaUserResponse: FC<Props> = ({ grade, userResponse, score }) => {
         </div>
         <div style={{ flex: 1 }}>
           <div className="flex items-center justify-between">
-          <p className="flex items-center gap-2">
-            <span className="font-semibold">Your response</span>
-            <span className="text-[#00000080]">|</span>
-            <span className="text-xl text-[#00000080]">Summary</span>
-          </p>
+            <p className="flex items-center gap-2">
+              <span className="font-semibold">Your response</span>
+              <span className="text-[#00000080]">|</span>
+              <span className="text-xl text-[#00000080]">Summary</span>
+            </p>
 
-          <p className={scoreClassNames}>{score}/10</p>
+            <p className={scoreClassNames}>{score}/10</p>
           </div>
           <p className="font-light text-sm mt-4">{userResponse}</p>
         </div>

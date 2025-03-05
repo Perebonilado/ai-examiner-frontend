@@ -18,6 +18,7 @@ import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
 import InitiateVivaContainer from "@/@modules/questions/InitiateVivaContainer";
 import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
 import { VivaAnalysisModel } from "@/models/viva.model";
+import CallPreparationConfirmation from "@/@modules/questions/CallPreparationConfirmation";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -188,7 +189,7 @@ const VivaQuestion: NextPage = () => {
   const requestMicPermission = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop()); // Release stream immediately
+      stream.getTracks().forEach((track) => track.stop()); // Release stream immediately
       return true;
     } catch (error) {
       console.error("Microphone permission denied:", error);
@@ -196,13 +197,9 @@ const VivaQuestion: NextPage = () => {
       return false;
     }
   };
-  
 
   const handleStartCall = async () => {
     try {
-      const hasPermission = await requestMicPermission();
-      if (!hasPermission) return;
-      
       setIsCallStarting(true);
       const assistantData = await initiateCall({ questionId: id });
       if (vapi) {
@@ -214,6 +211,15 @@ const VivaQuestion: NextPage = () => {
 
       setModalContent(null);
     }
+  };
+
+  const handleStartCallConfirmation = async () => {
+    const hasPermission = await requestMicPermission();
+    if (!hasPermission) return;
+
+    setModalContent(
+      <CallPreparationConfirmation handleProceed={handleStartCall} />
+    );
   };
 
   const handleEndCall = () => {
@@ -314,7 +320,7 @@ const VivaQuestion: NextPage = () => {
           callInProgress={callInProgress}
           data={data}
           handleEndCall={handleEndCall}
-          handleStartCall={handleStartCall}
+          handleStartCall={handleStartCallConfirmation}
           systemSpeaking={systemSpeaking}
           userSpeaking={userSpeaking}
         />

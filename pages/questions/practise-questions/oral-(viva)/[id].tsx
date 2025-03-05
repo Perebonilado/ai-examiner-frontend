@@ -332,24 +332,3 @@ const VivaQuestion: NextPage = () => {
 
 export default VivaQuestion;
 
-const vivaAnalysisData: VivaAnalysisModel[] = [
-  {
-    question: "What is the function of the mitochondria?",
-    questionNumber: 1,
-    totalQuestions: 2,
-    grade: "pass",
-    userResponse: "It produces energy for the cell.",
-    systemResponse:
-      "Correct. The mitochondria generate ATP through cellular respiration.",
-  },
-  {
-    question: "Explain the concept of osmosis.",
-    questionNumber: 2,
-    totalQuestions: 2,
-    grade: "fail",
-    userResponse:
-      "It is the movement of molecules from high to low concentration.",
-    systemResponse:
-      "Incorrect. Osmosis specifically refers to the movement of water molecules across a semi-permeable membrane.",
-  },
-];

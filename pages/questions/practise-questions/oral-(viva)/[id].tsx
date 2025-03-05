@@ -18,6 +18,7 @@ import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
 import InitiateVivaContainer from "@/@modules/questions/InitiateVivaContainer";
 import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
 import { VivaAnalysisModel } from "@/models/viva.model";
+import CallPreparationConfirmation from "@/@modules/questions/CallPreparationConfirmation";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -188,7 +189,7 @@ const VivaQuestion: NextPage = () => {
   const requestMicPermission = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      stream.getTracks().forEach(track => track.stop()); // Release stream immediately
+      stream.getTracks().forEach((track) => track.stop()); // Release stream immediately
       return true;
     } catch (error) {
       console.error("Microphone permission denied:", error);
@@ -196,13 +197,9 @@ const VivaQuestion: NextPage = () => {
       return false;
     }
   };
-  
 
   const handleStartCall = async () => {
     try {
-      const hasPermission = await requestMicPermission();
-      if (!hasPermission) return;
-      
       setIsCallStarting(true);
       const assistantData = await initiateCall({ questionId: id });
       if (vapi) {
@@ -214,6 +211,15 @@ const VivaQuestion: NextPage = () => {
 
       setModalContent(null);
     }
+  };
+
+  const handleStartCallConfirmation = async () => {
+    const hasPermission = await requestMicPermission();
+    if (!hasPermission) return;
+
+    setModalContent(
+      <CallPreparationConfirmation handleProceed={handleStartCall} />
+    );
   };
 
   const handleEndCall = () => {
@@ -314,9 +320,10 @@ const VivaQuestion: NextPage = () => {
           callInProgress={callInProgress}
           data={data}
           handleEndCall={handleEndCall}
-          handleStartCall={handleStartCall}
+          handleStartCall={handleStartCallConfirmation}
           systemSpeaking={systemSpeaking}
           userSpeaking={userSpeaking}
+          maxCallDurationInSeconds={120}
         />
       )}
     </AppLayout>
@@ -325,24 +332,3 @@ const VivaQuestion: NextPage = () => {
 
 export default VivaQuestion;
 
-const vivaAnalysisData: VivaAnalysisModel[] = [
-  {
-    question: "What is the function of the mitochondria?",
-    questionNumber: 1,
-    totalQuestions: 2,
-    grade: "pass",
-    userResponse: "It produces energy for the cell.",
-    systemResponse:
-      "Correct. The mitochondria generate ATP through cellular respiration.",
-  },
-  {
-    question: "Explain the concept of osmosis.",
-    questionNumber: 2,
-    totalQuestions: 2,
-    grade: "fail",
-    userResponse:
-      "It is the movement of molecules from high to low concentration.",
-    systemResponse:
-      "Incorrect. Osmosis specifically refers to the movement of water molecules across a semi-permeable membrane.",
-  },
-];

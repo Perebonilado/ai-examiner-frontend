@@ -314,7 +314,7 @@ const VivaQuestion: NextPage = () => {
       )}
 
       {data && data.analysis && (
-        <VivaAnalysisContainer data={data.analysis.analysisData} />
+        <VivaAnalysisContainer data={data.analysis.analysisData} callId={data.analysis.callId}/>
       )}
 
       {data && !data.analysis && (

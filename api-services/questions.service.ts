@@ -12,6 +12,8 @@ import {
   QuestionSourceRequestPayloadModel,
   StartVivaPayload,
   StartVivaResponseModel,
+  VivaRecordingModel,
+  VivaRecordingPayload,
 } from "@/models/questions.model";
 import Cookies from "js-cookie";
 import {
@@ -112,6 +114,12 @@ export const QuestionsService = createApi({
         method: "DELETE",
       }),
       invalidatesTags: ["question-summary"],
+    }),
+    getVivaRecording: build.query<VivaRecordingModel, VivaRecordingPayload>({
+      query: ({ callId }) => ({
+        url: `/viva/call-recording/${callId}`,
+        method: "GET",
+      }),
     }),
     startVivaCall: build.mutation<StartVivaResponseModel, StartVivaPayload>({
       query: (body) => ({
@@ -227,4 +235,5 @@ export const {
   useDeleteQuestionMutation,
   useQuestionSourceRequestMutation,
   useStartVivaCallMutation,
+  useGetVivaRecordingQuery
 } = QuestionsService;

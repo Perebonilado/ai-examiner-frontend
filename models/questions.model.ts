@@ -30,6 +30,14 @@ export interface StartVivaResponseModel {
   id: string;
 }
 
+export interface VivaRecordingModel {
+  callRecording: string;
+}
+
+export interface VivaRecordingPayload {
+  callId: string;
+}
+
 export interface MultipleTrueFalseQuestionModel {
   id: string;
   question: string;
@@ -55,7 +63,7 @@ export interface GetQuestionByIdModel {
   analysis: {
     analysisData: VivaAnalysisModel[];
     callId: string;
-  } | null
+  } | null;
 }
 
 export interface GetSharedQuestionModel {

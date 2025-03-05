@@ -323,6 +323,7 @@ const VivaQuestion: NextPage = () => {
           handleStartCall={handleStartCallConfirmation}
           systemSpeaking={systemSpeaking}
           userSpeaking={userSpeaking}
+          maxCallDurationInSeconds={120}
         />
       )}
     </AppLayout>

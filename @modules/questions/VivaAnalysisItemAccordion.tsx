@@ -15,6 +15,7 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
   grade,
   systemResponse,
   userResponse,
+  score
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const expClassName = cn(
@@ -27,12 +28,12 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
   return (
     <div className="border-y py-4">
       <div
-        className="flex cursor-pointer gap-3"
+        className="flex cursor-pointer "
         onClick={() => {
           setIsExpanded(!isExpanded);
         }}
       >
-        <div className="flex items-center" style={{ flex: 1 }}>
+        <div className="flex items-start pr-3">
           <ArticifialIntelligenceIcon />
         </div>
         <div style={{ flex: 10 }}>
@@ -47,13 +48,13 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
           </div>
           <p className="mt-3 text-sm">{question}</p>
         </div>
-        <button style={{ flex: 1 }}>
+        <button style={{ flex: 1 }} className="px-4">
           <ChevronDown />
         </button>
       </div>
 
       <div className={expClassName}>
-        <VivaUserResponse grade={grade} userResponse={userResponse} />
+        <VivaUserResponse grade={grade} userResponse={userResponse} score={score}/>
         <VivaSystemResponse systemResponse={systemResponse} />
       </div>
     </div>

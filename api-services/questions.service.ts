@@ -82,6 +82,7 @@ export const QuestionsService = createApi({
                   analysisData: res.analysisData.analysis.map((d, i) => {
                     return {
                       grade: d.score > 5 ? "pass" : "fail",
+                      score: d.score,
                       question: d.question,
                       questionNumber: i + 1,
                       totalQuestions: res.analysisData?.analysis?.length || 0,

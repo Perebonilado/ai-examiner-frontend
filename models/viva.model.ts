@@ -5,4 +5,5 @@ export interface VivaAnalysisModel {
     grade: "fail" | "pass";
     userResponse: string;
     systemResponse: string
+    score: number;
 }

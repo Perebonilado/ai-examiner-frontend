@@ -19,6 +19,7 @@ import InitiateVivaContainer from "@/@modules/questions/InitiateVivaContainer";
 import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
 import { VivaAnalysisModel } from "@/models/viva.model";
 import CallPreparationConfirmation from "@/@modules/questions/CallPreparationConfirmation";
+import PulseCallIndicator from "@/@modules/questions/PulseCallIndicator";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -302,7 +303,8 @@ const VivaQuestion: NextPage = () => {
             {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
           </h1>
           {data && !data.analysis && (
-            <p className="text-center text-gray-500 my-3">
+            <p className="text-center text-gray-500 my-3 flex items-center justify-center gap-2">
+              {callInProgress && <PulseCallIndicator />}
               {callInProgress
                 ? "Test in progress..."
                 : "Just start the call when you are all set!"}
@@ -331,4 +333,3 @@ const VivaQuestion: NextPage = () => {
 };
 
 export default VivaQuestion;
-

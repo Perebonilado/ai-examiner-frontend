@@ -6,6 +6,12 @@ export const milliSecondToSecondConversionRate = 1000;
 
 export const alphabets = ["a", "b"];
 
+export const difficultyOptions = [
+  { label: "Easy", value: "easy" },
+  { label: "Medium", value: "medium", defaultSelected: true },
+  { label: "Hard", value: "hard" },
+];
+
 export const mobileScreenSizePx = 768;
 
 export const typeBasedRoutes: {

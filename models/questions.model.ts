@@ -126,6 +126,7 @@ export interface GenerateQuestionsPayloadModel {
   topics?: string[];
   selectedQuestionTopics?: string[];
   includeUseCases: boolean;
+  difficulty: DifficultyType;
 }
 
 export interface CreateScorePayloadModel {
@@ -143,3 +144,5 @@ export interface NotSureQuestion {
   options: string[];
   questionType: "Flash Cards" | "Multiple Choice" | "Multiple True-False";
 }
+
+export type DifficultyType = 'easy' | 'medium' | 'hard';

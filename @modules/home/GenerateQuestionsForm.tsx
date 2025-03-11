@@ -29,6 +29,8 @@ import {
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 import { useSelector } from "react-redux";
 import { RootState } from "../../config/redux-config";
+import { difficultyOptions } from "@/constants";
+import { DifficultyType } from "@/models/questions.model";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -39,6 +41,7 @@ const initialValues = {
   title: "",
   questionCount: "",
   questionType: "",
+  difficulty: "",
 };
 
 const GenerateQuestionsForm: FC = () => {
@@ -114,9 +117,10 @@ const GenerateQuestionsForm: FC = () => {
           : undefined,
         topics: topics ? topics.topics.map((t) => t.label) : undefined,
       },
-      questionCount: values.questionCount || '5',
+      questionCount: values.questionCount || "5",
       questionType: values.questionType,
       includeUseCases,
+      difficulty: values.difficulty as DifficultyType,
     });
   };
 
@@ -234,32 +238,54 @@ const GenerateQuestionsForm: FC = () => {
               />
             </div>
 
-            {formik.values.questionType !== '6' && <div>
-              <label className="text-sm font-semibold flex items-center gap-4">
-                Total questions{" "}
-              </label>
+            {formik.values.questionType !== "6" && (
+              <div>
+                <label className="text-sm font-semibold flex items-center gap-4">
+                  Difficulty
+                </label>
 
-              <DropDown
-                options={generateQustionCountOptions(permissions.maxQA)}
-                {...formik.getFieldProps("questionCount")}
-                error={
-                  formik.touched.questionCount
-                    ? formik.errors.questionCount
-                    : undefined
-                }
-              />
-            </div>}
+                <DropDown
+                  options={difficultyOptions}
+                  {...formik.getFieldProps("difficulty")}
+                  error={
+                    formik.touched.difficulty
+                      ? formik.errors.difficulty
+                      : undefined
+                  }
+                />
+              </div>
+            )}
 
-            {formik.values.questionType == "3" && <div className="flex items-center gap-3">
-              <Switch
-                disabled={!file || !fileId}
-                handleChecked={() => {
-                  setIncludeUseCases(!includeUseCases);
-                }}
-                label="Include Case Studies"
-                isChecked={includeUseCases}
-              />
-            </div>}
+            {formik.values.questionType !== "6" && (
+              <div>
+                <label className="text-sm font-semibold flex items-center gap-4">
+                  Total questions{" "}
+                </label>
+
+                <DropDown
+                  options={generateQustionCountOptions(permissions.maxQA)}
+                  {...formik.getFieldProps("questionCount")}
+                  error={
+                    formik.touched.questionCount
+                      ? formik.errors.questionCount
+                      : undefined
+                  }
+                />
+              </div>
+            )}
+
+            {formik.values.questionType == "3" && (
+              <div className="flex items-center gap-3">
+                <Switch
+                  disabled={!file || !fileId}
+                  handleChecked={() => {
+                    setIncludeUseCases(!includeUseCases);
+                  }}
+                  label="Include Case Studies"
+                  isChecked={includeUseCases}
+                />
+              </div>
+            )}
 
             {permissions.canUseAdvancedPreferences && (
               <div className="flex items-center gap-3">

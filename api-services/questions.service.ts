@@ -189,6 +189,7 @@ export const QuestionsService = createApi({
         questionCount,
         questionType,
         includeUseCases,
+        difficulty,
         ...body
       }) => ({
         url: `/${documentId}/generate-questions`,
@@ -197,6 +198,7 @@ export const QuestionsService = createApi({
           questionCount,
           questionType,
           includeUseCases,
+          difficulty
         },
         body,
       }),

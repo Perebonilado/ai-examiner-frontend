@@ -21,10 +21,13 @@ import {
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
+import { difficultyOptions } from "@/constants";
+import { DifficultyType } from "@/models/questions.model";
 
 const initialValues = {
   questionCount: "",
   questionType: "",
+  difficulty: "",
 };
 
 interface Props {
@@ -87,11 +90,12 @@ const GenerateQuestionsForm: FC<Props> = ({
 
       generateQuestions({
         documentId,
-        questionCount: values.questionCount || '5',
+        questionCount: values.questionCount || "5",
         questionType: values.questionType,
         selectedQuestionTopics: selectedTopics,
         includeUseCases,
         saveSelectedTopics,
+        difficulty: values.difficulty as DifficultyType
       });
     },
   });
@@ -152,20 +156,40 @@ const GenerateQuestionsForm: FC<Props> = ({
                 />
               </div>
 
-              {formik.values.questionType !== '6' && <div>
-                <label className="text-base font-semibold flex items-center gap-4">
-                  Total questions{" "}
-                </label>
-                <DropDown
-                  options={generateQustionCountOptions(permissions.maxQA)}
-                  {...formik.getFieldProps("questionCount")}
-                  error={
-                    formik.touched.questionCount
-                      ? formik.errors.questionCount
-                      : undefined
-                  }
-                />
-              </div>}
+              {formik.values.questionType !== "6" && (
+                <div>
+                  <label className="text-sm font-semibold flex items-center gap-4">
+                    Difficulty
+                  </label>
+
+                  <DropDown
+                    options={difficultyOptions}
+                    {...formik.getFieldProps("difficulty")}
+                    error={
+                      formik.touched.difficulty
+                        ? formik.errors.difficulty
+                        : undefined
+                    }
+                  />
+                </div>
+              )}
+
+              {formik.values.questionType !== "6" && (
+                <div>
+                  <label className="text-base font-semibold flex items-center gap-4">
+                    Total questions{" "}
+                  </label>
+                  <DropDown
+                    options={generateQustionCountOptions(permissions.maxQA)}
+                    {...formik.getFieldProps("questionCount")}
+                    error={
+                      formik.touched.questionCount
+                        ? formik.errors.questionCount
+                        : undefined
+                    }
+                  />
+                </div>
+              )}
 
               {formik.values.questionType == "3" && (
                 <div className="flex items-center gap-3">

@@ -1,4 +1,5 @@
 import { MetaModel } from "./meta.model";
+import { DifficultyType } from "./questions.model";
 
 export interface AllDocumentsQueryModel {
   courseId: string;
@@ -37,6 +38,7 @@ export interface AddDocumentPayloadModel {
   };
   questionCount: string;
   questionType: string;
+  difficulty: DifficultyType;
   includeUseCases: boolean;
 }
 

@@ -2,7 +2,10 @@ import DropDown from "@/@shared/ui/Input/DropDown";
 import React, { FC, useEffect, useState } from "react";
 import { useFormik, FormikProvider, Form } from "formik";
 import Button from "@/@shared/ui/Button";
-import { useGenerateQuestionsMutation } from "@/api-services/questions.service";
+import {
+  useGenerateQuestionsMutation,
+  useGenerateQuestionsV2Mutation,
+} from "@/api-services/questions.service";
 import { useParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
@@ -69,7 +72,7 @@ const GenerateQuestionsForm: FC<Props> = ({
       isSuccess: generateQuestionsSuccess,
       data,
     },
-  ] = useGenerateQuestionsMutation();
+  ] = useGenerateQuestionsV2Mutation();
 
   const { data: questionTypes } = useGetLookUpsByTypeQuery({
     type: "question_type",
@@ -89,13 +92,16 @@ const GenerateQuestionsForm: FC<Props> = ({
       }
 
       generateQuestions({
+        payload: {
+          questionCount: values.questionCount
+            ? Number(values.questionCount)
+            : 5,
+          questionType: values.questionType ? Number(values.questionType) : 3,
+          selectedQuestionTopics: selectedTopics,
+          includeUseCases,
+          difficulty: values.difficulty as DifficultyType,
+        },
         documentId,
-        questionCount: values.questionCount || "5",
-        questionType: values.questionType,
-        selectedQuestionTopics: selectedTopics,
-        includeUseCases,
-        saveSelectedTopics,
-        difficulty: values.difficulty as DifficultyType
       });
     },
   });

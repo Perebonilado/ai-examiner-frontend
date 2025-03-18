@@ -129,6 +129,17 @@ export interface GenerateQuestionsPayloadModel {
   difficulty: DifficultyType;
 }
 
+export interface GenerateQuestionsPayloadModelV2 {
+  payload: {
+    selectedQuestionTopics?: string[] | null;
+    questionCount: number;
+    questionType: number;
+    includeUseCases: boolean;
+    difficulty: DifficultyType;
+  };
+  documentId: string;
+}
+
 export interface CreateScorePayloadModel {
   score: number;
   documentId: string;
@@ -145,4 +156,4 @@ export interface NotSureQuestion {
   questionType: "Flash Cards" | "Multiple Choice" | "Multiple True-False";
 }
 
-export type DifficultyType = 'easy' | 'medium' | 'hard';
+export type DifficultyType = "easy" | "medium" | "hard";

@@ -13,7 +13,10 @@ import { useRouter } from "next/router";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import { GenerateQuestionFormValidation } from "@/validation-schemas/GenerateQuestionFormValidation";
-import { useUploadFileMutation } from "@/api-services/file-upload.service";
+import {
+  useUploadFileMutation,
+  useUploadFileV2Mutation,
+} from "@/api-services/file-upload.service";
 import Switch from "@/@shared/components/Switch";
 import ChipMultiSelect from "@/@shared/ui/Input/ChipMultiSelect";
 import { useGenerateDocumentTopicsMutation } from "@/api-services/document-topic.service";
@@ -31,6 +34,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../config/redux-config";
 import { difficultyOptions } from "@/constants";
 import { DifficultyType } from "@/models/questions.model";
+import { useGenerateQuestionsV2Mutation } from "@/api-services/questions.service";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -52,19 +56,20 @@ const GenerateQuestionsForm: FC = () => {
   });
 
   const [fileId, setFileId] = useState<string | null>(null);
-  const [isAdvanced, setIsAdvanced] = useState(false);
-  const [isFocusAreaData, setIsFocusAreaData] = useState(false);
+  const [documentId, setDocumentId] = useState<string | null>(null);
+  const [isTopicsSelectVisible, setIsTopicsSelectVisible] = useState(false);
+  // const [isFocusAreaData, setIsFocusAreaData] = useState(false);
   const [includeUseCases, setIncludeUseCases] = useState(false);
-  const [
-    fetchTopics,
-    { data: topics, isLoading: topicsLoading, error: topicsError },
-  ] = useGenerateDocumentTopicsMutation();
+  // const [
+  //   fetchTopics,
+  //   { data: topics, isLoading: topicsLoading, error: topicsError },
+  // ] = useGenerateDocumentTopicsMutation();
 
-  useEffect(() => {
-    if (topics) {
-      setIsFocusAreaData(true);
-    }
-  }, [topics]);
+  // useEffect(() => {
+  //   if (topics) {
+  //     setIsFocusAreaData(true);
+  //   }
+  // }, [topics]);
 
   const router = useRouter();
 
@@ -73,32 +78,47 @@ const GenerateQuestionsForm: FC = () => {
     (state: RootState) => state.permissionsState.permissions
   );
 
-  const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
-    useAddDocumentMutation();
+  // const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
+  //   useAddDocumentMutation();
+
+  const [generateQuestionsV2, { isLoading, isSuccess, error, data }] =
+    useGenerateQuestionsV2Mutation();
 
   const { data: questionTypes } = useGetLookUpsByTypeQuery({
     type: "question_type",
   });
 
+  // const [
+  //   uploadFile,
+  //   {
+  //     isLoading: uploadfileLoading,
+  //     error: uploadFileError,
+  //     data: uploadFileData,
+  //   },
+  // ] = useUploadFileMutation();
+
   const [
-    uploadFile,
+    uploadFileV2,
     {
-      isLoading: uploadfileLoading,
+      isLoading: uploadFileLoading,
       error: uploadFileError,
-      data: uploadFileData,
+      data: uploadFileDataV2,
     },
-  ] = useUploadFileMutation();
+  ] = useUploadFileV2Mutation();
 
   const allowedMimeTypes = ["docx", "doc", "pdf", "pptx", "txt", "ppt"];
 
   const [file, setFile] = useState<File | null>(null);
 
-  const [focusAreas, setFocusAreas] = useState<
+  const [documentTopics, setDocumentTopics] = useState<
+    { label: string; value: string }[]
+  >([]);
+  const [selectedTopics, setSelectedTopics] = useState<
     { label: string; value: string }[]
   >([]);
 
   const handleSubmit = (values: typeof initialValues) => {
-    if (!file || !fileId) {
+    if (!documentId || !file || !fileId) {
       toast.error("Please upload a file");
       return;
     }
@@ -108,19 +128,18 @@ const GenerateQuestionsForm: FC = () => {
       return;
     }
 
-    createDocAndGenerateQuestions({
+    generateQuestionsV2({
       payload: {
-        fileId: fileId,
-        title: values.title || getFileNameWithoutExtension(file.name),
-        selectedQuestionTopics: focusAreas.length
-          ? focusAreas.map((f) => f.label)
+        // title: values.title || getFileNameWithoutExtension(file.name),
+        selectedQuestionTopics: selectedTopics.length
+          ? selectedTopics.map((f) => f.label)
           : undefined,
-        topics: topics ? topics.topics.map((t) => t.label) : undefined,
+        questionCount: values.questionCount ? Number(values.questionCount) : 5,
+        questionType: values.questionType ? Number(values.questionType) : 3,
+        includeUseCases,
+        difficulty: values.difficulty as DifficultyType,
       },
-      questionCount: values.questionCount || "5",
-      questionType: values.questionType,
-      includeUseCases,
-      difficulty: values.difficulty as DifficultyType,
+      documentId,
     });
   };
 
@@ -134,21 +153,30 @@ const GenerateQuestionsForm: FC = () => {
 
     formData.append("document", file);
 
-    uploadFile({ payload: formData, pages, start, end });
+    uploadFileV2({ payload: formData, pages, start, end });
   };
 
   useEffect(() => {
-    if (uploadFileData) {
-      setFileId(uploadFileData.fileId);
+    if (uploadFileDataV2) {
+      setFileId(uploadFileDataV2.fileId);
+      setDocumentId(uploadFileDataV2.documentId);
+      const topics = Array.from(new Set(uploadFileDataV2.topics)).map((t) => {
+        return {
+          label: t,
+          value: t,
+        };
+      });
+
+      setDocumentTopics(topics);
     }
-  }, [uploadFileData]);
+  }, [uploadFileDataV2]);
 
   useEffect(() => {
     if (data) {
       router.push(
         `/questions/practise-questions/${hyphenateString(
           data.type.toLowerCase()
-        )}/${data.questionId}`
+        )}/${data.id}`
       );
     }
   }, [data]);
@@ -183,9 +211,8 @@ const GenerateQuestionsForm: FC = () => {
 
   useEffect(() => {
     if (!file || !fileId) {
-      setIsAdvanced(false);
-      setFocusAreas([]);
-      setIsFocusAreaData(false);
+      setIsTopicsSelectVisible(false);
+      setDocumentTopics([]);
     }
   }, [file, fileId]);
 
@@ -201,9 +228,10 @@ const GenerateQuestionsForm: FC = () => {
                 setFile(file);
                 handleFileUpload(file, pages, start, end);
               }}
-              uploadLoading={uploadfileLoading}
+              uploadLoading={uploadFileLoading}
               handleDeleteFile={() => {
                 setFile(null);
+                setDocumentId(null);
                 if (fileId) {
                   setFileId(null);
                 }
@@ -292,27 +320,27 @@ const GenerateQuestionsForm: FC = () => {
                 <Switch
                   disabled={!file || !fileId}
                   handleChecked={() => {
-                    setIsAdvanced(!isAdvanced);
-                    if (!isFocusAreaData)
-                      fetchTopics({ fileId: fileId as string });
+                    setIsTopicsSelectVisible(!isTopicsSelectVisible);
+                    // if (!isFocusAreaData)
+                    //   fetchTopics({ fileId: fileId as string });
                   }}
-                  isChecked={isAdvanced}
+                  isChecked={isTopicsSelectVisible}
                   label="Select Topics"
                 />
               </div>
             )}
 
-            {fileId && isAdvanced && !topicsLoading && topics && (
+            {fileId && isTopicsSelectVisible && (
               <ChipMultiSelect
-                options={topics.topics}
+                options={documentTopics}
                 getSelectedItems={(items) => {
-                  setFocusAreas(items);
+                  setSelectedTopics(items);
                 }}
                 label="Topics"
               />
             )}
 
-            {topicsLoading && isAdvanced && (
+            {/* {topicsLoading && isAdvanced && (
               <div className="flex flex-col gap-2 items-center">
                 <Spinner size="sm" />
                 <p className="text-xs">Loading topics...</p>
@@ -331,13 +359,17 @@ const GenerateQuestionsForm: FC = () => {
                   }}
                 />
               </div>
-            )}
+            )} */}
 
             <Button
               title="Generate Questions"
               size="large"
               disabled={
-                !formik.isValid || !fileId || !file || uploadfileLoading
+                !formik.isValid ||
+                !fileId ||
+                !file ||
+                uploadFileLoading ||
+                !documentId
               }
             />
           </div>

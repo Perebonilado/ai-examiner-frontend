@@ -2,6 +2,11 @@ export interface FileUploadModel {
   fileId: string;
 }
 
+export interface FileUploadModelV2 extends FileUploadModel {
+  documentId: string;
+  topics: string[];
+}
+
 export interface FileUploadPayloadModel {
   payload: FormData;
   pages?: string;

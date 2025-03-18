@@ -8,9 +8,10 @@ import {
 } from "@/utils";
 import {
   FileUploadModel,
+  FileUploadModelV2,
   FileUploadPayloadModel,
 } from "@/models/file-upload.model";
-import { FileUploadDto } from "@/dto/file-upload.dto";
+import { FileUploadDto, FileUploadDtoV2 } from "@/dto/file-upload.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/file-upload`,
@@ -51,7 +52,30 @@ export const FileUploadService = createApi({
         }
       },
     }),
+    uploadFileV2: build.mutation<FileUploadModelV2, FileUploadPayloadModel>({
+      query: ({ payload, pages = "", end = "", start = "" }) => ({
+        url: "/v2",
+        body: payload,
+        method: "POST",
+        params: {
+          pages,
+          end,
+          start,
+        },
+      }),
+      extraOptions: { triggerLoading: false },
+      transformResponse: (res: FileUploadDtoV2) => {
+        if (!res) return <FileUploadModelV2>{};
+        else {
+          return {
+            fileId: res.data.fileId,
+            documentId: res.data.documentId,
+            topics: res.data.topics
+          };
+        }
+      },
+    }),
   }),
 });
 
-export const { useUploadFileMutation } = FileUploadService;
+export const { useUploadFileMutation, useUploadFileV2Mutation } = FileUploadService;

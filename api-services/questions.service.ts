@@ -4,6 +4,7 @@ import {
   CreateScorePayloadModel,
   DeleteQuestionModel,
   GenerateQuestionsPayloadModel,
+  GenerateQuestionsPayloadModelV2,
   GetMultipleTrueFalseQuestionByIdModel,
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
@@ -146,6 +147,21 @@ export const QuestionsService = createApi({
         triggerLoading: false,
       },
     }),
+    questionSourceRequestV2: build.mutation<
+      QuestionSourceRequestModel,
+      QuestionSourceRequestPayloadModel
+    >({
+      query: ({ documentId, question }) => ({
+        url: `/source/${documentId}/v2`,
+        method: "POST",
+        body: {
+          question,
+        },
+      }),
+      extraOptions: {
+        triggerLoading: false,
+      },
+    }),
     getQuestionSummaries: build.query<
       GetQuestionSummaryModel,
       GetQuestionsQueryModel
@@ -153,7 +169,7 @@ export const QuestionsService = createApi({
       query: (query) => ({
         url: ``,
         method: "GET",
-        params: { ...query, showOralQuestions: '1' },
+        params: { ...query, showOralQuestions: "1" },
       }),
       extraOptions: {
         triggerLoading: false,
@@ -198,9 +214,33 @@ export const QuestionsService = createApi({
           questionCount,
           questionType,
           includeUseCases,
-          difficulty
+          difficulty,
         },
         body,
+      }),
+      extraOptions: {
+        triggerLoading: false,
+      },
+      invalidatesTags: ["question-summary"],
+      onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        try {
+          await queryFulfilled;
+          dispatch(
+            PermissionService.util.prefetch("getPermissions", "", {
+              force: true,
+            })
+          );
+        } catch (error) {}
+      },
+    }),
+    generateQuestionsV2: build.mutation<
+      GenerateQuestionsDto,
+      GenerateQuestionsPayloadModelV2
+    >({
+      query: ({ documentId, payload }) => ({
+        url: `/${documentId}/generate-questions/v2`,
+        method: "POST",
+        body: payload,
       }),
       extraOptions: {
         triggerLoading: false,
@@ -237,5 +277,7 @@ export const {
   useDeleteQuestionMutation,
   useQuestionSourceRequestMutation,
   useStartVivaCallMutation,
-  useGetVivaRecordingQuery
+  useGetVivaRecordingQuery,
+  useGenerateQuestionsV2Mutation,
+  useQuestionSourceRequestV2Mutation,
 } = QuestionsService;

@@ -130,7 +130,7 @@ const GenerateQuestionsForm: FC = () => {
 
     generateQuestionsV2({
       payload: {
-        // title: values.title || getFileNameWithoutExtension(file.name),
+        title: values.title || getFileNameWithoutExtension(file.name),
         selectedQuestionTopics: selectedTopics.length
           ? selectedTopics.map((f) => f.label)
           : undefined,

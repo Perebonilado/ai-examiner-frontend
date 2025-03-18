@@ -136,6 +136,7 @@ export interface GenerateQuestionsPayloadModelV2 {
     questionType: number;
     includeUseCases: boolean;
     difficulty: DifficultyType;
+    title?: string;
   };
   documentId: string;
 }

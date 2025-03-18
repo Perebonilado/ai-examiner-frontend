@@ -525,11 +525,12 @@ const extractText = (
         for (const pageNumber of pages) {
           const page = await pdf.getPage(pageNumber);
           const textContent = await page.getTextContent();
-
+          let pageContent = ''
           textContent.items.forEach((item: any) => {
             const { str } = item;
-            extractedText += str + " ";
+            pageContent += str + " ";
           });
+          extractedText += pageContent + '\n \n'
         }
 
         resolve(extractedText);

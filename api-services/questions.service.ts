@@ -147,6 +147,21 @@ export const QuestionsService = createApi({
         triggerLoading: false,
       },
     }),
+    questionSourceRequestV2: build.mutation<
+      QuestionSourceRequestModel,
+      QuestionSourceRequestPayloadModel
+    >({
+      query: ({ documentId, question }) => ({
+        url: `/source/${documentId}/v2`,
+        method: "POST",
+        body: {
+          question,
+        },
+      }),
+      extraOptions: {
+        triggerLoading: false,
+      },
+    }),
     getQuestionSummaries: build.query<
       GetQuestionSummaryModel,
       GetQuestionsQueryModel
@@ -263,5 +278,6 @@ export const {
   useQuestionSourceRequestMutation,
   useStartVivaCallMutation,
   useGetVivaRecordingQuery,
-  useGenerateQuestionsV2Mutation
+  useGenerateQuestionsV2Mutation,
+  useQuestionSourceRequestV2Mutation,
 } = QuestionsService;

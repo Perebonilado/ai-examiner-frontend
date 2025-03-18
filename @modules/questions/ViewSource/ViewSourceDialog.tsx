@@ -3,7 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import CloseIcon from "@/icons/CloseIcon";
 import { useModalContext } from "@/contexts/ModalContext";
-import { useQuestionSourceRequestMutation } from "@/api-services/questions.service";
+import { useQuestionSourceRequestMutation, useQuestionSourceRequestV2Mutation } from "@/api-services/questions.service";
 import Spinner from "@/@shared/components/Spinner";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
@@ -24,8 +24,11 @@ const ViewSourceDialog: FC<Props> = ({
 }) => {
   const [cleanedSourceText, setCleanedSourceText] = useState("");
 
+  // const [getQuestionSource, { data, isLoading, error }] =
+  //   useQuestionSourceRequestMutation();
+
   const [getQuestionSource, { data, isLoading, error }] =
-    useQuestionSourceRequestMutation();
+    useQuestionSourceRequestV2Mutation();
 
   useEffect(() => {
     if (sourceText) {

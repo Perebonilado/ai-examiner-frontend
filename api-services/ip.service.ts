@@ -9,7 +9,7 @@ const baseQuery = fetchBaseQuery({
   timeout: secondsToMilliSeconds(30),
 });
 
-interface IpInfoModel {
+export interface IpInfoModel {
   ip: string;
   city: string;
   region: string;

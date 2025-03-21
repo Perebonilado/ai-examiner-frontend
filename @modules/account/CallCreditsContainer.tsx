@@ -49,7 +49,7 @@ const CallCreditsContainer: FC = () => {
 
           <div className="mt-10">
             <label className="text-sm font-semibold flex items-center gap-4">
-              Select the amount to buy{" "}
+              Select the amount to top-up{" "}
             </label>
             <DropDown
               options={(creditPricing as any) || []}

@@ -31,7 +31,7 @@ export const CallCreditsService = createApi({
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
   tagTypes: ["call-credits"],
   endpoints: (build) => ({
-    getCallCredits: build.query<CallCreditsModel, undefined>({
+    getCallCredits: build.query<CallCreditsModel, ''>({
       query: () => ({
         url: "",
       }),

@@ -3,7 +3,7 @@ import { millisecondsToMinutesSeconds } from "@/utils";
 import BuyCreditsIcon from "@/icons/BuyCreditsIcon";
 
 interface Props {
-  milliSecondsLeft: number;
+  milliSecondsLeft?: number;
 }
 
 const MinutesLeftCard: FC<Props> = ({ milliSecondsLeft }) => {
@@ -13,7 +13,10 @@ const MinutesLeftCard: FC<Props> = ({ milliSecondsLeft }) => {
 
       <p className="text-xs text-[#00000080] mt-6">Your time remaining is</p>
       <p className="mt-1 font-bold text-sm">
-        {millisecondsToMinutesSeconds(milliSecondsLeft)} minutes
+        {milliSecondsLeft
+          ? millisecondsToMinutesSeconds(milliSecondsLeft)
+          : "--"}{" "}
+        {milliSecondsLeft && "minutes"}
       </p>
     </div>
   );

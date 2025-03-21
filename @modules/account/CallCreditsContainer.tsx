@@ -2,6 +2,8 @@ import React, { FC } from "react";
 import GetMinutesInfoCard from "./GetMinutesInfoCard";
 import MinutesLeftCard from "./MinutesLeftCard";
 import { useGetCallCreditsQuery } from "@/api-services/call-credits.service";
+import DropDown from "@/@shared/ui/Input/DropDown";
+import Button from "@/@shared/ui/Button";
 
 const CallCreditsContainer: FC = () => {
   const { data: credits } = useGetCallCreditsQuery("");
@@ -18,6 +20,17 @@ const CallCreditsContainer: FC = () => {
       <div style={{ flex: 1 }} className="min-h-[600px]">
         <div className="lg:pl-4 w-full lg:max-w-[500px]">
           <MinutesLeftCard milliSecondsLeft={credits?.remainingCreditsMs} />
+
+          <div className="mt-10">
+            <label className="text-sm font-semibold flex items-center gap-4">
+              Select the amount to buy{" "}
+            </label>
+            <DropDown options={[]} />
+          </div>
+
+          <div className="flex justify-end mt-7">
+            <Button title="Buy Minutes" size="large"/>
+          </div>
         </div>
       </div>
     </div>

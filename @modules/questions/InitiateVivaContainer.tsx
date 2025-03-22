@@ -9,6 +9,11 @@ import CallActionButton from "./CallActionButton";
 import EndCallIcon from "@/icons/EndCallIcon";
 import StartCallIcon from "@/icons/StartCallIcon";
 import MicIcon from "@/icons/MicIcon";
+import { reduxStore } from "@/config/redux-config";
+import { CallCreditsService } from "@/api-services/call-credits.service";
+import { useModalContext } from "@/contexts/ModalContext";
+import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
+import { useRouter } from "next/router";
 
 interface Props {
   data?:
@@ -34,6 +39,8 @@ const InitiateVivaContainer: FC<Props> = ({
 }) => {
   const [timeLeft, setTimeLeft] = useState(maxCallDurationInSeconds);
   const [timeToDisplay, setTimeToDisplay] = useState<string | null>(null);
+  const { setModalContent } = useModalContext();
+  const router = useRouter();
 
   let interval: NodeJS.Timeout | null;
 
@@ -47,6 +54,22 @@ const InitiateVivaContainer: FC<Props> = ({
         if (timeLeft === 1) {
           resetTimer();
           setTimeLeft(0);
+          handleEndCall();
+          setModalContent(
+            <ConfirmationDialog
+              confirmationText="Purchase credits"
+              message="Please, purchase credits to continue"
+              title="Oops! You ran out of call credits"
+              cancelText="Cancel"
+              onConfirm={() => {
+                router.push("/account/call-credits");
+              }}
+              onCancel={() => setModalContent(null)}
+            />
+          );
+          reduxStore.dispatch(
+            CallCreditsService.util.invalidateTags([{ type: "call-credits" }])
+          );
         } else {
           setTimeLeft((val) => val - 1);
         }

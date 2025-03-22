@@ -91,7 +91,7 @@ const InitiateVivaContainer: FC<Props> = ({
 
   const handleCountDown = () => {
     const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
+    const seconds = Math.floor(timeLeft % 60);
 
     const timeString = `${minutes.toString().padStart(2, "0")}:${seconds
       .toString()

@@ -1,5 +1,7 @@
 export interface CallCreditsModel {
   remainingCreditsMs: number;
+  free: number;
+  paid: number;
 }
 
 export interface PurchaseCallCreditsPayloadModel {

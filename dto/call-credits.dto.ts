@@ -1,5 +1,7 @@
 export interface CallCreditsDto {
   remainingCreditsMs: number;
+  free: number;
+  paid: number;
 }
 
 export interface PurchaseCallCreditsDto {

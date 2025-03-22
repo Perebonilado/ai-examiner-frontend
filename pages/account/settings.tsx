@@ -171,9 +171,21 @@ const Settings: NextPage = () => {
                   title="Call Credits"
                   data={[
                     [
-                      "Time Remaining",
+                      "Total Time Remaining",
                       `${millisecondsToMinutesSeconds(
                         credits.remainingCreditsMs || 0
+                      )} Minutes`,
+                    ],
+                    [
+                      "Purchased Time",
+                      `${millisecondsToMinutesSeconds(
+                        credits.paid || 0
+                      )} Minutes`,
+                    ],
+                    [
+                      "Free time",
+                      `${millisecondsToMinutesSeconds(
+                        credits.free || 0
                       )} Minutes`,
                     ],
                   ]}

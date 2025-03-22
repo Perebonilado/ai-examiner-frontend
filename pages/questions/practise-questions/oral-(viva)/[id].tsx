@@ -367,7 +367,7 @@ const VivaQuestion: NextPage = () => {
           handleStartCall={handleStartCallConfirmation}
           systemSpeaking={systemSpeaking}
           userSpeaking={userSpeaking}
-          maxCallDurationInSeconds={credits.remainingCreditsMs}
+          maxCallDurationInSeconds={credits.remainingCreditsMs/1000}
         />
       )}
     </AppLayout>

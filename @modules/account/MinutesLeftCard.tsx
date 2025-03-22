@@ -16,7 +16,7 @@ const MinutesLeftCard: FC<Props> = ({ milliSecondsLeft }) => {
         {milliSecondsLeft
           ? millisecondsToMinutesSeconds(milliSecondsLeft)
           : "--"}{" "}
-        {milliSecondsLeft && "minutes"}
+        {milliSecondsLeft && milliSecondsLeft > 0 ? "minutes" : ''}
       </p>
     </div>
   );

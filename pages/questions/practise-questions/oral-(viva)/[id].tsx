@@ -20,8 +20,12 @@ import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
 import { VivaAnalysisModel } from "@/models/viva.model";
 import CallPreparationConfirmation from "@/@modules/questions/CallPreparationConfirmation";
 import PulseCallIndicator from "@/@modules/questions/PulseCallIndicator";
-import { useGetCallCreditsQuery } from "@/api-services/call-credits.service";
+import {
+  CallCreditsService,
+  useGetCallCreditsQuery,
+} from "@/api-services/call-credits.service";
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
+import { reduxStore } from "@/config/redux-config";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -157,12 +161,18 @@ const VivaQuestion: NextPage = () => {
       setUserSpeaking(false);
       // Clean up microphone analysis when call ends
       cleanupMicrophoneAnalysis();
+      reduxStore.dispatch(
+        CallCreditsService.util.invalidateTags([{ type: "call-credits" }])
+      );
     });
 
     vapi?.on("error", (e) => {
       console.error(e);
       setSystemSpeaking(false);
       setUserSpeaking(false);
+      reduxStore.dispatch(
+        CallCreditsService.util.invalidateTags([{ type: "call-credits" }])
+      );
     });
 
     vapi?.on("speech-start", () => {
@@ -349,7 +359,7 @@ const VivaQuestion: NextPage = () => {
         />
       )}
 
-      {data && !data.analysis && (
+      {data && credits && !data.analysis && (
         <InitiateVivaContainer
           callInProgress={callInProgress}
           data={data}
@@ -357,7 +367,7 @@ const VivaQuestion: NextPage = () => {
           handleStartCall={handleStartCallConfirmation}
           systemSpeaking={systemSpeaking}
           userSpeaking={userSpeaking}
-          maxCallDurationInSeconds={120}
+          maxCallDurationInSeconds={credits.remainingCreditsMs}
         />
       )}
     </AppLayout>

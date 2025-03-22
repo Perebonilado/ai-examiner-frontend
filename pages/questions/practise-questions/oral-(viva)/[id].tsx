@@ -20,6 +20,8 @@ import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
 import { VivaAnalysisModel } from "@/models/viva.model";
 import CallPreparationConfirmation from "@/@modules/questions/CallPreparationConfirmation";
 import PulseCallIndicator from "@/@modules/questions/PulseCallIndicator";
+import { useGetCallCreditsQuery } from "@/api-services/call-credits.service";
+import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -43,6 +45,8 @@ const VivaQuestion: NextPage = () => {
   const [vapi, setVapi] = useState<Vapi | null>(null);
   const [systemSpeaking, setSystemSpeaking] = useState(false);
   const [userSpeaking, setUserSpeaking] = useState(false);
+  const { data: credits, refetch: refechCallCredits } =
+    useGetCallCreditsQuery("");
 
   // Audio analysis refs
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -214,13 +218,38 @@ const VivaQuestion: NextPage = () => {
     }
   };
 
-  const handleStartCallConfirmation = async () => {
-    const hasPermission = await requestMicPermission();
-    if (!hasPermission) return;
+  const verifyUserHasEnoughCallCredits = async () => {
+    if (credits && credits.remainingCreditsMs > 0) {
+      return true;
+    }
 
-    setModalContent(
-      <CallPreparationConfirmation handleProceed={handleStartCall} />
-    );
+    return false;
+  };
+
+  const handleStartCallConfirmation = async () => {
+    const hasEnoughtCredits = await verifyUserHasEnoughCallCredits();
+
+    if (hasEnoughtCredits) {
+      const hasPermission = await requestMicPermission();
+      if (!hasPermission) return;
+
+      setModalContent(
+        <CallPreparationConfirmation handleProceed={handleStartCall} />
+      );
+    } else {
+      setModalContent(
+        <ConfirmationDialog
+          confirmationText="Purchase credits"
+          message="Please, purchase credits to continue"
+          title="You do not have sufficient call credits"
+          cancelText="Cancel"
+          onConfirm={() => {
+            router.push("/account/call-credits");
+          }}
+          onCancel={() => setModalContent(null)}
+        />
+      );
+    }
   };
 
   const handleEndCall = () => {
@@ -314,7 +343,10 @@ const VivaQuestion: NextPage = () => {
       )}
 
       {data && data.analysis && (
-        <VivaAnalysisContainer data={data.analysis.analysisData} callId={data.analysis.callId}/>
+        <VivaAnalysisContainer
+          data={data.analysis.analysisData}
+          callId={data.analysis.callId}
+        />
       )}
 
       {data && !data.analysis && (

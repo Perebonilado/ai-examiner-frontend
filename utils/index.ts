@@ -170,12 +170,11 @@ export const convertMegaBytesToBytes = (byte: number): number => {
   return byte * Math.pow(conversationRate, 2);
 };
 
-
 export const bytesToMegabytes = (bytes: number): number => {
   const BYTES_IN_KILOBYTE = 1024;
   const KILOBYTES_IN_MEGABYTE = 1024;
   return bytes / (BYTES_IN_KILOBYTE * KILOBYTES_IN_MEGABYTE);
-}
+};
 
 export const generateQustionCountOptions = (maxCount: number) => {
   if (maxCount <= 5) {
@@ -241,16 +240,22 @@ export const capitalizeWords = (input: string): string =>
 export const convertPPTFilesToText = async (file: File) => {
   try {
     const reader = new FileReader();
-    const  options  =  { 
-      slideFactor : 75  /  914400 ,  // Slide size conversion factor, default 96 / 914400 
-      fontsizeFactor : 100  /  96 ,  // Font size conversion factor, default 100 / 75 
-    }
+    const options = {
+      slideFactor: 75 / 914400, // Slide size conversion factor, default 96 / 914400
+      fontsizeFactor: 100 / 96, // Font size conversion factor, default 100 / 75
+    };
 
     reader.onload = async () => {
       const json = await parse(file, options);
     };
-    reader.readAsArrayBuffer(file)
+    reader.readAsArrayBuffer(file);
   } catch (error) {
     toast.error("Error converting file");
   }
 };
+
+export function millisecondsToMinutesSeconds(ms: number): string {
+  const minutes = Math.floor(ms / 60000);
+  const seconds = Math.floor((ms % 60000) / 1000);
+  return `${minutes}:${seconds.toString().padStart(2, "0")}`;
+}

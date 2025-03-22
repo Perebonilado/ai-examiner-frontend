@@ -19,6 +19,7 @@ import { SpeechService } from "@/api-services/speech.service";
 import { SharedQuestionsService } from "@/api-services/shared-questions.service";
 import { IpService } from "@/api-services/ip.service";
 import { PerformanceTrackingService } from "@/api-services/performance-tracking.service";
+import { CallCreditsService } from "@/api-services/call-credits.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -38,7 +39,9 @@ export const reduxStore = configureStore({
     [SpeechService.reducerPath]: SpeechService.reducer,
     [SharedQuestionsService.reducerPath]: SharedQuestionsService.reducer,
     [IpService.reducerPath]: IpService.reducer,
-    [PerformanceTrackingService.reducerPath]: PerformanceTrackingService.reducer,
+    [PerformanceTrackingService.reducerPath]:
+      PerformanceTrackingService.reducer,
+    [CallCreditsService.reducerPath]: CallCreditsService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
   },
@@ -60,7 +63,8 @@ export const reduxStore = configureStore({
       SpeechService.middleware,
       SharedQuestionsService.middleware,
       IpService.middleware,
-      PerformanceTrackingService.middleware
+      PerformanceTrackingService.middleware,
+      CallCreditsService.middleware,
     ]),
 });
 

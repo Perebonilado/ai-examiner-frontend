@@ -121,15 +121,8 @@ const UploadFileBox: FC<Props> = ({
 
       setModalContent(
         <StagedImagesDialog
-          handleUploadFiles={async () => {
-            await handleUploadExtractedTextFromImages();
-          }}
           allowedFileSize={maxFileSizeMB}
           currentFileSize={currentFileSizeMb}
-          handleCancel={() => {
-            setModalContent(null);
-            setStagedImages(null);
-          }}
         >
           <StagedImageItemContainer
             data={stagedImages}
@@ -144,6 +137,20 @@ const UploadFileBox: FC<Props> = ({
                 setModalContent(null);
                 setStagedImages(null);
               }
+            }}
+            handleUploadFiles={async (blob) => {
+              const file = new File([blob], "Untitled", {
+                type: "application/pdf",
+                lastModified: new Date().getTime(),
+              });
+              handleSelectFile(file);
+              setModalContent(null)
+            }}
+            allowedFileSize={maxFileSizeMB}
+            currentFileSize={currentFileSizeMb}
+            handleCancel={() => {
+              setModalContent(null);
+              setStagedImages(null);
             }}
           />
         </StagedImagesDialog>
@@ -187,12 +194,11 @@ const UploadFileBox: FC<Props> = ({
                     Number(end)
                   );
                   if (!text.trim().length) {
-
-                      setPdfProcessing(false);
-                      setOcrProgress(null);
-                      handleSelectFile(file, pages, start, end);
-                      setModalContent(null);
-                      return;
+                    setPdfProcessing(false);
+                    setOcrProgress(null);
+                    handleSelectFile(file, pages, start, end);
+                    setModalContent(null);
+                    return;
                   }
 
                   const newTxtFile = createFileFromText(
@@ -525,12 +531,12 @@ const extractText = (
         for (const pageNumber of pages) {
           const page = await pdf.getPage(pageNumber);
           const textContent = await page.getTextContent();
-          let pageContent = ''
+          let pageContent = "";
           textContent.items.forEach((item: any) => {
             const { str } = item;
             pageContent += str + " ";
           });
-          extractedText += pageContent + '\n \n'
+          extractedText += pageContent + "\n \n";
         }
 
         resolve(extractedText);

@@ -35,6 +35,7 @@ export const CallCreditsService = createApi({
       query: () => ({
         url: "",
       }),
+      extraOptions: { triggerLoading: false },
       transformResponse: (res: CallCreditsDto) => {
         if (!res) return <CallCreditsModel>{};
         return res;

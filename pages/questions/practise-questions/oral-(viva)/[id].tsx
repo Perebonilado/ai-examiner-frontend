@@ -7,7 +7,10 @@ import {
 import { useModalContext } from "@/contexts/ModalContext";
 import ChevronLeft from "@/icons/ChevronLeft";
 import AppLayout from "@/layouts/AppLayout";
-import { capitalizeFirstLetterOfEachWord } from "@/utils";
+import {
+  capitalizeFirstLetterOfEachWord,
+  millisecondsToMinutesSeconds,
+} from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
@@ -26,6 +29,7 @@ import {
 } from "@/api-services/call-credits.service";
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import { reduxStore } from "@/config/redux-config";
+import GetMoreCreditsCard from "@/@modules/questions/GetMoreCreditsCard";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -50,7 +54,7 @@ const VivaQuestion: NextPage = () => {
   const [systemSpeaking, setSystemSpeaking] = useState(false);
   const [userSpeaking, setUserSpeaking] = useState(false);
   const { data: credits, refetch: refechCallCredits } =
-    useGetCallCreditsQuery("");
+    useGetCallCreditsQuery("", {pollingInterval: 30000});
 
   // Audio analysis refs
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -332,6 +336,13 @@ const VivaQuestion: NextPage = () => {
               router.push(`/questions/view-questions/${data?.documentId}`);
             }}
           />
+          <GetMoreCreditsCard
+            minuteLeft={
+              credits
+                ? millisecondsToMinutesSeconds(credits.remainingCreditsMs)
+                : undefined
+            }
+          />
         </div>
       )}
 
@@ -367,7 +378,7 @@ const VivaQuestion: NextPage = () => {
           handleStartCall={handleStartCallConfirmation}
           systemSpeaking={systemSpeaking}
           userSpeaking={userSpeaking}
-          maxCallDurationInSeconds={credits.remainingCreditsMs/1000}
+          maxCallDurationInSeconds={credits.remainingCreditsMs / 1000}
         />
       )}
     </AppLayout>

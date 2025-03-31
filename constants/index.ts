@@ -120,6 +120,7 @@ const supportedLanguages: AllowedLanguageName[] = [
   "Polish",
   "Ukrainian",
   "Danish",
+  "English"
 ];
 
 export const getSupportedLanguages = () => {

@@ -2,6 +2,7 @@ import AppLogoAlt from "@/@shared/components/AppLogoAlt";
 import Hamburger from "@/@shared/components/Hamburger";
 import React, { FC } from "react";
 import UserManagementBox from "./UserManagementBox";
+import PreferredLanguageButton from "./PreferredLanguageButton";
 
 interface Props {
   handleClick: () => void;
@@ -22,7 +23,8 @@ const MobileAppNav: FC<Props> = ({
           <AppLogoAlt size="sm" />
         </div>
         {isLoggedIn && (
-          <div className="flex items-center justify-end">
+          <div className="flex items-center justify-end gap-6">
+            <PreferredLanguageButton />
             <UserManagementBox />
           </div>
         )}

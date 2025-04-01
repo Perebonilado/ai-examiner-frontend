@@ -23,6 +23,12 @@ const nextConfig = {
         port: "",
         pathname: "/**", // Allow all paths under this hostname
       },
+      {
+        protocol: "https",
+        hostname: "flagcdn.com",
+        port: "",
+        pathname: "/**", // Allow all paths under this hostname
+      },
     ],
   },
   webpack: (config) => {

@@ -6,6 +6,7 @@ import MobileSidebar from "@/@shared/components/MobileSidebar";
 import UserManagementBox from "@/@shared/components/UserManagementBox";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
+import PreferredLanguageButton from "@/@shared/components/PreferredLanguageButton";
 
 interface Props {
   showWelcomeMessage?: boolean;
@@ -52,7 +53,8 @@ const AppLayout: FC<PropsWithChildren<Props>> = ({
                   <div></div>
                 )}
 
-                <div className="max-md:hidden">
+                <div className="max-md:hidden flex items-center gap-6">
+                  <PreferredLanguageButton />
                   <UserManagementBox />
                 </div>
               </div>

@@ -11,6 +11,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import PermissionProvider from "@/contexts/PermissionContext";
 import LoaderProvider from "@/contexts/LoaderContext";
 import { useEffect } from "react";
+import PreferredLanguageProvider from "@/contexts/PreferredLanguageContext";
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -42,7 +43,9 @@ export default function App({ Component, pageProps }: AppProps) {
         <PermissionProvider>
           <ModalProvider>
             <LoaderProvider>
-              <Component {...pageProps} />
+              <PreferredLanguageProvider>
+                <Component {...pageProps} />
+              </PreferredLanguageProvider>
             </LoaderProvider>
           </ModalProvider>
         </PermissionProvider>

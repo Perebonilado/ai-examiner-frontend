@@ -70,7 +70,7 @@ export const FileUploadService = createApi({
           return {
             fileId: res.data.fileId,
             documentId: res.data.documentId,
-            topics: res.data.topics
+            topics: res.data.topics,
           };
         }
       },
@@ -78,4 +78,5 @@ export const FileUploadService = createApi({
   }),
 });
 
-export const { useUploadFileMutation, useUploadFileV2Mutation } = FileUploadService;
+export const { useUploadFileMutation, useUploadFileV2Mutation } =
+  FileUploadService;

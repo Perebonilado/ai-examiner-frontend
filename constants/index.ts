@@ -103,28 +103,31 @@ const allowedLanguages = [
 
 type AllowedLanguageName = (typeof allowedLanguages)[number]["name"];
 
-const supportedLanguages: AllowedLanguageName[] = [
-  "Afrikaans",
-  "Tagalog",
-  "French",
-  "German",
-  "Spanish",
-  "Chinese",
-  "Hindi",
-  "Russian",
-  "Vietnamese",
-  "Italian",
-  "Hungarian",
-  "Swedish",
-  "Norwegian",
-  "Polish",
-  "Ukrainian",
-  "Danish",
-  "English"
-];
+// const supportedLanguages: AllowedLanguageName[] = [
+//   "Afrikaans",
+//   "Tagalog",
+//   "French",
+//   "German",
+//   "Spanish",
+//   "Chinese",
+//   "Hindi",
+//   "Russian",
+//   "Vietnamese",
+//   "Italian",
+//   "Hungarian",
+//   "Swedish",
+//   "Norwegian",
+//   "Polish",
+//   "Ukrainian",
+//   "Danish",
+//   "English",,
+//   "Indonesian",
+//   "Finnish"
+// ];
 
 export const getSupportedLanguages = () => {
-  return allowedLanguages.filter((lang) =>
-    supportedLanguages.includes(lang.name)
+  return allowedLanguages.filter(
+    (lang) => true
+    // supportedLanguages.includes(lang.name)
   );
 };

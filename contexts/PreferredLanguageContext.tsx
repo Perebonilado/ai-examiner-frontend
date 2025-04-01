@@ -7,6 +7,7 @@ import Dialog from "@/@shared/components/Dialog";
 import PreferredLanguageModal from "@/@shared/components/PreferredLanguageModal";
 import { accessToken } from "@/constants";
 import Cookies from "js-cookie";
+import { useRouter } from "next/router";
 
 interface ContextOptions {}
 
@@ -22,6 +23,7 @@ const PreferredLanguageProvider: React.FC<React.PropsWithChildren> = ({
   );
   const { setModalContent } = useModalContext();
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const route = useRouter();
 
   useEffect(() => {
     const isLoggedIn = Cookies.get(accessToken);
@@ -31,14 +33,18 @@ const PreferredLanguageProvider: React.FC<React.PropsWithChildren> = ({
     }
   }, [Cookies.get(accessToken)]);
 
-  const { data } = useGetPreferredLanguageQuery("", {skip: !isUserLoggedIn});
-
+  const { data } = useGetPreferredLanguageQuery("", { skip: !isUserLoggedIn });
 
   useEffect(() => {
-    if (data && !data.preferredLanguageSet && !loading) {
+    if (
+      data &&
+      !data.preferredLanguageSet &&
+      !loading &&
+      !route.pathname.toLowerCase().includes("pricing")
+    ) {
       setModalContent(<PreferredLanguageModal />);
     }
-  }, [data, loading]);
+  }, [data, loading, route.pathname]);
 
   return (
     <PreferredLanguageContext.Provider value={{}}>

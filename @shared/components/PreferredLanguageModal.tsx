@@ -26,7 +26,7 @@ const PreferredLanguageModal: FC = () => {
   const [createPrefLang] = useCreatePreferredLanguageMutation();
   const [updatePrefLang] = useUpdatePreferredLanguageMutationMutation();
   return (
-    <div className="w-full max-w-[90vw] md:max-w-[450px] bg-slate-200 rounded-xl max-h-[75vh] p-4 py-7">
+    <div className="w-full max-w-[90vw] md:max-w-[450px] bg-slate-100 rounded-xl max-h-[85vh] p-4 py-7">
       <div className="flex justify-between items-center">
         <h2 className="font-semibold text-xl">
           Choose your preferred language

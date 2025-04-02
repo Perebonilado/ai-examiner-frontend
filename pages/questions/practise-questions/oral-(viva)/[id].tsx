@@ -322,7 +322,7 @@ const VivaQuestion: NextPage = () => {
   }, [isPlaying]);
 
   return (
-    <div translate="no">
+    <div translate={data && credits && !data.analysis ? 'no' : 'yes'}>
       <AppLayout>
         <AppHead title="Viva" />
         {!isPlaying && (

@@ -125,7 +125,9 @@ type AllowedLanguageName = (typeof allowedLanguages)[number]["name"];
 //   "Finnish"
 // ];
 
-export const DEFAULT_LANGUAGE_ENGLISH_KEY = 'default_lang_english'
+export const DEFAULT_LANGUAGE_ENGLISH_KEY = "default_lang_english";
+
+export const GOOGLE_TRANSLATE_KEY = "googtrans";
 
 export const getSupportedLanguages = () => {
   return allowedLanguages.filter(
@@ -143,7 +145,7 @@ export const allLanguages = [
   { name: "Bosnian", flag: "BA", code: "bs" },
   { name: "Bulgarian", flag: "BG", code: "bg" },
   { name: "Catalan", flag: "ES", code: "ca" },
-  { name: "Chinese", flag: "CN", code: "zh" },
+  { name: "Chinese (Mandarin)", flag: "CN", code: "zh-CN" },
   { name: "Croatian", flag: "HR", code: "hr" },
   { name: "Czech", flag: "CZ", code: "cs" },
   { name: "Danish", flag: "DK", code: "da" },
@@ -169,28 +171,28 @@ export const allLanguages = [
   { name: "Lithuanian", flag: "LT", code: "lt" },
   { name: "Macedonian", flag: "MK", code: "mk" },
   { name: "Malay", flag: "MY", code: "ms" },
+  { name: "Malayalam", flag: "IN", code: "ml" },
   { name: "Marathi", flag: "IN", code: "mr" },
-  { name: "Maori", flag: "NZ", code: "mi" },
   { name: "Nepali", flag: "NP", code: "ne" },
   { name: "Norwegian", flag: "NO", code: "no" },
   { name: "Persian", flag: "IR", code: "fa" },
   { name: "Polish", flag: "PL", code: "pl" },
   { name: "Portuguese", flag: "PT", code: "pt" },
+  { name: "Punjabi", flag: "IN", code: "pa" },
   { name: "Romanian", flag: "RO", code: "ro" },
   { name: "Russian", flag: "RU", code: "ru" },
   { name: "Serbian", flag: "RS", code: "sr" },
+  { name: "Sinhala", flag: "LK", code: "si" },
   { name: "Slovak", flag: "SK", code: "sk" },
   { name: "Slovenian", flag: "SI", code: "sl" },
   { name: "Spanish", flag: "ES", code: "es" },
   { name: "Swahili", flag: "KE", code: "sw" },
   { name: "Swedish", flag: "SE", code: "sv" },
-  { name: "Tagalog", flag: "PH", code: "tl" },
   { name: "Tamil", flag: "IN", code: "ta" },
+  { name: "Telugu", flag: "IN", code: "te" },
   { name: "Thai", flag: "TH", code: "th" },
   { name: "Turkish", flag: "TR", code: "tr" },
   { name: "Ukrainian", flag: "UA", code: "uk" },
   { name: "Urdu", flag: "PK", code: "ur" },
   { name: "Vietnamese", flag: "VN", code: "vi" },
-  { name: "Welsh", flag: "GB", code: "cy" },
 ] as const;
-

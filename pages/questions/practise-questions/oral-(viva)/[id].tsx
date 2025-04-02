@@ -30,6 +30,7 @@ import {
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import { reduxStore } from "@/config/redux-config";
 import GetMoreCreditsCard from "@/@modules/questions/GetMoreCreditsCard";
+import { useGoogleTranslationContext } from "@/contexts/GoogleTransalationContext";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -53,8 +54,10 @@ const VivaQuestion: NextPage = () => {
   const [vapi, setVapi] = useState<Vapi | null>(null);
   const [systemSpeaking, setSystemSpeaking] = useState(false);
   const [userSpeaking, setUserSpeaking] = useState(false);
-  const { data: credits, refetch: refechCallCredits } =
-    useGetCallCreditsQuery("", {pollingInterval: 30000});
+  const { data: credits, refetch: refechCallCredits } = useGetCallCreditsQuery(
+    "",
+    { pollingInterval: 30000 }
+  );
 
   // Audio analysis refs
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -217,10 +220,15 @@ const VivaQuestion: NextPage = () => {
     }
   };
 
+  const { selectedLanguageName } = useGoogleTranslationContext();
+
   const handleStartCall = async () => {
     try {
       setIsCallStarting(true);
-      const assistantData = await initiateCall({ questionId: id });
+      const assistantData = await initiateCall({
+        questionId: id,
+        language: selectedLanguageName || "english",
+      });
       if (vapi) {
         await vapi.start(assistantData.data?.id);
       }
@@ -314,74 +322,78 @@ const VivaQuestion: NextPage = () => {
   }, [isPlaying]);
 
   return (
-    <AppLayout>
-      <AppHead title="Viva" />
-      {!isPlaying && (
-        <button
-          ref={buttonRef}
-          onClick={() => audioRef.current?.play()}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hidden"
-        >
-          Play Sound
-        </button>
-      )}
-      {data && (
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            title="Back"
-            variant="text"
-            starticon={<ChevronLeft />}
-            className="!gap-1 mb-6 mt-7"
-            onClick={() => {
-              router.push(`/questions/view-questions/${data?.documentId}`);
-            }}
+    <div translate="no">
+      <AppLayout>
+        <AppHead title="Viva" />
+        {!isPlaying && (
+          <button
+            ref={buttonRef}
+            onClick={() => audioRef.current?.play()}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hidden"
+          >
+            Play Sound
+          </button>
+        )}
+        {data && (
+          <div className="flex items-center justify-between mb-6">
+            <Button
+              title="Back"
+              variant="text"
+              starticon={<ChevronLeft />}
+              className="!gap-1 mb-6 mt-7"
+              onClick={() => {
+                router.push(`/questions/view-questions/${data?.documentId}`);
+              }}
+            />
+            <GetMoreCreditsCard
+              minuteLeft={
+                credits
+                  ? millisecondsToMinutesSeconds(credits.remainingCreditsMs)
+                  : undefined
+              }
+            />
+          </div>
+        )}
+
+        {data && (
+          <div className="pb-6">
+            <h1 className="text-center text-xl font-semibold">
+              Oral (Viva) Q&A -{" "}
+              {capitalizeFirstLetterOfEachWord(
+                data.documentTitle.toLowerCase()
+              )}{" "}
+            </h1>
+            {data && !data.analysis && (
+              <p className="text-center text-gray-500 my-3 flex items-center justify-center gap-2">
+                {callInProgress && <PulseCallIndicator />}
+                {callInProgress
+                  ? "Test in progress..."
+                  : "Just start the call when you are all set!"}
+              </p>
+            )}
+          </div>
+        )}
+
+        {data && data.analysis && (
+          <VivaAnalysisContainer
+            data={data.analysis.analysisData}
+            callId={data.analysis.callId}
           />
-          <GetMoreCreditsCard
-            minuteLeft={
-              credits
-                ? millisecondsToMinutesSeconds(credits.remainingCreditsMs)
-                : undefined
-            }
+        )}
+
+        {data && credits && !data.analysis && (
+          <InitiateVivaContainer
+            callInProgress={callInProgress}
+            data={data}
+            handleEndCall={handleEndCall}
+            handleStartCall={handleStartCallConfirmation}
+            systemSpeaking={systemSpeaking}
+            userSpeaking={userSpeaking}
+            maxCallDurationInSeconds={credits.remainingCreditsMs / 1000}
           />
-        </div>
-      )}
-
-      {data && (
-        <div className="pb-6">
-          <h1 className="text-center text-xl font-semibold">
-            Oral (Viva) Q&A -{" "}
-            {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
-          </h1>
-          {data && !data.analysis && (
-            <p className="text-center text-gray-500 my-3 flex items-center justify-center gap-2">
-              {callInProgress && <PulseCallIndicator />}
-              {callInProgress
-                ? "Test in progress..."
-                : "Just start the call when you are all set!"}
-            </p>
-          )}
-        </div>
-      )}
-
-      {data && data.analysis && (
-        <VivaAnalysisContainer
-          data={data.analysis.analysisData}
-          callId={data.analysis.callId}
-        />
-      )}
-
-      {data && credits && !data.analysis && (
-        <InitiateVivaContainer
-          callInProgress={callInProgress}
-          data={data}
-          handleEndCall={handleEndCall}
-          handleStartCall={handleStartCallConfirmation}
-          systemSpeaking={systemSpeaking}
-          userSpeaking={userSpeaking}
-          maxCallDurationInSeconds={credits.remainingCreditsMs / 1000}
-        />
-      )}
-    </AppLayout>
+        )}
+      </AppLayout>
+    </div>
   );
 };
 

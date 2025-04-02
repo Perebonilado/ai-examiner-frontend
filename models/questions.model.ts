@@ -24,6 +24,7 @@ export interface QuestionSourceRequestModel {
 
 export interface StartVivaPayload {
   questionId: string;
+  language: string;
 }
 
 export interface StartVivaResponseModel {

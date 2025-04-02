@@ -1,4 +1,4 @@
-import { accessToken, milliSecondToSecondConversionRate } from "@/constants";
+import { accessToken, GOOGLE_TRANSLATE_KEY, milliSecondToSecondConversionRate } from "@/constants";
 import { LookUpModel } from "@/models/look-up.model";
 import { PermissionModel } from "@/models/permission.model";
 import Cookie from "js-cookie";
@@ -259,3 +259,12 @@ export function millisecondsToMinutesSeconds(ms: number): string {
   const seconds = Math.floor((ms % 60000) / 1000);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
+
+export const getUserLanguageCodeFromLocalStorage = (): string | null => {
+  const lang = Cookie.get(GOOGLE_TRANSLATE_KEY);
+
+  if (!lang) return null;
+
+  const split = lang.split("/");
+  return split[split.length - 1];
+};

@@ -10,6 +10,7 @@ import UserManagementBox from "../UserManagementBox";
 import NavLink from "../NavLink";
 import MobileAppNav from "../MobileAppNav";
 import MobileSidebar from "../MobileSidebar";
+import GoogleTranslateLanguagePicker from "../GoogleTranslateLanguagePicker";
 
 const Navbar: FC = () => {
   const [isMobileNav, setIsMobileNav] = useState(false);
@@ -69,17 +70,26 @@ const Navbar: FC = () => {
               className="flex items-center justify-end gap-3 max-md:hidden"
             >
               {!isUserLoggedIn ? (
-                <div className="max-lg:hidden flex items-center gap-3">
-                  <Link href={"/auth/login"}>
-                    <Button title="Sign in" variant="outlined" size="large" />
-                  </Link>
-                  <Link href={"/auth/signup"}>
-                    {" "}
-                    <Button title="Create account" size="large" />
-                  </Link>
-                </div>
+                <>
+                  <div className="max-lg:hidden flex items-center gap-3">
+                    <Link href={"/auth/login"}>
+                      <Button title="Sign in" variant="outlined" size="large" />
+                    </Link>
+                    <Link href={"/auth/signup"}>
+                      {" "}
+                      <Button title="Create account" size="large" />
+                    </Link>
+                    <GoogleTranslateLanguagePicker />
+                  </div>
+                  <div className="lg:hidden">
+                    <GoogleTranslateLanguagePicker />
+                  </div>
+                </>
               ) : (
-                <UserManagementBox />
+                <div className="flex items-center gap-3">
+                  <GoogleTranslateLanguagePicker />
+                  <UserManagementBox />
+                </div>
               )}
             </div>
           </div>

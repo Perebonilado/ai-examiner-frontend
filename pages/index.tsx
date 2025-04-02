@@ -40,8 +40,64 @@ export default function Home() {
       setUserIsLoggedIn(false);
     }
   };
+
+  const [isGoogleLoaded, setIsGoogleLoaded] = useState(true);
+
+  const changeLanguage = (lang: string) => {
+    if (!isGoogleLoaded) {
+      console.warn("Google Translate is not ready yet.");
+      return;
+    }
+
+    const selectElement = document.querySelector<HTMLSelectElement>(".goog-te-combo");
+    console.log(selectElement)
+    if (selectElement) {
+      selectElement.value = lang;
+      selectElement.dispatchEvent(new Event("change"));
+    }
+  };
+
+  const languages = [
+    { code: "en", label: "🇬🇧 English" },
+    { code: "fr", label: "🇫🇷 French" },
+    { code: "es", label: "🇪🇸 Spanish" },
+    { code: "de", label: "🇩🇪 German" },
+  ];
+
   return (
     <WebLayout>
+      
+      {/* <div
+        style={{
+          position: "fixed",
+          top: 10,
+          right: 10,
+          zIndex: 1000,
+          background: "white",
+          padding: "8px 12px",
+          borderRadius: "8px",
+          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+        }}
+      >
+        {languages.map(({ code, label }) => (
+          <button
+            key={code}
+            onClick={() => changeLanguage(code)}
+            disabled={!isGoogleLoaded}
+            style={{
+              margin: "5px",
+              padding: "5px 10px",
+              borderRadius: "5px",
+              border: "none",
+              background: isGoogleLoaded ? "#f5f5f5" : "#ddd",
+              cursor: isGoogleLoaded ? "pointer" : "not-allowed",
+              fontSize: "14px",
+            }}
+          >
+            {label}
+          </button>
+        ))}
+      </div> */}
       <AppHead />
       <Jumbotron />
       <HowItWorksItemContainer data={howItWorksData} />

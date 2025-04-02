@@ -3,6 +3,7 @@ import Hamburger from "@/@shared/components/Hamburger";
 import React, { FC } from "react";
 import UserManagementBox from "./UserManagementBox";
 import PreferredLanguageButton from "./PreferredLanguageButton";
+import GoogleTranslateLanguagePicker from "./GoogleTranslateLanguagePicker";
 
 interface Props {
   handleClick: () => void;
@@ -24,8 +25,13 @@ const MobileAppNav: FC<Props> = ({
         </div>
         {isLoggedIn && (
           <div className="flex items-center justify-end gap-6">
-            <PreferredLanguageButton />
+            <GoogleTranslateLanguagePicker />
             <UserManagementBox />
+          </div>
+        )}
+        {!isLoggedIn && (
+          <div className="flex items-center justify-end gap-6">
+            <GoogleTranslateLanguagePicker />
           </div>
         )}
       </div>

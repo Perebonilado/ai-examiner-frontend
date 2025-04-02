@@ -7,6 +7,7 @@ import UserManagementBox from "@/@shared/components/UserManagementBox";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import PreferredLanguageButton from "@/@shared/components/PreferredLanguageButton";
+import GoogleTranslateLanguagePicker from "@/@shared/components/GoogleTranslateLanguagePicker";
 
 interface Props {
   showWelcomeMessage?: boolean;
@@ -54,7 +55,7 @@ const AppLayout: FC<PropsWithChildren<Props>> = ({
                 )}
 
                 <div className="max-md:hidden flex items-center gap-6">
-                  <PreferredLanguageButton />
+                <GoogleTranslateLanguagePicker />
                   <UserManagementBox />
                 </div>
               </div>

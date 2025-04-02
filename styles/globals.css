@@ -3,6 +3,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Hide the Google Translate toolbar */
+body .goog-te-banner-frame, table, .skiptranslate {
+  display: none !important;
+}
+
+/* Hide the white gap that appears when the toolbar is removed */
+body {
+  top: 0px !important;
+}
+
+/* Remove the Google Translate iframe */
+iframe.goog-te-banner-frame {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+.goog-te-spinner-pos,
+.goog-te-spinner {
+  display: none !important;
+  visibility: hidden !important;
+}
+
 .markdown-content {
   font-family: Arial, sans-serif;
   line-height: 1.6;

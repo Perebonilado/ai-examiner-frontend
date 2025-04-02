@@ -12,6 +12,15 @@ import PermissionProvider from "@/contexts/PermissionContext";
 import LoaderProvider from "@/contexts/LoaderContext";
 import { useEffect } from "react";
 import PreferredLanguageProvider from "@/contexts/PreferredLanguageContext";
+import Script from "next/script";
+import GoogleTranslationProvider from "@/contexts/GoogleTransalationContext";
+
+declare global {
+  interface Window {
+    googleTranslateElementInit: () => void;
+    google: any;
+  }
+}
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -39,15 +48,22 @@ export default function App({ Component, pageProps }: AppProps) {
           style={{ display: "none", visibility: "hidden" }}
         ></iframe>
       </noscript>
+
+      <Script
+        strategy="afterInteractive"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+      />
       <Provider store={reduxStore}>
         <PermissionProvider>
-          <ModalProvider>
-            <LoaderProvider>
-              <PreferredLanguageProvider>
-                <Component {...pageProps} />
-              </PreferredLanguageProvider>
-            </LoaderProvider>
-          </ModalProvider>
+          <GoogleTranslationProvider>
+            <ModalProvider>
+              <LoaderProvider>
+                {/* <PreferredLanguageProvider> */}
+                  <Component {...pageProps} />
+                {/* </PreferredLanguageProvider> */}
+              </LoaderProvider>
+            </ModalProvider>
+          </GoogleTranslationProvider>
         </PermissionProvider>
         <ToastContainer />
         <Analytics />

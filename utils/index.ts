@@ -259,3 +259,12 @@ export function millisecondsToMinutesSeconds(ms: number): string {
   const seconds = Math.floor((ms % 60000) / 1000);
   return `${minutes}:${seconds.toString().padStart(2, "0")}`;
 }
+
+export const getUserLanguageCodeFromLocalStorage = (): string | null => {
+  const lang = Cookie.get("googtrans");
+
+  if (!lang) return null;
+
+  const split = lang.split("/");
+  return split[split.length - 1];
+};

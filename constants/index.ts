@@ -125,9 +125,72 @@ type AllowedLanguageName = (typeof allowedLanguages)[number]["name"];
 //   "Finnish"
 // ];
 
+export const DEFAULT_LANGUAGE_ENGLISH_KEY = 'default_lang_english'
+
 export const getSupportedLanguages = () => {
   return allowedLanguages.filter(
     (lang) => true
     // supportedLanguages.includes(lang.name)
   );
 };
+
+export const allLanguages = [
+  { name: "Afrikaans", flag: "ZA", code: "af" },
+  { name: "Arabic", flag: "SA", code: "ar" },
+  { name: "Armenian", flag: "AM", code: "hy" },
+  { name: "Azerbaijani", flag: "AZ", code: "az" },
+  { name: "Belarusian", flag: "BY", code: "be" },
+  { name: "Bosnian", flag: "BA", code: "bs" },
+  { name: "Bulgarian", flag: "BG", code: "bg" },
+  { name: "Catalan", flag: "ES", code: "ca" },
+  { name: "Chinese", flag: "CN", code: "zh" },
+  { name: "Croatian", flag: "HR", code: "hr" },
+  { name: "Czech", flag: "CZ", code: "cs" },
+  { name: "Danish", flag: "DK", code: "da" },
+  { name: "Dutch", flag: "NL", code: "nl" },
+  { name: "English", flag: "GB", code: "en" },
+  { name: "Estonian", flag: "EE", code: "et" },
+  { name: "Finnish", flag: "FI", code: "fi" },
+  { name: "French", flag: "FR", code: "fr" },
+  { name: "Galician", flag: "ES", code: "gl" },
+  { name: "German", flag: "DE", code: "de" },
+  { name: "Greek", flag: "GR", code: "el" },
+  { name: "Hebrew", flag: "IL", code: "he" },
+  { name: "Hindi", flag: "IN", code: "hi" },
+  { name: "Hungarian", flag: "HU", code: "hu" },
+  { name: "Icelandic", flag: "IS", code: "is" },
+  { name: "Indonesian", flag: "ID", code: "id" },
+  { name: "Italian", flag: "IT", code: "it" },
+  { name: "Japanese", flag: "JP", code: "ja" },
+  { name: "Kannada", flag: "IN", code: "kn" },
+  { name: "Kazakh", flag: "KZ", code: "kk" },
+  { name: "Korean", flag: "KR", code: "ko" },
+  { name: "Latvian", flag: "LV", code: "lv" },
+  { name: "Lithuanian", flag: "LT", code: "lt" },
+  { name: "Macedonian", flag: "MK", code: "mk" },
+  { name: "Malay", flag: "MY", code: "ms" },
+  { name: "Marathi", flag: "IN", code: "mr" },
+  { name: "Maori", flag: "NZ", code: "mi" },
+  { name: "Nepali", flag: "NP", code: "ne" },
+  { name: "Norwegian", flag: "NO", code: "no" },
+  { name: "Persian", flag: "IR", code: "fa" },
+  { name: "Polish", flag: "PL", code: "pl" },
+  { name: "Portuguese", flag: "PT", code: "pt" },
+  { name: "Romanian", flag: "RO", code: "ro" },
+  { name: "Russian", flag: "RU", code: "ru" },
+  { name: "Serbian", flag: "RS", code: "sr" },
+  { name: "Slovak", flag: "SK", code: "sk" },
+  { name: "Slovenian", flag: "SI", code: "sl" },
+  { name: "Spanish", flag: "ES", code: "es" },
+  { name: "Swahili", flag: "KE", code: "sw" },
+  { name: "Swedish", flag: "SE", code: "sv" },
+  { name: "Tagalog", flag: "PH", code: "tl" },
+  { name: "Tamil", flag: "IN", code: "ta" },
+  { name: "Thai", flag: "TH", code: "th" },
+  { name: "Turkish", flag: "TR", code: "tr" },
+  { name: "Ukrainian", flag: "UA", code: "uk" },
+  { name: "Urdu", flag: "PK", code: "ur" },
+  { name: "Vietnamese", flag: "VN", code: "vi" },
+  { name: "Welsh", flag: "GB", code: "cy" },
+] as const;
+

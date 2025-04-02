@@ -5,6 +5,7 @@ import StopIcon from "@/icons/StopIcon";
 import { useConvertTextToSpeechMutation } from "@/api-services/speech.service";
 import Spinner from "./Spinner";
 import PlayIcon from "@/icons/PlayIcon";
+import { useGoogleTranslationContext } from "@/contexts/GoogleTransalationContext";
 
 interface SpeechButtonWithProgressProps {
   question: string;
@@ -24,10 +25,23 @@ export const SpeechButtonWithProgress: React.FC<
     ["animate-pulse"]: isSpeaking,
   });
 
+  const { selectedLanguageName } = useGoogleTranslationContext();
+
+  useEffect(() => {
+    if (isSpeaking) {
+      setIsSpeaking(false);
+      stop();
+    }
+    setAudioUrl(null);
+  }, [selectedLanguageName]);
+
   const handleClick = () => {
     if (!audioUrl) {
       // Trigger text-to-speech API call
-      convertTextToSpeech({ text: question });
+      convertTextToSpeech({
+        text: question,
+        language: selectedLanguageName || "English",
+      });
     } else {
       if (isSpeaking) {
         // Stop the audio

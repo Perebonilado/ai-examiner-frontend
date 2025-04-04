@@ -10,7 +10,8 @@ export interface FileUploadDtoV2 {
   data: {
     fileId: string;
     documentId: string;
-    topics: string[]
+    topics: string[];
+    summary: string;
   };
   message: string;
   status: number;

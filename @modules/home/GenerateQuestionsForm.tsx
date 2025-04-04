@@ -35,6 +35,8 @@ import { RootState } from "../../config/redux-config";
 import { difficultyOptions } from "@/constants";
 import { DifficultyType } from "@/models/questions.model";
 import { useGenerateQuestionsV2Mutation } from "@/api-services/questions.service";
+import Modal from "@/@shared/components/Modal";
+import QuestionGenerationLoadingModal from "../questions/QuestionGenerationLoadingModal";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -171,23 +173,37 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [uploadFileDataV2]);
 
-  useEffect(() => {
-    if (data) {
-      router.push(
-        `/questions/practise-questions/${hyphenateString(
-          data.type.toLowerCase()
-        )}/${data.id}`
-      );
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  // router.push(
+  //   `/questions/practise-questions/${hyphenateString(
+  //     data.type.toLowerCase()
+  //   )}/${data.id}`
+  // );
+  //   }
+  // }, [data]);
+
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
     if (isLoading) {
-      setModalContent(<AppLoader loaderMessage="Generating questions" />);
-    } else {
-      setModalContent(null);
+      setShowLoader(true);
     }
   }, [isLoading]);
+
+  useEffect(() => {
+    if (error) {
+      setShowLoader(false);
+    }
+  }, [error]);
+
+  // useEffect(() => {
+  //   if (isLoading) {
+  //     setModalContent(<AppLoader loaderMessage="Generating questions" />);
+  //   } else {
+  //     setModalContent(null);
+  //   }
+  // }, [isLoading]);
 
   useEffect(() => {
     if (isSuccess) {
@@ -218,6 +234,22 @@ const GenerateQuestionsForm: FC = () => {
 
   return !permissions ? null : (
     <section>
+      {showLoader && (
+        <Modal>
+          <QuestionGenerationLoadingModal
+            isComplete={isSuccess}
+            summary={uploadFileDataV2?.summary || ""}
+            handleStartTest={() => {
+              if (!data) return;
+              router.push(
+                `/questions/practise-questions/${hyphenateString(
+                  data.type.toLowerCase()
+                )}/${data.id}`
+              );
+            }}
+          />
+        </Modal>
+      )}
       <FormikProvider value={formik}>
         <Form>
           <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">

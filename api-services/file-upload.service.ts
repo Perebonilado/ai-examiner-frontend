@@ -71,6 +71,7 @@ export const FileUploadService = createApi({
             fileId: res.data.fileId,
             documentId: res.data.documentId,
             topics: res.data.topics,
+            summary: res.data.summary
           };
         }
       },

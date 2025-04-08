@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 import styles from "./styles.module.css";
 
 interface Props extends QuestionSummaryModel {
-  index: number
+  index: number;
 }
 
 const ViewQuestionCard: FC<Props> = ({
@@ -30,7 +30,7 @@ const ViewQuestionCard: FC<Props> = ({
   progressPercentage,
   status,
   totalAnswered,
-  index
+  index,
 }) => {
   const scoreColor = generateScoreColor(score).scoreColor;
   const [isNew, setIsNew] = useState(false);
@@ -56,7 +56,7 @@ const ViewQuestionCard: FC<Props> = ({
     const difference = now - createdMoment;
     const fifteenSeconds = 15000; // 15 seconds in milliseconds
 
-    if ((difference < fifteenSeconds) && index === 0) {
+    if (difference < fifteenSeconds && index === 0) {
       setIsNew(true);
       const timeout = setTimeout(() => {
         setIsNew(false);
@@ -106,7 +106,9 @@ const ViewQuestionCard: FC<Props> = ({
           </div>
 
           <div>
-            {type.toLowerCase() !== "flash cards" && (
+            {!["flash cards", "oral(viva)", "essay"].includes(
+              type.toLowerCase()
+            ) && (
               <ScorePill
                 score={score}
                 uncompleted={
@@ -119,6 +121,8 @@ const ViewQuestionCard: FC<Props> = ({
         <p className="text-sm font-semibold">
           {type.toLowerCase() == "flash cards"
             ? `${count} Cards`
+            : ["oral(viva)", "essay"].includes(type.toLowerCase())
+            ? null
             : `${totalAnswered} Questions`}
         </p>
         <div className="flex items-center gap-3 mt-4 min-h-[30px]">

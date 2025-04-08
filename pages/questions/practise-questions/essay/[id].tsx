@@ -20,6 +20,9 @@ import * as moment from "moment";
 import EssayItemContainer from "@/@modules/questions/Essay/EssayItemContainer";
 import { GetQuestionByIdModel } from "@/models/questions.model";
 import EssayAnalysisItemAccordion from "@/@modules/questions/Essay/EssayAnalysisItemAccordion";
+import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
+import EssayAnalysisContainer from "@/@modules/questions/Essay/EssayAnalysisContainer";
 
 const Essay: NextPage = () => {
   const [id, setId] = useState("");
@@ -29,6 +32,11 @@ const Essay: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
+  const { data: topics, isLoading: topicsLoading } =
+    useGetAllSavedDocumentTopicsQuery(
+      { documentId },
+      { skip: !documentId, refetchOnMountOrArgChange: true }
+    );
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
@@ -72,6 +80,14 @@ const Essay: NextPage = () => {
     }
   }, [isSuccess]);
 
+  const [showAnalysis, setShowAnalysis] = useState(false);
+
+  useEffect(() => {
+    if (analysisData && analysisData.data?.length) {
+      setShowAnalysis(true);
+    }
+  }, [analysisData]);
+
   return (
     <>
       <AppHead title="Essay" />
@@ -105,38 +121,46 @@ const Essay: NextPage = () => {
               )}{" "}
               Questions
             </h1>
-            <p className="text-center text-sm text-gray-500 my-3">
+            <p className="text-center text-sm text-gray-500 my-3 mb-8">
               Date Created:{" "}
               {moment.utc(data.createdOn).local().format("MMMM D, YYYY h:mma")}
             </p>
           </>
         )}
-        {data && !analysisData?.data?.length && (
+        {data && !showAnalysis && (
           <EssayItemContainer
             data={(data as GetQuestionByIdModel).data}
             documentId={documentId}
             questionId={id}
             submitTest={submitTest}
+            handleGenerateMoreQuestions={() => {
+              setModalContent(
+                <GenerateQuestionsForm
+                  fileId={data.fileId}
+                  topics={topics?.topics ?? []}
+                  documentIdProp={data.documentId}
+                />
+              );
+            }}
           />
         )}
 
-        {analysisData && analysisData.data && (
-          <div className="w-full max-w-[900px] mx-auto mt-10">
-            {analysisData.data.map((analysis, idx) => {
-              return (
-                <EssayAnalysisItemAccordion
-                  key={idx}
-                  {...analysis}
-                  questionNumber={idx + 1}
-                  totalQuestions={analysisData.data.length}
+        {analysisData && analysisData.data && data && showAnalysis && (
+          <EssayAnalysisContainer
+            data={analysisData.data}
+            handleGenerateMoreQuestions={() => {
+              setModalContent(
+                <GenerateQuestionsForm
+                  fileId={data.fileId}
+                  topics={topics?.topics ?? []}
+                  documentIdProp={data.documentId}
                 />
               );
-            })}
-
-            <div>
-                
-            </div>
-          </div>
+            }}
+            handleDone={() => {
+              router.push(`/questions/view-questions/${data?.documentId}`);
+            }}
+          />
         )}
       </AppLayout>
     </>

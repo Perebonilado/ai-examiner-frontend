@@ -173,7 +173,7 @@ export const QuestionsService = createApi({
       query: (query) => ({
         url: ``,
         method: "GET",
-        params: { ...query, showOralQuestions: "1" },
+        params: { ...query, showOralQuestions: "1", showEssayQuestions: "1" },
       }),
       extraOptions: {
         triggerLoading: false,

@@ -4,7 +4,6 @@ import React, { FC, useEffect, useState } from "react";
 import EssayItem from "./EssayItem";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import Button from "@/@shared/ui/Button";
-import { useSubmitEssayQuestionMutation } from "@/api-services/questions.service";
 
 export interface QuestionAnswer {
   specificQuestionId: string;

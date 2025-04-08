@@ -2,6 +2,7 @@ import { QuestionsModel } from "@/models/questions.model";
 import React, { FC } from "react";
 import EssayQuestion from "./EssayQuestion";
 import { QuestionAnswer } from "./EssayItemContainer";
+import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -24,6 +25,7 @@ const EssayItem: FC<Props> = ({
         <p className="text-base text-[#939393]">
           {questionNumber} of {totalQuestionsCount}
         </p>
+        <SpeechButtonWithProgress question={question}/>
       </div>
       <p className="my-8">
         <EssayQuestion question={question} />

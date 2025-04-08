@@ -106,7 +106,7 @@ const ViewQuestionCard: FC<Props> = ({
           </div>
 
           <div>
-            {!["flash cards", "oral(viva)", "essay"].includes(
+            {!["flash cards", "oral (viva)", "essay"].includes(
               type.toLowerCase()
             ) && (
               <ScorePill
@@ -121,7 +121,7 @@ const ViewQuestionCard: FC<Props> = ({
         <p className="text-sm font-semibold">
           {type.toLowerCase() == "flash cards"
             ? `${count} Cards`
-            : ["oral(viva)", "essay"].includes(type.toLowerCase())
+            : ["oral (viva)", "essay"].includes(type.toLowerCase())
             ? null
             : `${totalAnswered} Questions`}
         </p>

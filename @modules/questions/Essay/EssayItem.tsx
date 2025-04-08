@@ -33,13 +33,14 @@ const EssayItem: FC<Props> = ({
       <div>
         <textarea
           rows={10}
+          placeholder="Enter your answer here"
           onChange={(e) => {
             const value = e.target.value;
             if (value.trim()) {
               handleSetAnswer({ id, answer: value });
             }
           }}
-          className="border outline-none border-[#CECECE] rounded-lg p-4 resize-none w-full transition-all duration-300 focus:outline-none focus:border-[#D8BFF0]"
+          className="border outline-none placeholder:text-xs border-[#CECECE] rounded-lg p-4 resize-none w-full transition-all duration-300 focus:outline-none focus:border-[#D8BFF0]"
         ></textarea>
       </div>
     </div>

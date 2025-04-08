@@ -334,7 +334,7 @@ const GenerateQuestionsForm: FC = () => {
               </div>
             )}
 
-            {formik.values.questionType == "3" && (
+            {["3", "7"].includes(formik.values.questionType) && (
               <div className="flex items-center gap-3">
                 <Switch
                   disabled={!file || !fileId}

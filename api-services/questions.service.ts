@@ -3,8 +3,12 @@ import { API_BASE_URL, accessToken } from "../constants";
 import {
   CreateScorePayloadModel,
   DeleteQuestionModel,
+  EssayQuestionModel,
+  EssayQuestionPayload,
   GenerateQuestionsPayloadModel,
   GenerateQuestionsPayloadModelV2,
+  GetEssayQuestionModel,
+  GetEssayQuestionQueryModel,
   GetMultipleTrueFalseQuestionByIdModel,
   GetQuestionByIdModel,
   GetQuestionSummaryModel,
@@ -169,7 +173,7 @@ export const QuestionsService = createApi({
       query: (query) => ({
         url: ``,
         method: "GET",
-        params: { ...query, showOralQuestions: "1" },
+        params: { ...query, showOralQuestions: "1", showEssayQuestions: "1" },
       }),
       extraOptions: {
         triggerLoading: false,
@@ -266,6 +270,18 @@ export const QuestionsService = createApi({
       extraOptions: { triggerLoading: false },
       invalidatesTags: ["question-summary", "single-question"],
     }),
+    submitEssayQuestion: build.mutation<any, EssayQuestionPayload>({
+      query: (body) => ({
+        url: "/essay-analysis",
+        method: "POST",
+        body,
+      }),
+    }),
+    getEssayQuestion: build.query<GetEssayQuestionModel, GetEssayQuestionQueryModel>({
+      query: ({ questionId }) => ({
+        url: `/essay-analysis/${questionId}`,
+      }),
+    }),
   }),
 });
 
@@ -280,4 +296,6 @@ export const {
   useGetVivaRecordingQuery,
   useGenerateQuestionsV2Mutation,
   useQuestionSourceRequestV2Mutation,
+  useSubmitEssayQuestionMutation,
+  useGetEssayQuestionQuery
 } = QuestionsService;

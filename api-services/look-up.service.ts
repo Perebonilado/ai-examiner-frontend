@@ -32,7 +32,8 @@ export const LookUpService = createApi({
         url: "",
         params: {
           type,
-          showOralQuestionOption: type.toLowerCase() === 'question_type' ? '1' : undefined
+          showOralQuestionOption: type.toLowerCase() === 'question_type' ? '1' : undefined,
+          showEssayQuestionOption: type.toLowerCase() === 'question_type' ? '1' : undefined,
         },
       }),
       extraOptions: {

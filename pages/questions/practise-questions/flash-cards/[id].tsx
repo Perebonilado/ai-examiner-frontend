@@ -36,10 +36,10 @@ const FlashCards: NextPage = () => {
   const router = useRouter();
 
   const { data: topics, isLoading: topicsLoading } =
-  useGetAllSavedDocumentTopicsQuery(
-    { documentId },
-    { skip: !documentId, refetchOnMountOrArgChange: true }
-  );
+    useGetAllSavedDocumentTopicsQuery(
+      { documentId },
+      { skip: !documentId, refetchOnMountOrArgChange: true }
+    );
 
   useEffect(() => {
     if (data) {
@@ -153,7 +153,6 @@ const FlashCards: NextPage = () => {
           <div className="mt-14">
             <FlashCardItemContainer
               data={(data as GetQuestionByIdModel).data.map((d) => {
-                
                 return {
                   question: d.question,
                   answer: d.options[0].value,
@@ -161,15 +160,15 @@ const FlashCards: NextPage = () => {
                 };
               })}
               allowMoreQuestionGeneration={true}
-                    handleGenerateMoreQuestions={() => {
-                      setModalContent(
-                        <GenerateQuestionsForm
-                          fileId={data.fileId}
-                          topics={topics?.topics ?? []}
-                          documentIdProp={data.documentId}
-                        />
-                      );
-                    }}
+              handleGenerateMoreQuestions={() => {
+                setModalContent(
+                  <GenerateQuestionsForm
+                    fileId={data.fileId}
+                    topics={topics?.topics ?? []}
+                    documentIdProp={data.documentId}
+                  />
+                );
+              }}
               handleDone={() => {
                 router.push(`/questions/view-questions/${data?.documentId}`);
               }}

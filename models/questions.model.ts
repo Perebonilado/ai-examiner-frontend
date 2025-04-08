@@ -159,3 +159,34 @@ export interface NotSureQuestion {
 }
 
 export type DifficultyType = "easy" | "medium" | "hard";
+
+interface EssayQuestionPayloadItem {
+  question: string;
+  answer: string;
+}
+
+export interface EssayQuestionPayload {
+  questionId: string;
+  data: EssayQuestionPayloadItem[];
+}
+
+export type EssayQuestionAnalysisStatus = "complete" | "in-progress" | "error";
+
+export interface EssayQuestionModel {
+  id: number;
+  question: string;
+  answer: string;
+  analysis: string;
+  status: EssayQuestionAnalysisStatus;
+  score: number;
+  questionId: string;
+  createdOn: Date;
+}
+
+export interface GetEssayQuestionModel {
+  data: EssayQuestionModel[];
+}
+
+export interface GetEssayQuestionQueryModel {
+  questionId: string;
+}

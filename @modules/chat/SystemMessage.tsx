@@ -60,14 +60,14 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
 
   return (
     <>
-      <div className="relative w-full max-w-[600px] bg-white p-3 rounded-xl">
+      <div className="relative w-full max-w-[93%] bg-white p-3 rounded-xl">
         <div
           className="transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden"
           style={{ maxHeight: contentHeight ?? 200 }}
         >
           <div
             ref={innerRef}
-            className="prose prose-sm !text-wrap overflow-x-hidden"
+            className="prose prose-sm max-w-none break-words overflow-x-hidden"
             dangerouslySetInnerHTML={{ __html: htmlMessage }}
           />
         </div>

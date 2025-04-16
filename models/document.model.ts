@@ -47,3 +47,14 @@ export interface UpdateDocumentPayloadModel {
   isDeleted?: boolean;
   id: string;
 }
+
+export interface DocumentSummaryModel {
+  id: string;
+  documentId: string;
+  summary: string;
+  createdOn: string;
+}
+
+export interface DocumentSummaryQuery {
+  documentId: string;
+}

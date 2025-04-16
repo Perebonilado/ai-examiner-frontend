@@ -14,21 +14,44 @@ const DocumentChatIcon: FC<Props> = ({ handleOpenChat }) => {
   const ref = useRef<ElementRef<"div">>(null);
   const [position, setPosition] = useState({ x: 0, y: 0 });
 
+  const clamp = (value: number, min: number, max: number) =>
+    Math.max(min, Math.min(value, max));
+
+  const adjustPositionWithinBounds = (pos = position) => {
+    const maxX = window.innerWidth - ICON_SIZE - PADDING;
+    const maxY = window.innerHeight - ICON_SIZE - PADDING;
+    const minX = PADDING;
+    const minY = PADDING;
+    return {
+      x: clamp(pos.x, minX, maxX),
+      y: clamp(pos.y, minY, maxY),
+    };
+  };
+
   const handleClick = () => {
     if (!hasDragged.current) {
       handleOpenChat();
     }
   };
 
-  const clamp = (value: number, min: number, max: number) =>
-    Math.max(min, Math.min(value, max));
-
+  // Set initial position to bottom-right corner
   useEffect(() => {
-    // Initial bottom-right positioning
     const initX = window.innerWidth - ICON_SIZE - PADDING;
     const initY = window.innerHeight - ICON_SIZE - PADDING;
     setPosition({ x: initX, y: initY });
   }, []);
+
+  // Adjust position on resize so that the icon never leaves the viewport.
+  useEffect(() => {
+    const handleResize = () => {
+      setPosition((prevPos) => adjustPositionWithinBounds(prevPos));
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [position]);
 
   const handleDragEnd = () => {
     if (!ref.current) return;

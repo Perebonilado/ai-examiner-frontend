@@ -15,7 +15,7 @@ import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
@@ -23,6 +23,11 @@ import Tab from "@/@shared/components/Tab";
 import ChatContainer from "@/@modules/chat/ChatContainer";
 import { useGetDocumentMessagesQuery } from "@/api-services/document-message.service";
 import Spinner from "@/@shared/components/Spinner";
+import {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+} from "@/features/documentChatSlice";
 
 interface SearchParams {
   lastMessageCreatedOn?: Date;
@@ -94,6 +99,19 @@ const ViewQuestions: NextPage = () => {
   }, [isLoading]);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
+
+  useEffect(() => {
+    if (document?.documents) {
+      dispatch(setDocumentTitleInView(document.documents[0].title));
+    }
+  }, [document]);
 
   //Discussion tab logic
 

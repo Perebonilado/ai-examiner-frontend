@@ -4,6 +4,11 @@ export const accessToken = "access_token";
 
 export const milliSecondToSecondConversionRate = 1000;
 
+export const routesWithDocumentChat = [
+  "questions/view-questions",
+  "questions/practise-questions",
+];
+
 export const alphabets = ["a", "b"];
 
 export const difficultyOptions = [

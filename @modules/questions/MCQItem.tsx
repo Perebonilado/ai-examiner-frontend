@@ -5,7 +5,7 @@ import cn from "classnames";
 import Button from "@/@shared/ui/Button";
 import Link from "next/link";
 import { useModalContext } from "@/contexts/ModalContext";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 import { useRouter } from "next/router";
@@ -16,7 +16,15 @@ import { useSpeechToText } from "@/hooks/useSpeechToText";
 import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
 import QuestionExplanation from "./QuestionExplanation";
 import ViewSourceDialog from "./ViewSource/ViewSourceDialog";
-import { useQuestionSourceRequestMutation, useQuestionSourceRequestV2Mutation } from "@/api-services/questions.service";
+import {
+  useQuestionSourceRequestMutation,
+  useQuestionSourceRequestV2Mutation,
+} from "@/api-services/questions.service";
+import {
+  setIsChatOpen,
+  setNotSureMessage,
+  setNotSureQuestion,
+} from "@/features/documentChatSlice";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -115,6 +123,8 @@ const MCQItem: FC<Props> = ({
     );
   };
 
+  const dispatch = useDispatch();
+
   return (
     <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[15px]">
       {submitted && (
@@ -187,19 +197,27 @@ const MCQItem: FC<Props> = ({
               </div>
             )
           : allowNotSure && (
-              <Link
-                href={`/questions/view-questions/${documentId}?tab=Discussions&question=${question}`}
-                passHref
-                target="_blank"
-              >
-                <div className="mt-3 flex justify-center gap-2">
-                  <Button
-                    title="Not Sure?"
-                    variant="text"
-                    className="hover:underline"
-                  />
-                </div>
-              </Link>
+              <div className="mt-3 flex justify-center gap-2">
+                <Button
+                  title="Not Sure?"
+                  variant="text"
+                  className="hover:underline"
+                  onClick={() => {
+                    dispatch(
+                      setNotSureQuestion({
+                        options: options.map((opt) => opt.value),
+                        question: question,
+                        questionType: "Multiple Choice",
+                      })
+                    );
+                    dispatch(setNotSureMessage(question));
+
+                    setTimeout(() => {
+                      dispatch(setIsChatOpen(true));
+                    }, 300);
+                  }}
+                />
+              </div>
             ))}
       {submitted && (
         <div className="mt-3 flex flex-col gap-3 items-center">

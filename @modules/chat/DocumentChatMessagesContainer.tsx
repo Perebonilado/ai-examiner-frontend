@@ -53,7 +53,8 @@ const DocumentChatMessagesContainer: FC<Props> = ({
       "translate-y-[100%]": !isChatOpen,
       "translate-y-0": isChatOpen,
       "max-h-[700px] max-w-[400px] sm:right-4": !isExpanded,
-      "max-h-[97vh] max-w-[97vw] right-0 left-1/2 -translate-x-1/2": isExpanded,
+      "max-h-[97vh] max-w-[900px] right-0 left-1/2 -translate-x-1/2":
+        isExpanded,
     }
   );
 
@@ -64,9 +65,9 @@ const DocumentChatMessagesContainer: FC<Props> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (isChatOpen || messages)
+    if (isChatOpen)
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [isChatOpen, JSON.stringify(messages)]);
+  }, [isChatOpen]);
 
   const [showLoader, setShowLoader] = useState(false);
 
@@ -85,7 +86,11 @@ const DocumentChatMessagesContainer: FC<Props> = ({
 
   const getFooterElement = () => {
     if (!messages.length) {
-      return <NoMessageInfo documentTitle={capitalizeFirstLetterOfEachWord(documentTitleInView)} />;
+      return (
+        <NoMessageInfo
+          documentTitle={capitalizeFirstLetterOfEachWord(documentTitleInView)}
+        />
+      );
     }
 
     if (showLoader) {
@@ -101,86 +106,130 @@ const DocumentChatMessagesContainer: FC<Props> = ({
     return null;
   };
 
-  return (
-    <div className={rootClassName}>
-      <div className="relative flex items-center justify-center pb-4">
-        <button
-          className="mr-auto max-sm:hidden"
-          onClick={() => {
-            setIsExpanded(!isExpanded);
-          }}
-        >
-          {isExpanded ? (
-            <CollapseIcon />
-          ) : (
-            <div className="rotate-90 w-fit">
-              <ExpandIcon />
-            </div>
-          )}
-        </button>
-        <p className="absolute left-1/2 transform -translate-x-1/2 max-w-[60%] truncate bg-gradient-to-r from-[#9A67E2] to-[#F89AEE] bg-clip-text text-transparent text-center">
-          {capitalizeFirstLetterOfEachWord(documentTitleInView)}
-        </p>
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-        <div className="ml-auto">
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      if (container.scrollTop <= 0) {
+        handleFetchOlderMessages();
+      }
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => {
+      container.removeEventListener("scroll", handleScroll);
+    };
+  }, [handleFetchOlderMessages]);
+
+  return (
+    <>
+      {isChatOpen && (
+        <div
+          className={cn(
+            "fixed w-[100vw] h-[100vh] bg-black z-[4900] top-0 left-0 bottom-0 right-0 transition-opacity duration-500 ease-in-out pointer-events-none",
+            {
+              "opacity-70 pointer-events-auto": isExpanded,
+              "opacity-0": !isExpanded,
+            }
+          )}
+        ></div>
+      )}
+      <div className={rootClassName}>
+        <div className="relative flex items-center justify-center pb-4">
           <button
+            className="mr-auto"
             onClick={() => {
-              dispatch(setIsChatOpen(false));
+              setIsExpanded(!isExpanded);
             }}
           >
-            <CloseIcon />
+            {isExpanded ? (
+              <CollapseIcon />
+            ) : (
+              <div className="rotate-90 w-fit">
+                <ExpandIcon />
+              </div>
+            )}
           </button>
+          <p className="absolute left-1/2 transform -translate-x-1/2 max-w-[60%] truncate bg-gradient-to-r from-[#9A67E2] to-[#F89AEE] bg-clip-text text-transparent text-center">
+            {capitalizeFirstLetterOfEachWord(documentTitleInView)}
+          </p>
+
+          <div className="ml-auto">
+            <button
+              onClick={() => {
+                dispatch(setIsChatOpen(false));
+              }}
+            >
+              <CloseIcon />
+            </button>
+          </div>
+        </div>
+
+        <div
+          style={{ flex: 1 }}
+          className="flex-1 flex-col overflow-y-auto py-8 space-y-2 no-scrollbar"
+          ref={messagesContainerRef}
+        >
+          {[...messages].map((message, idx) => {
+            if (message.sender === "user") {
+              return <UserMessage message={message.message} key={idx} />;
+            }
+            return (
+              <SystemMessage
+                message={message.message}
+                key={idx}
+                scrollToBottom={() => {
+                  messagesEndRef.current?.scrollIntoView({
+                    behavior: "smooth",
+                  });
+                }}
+              />
+            );
+          })}
+          {getFooterElement()}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="flex items-end gap-2">
+          <textarea
+            ref={textareaRef}
+            onInput={handleInput}
+            className="w-full border resize-none rounded-xl outline-none px-4 py-3 mb-0.5  overflow-y-auto leading-tight text-sm no-scrollbar"
+            style={{
+              minHeight: "28px",
+              maxHeight: "200px",
+              flex: 1,
+            }}
+            value={message}
+            onChange={(e) => {
+              const value = e.target.value;
+              setMessage(value);
+            }}
+            rows={1}
+            placeholder="Ask anything ..."
+          />
+          <IconButton
+            icon={<ArrowUpIcon />}
+            onClick={() => {
+              sendMessage(message);
+              setMessage("");
+
+              setTimeout(() => {
+                messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+              }, 650);
+            }}
+            className={
+              false
+                ? "!bg-gray-300 !border-gray-300 transition-all cursor-auto"
+                : "transition-all"
+            }
+          />
         </div>
       </div>
-
-      <div
-        style={{ flex: 1 }}
-        className="flex-1 flex-col overflow-y-auto py-8 space-y-2 no-scrollbar"
-      >
-        {[...messages].map((message, idx) => {
-          if (message.sender === "user") {
-            return <UserMessage message={message.message} key={idx} />;
-          }
-          return <SystemMessage message={message.message} key={idx} />;
-        })}
-        {getFooterElement()}
-        <div ref={messagesEndRef} />
-      </div>
-
-      <div className="flex items-end gap-2">
-        <textarea
-          ref={textareaRef}
-          onInput={handleInput}
-          className="w-full border resize-none rounded-xl outline-none px-4 py-3 mb-0.5  overflow-y-auto leading-tight text-sm no-scrollbar"
-          style={{
-            minHeight: "28px",
-            maxHeight: "200px",
-            flex: 1,
-          }}
-          value={message}
-          onChange={(e) => {
-            const value = e.target.value;
-            if (value.trim().length) {
-              setMessage(value);
-            }
-          }}
-          rows={1}
-          placeholder="Ask anything ..."
-        />
-        <IconButton
-          icon={<ArrowUpIcon />}
-          onClick={() => {
-            sendMessage(message);
-            setMessage("");
-          }}
-          className={
-            false
-              ? "!bg-gray-300 !border-gray-300 transition-all cursor-auto"
-              : "transition-all"
-          }
-        />
-      </div>
-    </div>
+    </>
   );
 };
 

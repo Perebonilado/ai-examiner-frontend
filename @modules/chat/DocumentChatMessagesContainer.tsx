@@ -52,8 +52,8 @@ const DocumentChatMessagesContainer: FC<Props> = ({
     {
       "translate-y-[100%]": !isChatOpen,
       "translate-y-0": isChatOpen,
-      "max-h-[700px] max-w-[400px] sm:right-4": !isExpanded,
-      "max-h-[97vh] max-w-[900px] right-0 left-1/2 -translate-x-1/2":
+      "max-h-[70vh] max-w-[400px] sm:right-4": !isExpanded,
+      "max-h-[85vh] max-w-[900px] right-0 left-1/2 -translate-x-1/2":
         isExpanded,
     }
   );

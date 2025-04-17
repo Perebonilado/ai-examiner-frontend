@@ -27,3 +27,10 @@ export interface CreateDocumentDto {
     type: string;
   };
 }
+
+export interface DocumentSummaryDto {
+  id: string;
+  documentId: string;
+  summary: string;
+  createdOn: string;
+}

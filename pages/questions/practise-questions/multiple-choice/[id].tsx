@@ -23,6 +23,8 @@ import { GetQuestionByIdModel } from "@/models/questions.model";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { useDispatch } from "react-redux";
+import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -42,6 +44,20 @@ const Practice: NextPage = () => {
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
+
+  useEffect(() => {
+    if (data?.documentTitle) {
+      dispatch(setDocumentTitleInView(data.documentTitle));
+    }
+  }, [data]);
 
   useEffect(() => {
     if (data) {

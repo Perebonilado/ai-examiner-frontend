@@ -10,10 +10,16 @@ import {
   AllDocumentsModel,
   AllDocumentsQueryModel,
   CreateDocumentModel,
+  DocumentSummaryModel,
+  DocumentSummaryQuery,
   GetAllDocumentsModel,
   UpdateDocumentPayloadModel,
 } from "@/models/document.model";
-import { AllDocumentsDto, CreateDocumentDto } from "@/dto/document.dto";
+import {
+  AllDocumentsDto,
+  CreateDocumentDto,
+  DocumentSummaryDto,
+} from "@/dto/document.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
@@ -97,6 +103,17 @@ export const DocumentService = createApi({
           };
       },
     }),
+    getDocumentSummary: build.query<DocumentSummaryModel, DocumentSummaryQuery>(
+      {
+        query: ({ documentId }) => ({
+          url: `/summary/${documentId}`,
+        }),
+        transformResponse: (res: DocumentSummaryDto) => {
+          if (!res) return <DocumentSummaryModel>{};
+          return res;
+        },
+      }
+    ),
     updateDocument: build.mutation<any, UpdateDocumentPayloadModel>({
       query: (body) => ({
         url: "",
@@ -112,4 +129,5 @@ export const {
   useGetAllUserDocumentsQuery,
   useAddDocumentMutation,
   useUpdateDocumentMutation,
+  useGetDocumentSummaryQuery
 } = DocumentService;

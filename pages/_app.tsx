@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import PreferredLanguageProvider from "@/contexts/PreferredLanguageContext";
 import Script from "next/script";
 import GoogleTranslationProvider from "@/contexts/GoogleTransalationContext";
+import DocumentChatContainer from "@/@modules/chat/DocumentChatContainer";
 
 declare global {
   interface Window {
@@ -58,9 +59,11 @@ export default function App({ Component, pageProps }: AppProps) {
           <GoogleTranslationProvider>
             <ModalProvider>
               <LoaderProvider>
-                {/* <PreferredLanguageProvider> */}
+                <DocumentChatContainer>
+                  {/* <PreferredLanguageProvider> */}
                   <Component {...pageProps} />
-                {/* </PreferredLanguageProvider> */}
+                  {/* </PreferredLanguageProvider> */}
+                </DocumentChatContainer>
               </LoaderProvider>
             </ModalProvider>
           </GoogleTranslationProvider>

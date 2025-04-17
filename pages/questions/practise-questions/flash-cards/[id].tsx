@@ -22,6 +22,8 @@ import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 import { GetQuestionByIdModel } from "@/models/questions.model";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
+import { useDispatch } from "react-redux";
+import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
@@ -40,6 +42,20 @@ const FlashCards: NextPage = () => {
       { documentId },
       { skip: !documentId, refetchOnMountOrArgChange: true }
     );
+
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+      if (documentId) {
+        dispatch(setDocumentIdInView(documentId));
+      }
+    }, [documentId]);
+  
+    useEffect(() => {
+      if (data?.documentTitle) {
+        dispatch(setDocumentTitleInView(data.documentTitle));
+      }
+    }, [data]);
 
   useEffect(() => {
     if (data) {

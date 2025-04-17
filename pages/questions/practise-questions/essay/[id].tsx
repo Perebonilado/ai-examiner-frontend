@@ -23,6 +23,8 @@ import EssayAnalysisItemAccordion from "@/@modules/questions/Essay/EssayAnalysis
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import EssayAnalysisContainer from "@/@modules/questions/Essay/EssayAnalysisContainer";
+import { useDispatch } from "react-redux";
+import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
 
 const Essay: NextPage = () => {
   const [id, setId] = useState("");
@@ -37,6 +39,20 @@ const Essay: NextPage = () => {
       { documentId },
       { skip: !documentId, refetchOnMountOrArgChange: true }
     );
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
+
+  useEffect(() => {
+    if (data?.documentTitle) {
+      dispatch(setDocumentTitleInView(data.documentTitle));
+    }
+  }, [data]);
 
   const { setModalContent } = useModalContext();
   const router = useRouter();

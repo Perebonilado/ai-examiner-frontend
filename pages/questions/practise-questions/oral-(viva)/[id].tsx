@@ -31,6 +31,8 @@ import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
 import { reduxStore } from "@/config/redux-config";
 import GetMoreCreditsCard from "@/@modules/questions/GetMoreCreditsCard";
 import { useGoogleTranslationContext } from "@/contexts/GoogleTransalationContext";
+import { useDispatch } from "react-redux";
+import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -41,6 +43,20 @@ const VivaQuestion: NextPage = () => {
   const params = useParams();
   const router = useRouter();
   const { setModalContent } = useModalContext();
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (data) {
+      dispatch(setDocumentIdInView(data.documentId));
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (data?.documentTitle) {
+      dispatch(setDocumentTitleInView(data.documentTitle));
+    }
+  }, [data]);
 
   useEffect(() => {
     if (params) {

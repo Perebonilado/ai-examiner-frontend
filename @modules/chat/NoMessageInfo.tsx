@@ -7,8 +7,8 @@ interface Props {
 
 const NoMessageInfo: FC<Props> = ({ documentTitle }) => {
   return (
-    <div className="w-full h-1/2 absolute bottom-0 px-3 left-1/2 -translate-x-1/2 flex flex-col justify-between">
-      <p className="text-center text-gray-300 text-base">
+    <div className="w-full mt-[80%]">
+      <p className="text-center text-gray-300 text-base mb-6">
         Let's explore {documentTitle} together
       </p>
       <ul className="flex flex-col gap-3 pb-4">

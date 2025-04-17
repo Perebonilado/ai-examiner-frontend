@@ -1,0 +1,85 @@
+import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import { NotSureQuestion } from "../models/questions.model";
+
+export interface MessageItem {
+  message: string;
+  sender: "user" | "system";
+  id: string;
+  createdOn: Date;
+}
+
+interface DocumentChatState {
+  documentIdInView: string;
+  documentTitleInView: string;
+  messages: MessageItem[];
+  totalMessagesInDb: number;
+  notSureMessage: string;
+  isChatOpen: boolean;
+  notSureQuestion: NotSureQuestion | null;
+}
+
+const initialState: DocumentChatState = {
+  documentIdInView: "",
+  documentTitleInView: "",
+  messages: <MessageItem[]>[],
+  totalMessagesInDb: 0,
+  notSureMessage: "",
+  isChatOpen: false,
+  notSureQuestion: null,
+};
+
+export const documentChatSlice = createSlice({
+  name: "document_chat",
+  initialState,
+  reducers: {
+    setDocumentIdInView: (state, action: PayloadAction<string>) => {
+      state.documentIdInView = action.payload;
+    },
+    setDocumentTitleInView:  (state, action: PayloadAction<string>) => {
+      state.documentTitleInView= action.payload;
+    },
+    setMessages: (state, action: PayloadAction<MessageItem[]>) => {
+      state.messages = action.payload;
+    },
+    clearMessages: (state) => {
+      state.messages = [];
+    },
+    setTotalMessagesInDb: (state, action: PayloadAction<number>) => {
+      state.totalMessagesInDb = action.payload;
+    },
+    appendNewMessage: (state, action: PayloadAction<MessageItem>) => {
+      state.messages = [...state.messages, action.payload];
+    },
+    setNotSureMessage: (state, action: PayloadAction<string>) => {
+      state.notSureMessage = action.payload;
+    },
+    setNotSureQuestion: (
+      state,
+      action: PayloadAction<NotSureQuestion | null>
+    ) => {
+      state.notSureQuestion = action.payload;
+    },
+    setIsChatOpen: (state, action: PayloadAction<boolean>) => {
+      state.isChatOpen = action.payload;
+    },
+    resetDocumentChat: (state) => {
+      state = initialState;
+    },
+  },
+});
+
+export const {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+  setTotalMessagesInDb,
+  appendNewMessage,
+  setNotSureMessage,
+  setNotSureQuestion,
+  clearMessages,
+  setIsChatOpen,
+  resetDocumentChat,
+} = documentChatSlice.actions;
+
+export const documentChatReducer = documentChatSlice.reducer;

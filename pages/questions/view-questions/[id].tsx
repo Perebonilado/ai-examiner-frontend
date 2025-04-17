@@ -4,7 +4,10 @@ import { Pagination } from "@/@shared/components/Pagination/Pagination";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
-import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
+import {
+  useGetAllUserDocumentsQuery,
+  useGetDocumentSummaryQuery,
+} from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
@@ -15,7 +18,7 @@ import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
@@ -23,6 +26,12 @@ import Tab from "@/@shared/components/Tab";
 import ChatContainer from "@/@modules/chat/ChatContainer";
 import { useGetDocumentMessagesQuery } from "@/api-services/document-message.service";
 import Spinner from "@/@shared/components/Spinner";
+import {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+} from "@/features/documentChatSlice";
+import SummaryContainer from "@/@modules/documents/SummaryContainer";
 
 interface SearchParams {
   lastMessageCreatedOn?: Date;
@@ -94,6 +103,19 @@ const ViewQuestions: NextPage = () => {
   }, [isLoading]);
 
   const router = useRouter();
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
+
+  useEffect(() => {
+    if (document?.documents) {
+      dispatch(setDocumentTitleInView(document.documents[0].title));
+    }
+  }, [document]);
 
   //Discussion tab logic
 
@@ -229,7 +251,7 @@ const ViewQuestions: NextPage = () => {
   // tabs
 
   const [activeTab, setActiveTab] = useState("Questions");
-  const [tabs, setTabs] = useState(["Questions", "Discussions"]);
+  const [tabs, setTabs] = useState(["Questions", "Summary"]);
 
   useEffect(() => {
     const { tab } = router.query;
@@ -239,6 +261,11 @@ const ViewQuestions: NextPage = () => {
       setActiveTab(tabs[0]);
     }
   }, [router.query]);
+
+  const { data: summaryData } = useGetDocumentSummaryQuery(
+    { documentId },
+    { skip: !documentId }
+  );
 
   return (
     <>
@@ -278,26 +305,11 @@ const ViewQuestions: NextPage = () => {
           }}
         />
 
-        {activeTab === "Discussions" && (
+        {activeTab === "Summary" && (
           <div>
-            <ChatContainer
-              documentId={documentId}
-              documentTitle={
-                document
-                  ? capitalizeFirstLetterOfEachWord(
-                      document.documents[0].title.toLowerCase()
-                    )
-                  : ""
-              }
-              handleAppendNewMessage={handleAppendNewMessage}
-              handleFetchMorePreviousMessages={handleFetchMorePreviousMessages}
-              initialMessagesFetched={initialMessagesFetched}
-              currentMessages={currentMessages}
-              initialMessages={initialMessagesOnRender}
-              previousMessages={previousMessages}
-              isLoadingMessagesError={isLoadingMessagesError}
-              showFetchPreviousMessagesButton={showFetchPreviousMessagesButton}
-            />
+            {summaryData ? (
+              <SummaryContainer summary={summaryData?.summary || ""} />
+            ) : null}
           </div>
         )}
 

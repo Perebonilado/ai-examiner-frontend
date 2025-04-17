@@ -24,6 +24,8 @@ import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { useDispatch } from "react-redux";
+import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -47,6 +49,20 @@ const MultipleTrueFalse: NextPage = () => {
   useEffect(() => {
     if (data) {
       setdocumentId(data.documentId);
+    }
+  }, [data]);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
+
+  useEffect(() => {
+    if (data?.documentTitle) {
+      dispatch(setDocumentTitleInView(data.documentTitle));
     }
   }, [data]);
 

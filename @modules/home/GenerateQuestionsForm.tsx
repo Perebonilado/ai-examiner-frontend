@@ -30,13 +30,14 @@ import {
   hyphenateString,
 } from "@/utils";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../config/redux-config";
 import { difficultyOptions } from "@/constants";
 import { DifficultyType } from "@/models/questions.model";
 import { useGenerateQuestionsV2Mutation } from "@/api-services/questions.service";
 import Modal from "@/@shared/components/Modal";
 import QuestionGenerationLoadingModal from "../questions/QuestionGenerationLoadingModal";
+import { clearMessages } from "@/features/documentChatSlice";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -232,6 +233,8 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [file, fileId]);
 
+  const dispatch = useDispatch();
+
   return !permissions ? null : (
     <section>
       {showLoader && (
@@ -241,6 +244,8 @@ const GenerateQuestionsForm: FC = () => {
             summary={uploadFileDataV2?.summary || ""}
             handleStartTest={() => {
               if (!data) return;
+              // remove prev doc messages
+              dispatch(clearMessages());
               router.push(
                 `/questions/practise-questions/${hyphenateString(
                   data.type.toLowerCase()

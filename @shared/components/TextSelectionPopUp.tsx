@@ -75,7 +75,7 @@ const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
           </div>
 
           {/* Arrow */}
-          <div
+          {/* <div
             className={`absolute ${
               isMobile ? "bottom-full" : "top-full"
             } left-1/2 transform -translate-x-1/2`}
@@ -93,7 +93,7 @@ const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
                 <path d="M0 0 L10 10 L20 0 Z" /> // Arrow pointing down
               )}
             </svg>
-          </div>
+          </div> */}
         </div>
       </div>
     );

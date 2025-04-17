@@ -9,6 +9,27 @@ interface Props {
 const ICON_SIZE = 50;
 const PADDING = 16;
 
+// interface Props {
+//   handleOpenChat: () => void;
+// }
+
+// const DocumentChatIcon: FC<Props> = ({ handleOpenChat }) => {
+//   return (
+//     <div className="fixed bottom-4 right-4 z-[1000] w-[50px] h-[50px]">
+//       <button
+//         onClick={handleOpenChat}
+//         className="bg-purple-500 rounded-full w-full h-full flex items-center justify-center shadow-lg focus:outline-none"
+//       >
+//         <FloatingChatIcon />
+//       </button>
+//     </div>
+//   );
+// };
+
+// export default DocumentChatIcon;
+
+/** might revert to the moveable icon later */
+
 const DocumentChatIcon: FC<Props> = ({ handleOpenChat }) => {
   const hasDragged = useRef(false);
   const ref = useRef<ElementRef<"div">>(null);

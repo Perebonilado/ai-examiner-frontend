@@ -114,7 +114,7 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
           message,
           courseDocumentId: documentIdInView,
           responseFormat: "indepth",
-          // notSureQuestion: notSureQuestionToBeSent || undefined,
+          notSureQuestion: notSureQuestionToBeSent || undefined,
         })
       );
       const systemResponse = data.data?.message;

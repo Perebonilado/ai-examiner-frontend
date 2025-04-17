@@ -46,7 +46,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
   const [isExpanded, setIsExpanded] = useState(false);
 
   const rootClassName = cn(
-    `fixed bottom-0 border w-full z-[5000] bg-slate-100 rounded-t-xl shadow-2xl p-4 
+    `fixed bottom-0 border w-full min-h-[60vh] z-[5000] bg-slate-100 rounded-t-xl shadow-2xl p-4 
       max-sm:max-w-[95%] max-sm:left-1/2 max-sm:-translate-x-1/2 flex flex-col 
       transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]`,
     {

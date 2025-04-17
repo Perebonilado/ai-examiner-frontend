@@ -22,7 +22,7 @@ export interface SendMessagePayloadModel {
   message: string;
   courseDocumentId: string;
   responseFormat: string;
-  prefix?: NotSureQuestion
+  notSureQuestion?: NotSureQuestion
 }
 
 export interface SendMessageModel {

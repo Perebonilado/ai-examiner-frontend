@@ -14,6 +14,12 @@ interface UseTextSelectionPopupReturn {
 const clamp = (val: number, min: number, max: number): number =>
   Math.min(Math.max(val, min), max);
 
+// Utility to detect mobile devices
+const isMobileDevice = (): boolean => {
+  if (typeof navigator === 'undefined') return false;
+  return /Mobi|Android/i.test(navigator.userAgent) || navigator.maxTouchPoints > 0;
+};
+
 export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
   const [selectedText, setSelectedText] = useState<string>("");
   const [popupPosition, setPopupPosition] = useState<PopupPosition | null>(
@@ -39,6 +45,7 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
 
       if (rects.length === 0) return;
 
+      // Choose the top-most rect
       const rect = rects.reduce((prev, curr) =>
         curr.top < prev.top ? curr : prev
       );
@@ -46,16 +53,34 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
       const popupWidth = 150;
       const popupHeight = 40;
       const margin = 10;
+      const mobileOffset = 8;
+      const scrollY = window.scrollY || window.pageYOffset;
 
-      let top = rect.top + window.scrollY - popupHeight - 8;
-      let left = rect.left + window.scrollX + rect.width / 2;
+      let top: number;
+      // On mobile, position below the browser's default toolbar (below selection)
+      if (isMobileDevice()) {
+        top = rect.bottom + scrollY + mobileOffset;
+      } else {
+        // On desktop, position above the selection
+        top = rect.top + scrollY - popupHeight - mobileOffset;
+      }
 
+      // Calculate horizontal center of selection
+      let left = rect.left + (window.scrollX || window.pageXOffset) + rect.width / 2;
+
+      // Clamp horizontal within viewport
       left = clamp(
         left,
         popupWidth / 2 + margin,
         window.innerWidth - popupWidth / 2 - margin
       );
-      top = clamp(top, margin, window.innerHeight - popupHeight - margin);
+
+      // Clamp vertical within viewport bounds
+      top = clamp(
+        top,
+        margin,
+        window.innerHeight - popupHeight - margin
+      );
 
       setSelectedText(text);
       setPopupPosition({ top, left });
@@ -86,14 +111,12 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
 
     document.addEventListener("mouseup", handleEnd);
     document.addEventListener("mousedown", handleClickOutside);
-
     document.addEventListener("touchend", handleEnd);
     document.addEventListener("touchstart", handleClickOutside);
 
     return () => {
       document.removeEventListener("mouseup", handleEnd);
       document.removeEventListener("mousedown", handleClickOutside);
-
       document.removeEventListener("touchend", handleEnd);
       document.removeEventListener("touchstart", handleClickOutside);
     };

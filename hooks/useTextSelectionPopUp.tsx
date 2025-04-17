@@ -28,38 +28,40 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
   const handleSelection = () => {
     const selection = window.getSelection();
     const text = selection?.toString().trim() ?? "";
-
+  
     if (!selection?.rangeCount || text.length === 0) {
       setPopupPosition(null);
       return;
     }
-
+  
     const range = selection.getRangeAt(0);
     const rect = range.getBoundingClientRect();
     if (!rect) return;
-
+  
     const popupWidth = 150;
     const popupHeight = 40;
     const margin = 10;
-    const verticalSpacing = 50; // Always give 50px above selection — works great on all screens
-
+  
+    // 👇 Smart vertical offset: 8px above the selection block
+    const spacingAboveSelection = 8;
+  
     const centerX = rect.left + rect.width / 2;
     const left = clamp(
       centerX - popupWidth / 2,
       margin,
       window.innerWidth - popupWidth - margin
     ) + window.scrollX;
-
+  
     const top = clamp(
-      rect.top - popupHeight - verticalSpacing,
+      rect.top - popupHeight - spacingAboveSelection,
       margin,
       window.innerHeight - popupHeight - margin
     ) + window.scrollY;
-
+  
     setSelectedText(text);
     setPopupPosition({ top, left });
   };
-
+  
   useEffect(() => {
     const handleEnd = (event: Event) => {
       const target = event.target as HTMLElement;

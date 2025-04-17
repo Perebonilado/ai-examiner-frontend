@@ -1,9 +1,13 @@
-import { setIsChatOpen, setNotSureMessage } from "@/features/documentChatSlice";
-import React from "react";
+// TextSelectionPopup.tsx
+import React, { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch } from "react-redux";
+import {
+  setIsChatOpen,
+  setNotSureMessage,
+} from "@/features/documentChatSlice";
 
-interface PopupProps {
+export interface TextSelectionPopupProps {
   top: number;
   left: number;
   visible: boolean;
@@ -12,79 +16,76 @@ interface PopupProps {
   callBackOnAction?: () => void;
 }
 
-const TextSelectionPopup: React.FC<PopupProps> = ({
-  top,
-  left,
-  visible,
-  selectedText,
-  callBackOnAction,
-  clearSelection,
-}) => {
-  if (!visible) return null;
+const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
+  (
+    {
+      top,
+      left,
+      visible,
+      selectedText,
+      clearSelection,
+      callBackOnAction,
+    },
+    ref
+  ) => {
+    const dispatch = useDispatch();
+    if (!visible) return null;
 
-  const dispatch = useDispatch();
+    const handleAction = (action: string) => {
+      // unmount the popup immediately
+      clearSelection();
 
-  const onAction = (action: string) => {
-    dispatch(setNotSureMessage(`${action} - ${selectedText}`));
+      // dispatch using the remembered text
+      dispatch(setNotSureMessage(`${action} — ${selectedText}`));
+      setTimeout(() => dispatch(setIsChatOpen(true)), 300);
 
-    setTimeout(() => {
-      dispatch(setIsChatOpen(true));
-    }, 300);
+      if (callBackOnAction) callBackOnAction();
+    };
 
-    if (callBackOnAction) callBackOnAction();
-
-    clearSelection();
-  };
-
-  // The popup container positions the bubble and arrow relative to the target point.
-  const popup = (
-    <div
-      className="fixed z-[9999]"
-      style={{
-        top,
-        left,
-        transform: "translate(-50%, -100%)",
-      }}
-    >
-      <div className="relative flex flex-col items-center">
-        {/* Bubble with action buttons */}
-        <div className="bg-white shadow-md border border-gray-200 border-b-0 rounded-lg px-4 py-3 flex gap-3">
-          <button
-            onClick={() => onAction("Explain")}
-            className="text-sm hover:underline"
-          >
-            Explain
-          </button>
-          <button
-            onClick={() => onAction("Simplify")}
-            className="text-sm hover:underline"
-          >
-            Simplify
-          </button>
-          <button
-            onClick={() => onAction("Define")}
-            className="text-sm hover:underline"
-          >
-            Define
-          </button>
-        </div>
-        {/* Seamless Arrow pointing down */}
-        <div className="absolute top-full left-1/2 transform -translate-x-1/2">
-          <svg
-            width="20"
-            height="10"
-            viewBox="0 0 20 10"
-            fill="white"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path d="M0 0 L10 10 L20 0 Z" />
-          </svg>
+    const popup = (
+      <div
+        ref={ref}
+        className="fixed z-[9999] select-none"
+        style={{
+          top,
+          left,
+          transform: "translate(-50%, -100%)",
+        }}
+      >
+        <div className="relative flex flex-col items-center">
+          <div className="bg-white shadow-md border border-gray-200 border-b-0 rounded-lg px-4 py-3 flex gap-3">
+            {["Explain", "Simplify", "Define"].map((action) => (
+              <button
+                key={action}
+                onMouseDown={(e) => {
+                  e.preventDefault(); // stop the button text from being selected
+                  handleAction(action);
+                }}
+                className="text-sm hover:underline focus:outline-none"
+              >
+                {action}
+              </button>
+            ))}
+          </div>
+          <div className="absolute top-full left-1/2 transform -translate-x-1/2">
+            <svg
+              width="20"
+              height="10"
+              viewBox="0 0 20 10"
+              fill="white"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M0 0 L10 10 L20 0 Z" />
+            </svg>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 
-  return createPortal(popup, document.body);
-};
+    return createPortal(popup, document.body);
+  }
+);
+
+TextSelectionPopup.displayName = "TextSelectionPopup";
 
 export default TextSelectionPopup;

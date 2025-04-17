@@ -28,7 +28,17 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
   };
 
   useEffect(() => {
-    const handleMouseUp = (): void => {
+    const handleMouseUp = (event: MouseEvent): void => {
+      // Check if the clicked element is an input or textarea
+      const target = event.target as HTMLElement;
+      const isInputOrTextarea = target.tagName === "INPUT" || 
+                               target.tagName === "TEXTAREA" || 
+                               target.isContentEditable;
+      
+      if (isInputOrTextarea) {
+        return; // Don't show the popup for input fields
+      }
+
       setTimeout(() => {
         const selection: Selection | null = window.getSelection();
         const text: string = selection?.toString().trim() ?? "";
@@ -37,6 +47,11 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
           const range: Range = selection.getRangeAt(0);
           // Use getClientRects() to get all the rects of the selection
           const rects = Array.from(range.getClientRects());
+          
+          if (rects.length === 0) {
+            return; // No valid rects found
+          }
+          
           // Pick the rectangle with the smallest top value (top-most rectangle)
           const rect = rects.reduce((prev, curr) =>
             curr.top < prev.top ? curr : prev
@@ -49,7 +64,7 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
           const margin = 10;       // Margin from the viewport edge
 
           // Calculate initial positions based on the rect
-          let top = rect.top + window.scrollY - 8; // 8px offset so it appears above
+          let top = rect.top + window.scrollY - popupHeight - 8; // Position above selection
           let left = rect.left + window.scrollX + rect.width / 2;
 
           // Clamp the left position to ensure the popup remains within the horizontal viewport bounds
@@ -69,14 +84,27 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
           setSelectedText(text);
           setPopupPosition({ top, left });
         } else {
-          clearSelection();
+          // Only clear popup position, not the selection itself
+          // This avoids interfering with input selection behavior
+          setPopupPosition(null);
         }
       }, 0); // Delay to allow DOM selection to finalize
     };
 
+    // Handle clicks outside the selection to clear the popup
+    const handleClickOutside = (e: MouseEvent): void => {
+      const selection = window.getSelection();
+      if (selection?.toString().trim() === "") {
+        setPopupPosition(null);
+      }
+    };
+
     document.addEventListener("mouseup", handleMouseUp);
+    document.addEventListener("mousedown", handleClickOutside);
+    
     return () => {
       document.removeEventListener("mouseup", handleMouseUp);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 

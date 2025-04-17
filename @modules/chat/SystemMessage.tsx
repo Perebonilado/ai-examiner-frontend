@@ -1,11 +1,8 @@
 import React, { FC, useEffect, useState, useRef } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import cn from "classnames";
 import { useTextSelectionPopUp } from "@/hooks/useTextSelectionPopUp";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
-import { useDispatch } from "react-redux";
-import { setNotSureMessage } from "@/features/documentChatSlice";
 
 interface Props {
   message: string;
@@ -39,24 +36,10 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
     setHtmlMessage(parsed);
   };
 
-  const { popupPosition, selectedText, clearSelection } =
+  const { popupPosition, selectedText, clearSelection,} =
     useTextSelectionPopUp();
-  const dispatch = useDispatch();
 
-  const handleAction = (action: string) => {
-    dispatch(
-      setNotSureMessage(`
-      ${action}
-
-      ${selectedText}
-      `)
-    );
-
-    clearSelection();
-    setTimeout(() => {
-      if (scrollToBottom) scrollToBottom();
-    }, 600);
-  };
+  
 
   return (
     <>

@@ -36,59 +36,53 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
   };
 
   const handleSelection = () => {
-    const selection: Selection | null = window.getSelection();
-    const text: string = selection?.toString().trim() ?? "";
+  const selection: Selection | null = window.getSelection();
+  const text: string = selection?.toString().trim() ?? "";
 
-    if (text.length > 0 && selection?.rangeCount) {
-      const range: Range = selection.getRangeAt(0);
-      const rects = Array.from(range.getClientRects());
+  if (text.length > 0 && selection?.rangeCount) {
+    const range: Range = selection.getRangeAt(0);
+    const rects = Array.from(range.getClientRects());
 
-      if (rects.length === 0) return;
+    if (rects.length === 0) return;
 
-      // Choose the top-most rect
-      const rect = rects.reduce((prev, curr) =>
-        curr.top < prev.top ? curr : prev
-      );
+    const isMobile = window.innerWidth <= 768;
+    const popupWidth = 150;
+    const popupHeight = 40;
+    const margin = 10;
+    const extraSpacing = 12;
 
-      // Dimensions and spacing
-      const popupWidth = 150;
-      const popupHeight = 40;
-      const viewportMargin = 10;
-      const extraSpacing = 12; // additional space between text and popup
-      const scrollY = window.scrollY || window.pageYOffset;
+    // Get bottom-most rectangle
+    const rect = rects.reduce((prev, curr) =>
+      curr.bottom > prev.bottom ? curr : prev
+    );
 
-      let top: number;
-      // On mobile, position below selection plus extra spacing
-      if (isMobileDevice()) {
-        top = rect.bottom + scrollY + extraSpacing;
-      } else {
-        // On desktop, position above the selection minus extra spacing
-        top = rect.top + scrollY - popupHeight - extraSpacing;
-      }
+    let top: number;
+    let left = rect.left + window.scrollX + rect.width / 2;
 
-      // Calculate horizontal center of selection
-      let left = rect.left + (window.scrollX || window.pageXOffset) + rect.width / 2;
-
-      // Clamp horizontal within viewport
-      left = clamp(
-        left,
-        popupWidth / 2 + viewportMargin,
-        window.innerWidth - popupWidth / 2 - viewportMargin
-      );
-
-      // Clamp vertical within viewport bounds
-      top = clamp(
-        top,
-        viewportMargin,
-        window.innerHeight - popupHeight - viewportMargin
-      );
-
-      setSelectedText(text);
-      setPopupPosition({ top, left });
+    if (isMobile) {
+      top = rect.bottom + window.scrollY + extraSpacing; // below on mobile
     } else {
-      setPopupPosition(null);
+      top = rect.top + window.scrollY - popupHeight - extraSpacing; // above on desktop
     }
-  };
+
+    left = clamp(
+      left,
+      popupWidth / 2 + margin,
+      window.innerWidth - popupWidth / 2 - margin
+    );
+
+    top = clamp(
+      top,
+      margin,
+      window.innerHeight - popupHeight - margin
+    );
+
+    setSelectedText(text);
+    setPopupPosition({ top, left });
+  } else {
+    setPopupPosition(null);
+  }
+};
 
   useEffect(() => {
     const handleEnd = (event: Event) => {

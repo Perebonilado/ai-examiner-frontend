@@ -50,19 +50,20 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
         curr.top < prev.top ? curr : prev
       );
 
+      // Dimensions and spacing
       const popupWidth = 150;
       const popupHeight = 40;
-      const margin = 10;
-      const mobileOffset = 8;
+      const viewportMargin = 10;
+      const extraSpacing = 12; // additional space between text and popup
       const scrollY = window.scrollY || window.pageYOffset;
 
       let top: number;
-      // On mobile, position below the browser's default toolbar (below selection)
+      // On mobile, position below selection plus extra spacing
       if (isMobileDevice()) {
-        top = rect.bottom + scrollY + mobileOffset;
+        top = rect.bottom + scrollY + extraSpacing;
       } else {
-        // On desktop, position above the selection
-        top = rect.top + scrollY - popupHeight - mobileOffset;
+        // On desktop, position above the selection minus extra spacing
+        top = rect.top + scrollY - popupHeight - extraSpacing;
       }
 
       // Calculate horizontal center of selection
@@ -71,15 +72,15 @@ export const useTextSelectionPopUp = (): UseTextSelectionPopupReturn => {
       // Clamp horizontal within viewport
       left = clamp(
         left,
-        popupWidth / 2 + margin,
-        window.innerWidth - popupWidth / 2 - margin
+        popupWidth / 2 + viewportMargin,
+        window.innerWidth - popupWidth / 2 - viewportMargin
       );
 
       // Clamp vertical within viewport bounds
       top = clamp(
         top,
-        margin,
-        window.innerHeight - popupHeight - margin
+        viewportMargin,
+        window.innerHeight - popupHeight - viewportMargin
       );
 
       setSelectedText(text);

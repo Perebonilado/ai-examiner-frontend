@@ -213,6 +213,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
           />
           <IconButton
             icon={<ArrowUpIcon />}
+            disabled={message.trim().length === 0 || isAwaitingSystemResponse}
             onClick={() => {
               sendMessage(message);
               setMessage("");

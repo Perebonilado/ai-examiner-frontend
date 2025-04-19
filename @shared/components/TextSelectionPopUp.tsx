@@ -1,8 +1,16 @@
 import React, { forwardRef } from "react";
 import { createPortal } from "react-dom";
 import { useDispatch } from "react-redux";
-import { setIsChatOpen, setNotSureMessage } from "@/features/documentChatSlice";
+import {
+  setHighlightToPrompt,
+  setIsChatOpen,
+  setNotSureMessage,
+} from "@/features/documentChatSlice";
 import useClickOutside from "@/hooks/useClickOutside";
+import {
+  HighlightToPrompt,
+  HighlightToPromptType,
+} from "@/models/document-message.model";
 
 export interface TextSelectionPopupProps {
   selectedText: string;
@@ -14,8 +22,8 @@ const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
   ({ selectedText, clearSelection, callBackOnAction }) => {
     const dispatch = useDispatch();
 
-    const handleAction = (action: string) => {
-      dispatch(setNotSureMessage(`${action} — ${selectedText}`));
+    const handleAction = (action: HighlightToPrompt) => {
+      dispatch(setHighlightToPrompt({ question: action.question, highlight: action.highlight }));
       setTimeout(() => dispatch(setIsChatOpen(true)), 300);
       if (callBackOnAction) callBackOnAction();
     };
@@ -34,8 +42,10 @@ const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
               <button
                 key={action}
                 onClick={(e) => {
-                  // e.preventDefault();
-                  handleAction(action);
+                  handleAction({
+                    highlight: action.toLowerCase() as HighlightToPromptType,
+                    question: selectedText,
+                  });
                   clearSelection();
                 }}
                 className="text-sm hover:underline focus:outline-none text-white font-semibold"

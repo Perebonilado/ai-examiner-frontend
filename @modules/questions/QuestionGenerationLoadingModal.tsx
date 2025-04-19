@@ -1,20 +1,25 @@
 import React, { FC, useEffect, useState } from "react";
 import QuestionLoading from "./QuestionLoading";
 import ViewDocumentSummary from "./ViewDocumentSummary";
+import { useRouter } from "next/router";
+import TopLevelGenerateQuestionsLoader from "./TopLevelGenerateQuestionsLoader";
+import QuestionGenerationSuccessModal from "./QuestionGenerationSuccessModal";
 
 interface Props {
   isComplete: boolean;
   handleStartTest: () => void;
-  summary: string;
+  handleViewSummary: () => void;
+  showTopLevelLoader: boolean;
 }
 
 const QuestionGenerationLoadingModal: FC<Props> = ({
   isComplete,
-  summary,
   handleStartTest,
+  handleViewSummary,
+  showTopLevelLoader,
 }) => {
-  const [isViewSummary, setIsViewSummary] = useState(false);
   const [progress, setProgress] = useState(0);
+  let interval: NodeJS.Timeout;
   useEffect(() => {
     if (isComplete) {
       // Process done → jump to 100%
@@ -22,7 +27,7 @@ const QuestionGenerationLoadingModal: FC<Props> = ({
       return;
     }
 
-    const interval = setInterval(() => {
+    interval = setInterval(() => {
       setProgress((prev) => {
         if (prev < 90) {
           return prev + 1;
@@ -33,23 +38,28 @@ const QuestionGenerationLoadingModal: FC<Props> = ({
 
     return () => clearInterval(interval);
   }, [isComplete]);
-  return !isViewSummary ? (
-    <QuestionLoading
-      percentageLoading={progress}
-      handleViewSummary={() => {
-        setIsViewSummary(true);
-      }}
-      handleStartTest={handleStartTest}
-    />
-  ) : (
-    <ViewDocumentSummary
-      progress={progress}
-      handleStartTest={handleStartTest}
-      summary={summary}
-      handleBack={() => {
-        setIsViewSummary(false);
-      }}
-    />
+
+  const resetProgress = () => {
+    clearInterval(interval);
+    setProgress(0);
+  };
+
+  return (
+    <>
+      {showTopLevelLoader  && (
+        <TopLevelGenerateQuestionsLoader percentageLoading={progress} />
+      )}
+      {!showTopLevelLoader  && (
+        <QuestionLoading
+          percentageLoading={progress}
+          handleViewSummary={handleViewSummary}
+          handleStartTest={() => {
+            handleStartTest();
+            resetProgress();
+          }}
+        />
+      )}
+    </>
   );
 };
 

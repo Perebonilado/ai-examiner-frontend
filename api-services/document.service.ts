@@ -112,6 +112,9 @@ export const DocumentService = createApi({
           if (!res) return <DocumentSummaryModel>{};
           return res;
         },
+        extraOptions: {
+          triggerLoading: false,
+        },
       }
     ),
     updateDocument: build.mutation<any, UpdateDocumentPayloadModel>({
@@ -129,5 +132,5 @@ export const {
   useGetAllUserDocumentsQuery,
   useAddDocumentMutation,
   useUpdateDocumentMutation,
-  useGetDocumentSummaryQuery
+  useGetDocumentSummaryQuery,
 } = DocumentService;

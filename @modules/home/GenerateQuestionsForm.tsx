@@ -38,6 +38,7 @@ import { useGenerateQuestionsV2Mutation } from "@/api-services/questions.service
 import Modal from "@/@shared/components/Modal";
 import QuestionGenerationLoadingModal from "../questions/QuestionGenerationLoadingModal";
 import { clearMessages } from "@/features/documentChatSlice";
+import { useGenerateQuestionsContext } from "@/contexts/GenerateQuestionsContext";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -61,18 +62,7 @@ const GenerateQuestionsForm: FC = () => {
   const [fileId, setFileId] = useState<string | null>(null);
   const [documentId, setDocumentId] = useState<string | null>(null);
   const [isTopicsSelectVisible, setIsTopicsSelectVisible] = useState(false);
-  // const [isFocusAreaData, setIsFocusAreaData] = useState(false);
   const [includeUseCases, setIncludeUseCases] = useState(false);
-  // const [
-  //   fetchTopics,
-  //   { data: topics, isLoading: topicsLoading, error: topicsError },
-  // ] = useGenerateDocumentTopicsMutation();
-
-  // useEffect(() => {
-  //   if (topics) {
-  //     setIsFocusAreaData(true);
-  //   }
-  // }, [topics]);
 
   const router = useRouter();
 
@@ -81,24 +71,18 @@ const GenerateQuestionsForm: FC = () => {
     (state: RootState) => state.permissionsState.permissions
   );
 
-  // const [createDocAndGenerateQuestions, { data, isLoading, error, isSuccess }] =
-  //   useAddDocumentMutation();
-
-  const [generateQuestionsV2, { isLoading, isSuccess, error, data }] =
-    useGenerateQuestionsV2Mutation();
+  const {
+    data,
+    error,
+    generateQuestionsV2,
+    isLoading,
+    isSuccess,
+    setUploadedDocumentId,
+  } = useGenerateQuestionsContext();
 
   const { data: questionTypes } = useGetLookUpsByTypeQuery({
     type: "question_type",
   });
-
-  // const [
-  //   uploadFile,
-  //   {
-  //     isLoading: uploadfileLoading,
-  //     error: uploadFileError,
-  //     data: uploadFileData,
-  //   },
-  // ] = useUploadFileMutation();
 
   const [
     uploadFileV2,
@@ -163,6 +147,7 @@ const GenerateQuestionsForm: FC = () => {
     if (uploadFileDataV2) {
       setFileId(uploadFileDataV2.fileId);
       setDocumentId(uploadFileDataV2.documentId);
+      setUploadedDocumentId(uploadFileDataV2.documentId);
       const topics = Array.from(new Set(uploadFileDataV2.topics)).map((t) => {
         return {
           label: t,
@@ -173,44 +158,6 @@ const GenerateQuestionsForm: FC = () => {
       setDocumentTopics(topics);
     }
   }, [uploadFileDataV2]);
-
-  // useEffect(() => {
-  //   if (data) {
-  // router.push(
-  //   `/questions/practise-questions/${hyphenateString(
-  //     data.type.toLowerCase()
-  //   )}/${data.id}`
-  // );
-  //   }
-  // }, [data]);
-
-  const [showLoader, setShowLoader] = useState(false);
-
-  useEffect(() => {
-    if (isLoading) {
-      setShowLoader(true);
-    }
-  }, [isLoading]);
-
-  useEffect(() => {
-    if (error) {
-      setShowLoader(false);
-    }
-  }, [error]);
-
-  // useEffect(() => {
-  //   if (isLoading) {
-  //     setModalContent(<AppLoader loaderMessage="Generating questions" />);
-  //   } else {
-  //     setModalContent(null);
-  //   }
-  // }, [isLoading]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      toast.success("Questions Successfully generated for document");
-    }
-  }, [isSuccess]);
 
   useEffect(() => {
     if (uploadFileError && "status" in uploadFileError) {
@@ -233,34 +180,15 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [file, fileId]);
 
-  const dispatch = useDispatch();
-
   return !permissions ? null : (
     <section>
-      {showLoader && (
-        <Modal>
-          <QuestionGenerationLoadingModal
-            isComplete={isSuccess}
-            summary={uploadFileDataV2?.summary || ""}
-            handleStartTest={() => {
-              if (!data) return;
-              // remove prev doc messages
-              dispatch(clearMessages());
-              router.push(
-                `/questions/practise-questions/${hyphenateString(
-                  data.type.toLowerCase()
-                )}/${data.id}`
-              );
-            }}
-          />
-        </Modal>
-      )}
       <FormikProvider value={formik}>
         <Form>
           <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
             <UploadFileBox
               allowedTypes={allowedMimeTypes}
               attachedFile={file}
+              disableUpload={isLoading}
               handleSelectFile={(file, pages, start, end) => {
                 setFile(file);
                 handleFileUpload(file, pages, start, end);
@@ -377,27 +305,6 @@ const GenerateQuestionsForm: FC = () => {
               />
             )}
 
-            {/* {topicsLoading && isAdvanced && (
-              <div className="flex flex-col gap-2 items-center">
-                <Spinner size="sm" />
-                <p className="text-xs">Loading topics...</p>
-              </div>
-            )}
-
-            {topicsError && isAdvanced && (
-              <div className="flex flex-col gap-2 items-center">
-                <ErrorMessage message="An error occured while loading topics" />
-                <Button
-                  title="reload topics"
-                  variant="text"
-                  size="small"
-                  onClick={() => {
-                    fetchTopics({ fileId: fileId as string });
-                  }}
-                />
-              </div>
-            )} */}
-
             <Button
               title="Generate Questions"
               size="large"
@@ -406,7 +313,8 @@ const GenerateQuestionsForm: FC = () => {
                 !fileId ||
                 !file ||
                 uploadFileLoading ||
-                !documentId
+                !documentId ||
+                isLoading
               }
             />
           </div>

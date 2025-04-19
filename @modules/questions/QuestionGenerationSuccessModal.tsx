@@ -1,13 +1,8 @@
-import React, { FC } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ProgressBar from "@ramonak/react-progress-bar";
 import Button from "@/@shared/ui/Button";
-
-interface Props {
-  handleViewSummary: () => void;
-  percentageLoading: number;
-  handleStartTest: () => void;
-}
+import React, { FC } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import ProgressBar from "@ramonak/react-progress-bar";
+import CloseIcon from "@/icons/CloseIcon";
 
 const fadeVariants = {
   hidden: { opacity: 0 },
@@ -15,10 +10,16 @@ const fadeVariants = {
   exit: { opacity: 0 },
 };
 
-const QuestionLoading: FC<Props> = ({
-  handleViewSummary,
-  percentageLoading,
+interface Props {
+  percentageLoading: number;
+  handleStartTest: () => void;
+  handleClose: () => void;
+}
+
+const QuestionGenerationSuccessModal: FC<Props> = ({
   handleStartTest,
+  percentageLoading,
+  handleClose
 }) => {
   return (
     <AnimatePresence>
@@ -34,14 +35,15 @@ const QuestionLoading: FC<Props> = ({
         variants={fadeVariants}
         transition={{ duration: 0.3 }}
       >
-        <div className="md:max-w-[450px] max-w-[95vw] w-[90vw] flex flex-col items-center justify-center bg-white py-14 max-h-[90vh] rounded-xl">
+        <div className="md:max-w-[450px] max-w-[95vw] w-[90vw] flex flex-col items-center justify-center bg-white py-14 max-h-[90vh] rounded-xl relative">
+          <button className="absolute top-5 right-5" onClick={handleClose}>
+            <CloseIcon />
+          </button>
           <p className="text-center px-3 text-2xl font-semibold tracking-wide text-gray-800">
-            {percentageLoading < 100 ? "Preparing Test" : "Your test is ready!"}
+            {"Your test is ready!"}
           </p>
           <p className="text-sm text-center text-gray-500 leading-relaxed max-w-xs mt-1">
-            {percentageLoading < 100
-              ? `Review a quick summary while we generate your test!`
-              : "You may begin your test."}
+            {"You may begin your test."}
           </p>
 
           <div className="px-8 mt-4 mb-8 w-full">
@@ -54,16 +56,9 @@ const QuestionLoading: FC<Props> = ({
 
           <div className="mt-6">
             <Button
-              title="View Summary"
-              size="large"
-              onClick={handleViewSummary}
-              variant="outlined"
-            />
-            <Button
               title="Start Test"
               size="large"
               className="mt-4"
-              disabled={percentageLoading < 100}
               onClick={handleStartTest}
               fullWidth
             />
@@ -74,4 +69,4 @@ const QuestionLoading: FC<Props> = ({
   );
 };
 
-export default QuestionLoading;
+export default QuestionGenerationSuccessModal;

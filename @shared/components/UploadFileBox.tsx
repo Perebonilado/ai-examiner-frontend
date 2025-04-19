@@ -44,6 +44,7 @@ interface Props {
   allowedTypes: string[];
   uploadLoading: boolean;
   maxFileSizeMB?: number;
+  disableUpload: boolean;
 }
 
 const UploadFileBox: FC<Props> = ({
@@ -53,6 +54,7 @@ const UploadFileBox: FC<Props> = ({
   handleSelectFile,
   uploadLoading,
   maxFileSizeMB = 10,
+  disableUpload,
 }) => {
   const filesRef = useRef<ElementRef<"input">>(null);
   const imagesRef = useRef<ElementRef<"input">>(null);
@@ -144,7 +146,7 @@ const UploadFileBox: FC<Props> = ({
                 lastModified: new Date().getTime(),
               });
               handleSelectFile(file);
-              setModalContent(null)
+              setModalContent(null);
             }}
             allowedFileSize={maxFileSizeMB}
             currentFileSize={currentFileSizeMb}
@@ -271,6 +273,12 @@ const UploadFileBox: FC<Props> = ({
               )}
               <Button
                 onClick={() => {
+                  if (disableUpload) {
+                    toast.error(
+                      "Please wait until your test is ready"
+                    );
+                    return;
+                  }
                   setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
                 }}
                 starticon={<UploadIconAlt fill="#2F004F" />}

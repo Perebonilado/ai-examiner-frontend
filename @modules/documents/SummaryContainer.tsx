@@ -4,6 +4,7 @@ import DOMPurify from "dompurify";
 import { useDispatch } from "react-redux";
 import { useTextSelectionPopUp } from "@/hooks/useTextSelectionPopUp";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
+import { HighlightableTextArea } from "react-highlight-popover";
 
 interface Props {
   summary: string;
@@ -25,38 +26,47 @@ const SummaryContainer: FC<Props> = ({ summary }) => {
     setHtmlSummary(parsed);
   };
 
-  const { popupPosition, selectedText, clearSelection } =
-    useTextSelectionPopUp();
+  // const { popupPosition, selectedText, clearSelection } =
+  //   useTextSelectionPopUp();
   const dispatch = useDispatch();
 
   return (
     <>
       <div className="w-full h-full flex flex-col">
         {htmlSummary ? (
-          // This wrapper will fill all available space and scroll if needed
-          <div className="flex-1 w-full h-full overflow-auto">
-            {/* 
-            - max-w-none lifts the prose max-width cap  
-            - break-words ensures long tokens wrap  
-          */}
-            <div
-              className="prose prose-sm max-w-none break-words px-4 py-2"
-              dangerouslySetInnerHTML={{ __html: htmlSummary }}
-            />
-          </div>
+          <HighlightableTextArea
+            popoverItem={(HighlightedText, setPopoverState) => {
+              return (
+                <TextSelectionPopup
+                  selectedText={HighlightedText}
+                  clearSelection={() => {
+                    setPopoverState(false);
+                    console.log('set to false')
+                  }}
+                />
+              );
+            }}
+          >
+            <div className="flex-1 w-full h-full overflow-auto">
+              <div
+                className="prose prose-sm max-w-none break-words px-4 py-2"
+                dangerouslySetInnerHTML={{ __html: htmlSummary }}
+              />
+            </div>
+          </HighlightableTextArea>
         ) : (
           <div className="flex-1 w-full h-full flex items-center justify-center text-gray-500">
             Summary Unavailable
           </div>
         )}
       </div>
-      <TextSelectionPopup
+      {/* <TextSelectionPopup
         visible={!!popupPosition}
         top={popupPosition?.top || 0}
         left={popupPosition?.left || 0}
         selectedText={selectedText}
         clearSelection={clearSelection}
-      />
+      /> */}
     </>
   );
 };

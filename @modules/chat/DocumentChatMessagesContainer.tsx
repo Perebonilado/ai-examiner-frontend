@@ -14,6 +14,8 @@ import RetrySendingMessageButton from "./RetrySendingMessageButton";
 import CollapseIcon from "@/icons/CollapseIcon";
 import ExpandIcon from "@/icons/ExpandIcon";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
+import { HighlightableTextArea } from "react-highlight-popover";
+import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 
 interface Props {
   handleFetchOlderMessages: () => void;
@@ -173,23 +175,43 @@ const DocumentChatMessagesContainer: FC<Props> = ({
           className="flex-1 flex-col overflow-y-auto py-8 space-y-2 no-scrollbar"
           ref={messagesContainerRef}
         >
-          {[...messages].map((message, idx) => {
-            if (message.sender === "user") {
-              return <UserMessage message={message.message} key={idx} />;
-            }
-            return (
-              <SystemMessage
-                message={message.message}
-                key={idx}
-                scrollToBottom={() => {
-                  messagesEndRef.current?.scrollIntoView({
-                    behavior: "smooth",
-                  });
-                }}
-              />
-            );
-          })}
-          {getFooterElement()}
+          <HighlightableTextArea
+            popoverItem={(HighlightedText, setPopoverState) => {
+              return (
+                <TextSelectionPopup
+                  selectedText={HighlightedText}
+                  clearSelection={() => {
+                    setPopoverState(false);
+                  }}
+                  callBackOnAction={() => {
+                    setTimeout(() => {
+                      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+                    }, 600);
+                  }}
+                />
+              );
+            }}
+          >
+            <div>
+              {[...messages].map((message, idx) => {
+                if (message.sender === "user") {
+                  return <UserMessage message={message.message} key={idx} />;
+                }
+                return (
+                  <SystemMessage
+                    message={message.message}
+                    key={idx}
+                    scrollToBottom={() => {
+                      messagesEndRef.current?.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }}
+                  />
+                );
+              })}
+              {getFooterElement()}
+            </div>
+          </HighlightableTextArea>
           <div ref={messagesEndRef} />
         </div>
 

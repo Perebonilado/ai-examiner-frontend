@@ -23,8 +23,16 @@ export interface SendMessagePayloadModel {
   courseDocumentId: string;
   responseFormat: string;
   notSureQuestion?: NotSureQuestion
+  highlightToPrompt?: HighlightToPrompt;
 }
 
 export interface SendMessageModel {
   message: string;
+}
+
+export type HighlightToPromptType = 'explain' | 'simplify' | 'define';
+
+export interface HighlightToPrompt {
+  question: string;
+  highlight: HighlightToPromptType;
 }

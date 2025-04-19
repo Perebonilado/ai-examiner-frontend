@@ -6,6 +6,7 @@ import {
   appendNewMessage,
   clearMessages,
   MessageItem,
+  setHighlightToPrompt,
   setIsChatOpen,
   setMessages,
   setNotSureMessage,
@@ -18,6 +19,7 @@ import { reduxStore, RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
 import { DocumentMessageService } from "@/api-services/document-message.service";
 import { NotSureQuestion } from "@/models/questions.model";
+import { HighlightToPrompt } from "@/models/document-message.model";
 
 const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
   const dispatch = useDispatch();
@@ -30,6 +32,7 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
     isChatOpen,
     notSureMessage,
     notSureQuestion,
+    highlightToPrompt,
   } = useSelector((state: RootState) => state.documentChatReducer);
 
   useEffect(() => {
@@ -51,6 +54,26 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
       }, 100);
     }
   }, [notSureMessage, notSureQuestion]);
+
+  useEffect(() => {
+    if (highlightToPrompt) {
+      const question = `${highlightToPrompt.highlight} - ${highlightToPrompt.question}`;
+      dispatch(
+        appendNewMessage({
+          createdOn: new Date().toString() as unknown as Date,
+          id: new Date().getTime().toString(),
+          message: question,
+          sender: "user",
+        })
+      );
+
+      getSystemResponse(question, undefined, highlightToPrompt);
+
+      setTimeout(() => {
+        dispatch(setHighlightToPrompt(null));
+      }, 100);
+    }
+  }, [highlightToPrompt]);
 
   const limit = 4;
   const [isFetchingMessages, setIsFetchingMessages] = useState(false);
@@ -104,7 +127,8 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
 
   const getSystemResponse = async (
     message: string,
-    notSureQuestionToBeSent?: NotSureQuestion
+    notSureQuestionToBeSent?: NotSureQuestion,
+    highlightToPrompt?: HighlightToPrompt
   ) => {
     try {
       setSystemResponseError(false);
@@ -115,6 +139,7 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
           courseDocumentId: documentIdInView,
           responseFormat: "indepth",
           notSureQuestion: notSureQuestionToBeSent || undefined,
+          highlightToPrompt: highlightToPrompt || undefined,
         })
       );
       const systemResponse = data.data?.message;

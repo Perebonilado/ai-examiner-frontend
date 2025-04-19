@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import { NotSureQuestion } from "../models/questions.model";
+import { HighlightToPrompt } from "@/models/document-message.model";
 
 export interface MessageItem {
   message: string;
@@ -17,6 +18,7 @@ interface DocumentChatState {
   notSureMessage: string;
   isChatOpen: boolean;
   notSureQuestion: NotSureQuestion | null;
+  highlightToPrompt: HighlightToPrompt | null;
 }
 
 const initialState: DocumentChatState = {
@@ -27,6 +29,7 @@ const initialState: DocumentChatState = {
   notSureMessage: "",
   isChatOpen: false,
   notSureQuestion: null,
+  highlightToPrompt: null,
 };
 
 export const documentChatSlice = createSlice({
@@ -36,8 +39,8 @@ export const documentChatSlice = createSlice({
     setDocumentIdInView: (state, action: PayloadAction<string>) => {
       state.documentIdInView = action.payload;
     },
-    setDocumentTitleInView:  (state, action: PayloadAction<string>) => {
-      state.documentTitleInView= action.payload;
+    setDocumentTitleInView: (state, action: PayloadAction<string>) => {
+      state.documentTitleInView = action.payload;
     },
     setMessages: (state, action: PayloadAction<MessageItem[]>) => {
       state.messages = action.payload;
@@ -60,6 +63,12 @@ export const documentChatSlice = createSlice({
     ) => {
       state.notSureQuestion = action.payload;
     },
+    setHighlightToPrompt: (
+      state,
+      action: PayloadAction<HighlightToPrompt | null>
+    ) => {
+      state.highlightToPrompt = action.payload;
+    },
     setIsChatOpen: (state, action: PayloadAction<boolean>) => {
       state.isChatOpen = action.payload;
     },
@@ -77,6 +86,7 @@ export const {
   appendNewMessage,
   setNotSureMessage,
   setNotSureQuestion,
+  setHighlightToPrompt,
   clearMessages,
   setIsChatOpen,
   resetDocumentChat,

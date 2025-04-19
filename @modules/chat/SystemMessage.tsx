@@ -3,6 +3,7 @@ import { marked } from "marked";
 import DOMPurify from "dompurify";
 import { useTextSelectionPopUp } from "@/hooks/useTextSelectionPopUp";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
+import { HighlightableTextArea } from "react-highlight-popover";
 
 interface Props {
   message: string;
@@ -36,10 +37,8 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
     setHtmlMessage(parsed);
   };
 
-  const { popupPosition, selectedText, clearSelection,} =
-    useTextSelectionPopUp();
-
-  
+  // const { popupPosition, selectedText, clearSelection,} =
+  //   useTextSelectionPopUp();
 
   return (
     <>
@@ -48,11 +47,31 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
           className="transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden"
           style={{ maxHeight: contentHeight ?? 200 }}
         >
-          <div
-            ref={innerRef}
-            className="prose prose-sm max-w-none break-words overflow-x-hidden"
-            dangerouslySetInnerHTML={{ __html: htmlMessage }}
-          />
+          {/* <HighlightableTextArea
+            zIndex={9999}
+            yOffset={0}
+            popoverItem={(HighlightedText, setPopoverState) => {
+              return (
+                <TextSelectionPopup
+                  selectedText={HighlightedText}
+                  clearSelection={() => {
+                    setPopoverState(false);
+                  }}
+                  callBackOnAction={() => {
+                    setTimeout(() => {
+                      scrollToBottom && scrollToBottom();
+                    }, 600);
+                  }}
+                />
+              );
+            }}
+          > */}
+            <div
+              ref={innerRef}
+              className="prose prose-sm max-w-none break-words overflow-x-hidden"
+              dangerouslySetInnerHTML={{ __html: htmlMessage }}
+            />
+          {/* </HighlightableTextArea> */}
         </div>
 
         {!isExpanded && shouldShowToggle && (
@@ -68,7 +87,7 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
           </button>
         )}
       </div>
-      <TextSelectionPopup
+      {/* <TextSelectionPopup
         visible={!!popupPosition}
         top={popupPosition?.top || 0}
         left={popupPosition?.left || 0}
@@ -79,7 +98,7 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
             scrollToBottom && scrollToBottom();
           }, 600);
         }}
-      />
+      /> */}
     </>
   );
 };

@@ -11,10 +11,10 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import PermissionProvider from "@/contexts/PermissionContext";
 import LoaderProvider from "@/contexts/LoaderContext";
 import { useEffect } from "react";
-import PreferredLanguageProvider from "@/contexts/PreferredLanguageContext";
 import Script from "next/script";
 import GoogleTranslationProvider from "@/contexts/GoogleTransalationContext";
 import DocumentChatContainer from "@/@modules/chat/DocumentChatContainer";
+import GenerateQuestionsProvider from "@/contexts/GenerateQuestionsContext";
 
 declare global {
   interface Window {
@@ -59,11 +59,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <GoogleTranslationProvider>
             <ModalProvider>
               <LoaderProvider>
+                <GenerateQuestionsProvider>
+
                 <DocumentChatContainer>
-                  {/* <PreferredLanguageProvider> */}
                   <Component {...pageProps} />
-                  {/* </PreferredLanguageProvider> */}
                 </DocumentChatContainer>
+                </GenerateQuestionsProvider>
               </LoaderProvider>
             </ModalProvider>
           </GoogleTranslationProvider>

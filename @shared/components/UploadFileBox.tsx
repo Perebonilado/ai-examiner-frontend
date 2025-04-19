@@ -25,6 +25,11 @@ import { progress } from "framer-motion";
 import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import UploadIconAlt from "@/icons/UploadIconAlt";
+import PowerPointIcon from "@/icons/PowerPointIcon";
+import MsWordIcon from "@/icons/MsWordIcon";
+import PDFIconAlt from "@/icons/PDFIconAlt";
+import JPGIcon from "@/icons/JPGIcon";
+import FileUploadSpinner from "./FileUploadSpinner";
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 const options = {
@@ -251,82 +256,80 @@ const UploadFileBox: FC<Props> = ({
         multiple
       />
       <div>
-        <label className={`text-sm font-semibold mb-2 block`}>
-          Upload Study Document
-        </label>
-        <div className="w-full p-6 h-[250px] shadow-lg bg-gray-50 border border-opacity-45 border-gray-300 rounded-lg flex flex-col items-center justify-center gap-4">
+        <div className="w-full p-6 h-[250px] shadow-md bg-white border border-[#9E69E3] border-dashed rounded-3xl">
           {!attachedFile && !uploadLoading && !pdfProcessing && (
-            <div
-              className="flex flex-col justify-center gap-3 relative"
-              ref={uploadButtonContainerRef}
-            >
-              {isChooseFileTypePopUp && (
-                <ChooseFileTypeBox
-                  handleSelectFiles={() => {
-                    filesRef.current?.click();
-                    setIsChooseFileTypePopUp(false);
+            <div className="flex flex-col items-center justify-between gap-4 h-full">
+              <div className="flex flex-col items-center justify-center text-center">
+                <div className="flex items-center justify-center gap-3 mb-2">
+                  <PowerPointIcon />
+                  <MsWordIcon />
+                  <PDFIconAlt />
+                  <JPGIcon />
+                </div>
+                <p className="text-xl font-semibold">
+                  Upload your material here
+                </p>
+                <p className="text-[#00000080] text-xs mt-1">
+                  Max size: {maxFileSizeMB}mb pdf, docx, pptx, ppt, png, jpg,
+                  txt
+                </p>
+              </div>
+
+              <div className="relative" ref={uploadButtonContainerRef}>
+                {isChooseFileTypePopUp && (
+                  <ChooseFileTypeBox
+                    handleSelectFiles={() => {
+                      filesRef.current?.click();
+                      setIsChooseFileTypePopUp(false);
+                    }}
+                    handleSelectImages={() => {
+                      imagesRef?.current?.click();
+                    }}
+                  />
+                )}
+                <button
+                  onClick={() => {
+                    if (disableUpload) {
+                      toast.error("Please wait until your test is ready");
+                      return;
+                    }
+                    setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
                   }}
-                  handleSelectImages={() => {
-                    imagesRef?.current?.click();
+                  type="button"
+                  className="border border-[#9333EA] px-6 py-2 text-[#2F004F] rounded-full font-medium text-sm"
+                >
+                  Browse files
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-col items-center justify-center gap-4 h-full">
+            {attachedFile && uploadLoading && <FileUploadSpinner />}
+            {pdfProcessing && (
+              <FileUploadSpinner
+                title={`Processing File ${ocrProgress && ocrProgress}`}
+              />
+            )}
+
+            {attachedFile && !uploadLoading && !pdfProcessing && (
+              <TransitionUp>
+                <AttachedFileInfo
+                  handleDelete={() => {
+                    handleDeleteFile();
+                    if (filesRef.current && filesRef.current.value) {
+                      filesRef.current.value = "";
+                    }
+
+                    if (imagesRef.current && imagesRef.current.value) {
+                      imagesRef.current.value = "";
+                    }
                   }}
+                  fileName={attachedFile.name}
                 />
-              )}
-              <Button
-                onClick={() => {
-                  if (disableUpload) {
-                    toast.error(
-                      "Please wait until your test is ready"
-                    );
-                    return;
-                  }
-                  setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
-                }}
-                starticon={<UploadIconAlt fill="#2F004F" />}
-                title="UPLOAD FILE"
-                size="large"
-                variant="outlined"
-                type="button"
-              />
-              <p className="text-xs text-center italic">
-                Maximum File Size: {maxFileSizeMB}mb | Allowed File Types: pdf,
-                docx, pptx, ppt, jpeg, png, jpg, txt
-              </p>
-            </div>
-          )}
-
-          {attachedFile && !uploadLoading && !pdfProcessing && (
-            <TransitionUp>
-              <AttachedFileInfo
-                handleDelete={() => {
-                  handleDeleteFile();
-                  if (filesRef.current && filesRef.current.value) {
-                    filesRef.current.value = "";
-                  }
-
-                  if (imagesRef.current && imagesRef.current.value) {
-                    imagesRef.current.value = "";
-                  }
-                }}
-                fileName={attachedFile.name}
-              />
-            </TransitionUp>
-          )}
-          {attachedFile && uploadLoading && (
-            <div className="flex flex-col items-center justify-center gap-3">
-              <Spinner />
-              <p className="text-center truncate text-xs font-semibold">
-                File upload in progess...
-              </p>
-            </div>
-          )}
-          {pdfProcessing && (
-            <div className="flex flex-col items-center justify-center gap-3">
-              <Spinner />
-              <p className="text-center truncate text-xs font-semibold">
-                Processing File {ocrProgress && ocrProgress}
-              </p>
-            </div>
-          )}
+              </TransitionUp>
+            )}
+          </div>
         </div>
       </div>
     </>

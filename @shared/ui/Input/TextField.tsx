@@ -10,6 +10,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   endicon?: ReactNode;
   handleClick?: () => void;
   cursorPointer?: boolean;
+  readOnly?: boolean
 }
 
 const TextField: FC<Props> = ({
@@ -19,6 +20,7 @@ const TextField: FC<Props> = ({
   starticon,
   endicon,
   handleClick,
+  readOnly= false,
   cursorPointer = false,
   ...props
 }) => {
@@ -38,7 +40,7 @@ const TextField: FC<Props> = ({
         </label>
       )}
       <div className="w-full relative" onClick={handleClick}>
-        <input className={inputStyle} {...props} />
+        <input className={inputStyle} {...props} readOnly={readOnly}/>
         {starticon && !endicon && (
           <span className="absolute top-2/4 -translate-y-1/2 left-2 cursor-pointer">
             {starticon}

@@ -306,7 +306,7 @@ const GenerateQuestionsForm: FC = () => {
 
             <TextField
               label="Document Title"
-              placeholder="Enter the title of the document you want to upload"
+              placeholder="Enter a title for your document"
               {...formik.getFieldProps("title")}
               error={formik.touched.title ? formik.errors.title : undefined}
             />
@@ -319,6 +319,7 @@ const GenerateQuestionsForm: FC = () => {
                 <TextField
                   label=""
                   cursorPointer={true}
+                  readOnly={true}
                   value={selectedQuestionType}
                   handleClick={() => {
                     setIsTestFormatModal(true);
@@ -335,6 +336,7 @@ const GenerateQuestionsForm: FC = () => {
                 <div className="mt-2 cursor-pointer">
                   <TextField
                     label=""
+                    readOnly={true}
                     cursorPointer={true}
                     value={formik.values.questionCount || "5"}
                     handleClick={() => {

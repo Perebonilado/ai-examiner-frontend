@@ -256,7 +256,7 @@ const UploadFileBox: FC<Props> = ({
         multiple
       />
       <div>
-        <div className="w-full p-6 h-[250px] shadow-md bg-white border border-[#9E69E3] border-dashed rounded-3xl">
+        <div className="w-full p-6 h-[250px] max-sm:h-[230px] shadow-md bg-white border border-[#9E69E3] border-dashed rounded-3xl">
           {!attachedFile && !uploadLoading && !pdfProcessing && (
             <div className="flex flex-col items-center justify-between gap-4 h-full">
               <div className="flex flex-col items-center justify-center text-center">

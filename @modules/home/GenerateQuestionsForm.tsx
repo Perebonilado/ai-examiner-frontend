@@ -39,6 +39,17 @@ import Modal from "@/@shared/components/Modal";
 import QuestionGenerationLoadingModal from "../questions/QuestionGenerationLoadingModal";
 import { clearMessages } from "@/features/documentChatSlice";
 import { useGenerateQuestionsContext } from "@/contexts/GenerateQuestionsContext";
+import { TestFormatItem } from "./TestFormatItem";
+import MultipleChoiceIcon from "@/icons/MultipleChoiceIcon";
+import FlashcardIcon from "@/icons/FlashcardIcon";
+import MultipleTrueFalseIcon from "@/icons/MultipleTrueFalseIcon";
+import TestFormatItemContainer from "./TestFormatItemContainer";
+import Dialog from "@/@shared/components/Dialog";
+import EssayIcon from "@/icons/EssayIcon";
+import VivaIcon from "@/icons/VivaIcon";
+import TotalQuestionsContainer from "./TotalQuestionsContainer";
+import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
+import AdditionalSettingsContainer from "./AdditionalSettingsContainer";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -48,8 +59,8 @@ const UploadFileBox = dynamic(
 const initialValues = {
   title: "",
   questionCount: "",
-  questionType: "",
-  difficulty: "",
+  questionType: "3",
+  difficulty: "medium",
 };
 
 const GenerateQuestionsForm: FC = () => {
@@ -180,8 +191,97 @@ const GenerateQuestionsForm: FC = () => {
     }
   }, [file, fileId]);
 
+  const [isTestFormatModal, setIsTestFormatModal] = useState(false);
+  const [selectedQuestionType, setSelectedQuestionType] = useState(
+    (() => {
+      const value = questionTypes?.find(
+        (qt) => qt.value === formik.values.questionType || "3"
+      )?.label as string;
+
+      return value;
+    })() || "Multiple Choice"
+  );
+
+  useEffect(() => {
+    if (questionTypes)
+      setSelectedQuestionType(
+        (() => {
+          const value = questionTypes?.find(
+            (qt) => qt.value == formik.values.questionType
+          )?.label as string;
+
+          return value;
+        })() || "Multiple Choice"
+      );
+  }, [formik.values.questionType, questionTypes]);
+
+  const [isTotalQuestionsForm, setIsTotalQuestionsForm] = useState(false);
+
+  const [isAdditionalSettings, setIsAdditionalSettings] = useState(false);
+
   return !permissions ? null : (
     <section>
+      {isAdditionalSettings && (
+        <Modal>
+          <AdditionalSettingsContainer
+            canUseDifficulty={formik.values.questionType !== "6"}
+            handleClose={() => {
+              setIsAdditionalSettings(false);
+            }}
+            allTopics={documentTopics.map((t) => t.label)}
+            selectedTopics={selectedTopics.map((t) => t.label)}
+            handleSelectTopics={(topics) => {
+              setSelectedTopics(
+                topics.map((t) => {
+                  return { label: t, value: t.toLowerCase() };
+                })
+              );
+            }}
+            isCaseStudy={includeUseCases}
+            handleCaseStudy={() => {
+              setIncludeUseCases(!includeUseCases);
+            }}
+            canUseCaseStudy={["3", "7"].includes(formik.values.questionType)}
+            selectedDifficulty={formik.values.difficulty}
+            handleSelectDifficulty={(difficulty) => {
+              formik.setFieldValue("difficulty", difficulty);
+            }}
+          />
+        </Modal>
+      )}
+      {isTotalQuestionsForm && (
+        <Modal>
+          <TotalQuestionsContainer
+            handleClose={() => {
+              setIsTotalQuestionsForm(false);
+            }}
+            handleSelected={(value) => {
+              formik.setFieldValue("questionCount", String(value));
+            }}
+            selected={Number(formik.values.questionCount) || 5}
+            maxCount={permissions.maxQA}
+          />
+        </Modal>
+      )}
+      {isTestFormatModal && (
+        <Modal>
+          <TestFormatItemContainer
+            handleClose={() => {
+              setIsTestFormatModal(false);
+            }}
+            testFormats={testFormats}
+            handleSelected={(value) => {
+              formik.setFieldValue("questionType", String(value));
+              setIsTestFormatModal(false);
+            }}
+            selected={
+              formik.values.questionType
+                ? Number(formik.values.questionType)
+                : 3
+            }
+          />
+        </Modal>
+      )}
       <FormikProvider value={formik}>
         <Form>
           <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
@@ -213,100 +313,50 @@ const GenerateQuestionsForm: FC = () => {
 
             <div>
               <label className="text-sm font-semibold flex items-center gap-4">
-                Study with{" "}
+                Test Format{" "}
               </label>
-              <DropDown
-                options={
-                  getQuestionTypeBasedOnPermission(
-                    permissions,
-                    questionTypes
-                  ) ?? []
-                }
-                {...formik.getFieldProps("questionType")}
-                error={
-                  formik.touched.questionType
-                    ? formik.errors.questionType
-                    : undefined
-                }
-              />
-            </div>
-
-            {formik.values.questionType !== "6" && (
-              <div>
-                <label className="text-sm font-semibold flex items-center gap-4">
-                  Difficulty
-                </label>
-
-                <DropDown
-                  options={difficultyOptions}
-                  {...formik.getFieldProps("difficulty")}
-                  error={
-                    formik.touched.difficulty
-                      ? formik.errors.difficulty
-                      : undefined
-                  }
+              <div className="mt-2 cursor-pointer">
+                <TextField
+                  label=""
+                  cursorPointer={true}
+                  value={selectedQuestionType}
+                  handleClick={() => {
+                    setIsTestFormatModal(true);
+                  }}
                 />
               </div>
-            )}
+            </div>
 
             {formik.values.questionType !== "6" && (
               <div>
                 <label className="text-sm font-semibold flex items-center gap-4">
                   Total questions{" "}
                 </label>
-
-                <DropDown
-                  options={generateQustionCountOptions(permissions.maxQA)}
-                  {...formik.getFieldProps("questionCount")}
-                  error={
-                    formik.touched.questionCount
-                      ? formik.errors.questionCount
-                      : undefined
-                  }
-                />
+                <div className="mt-2 cursor-pointer">
+                  <TextField
+                    label=""
+                    cursorPointer={true}
+                    value={formik.values.questionCount || "5"}
+                    handleClick={() => {
+                      setIsTotalQuestionsForm(true);
+                    }}
+                  />
+                </div>
               </div>
             )}
 
-            {["3", "7"].includes(formik.values.questionType) && (
-              <div className="flex items-center gap-3">
-                <Switch
-                  disabled={!file || !fileId}
-                  handleChecked={() => {
-                    setIncludeUseCases(!includeUseCases);
-                  }}
-                  label="Include Case Studies"
-                  isChecked={includeUseCases}
-                />
-              </div>
-            )}
-
-            {permissions.canUseAdvancedPreferences && (
-              <div className="flex items-center gap-3">
-                <Switch
-                  disabled={!file || !fileId}
-                  handleChecked={() => {
-                    setIsTopicsSelectVisible(!isTopicsSelectVisible);
-                    // if (!isFocusAreaData)
-                    //   fetchTopics({ fileId: fileId as string });
-                  }}
-                  isChecked={isTopicsSelectVisible}
-                  label="Select Topics"
-                />
-              </div>
-            )}
-
-            {fileId && isTopicsSelectVisible && (
-              <ChipMultiSelect
-                options={documentTopics}
-                getSelectedItems={(items) => {
-                  setSelectedTopics(items);
-                }}
-                label="Topics"
-              />
-            )}
+            <button
+              type="button"
+              onClick={() => {
+                setIsAdditionalSettings(true);
+              }}
+              className="flex items-center gap-2 text-sm text-[#9333EA] font-medium"
+            >
+              <AdditionalSettingsIcon /> Additional Settings
+            </button>
 
             <Button
-              title="Generate Questions"
+              title="Generate Test"
               size="large"
               disabled={
                 !formik.isValid ||
@@ -325,3 +375,37 @@ const GenerateQuestionsForm: FC = () => {
 };
 
 export default GenerateQuestionsForm;
+
+const testFormats: TestFormatItem[] = [
+  {
+    title: "Multiple Choice",
+    value: 3,
+    description: "Sharpen recall, solidify facts",
+    icon: <MultipleChoiceIcon />,
+  },
+  {
+    title: "Flash Cards",
+    value: 4,
+    description: "Master concepts in bite-sized bursts",
+    icon: <FlashcardIcon />,
+  },
+  {
+    title: "Multiple True-False",
+    value: 5,
+    description: "Tackle complexity with precision",
+    icon: <MultipleTrueFalseIcon />,
+  },
+  {
+    title: "Oral (viva)",
+    value: 6,
+    description: "Think fast, speak with clarity",
+    icon: <VivaIcon />,
+    isBeta: true,
+  },
+  {
+    title: "Essay",
+    value: 7,
+    description: "Think deeply. Write clearly.",
+    icon: <EssayIcon />,
+  },
+];

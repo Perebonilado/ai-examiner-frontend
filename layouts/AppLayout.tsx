@@ -39,10 +39,10 @@ const AppLayout: FC<PropsWithChildren<Props>> = ({
         />
 
         <Sidebar />
-        <main className="h-full max-md:pt-[120px] w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 px-10 pt-4 max-md:px-4">
+        <main className="h-full max-md:pt-[110px] w-[calc(100%-300px)] max-md:w-full overflow-auto pb-40 px-10 pt-4 max-md:px-4">
           <FadeIn>
             <>
-              <div className="flex justify-between items-center pb-6">
+              <div className="flex justify-between items-center pb-4">
                 {data && data.firstName && showWelcomeMessage ? (
                   <p className="text-xl font-bold">
                     <span className="text-[#939393]">Welcome, </span>

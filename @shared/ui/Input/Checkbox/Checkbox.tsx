@@ -7,6 +7,7 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   customBorderColor?: string;
   customLabelColor?: string;
+  boldLabel?: boolean;
   shape?: "round" | "square" | "unrounded";
 }
 
@@ -15,6 +16,7 @@ const Checkbox: FC<Props> = ({
   customBorderColor = "",
   customLabelColor = "black",
   shape = "square",
+  boldLabel = false, 
   ...props
 }) => {
   const checkInputStyles = cn(
@@ -44,10 +46,12 @@ const Checkbox: FC<Props> = ({
         <input {...props} type="checkbox" className={checkInputStyles} />
         <span className={checkIconStyles}>
           {shape === "square" && <CheckIcon />}
-          {shape === "round" && <div className="w-[10px] h-[10px] rounded-full bg-[#2F004F]"></div>}
+          {shape === "round" && (
+            <div className="w-[10px] h-[10px] rounded-full bg-[#2F004F]"></div>
+          )}
         </span>
       </div>
-      <label className="text-black text-sm" style={{ color: customLabelColor }}>
+      <label className="text-black text-sm" style={{ color: customLabelColor, fontWeight: boldLabel ? 600 : 'unset' }}>
         {label}
       </label>
     </div>

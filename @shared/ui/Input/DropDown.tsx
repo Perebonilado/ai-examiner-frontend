@@ -21,6 +21,8 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   isRequired?: boolean;
   variant?: "regular" | "alt";
   openFromTop?: boolean;
+  disableOpen?: boolean;
+  handleClick?: () => void;
 }
 
 const DropDown: FC<Props> = ({
@@ -32,6 +34,8 @@ const DropDown: FC<Props> = ({
   isRequired,
   openFromTop = false,
   variant = "alt",
+  disableOpen = false,
+  handleClick,
   ...props
 }) => {
   const [isOptionsOpen, setOptionsOpen] = useState(false);
@@ -84,18 +88,18 @@ const DropDown: FC<Props> = ({
   const dropDownStyles = cn(
     `w-full !text-sm absolute left-0 px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto`,
     {
-      ['bottom-[calc(100%+5px)]']: openFromTop,
-      ['top-[calc(100%+5px)]']: !openFromTop
+      ["bottom-[calc(100%+5px)]"]: openFromTop,
+      ["top-[calc(100%+5px)]"]: !openFromTop,
     }
   );
 
-  useEffect(()=>{
-    if(!props.value && !options.some(o=>o.defaultSelected)){
+  useEffect(() => {
+    if (!props.value && !options.some((o) => o.defaultSelected)) {
       if (mirrorInputRef.current) {
         mirrorInputRef.current.value = "";
       }
     }
-  },[props.value])
+  }, [props.value]);
 
   return (
     <div>
@@ -104,11 +108,21 @@ const DropDown: FC<Props> = ({
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}
-      <div className={`w-full relative mt-2`} ref={dropDownRef}>
+      <div
+        className={`w-full relative mt-2`}
+        ref={dropDownRef}
+        onClick={() => {
+         handleClick && handleClick();
+        }}
+      >
         <input
           ref={mirrorInputRef}
           className={inputStyleBasedOnVariant}
-          onClick={() => setOptionsOpen(true)}
+          onClick={() => {
+            if (!disableOpen) {
+              setOptionsOpen(true);
+            }
+          }}
           placeholder={placeholder}
           readOnly
         />

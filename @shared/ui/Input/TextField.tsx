@@ -8,6 +8,9 @@ interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   starticon?: ReactNode;
   endicon?: ReactNode;
+  handleClick?: () => void;
+  cursorPointer?: boolean;
+  readOnly?: boolean
 }
 
 const TextField: FC<Props> = ({
@@ -16,6 +19,9 @@ const TextField: FC<Props> = ({
   error,
   starticon,
   endicon,
+  handleClick,
+  readOnly= false,
+  cursorPointer = false,
   ...props
 }) => {
   const inputStyle = cn(
@@ -23,6 +29,7 @@ const TextField: FC<Props> = ({
     {
       "pl-11": starticon !== undefined,
       "pr-14": endicon !== undefined,
+      "cursor-pointer": cursorPointer
     }
   );
   return (
@@ -32,8 +39,8 @@ const TextField: FC<Props> = ({
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}
-      <div className="w-full relative">
-        <input className={inputStyle} {...props} />
+      <div className="w-full relative" onClick={handleClick}>
+        <input className={inputStyle} {...props} readOnly={readOnly}/>
         {starticon && !endicon && (
           <span className="absolute top-2/4 -translate-y-1/2 left-2 cursor-pointer">
             {starticon}

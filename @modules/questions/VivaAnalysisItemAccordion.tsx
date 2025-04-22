@@ -22,7 +22,7 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
     "transition-max-h duration-500 ease-in-out overflow-hidden",
     {
       ["max-h-0"]: !isExpanded,
-      ["max-h-[1500px]"]: isExpanded,
+      ["max-h-[55500px]"]: isExpanded,
     }
   );
   return (

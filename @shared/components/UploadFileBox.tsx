@@ -200,6 +200,17 @@ const UploadFileBox: FC<Props> = ({
                     Number(start),
                     Number(end)
                   );
+                  const keywords = ['cam scanner', 'camscanner'] 
+                  const isCamScanned = text.toLowerCase().includes(keywords[0]) || text.toLowerCase().includes(keywords[1])
+
+                  if(isCamScanned) {
+                    setPdfProcessing(false);
+                    setOcrProgress(null);
+                    handleSelectFile(file, pages, start, end);
+                    setModalContent(null);
+                    return;
+                  }
+                  
                   if (!text.trim().length) {
                     setPdfProcessing(false);
                     setOcrProgress(null);

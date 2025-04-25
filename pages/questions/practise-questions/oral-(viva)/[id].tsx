@@ -257,7 +257,7 @@ const VivaQuestion: NextPage = () => {
   };
 
   const verifyUserHasEnoughCallCredits = async () => {
-    if (credits && credits.remainingCreditsMs > 0) {
+    if (credits && credits.remainingCreditsMs + credits.free > 0) {
       return true;
     }
 

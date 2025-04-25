@@ -32,7 +32,11 @@ import { reduxStore } from "@/config/redux-config";
 import GetMoreCreditsCard from "@/@modules/questions/GetMoreCreditsCard";
 import { useGoogleTranslationContext } from "@/contexts/GoogleTransalationContext";
 import { useDispatch } from "react-redux";
-import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
+import {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+} from "@/features/documentChatSlice";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -257,6 +261,10 @@ const VivaQuestion: NextPage = () => {
   };
 
   const verifyUserHasEnoughCallCredits = async () => {
+    if (!credits) {
+      return true;
+    }
+
     if (credits && credits.remainingCreditsMs + credits.free > 0) {
       return true;
     }
@@ -338,7 +346,7 @@ const VivaQuestion: NextPage = () => {
   }, [isPlaying]);
 
   return (
-    <div translate={data && credits && !data.analysis ? 'no' : 'yes'}>
+    <div translate={data && credits && !data.analysis ? "no" : "yes"}>
       <AppLayout>
         <AppHead title="Viva" />
         {!isPlaying && (

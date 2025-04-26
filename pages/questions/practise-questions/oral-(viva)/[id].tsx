@@ -76,7 +76,7 @@ const VivaQuestion: NextPage = () => {
   const [userSpeaking, setUserSpeaking] = useState(false);
   const { data: credits, refetch: refechCallCredits } = useGetCallCreditsQuery(
     "",
-    { pollingInterval: 30000 }
+    { pollingInterval: 30000, refetchOnMountOrArgChange: true }
   );
 
   // Audio analysis refs
@@ -261,10 +261,6 @@ const VivaQuestion: NextPage = () => {
   };
 
   const verifyUserHasEnoughCallCredits = async () => {
-    if (!credits) {
-      return true;
-    }
-
     if (credits && credits.remainingCreditsMs + credits.free > 0) {
       return true;
     }

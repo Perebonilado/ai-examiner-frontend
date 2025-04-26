@@ -261,11 +261,17 @@ const VivaQuestion: NextPage = () => {
   };
 
   const verifyUserHasEnoughCallCredits = async () => {
-    if (credits && credits.remainingCreditsMs + credits.free > 0) {
-      return true;
-    }
+    return true;
+    // if (!credits) {
+    //   await refechCallCredits();
+    //   return true
+    // }
 
-    return false;
+    // if (credits && credits.remainingCreditsMs + credits.free > 0) {
+    //   return true;
+    // }
+
+    // return false;
   };
 
   const handleStartCallConfirmation = async () => {

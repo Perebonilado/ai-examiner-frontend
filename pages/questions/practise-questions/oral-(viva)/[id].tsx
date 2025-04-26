@@ -44,6 +44,11 @@ const VivaQuestion: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
+  const { data: credits, refetch: refechCallCredits } = useGetCallCreditsQuery(
+    undefined,
+    { pollingInterval: 30000, refetchOnMountOrArgChange: true }
+  );
+  console.log(credits);
   const params = useParams();
   const router = useRouter();
   const { setModalContent } = useModalContext();
@@ -74,10 +79,6 @@ const VivaQuestion: NextPage = () => {
   const [vapi, setVapi] = useState<Vapi | null>(null);
   const [systemSpeaking, setSystemSpeaking] = useState(false);
   const [userSpeaking, setUserSpeaking] = useState(false);
-  const { data: credits, refetch: refechCallCredits } = useGetCallCreditsQuery(
-    "",
-    { pollingInterval: 30000, refetchOnMountOrArgChange: true }
-  );
 
   // Audio analysis refs
   const micStreamRef = useRef<MediaStream | null>(null);
@@ -260,22 +261,16 @@ const VivaQuestion: NextPage = () => {
     }
   };
 
-  const verifyUserHasEnoughCallCredits = async () => {
-    return true;
-    // if (!credits) {
-    //   await refechCallCredits();
-    //   return true
-    // }
+  const verifyUserHasEnoughCallCredits = () => {
+    if (credits && credits.remainingCreditsMs > 0) {
+      return true;
+    }
 
-    // if (credits && credits.remainingCreditsMs + credits.free > 0) {
-    //   return true;
-    // }
-
-    // return false;
+    return false;
   };
 
   const handleStartCallConfirmation = async () => {
-    const hasEnoughtCredits = await verifyUserHasEnoughCallCredits();
+    const hasEnoughtCredits = verifyUserHasEnoughCallCredits();
 
     if (hasEnoughtCredits) {
       const hasPermission = await requestMicPermission();
@@ -348,7 +343,7 @@ const VivaQuestion: NextPage = () => {
   }, [isPlaying]);
 
   return (
-    <div translate={data && credits && !data.analysis ? "no" : "yes"}>
+    <div translate={data && !data.analysis ? "no" : "yes"}>
       <AppLayout>
         <AppHead title="Viva" />
         {!isPlaying && (
@@ -360,7 +355,7 @@ const VivaQuestion: NextPage = () => {
             Play Sound
           </button>
         )}
-        {data && (
+        {data && credits && (
           <div className="flex items-center justify-between mb-6">
             <Button
               title="Back"
@@ -372,16 +367,14 @@ const VivaQuestion: NextPage = () => {
               }}
             />
             <GetMoreCreditsCard
-              minuteLeft={
-                credits
-                  ? millisecondsToMinutesSeconds(credits.remainingCreditsMs)
-                  : undefined
-              }
+              minuteLeft={millisecondsToMinutesSeconds(
+                credits?.remainingCreditsMs ?? 0
+              )}
             />
           </div>
         )}
 
-        {data && (
+        {data && credits && (
           <div className="pb-6">
             <h1 className="text-center text-xl font-semibold">
               Oral (Viva) Q&A -{" "}
@@ -415,7 +408,9 @@ const VivaQuestion: NextPage = () => {
             handleStartCall={handleStartCallConfirmation}
             systemSpeaking={systemSpeaking}
             userSpeaking={userSpeaking}
-            maxCallDurationInSeconds={credits.remainingCreditsMs / 1000}
+            maxCallDurationInSeconds={
+              credits ? credits.remainingCreditsMs/ 1000 : 0
+            }
           />
         )}
       </AppLayout>

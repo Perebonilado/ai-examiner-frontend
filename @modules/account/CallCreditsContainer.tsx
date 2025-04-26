@@ -11,7 +11,7 @@ import { LookUpModel } from "@/models/look-up.model";
 import { IpInfoModel, useGetUserIpInfoQuery } from "@/api-services/ip.service";
 
 const CallCreditsContainer: FC = () => {
-  const { data: credits } = useGetCallCreditsQuery("");
+  const { data: credits } = useGetCallCreditsQuery(undefined);
   const { data: ipDetails, isError: isIpDetailsError } =
     useGetUserIpInfoQuery("");
   const [creditPricing, setCreditPricing] = useState<LookUpModel[]>();

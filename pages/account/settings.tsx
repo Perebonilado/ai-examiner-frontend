@@ -39,7 +39,7 @@ const Settings: NextPage = () => {
     useUpdateCardInformationMutation();
   const [inititateSubscription, { data: initiateSubscriptionData }] =
     useInitiateSubscriptionMutation();
-  const { data: credits } = useGetCallCreditsQuery("");
+  const { data: credits } = useGetCallCreditsQuery(undefined);
 
   useEffect(() => {
     if (updateCardDetailsData) {

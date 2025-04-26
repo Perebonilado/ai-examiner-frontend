@@ -41,9 +41,9 @@ export const reduxStore = configureStore({
     [SpeechService.reducerPath]: SpeechService.reducer,
     [SharedQuestionsService.reducerPath]: SharedQuestionsService.reducer,
     [IpService.reducerPath]: IpService.reducer,
+    [CallCreditsService.reducerPath]: CallCreditsService.reducer,
     [PerformanceTrackingService.reducerPath]:
       PerformanceTrackingService.reducer,
-    [CallCreditsService.reducerPath]: CallCreditsService.reducer,
     [PreferredLanguageService.reducerPath]: PreferredLanguageService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
@@ -60,6 +60,7 @@ export const reduxStore = configureStore({
       LookUpService.middleware,
       PlanService.middleware,
       SubscriptionService.middleware,
+      CallCreditsService.middleware,
       UserService.middleware,
       PermissionService.middleware,
       DocumentMessageService.middleware,
@@ -68,7 +69,6 @@ export const reduxStore = configureStore({
       SharedQuestionsService.middleware,
       IpService.middleware,
       PerformanceTrackingService.middleware,
-      CallCreditsService.middleware,
       PreferredLanguageService.middleware,
     ]),
 });

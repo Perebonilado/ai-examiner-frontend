@@ -1,38 +1,38 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import StagedImageItem, { StagedImage } from "./StagedImageItem";
-import {
-  BlobProvider,
-  Document,
-  Page,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
+import { BlobProvider, Document, Page, Image } from "@react-pdf/renderer";
 import Button from "../ui/Button";
 import Checkbox from "../ui/Input/Checkbox/Checkbox";
+import * as convert from "heic-convert/browser";
+import FileUploadSpinner from "./FileUploadSpinner";
 
 interface Props {
   data: StagedImage[];
   handleDelete: (id: number) => void;
-  handleUploadFiles: (blob: Blob, isForTextExtraction?: boolean) => void;
+  handleUploadFiles: (
+    blob: Blob,
+    isForTextExtraction?: boolean,
+    images?: string[]
+  ) => void;
   handleCancel: () => void;
   allowedFileSize: number;
   currentFileSize: number;
 }
 
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%",
-    height: "100%",
-  },
-  image: {
-    width: "100%",
-    height: "100%",
-    objectFit: "contain",
-  },
-});
+const fileToBuffer = (file: File): Promise<Buffer> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const arrayBuffer = reader.result as ArrayBuffer;
+      const buffer = Buffer.from(arrayBuffer);
+      resolve(buffer);
+    };
+
+    reader.onerror = reject;
+    reader.readAsArrayBuffer(file);
+  });
+};
 
 const StagedImageItemContainer: FC<Props> = ({
   data,
@@ -43,12 +43,57 @@ const StagedImageItemContainer: FC<Props> = ({
   handleUploadFiles,
 }) => {
   const [isHandWritten, setIsHandWritten] = useState(false);
+  const [convertedData, setConvertedData] = useState<StagedImage[]>([]);
+  const [isConvertingHeic, setIsConvertingHeic] = useState(false);
+
+  useEffect(() => {
+    const convertHeicImages = async () => {
+      const processed = await Promise.all(
+        data.map(async (item) => {
+          const isHeic =
+            item.file.type === "image/heic" ||
+            item.file.name.toLowerCase().endsWith(".heic");
+
+          if (!isHeic) return item;
+
+          try {
+            setIsConvertingHeic(true);
+            const buffer = await fileToBuffer(item.file) as any;
+            const image = await convert.all({
+              buffer,
+              format: "JPEG",
+            });
+            const outputBlob = await image[0].convert();
+
+            const newFile = new File(
+              [outputBlob],
+              item.file.name.replace(/\.heic$/i, ".jpg"),
+              { type: "image/jpeg" }
+            );
+
+            setIsConvertingHeic(false);
+
+            return { ...item, file: newFile };
+          } catch (error) {
+            setIsConvertingHeic(false);
+            console.error("HEIC conversion failed:", error);
+            // 🛡️ fallback: use original file if conversion fails
+            return item;
+          }
+        })
+      );
+
+      setConvertedData(processed);
+    };
+
+    convertHeicImages();
+  }, [data]);
 
   const myDoc = (
     <Document>
-      {data.map((d, index) => (
-        <Page key={index} size="A4" style={styles.page}>
-          <Image src={URL.createObjectURL(d.file)} style={styles.image} />
+      {convertedData.map((d, index) => (
+        <Page key={index} size="A4">
+          <Image src={URL.createObjectURL(d.file)} />
         </Page>
       ))}
     </Document>
@@ -63,7 +108,7 @@ const StagedImageItemContainer: FC<Props> = ({
             File size ({currentFileSize}mb) exceeds {allowedFileSize}mb
           </p>
         )}
-        <h3 className="max-sm:text-center mb-1">Choose Images</h3>
+        <h3 className="max-sm:text-center mb-1 font-semibold">Choose Images</h3>
       </div>
 
       {/* Content */}
@@ -74,17 +119,21 @@ const StagedImageItemContainer: FC<Props> = ({
               {/* Images Scroll Area */}
               <div className="flex-1 overflow-y-auto pr-2">
                 <div className="flex flex-col items-center gap-4">
-                  {data.map((img, idx) => (
-                    <StagedImageItem
-                      key={idx}
-                      data={img}
-                      handleDelete={handleDelete}
-                    />
-                  ))}
+                  {isConvertingHeic ? (
+                    <FileUploadSpinner title={`Optimizing images`} />
+                  ) : (
+                    convertedData.map((img, idx) => (
+                      <StagedImageItem
+                        key={idx}
+                        data={img}
+                        handleDelete={handleDelete}
+                      />
+                    ))
+                  )}
                 </div>
               </div>
 
-              {/* Bottom Actions (Checkbox + Buttons) */}
+              {/* Actions */}
               <div className="pt-6">
                 <div
                   className="flex items-center gap-2 mb-4 cursor-pointer"
@@ -92,7 +141,8 @@ const StagedImageItemContainer: FC<Props> = ({
                 >
                   <Checkbox checked={isHandWritten} />
                   <p className="text-sm">
-                    Please <span className="font-bold">SELECT</span> if the file is hand written
+                    Please <span className="font-bold">SELECT</span> if the file
+                    is handwritten
                   </p>
                 </div>
 
@@ -101,10 +151,13 @@ const StagedImageItemContainer: FC<Props> = ({
                     title="Continue"
                     onClick={() => {
                       if (blob) {
-                        handleUploadFiles(blob, isHandWritten);
+                        const convertedImages = convertedData.map((img) =>
+                          URL.createObjectURL(img.file)
+                        );
+                        handleUploadFiles(blob, isHandWritten, convertedImages);
                       }
                     }}
-                    disabled={currentFileSize > allowedFileSize}
+                    disabled={currentFileSize > allowedFileSize || isConvertingHeic}
                   />
                   <Button
                     title="Cancel"

@@ -55,7 +55,7 @@ const ProcessedWritingContainer: FC<Props> = ({
     </Modal>
   ) : (
     <Modal>
-      <div className="w-full gap-6 p-5 max-w-[500px] max-sm:max-w-[96vw] rounded-lg bg-white h-[90vh] flex flex-col justify-between">
+      <div className="w-full gap-6 p-5 max-w-[500px] max-sm:max-w-[96vw] rounded-lg bg-white h-[85vh] flex flex-col justify-between">
         <p className="text-xl font-bold flex items-center justify-between">
           {isViewingText ? "Generated Text" : "Your uploaded image"}
           <button type="button" onClick={handleClose}>
@@ -99,7 +99,6 @@ const ProcessedWritingContainer: FC<Props> = ({
             <Button
               title="View Text"
               variant="outlined"
-              size="large"
               starticon={<NoteIcon />}
               onClick={() => {
                 setIsViewingText(true);
@@ -111,7 +110,6 @@ const ProcessedWritingContainer: FC<Props> = ({
             <Button
               title="View Image"
               variant="outlined"
-              size="large"
               starticon={<PictureIcon />}
               onClick={() => {
                 setEnlargedImageUrl(images[currIndex]);
@@ -121,7 +119,6 @@ const ProcessedWritingContainer: FC<Props> = ({
           )}
           <Button
             title="Upload"
-            size="large"
             type="button"
             onClick={() => {
               handleUpload(content);

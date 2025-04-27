@@ -13,6 +13,7 @@ import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import ZoomOutIcon from "@/icons/ZoomOutIcon";
 import ZoomInIcon from "@/icons/ZoomInIcon";
 import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
+import Spinner from "@/@shared/components/Spinner";
 
 const options = {
   cMapUrl: "/cmaps/",
@@ -168,6 +169,8 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
   };
 
   const [isHandWritten, setIsHandWritten] = useState(false);
+  const [isExtractingImagesFromPDF, setIsExtractingImagesFromPDF] =
+    useState(false);
 
   return (
     <div className="w-[90vw] max-sm:w-[97vw] max-w-[550px] h-[97vh] max-sm:h-[97vh] bg-[#F1EDFD] rounded-xl p-4 pt-2 overflow-y-auto">
@@ -316,33 +319,49 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
           </p>
         </div>
 
-        <Button
-          disabled={
-            isSubmitDisabled || Boolean(startPageError) || Boolean(endPageError)
-          }
-          title="Upload"
-          size="large"
-          className={`mx-auto ${
-            isSubmitDisabled || Boolean(startPageError) || Boolean(endPageError)
-              ? "bg-gray-300"
-              : ""
-          }`}
-          onClick={async () => {
-            if (isHandWritten) {
-              let images = await extractImagesFromPdf(fileUrl);
-              if (startPage.length && endPage.length) {
-                images = images.slice(
-                  Number(startPage) - 1,
-                  Number(endPage) 
-                );
-              }
-
-              handleUploadPDF(pages, startPage, endPage, isHandWritten, images);
-            } else {
-              handleUploadPDF(pages, startPage, endPage);
+        {isExtractingImagesFromPDF ? (
+          <div className="w-fit mx-auto">
+            <Spinner size="sm" />
+          </div>
+        ) : (
+          <Button
+            disabled={
+              isSubmitDisabled ||
+              Boolean(startPageError) ||
+              Boolean(endPageError) ||
+              isExtractingImagesFromPDF
             }
-          }}
-        />
+            title="Upload"
+            size="large"
+            className={`mx-auto ${
+              isSubmitDisabled ||
+              Boolean(startPageError) ||
+              Boolean(endPageError)
+                ? "bg-gray-300"
+                : ""
+            }`}
+            onClick={async () => {
+              if (isHandWritten) {
+                setIsExtractingImagesFromPDF(true);
+                let images = await extractImagesFromPdf(fileUrl);
+                setIsExtractingImagesFromPDF(false);
+                if (startPage.length && endPage.length) {
+                  images = images.slice(Number(startPage) - 1, Number(endPage));
+                }
+
+                handleUploadPDF(
+                  pages,
+                  startPage,
+                  endPage,
+                  isHandWritten,
+                  images
+                );
+              } else {
+                handleUploadPDF(pages, startPage, endPage);
+              }
+            }}
+          />
+        )}
       </div>
     </div>
   );

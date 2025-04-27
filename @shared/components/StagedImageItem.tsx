@@ -15,7 +15,7 @@ export interface Props {
 const StagedImageItem: FC<Props> = ({ data: { file, id }, handleDelete }) => {
   const imageSrc = URL.createObjectURL(file);
   return (
-    <div className="relative w-[170px] h-[170px] border rounded-lg">
+    <div className="relative w-[260px] h-[240px] min-h-[240px] border rounded-lg">
       <button
         className="absolute bottom-[85%] right-1 z-[200]"
         onClick={() => {

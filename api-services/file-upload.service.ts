@@ -7,6 +7,7 @@ import {
   secondsToMilliSeconds,
 } from "@/utils";
 import {
+  ExtractWrittenTextPayload,
   FileUploadModel,
   FileUploadModelV2,
   FileUploadPayloadModel,
@@ -71,13 +72,27 @@ export const FileUploadService = createApi({
             fileId: res.data.fileId,
             documentId: res.data.documentId,
             topics: res.data.topics,
-            summary: res.data.summary
+            summary: res.data.summary,
           };
         }
       },
     }),
+    exteactWrittenText: build.mutation<string[], ExtractWrittenTextPayload>({
+      query: ({ payload, start, end }) => ({
+        url: "/extract-written-text",
+        method: "POST",
+        body: payload,
+        params: {
+          start: start || "",
+          end: end || "",
+        },
+      }),
+    }),
   }),
 });
 
-export const { useUploadFileMutation, useUploadFileV2Mutation } =
-  FileUploadService;
+export const {
+  useUploadFileMutation,
+  useUploadFileV2Mutation,
+  useExteactWrittenTextMutation,
+} = FileUploadService;

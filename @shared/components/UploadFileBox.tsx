@@ -1,6 +1,4 @@
-import UploadIcon from "@/icons/UploadIcon";
 import React, { ElementRef, FC, useEffect, useRef, useState } from "react";
-import Button from "../ui/Button";
 import { toast } from "react-toastify";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
@@ -9,27 +7,21 @@ import {
   convertMegaBytesToBytes,
   getFileNameWithoutExtension,
 } from "@/utils";
-import Spinner from "./Spinner";
 import { useModalContext } from "@/contexts/ModalContext";
 import PDFViewer from "@/@modules/home/PDFViewer";
-import Tesseract from "tesseract.js";
-
 import { pdfjs } from "react-pdf";
 import ChooseFileTypeBox from "./ChooseFileTypeBox";
 import useClickOutside from "@/hooks/useClickOutside";
 import StagedImageItemContainer from "./StagedImageItemContainer";
-import Dialog from "./Dialog";
-import StagedImagesDialog from "./StagedImagesDialog";
 import { StagedImage } from "./StagedImageItem";
-import { progress } from "framer-motion";
-import { useSelector } from "react-redux";
-import { RootState } from "@/config/redux-config";
-import UploadIconAlt from "@/icons/UploadIconAlt";
 import PowerPointIcon from "@/icons/PowerPointIcon";
 import MsWordIcon from "@/icons/MsWordIcon";
 import PDFIconAlt from "@/icons/PDFIconAlt";
 import JPGIcon from "@/icons/JPGIcon";
 import FileUploadSpinner from "./FileUploadSpinner";
+import ProcessedWritingContainer from "./HandWritten/ProcessedWritingContainer";
+import { useExteactWrittenTextMutation } from "@/api-services/file-upload.service";
+import ProcessingHandWrittenImagesLoader from "./HandWritten/ProcessingHandWrittenImagesLoader";
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 const options = {
@@ -86,36 +78,6 @@ const UploadFileBox: FC<Props> = ({
 
   const { setModalContent } = useModalContext();
 
-  const handleUploadExtractedTextFromImages = async () => {
-    setModalContent(null);
-    setPdfProcessing(true);
-    const text = await extractTextFromImages(
-      stagedImages as StagedImage[],
-      (progress) => {
-        setOcrProgress(progress);
-      }
-    );
-
-    if (!text.trim().length) {
-      toast.error("Error processing images");
-      setOcrProgress(null);
-      setPdfProcessing(false);
-      return;
-    }
-
-    const fileName = "Untitled.txt";
-    const newTxtFile = createFileFromText(text.trim(), fileName);
-
-    setPdfProcessing(false);
-    setOcrProgress(null);
-
-    if (newTxtFile) {
-      handleSelectFile(newTxtFile);
-
-      return;
-    }
-  };
-
   useEffect(() => {
     if (stagedImages) {
       const currentFileSizeBytes = stagedImages.reduce(
@@ -127,40 +89,46 @@ const UploadFileBox: FC<Props> = ({
       );
 
       setModalContent(
-        <StagedImagesDialog
-          allowedFileSize={maxFileSizeMB}
-          currentFileSize={currentFileSizeMb}
-        >
-          <StagedImageItemContainer
-            data={stagedImages}
-            handleDelete={(id) => {
-              const filteredStagedFiles = stagedImages.filter(
-                (img) => img.id !== id
-              );
+        <StagedImageItemContainer
+          data={stagedImages}
+          handleDelete={(id) => {
+            const filteredStagedFiles = stagedImages.filter(
+              (img) => img.id !== id
+            );
 
-              setStagedImages(filteredStagedFiles);
+            setStagedImages(filteredStagedFiles);
 
-              if (filteredStagedFiles.length === 0) {
-                setModalContent(null);
-                setStagedImages(null);
-              }
-            }}
-            handleUploadFiles={async (blob) => {
-              const file = new File([blob], "Untitled", {
-                type: "application/pdf",
-                lastModified: new Date().getTime(),
-              });
-              handleSelectFile(file);
-              setModalContent(null);
-            }}
-            allowedFileSize={maxFileSizeMB}
-            currentFileSize={currentFileSizeMb}
-            handleCancel={() => {
+            if (filteredStagedFiles.length === 0) {
               setModalContent(null);
               setStagedImages(null);
-            }}
-          />
-        </StagedImagesDialog>
+            }
+          }}
+          handleUploadFiles={async (blob, isHandWritten) => {
+            const file = new File([blob], "Untitled", {
+              type: "application/pdf",
+              lastModified: new Date().getTime(),
+            });
+            if (isHandWritten) {
+              const formData = new FormData();
+
+              formData.append("document", file);
+
+              extractHandWrittenText({ payload: formData });
+
+              setModalContent(null);
+
+              return;
+            }
+            handleSelectFile(file);
+            setModalContent(null);
+          }}
+          allowedFileSize={maxFileSizeMB}
+          currentFileSize={currentFileSizeMb}
+          handleCancel={() => {
+            setModalContent(null);
+            setStagedImages(null);
+          }}
+        />
       );
     }
   }, [stagedImages]);
@@ -192,25 +160,53 @@ const UploadFileBox: FC<Props> = ({
             setModalContent(
               <PDFViewer
                 fileUrl={fileUrl}
-                handleUploadPDF={async (pages, start, end) => {
+                handleUploadPDF={async (
+                  pages,
+                  start,
+                  end,
+                  isHandWritten,
+                  images
+                ) => {
+                  if (isHandWritten) {
+                    const formData = new FormData();
+
+                    formData.append("document", file);
+                    if (images) {
+                      setPdfExtractedImages(images);
+                    }
+
+                    setExtractedWrittenTextTitle(
+                      getFileNameWithoutExtension(file.name)
+                    );
+
+                    extractHandWrittenText({ payload: formData, start, end });
+
+                    setModalContent(null);
+
+                    return;
+                  }
+
                   setModalContent(null);
                   setPdfProcessing(true);
+
                   const text = await extractText(
                     file,
                     Number(start),
                     Number(end)
                   );
-                  const keywords = ['cam scanner', 'camscanner'] 
-                  const isCamScanned = text.toLowerCase().includes(keywords[0]) || text.toLowerCase().includes(keywords[1])
+                  const keywords = ["cam scanner", "camscanner"];
+                  const isCamScanned =
+                    text.toLowerCase().includes(keywords[0]) ||
+                    text.toLowerCase().includes(keywords[1]);
 
-                  if(isCamScanned) {
+                  if (isCamScanned) {
                     setPdfProcessing(false);
                     setOcrProgress(null);
                     handleSelectFile(file, pages, start, end);
                     setModalContent(null);
                     return;
                   }
-                  
+
                   if (!text.trim().length) {
                     setPdfProcessing(false);
                     setOcrProgress(null);
@@ -245,8 +241,58 @@ const UploadFileBox: FC<Props> = ({
     }
   };
 
+  const [
+    extractHandWrittenText,
+    {
+      isLoading: extractingText,
+      error: extractingTextError,
+      data: extractedText,
+    },
+  ] = useExteactWrittenTextMutation();
+
+  const [showWritingReview, setShowWritingReview] = useState(false);
+
+  useEffect(() => {
+    if (extractedText) {
+      setShowWritingReview(true);
+    }
+  }, [extractedText]);
+
+  const [pdfExtractedImages, setPdfExtractedImages] = useState<string[]>([]);
+  const [extractedWrittenTextTitle, setExtractedWrittenTextTitle] =
+    useState<string>("Untitled");
+
   return isClient ? (
     <>
+      {extractingText && <ProcessingHandWrittenImagesLoader />}
+      {extractedText && showWritingReview && (
+        <ProcessedWritingContainer
+          images={
+            pdfExtractedImages.length
+              ? pdfExtractedImages
+              : (stagedImages as StagedImage[]).map((img) => {
+                  return URL.createObjectURL(img.file);
+                })
+          }
+          textContent={extractedText}
+          handleClose={() => {
+            setShowWritingReview(false);
+            setExtractedWrittenTextTitle("Untitled");
+          }}
+          handleUpload={(content) => {
+            const file = createFileFromText(
+              content.join("\n"),
+              extractedWrittenTextTitle
+            );
+            if (file) {
+              handleSelectFile(file);
+              setShowWritingReview(false);
+              setExtractedWrittenTextTitle("Untitled");
+              setPdfExtractedImages([])
+            }
+          }}
+        />
+      )}
       <input
         ref={filesRef}
         type="file"
@@ -350,148 +396,6 @@ const UploadFileBox: FC<Props> = ({
 };
 
 export default UploadFileBox;
-
-async function extractTextFromImages(
-  files: StagedImage[],
-  handleProgress: (progress: string) => void
-) {
-  try {
-    let fullText = "";
-    let pendingOCRPromises: Promise<string>[] = [];
-    const MAX_CONCURRENT_OCR = 3; // Limit OCR concurrency for memory optimization
-    let filesProcessed = 0;
-
-    for (const file of files) {
-      const blob = new Blob([file.file], { type: file.file.type });
-
-      const ocrPromise = Tesseract.recognize(blob, "eng")
-        .then(({ data: { text } }) => {
-          return text;
-        })
-        .catch((error) => {
-          console.error(`Error processing page Image`);
-          return ""; // Skip this page on error
-        });
-
-      pendingOCRPromises.push(ocrPromise);
-
-      filesProcessed += 1;
-      if (
-        pendingOCRPromises.length >= MAX_CONCURRENT_OCR ||
-        filesProcessed === files.length
-      ) {
-        const ocrResults = await Promise.all(pendingOCRPromises);
-        fullText += ocrResults.join("\n\n");
-        pendingOCRPromises = []; // Reset for next batch
-      }
-
-      // Progress tracking (for browsers)
-      if (typeof window !== "undefined") {
-        const progress = Math.round((filesProcessed / files.length) * 100);
-        if (handleProgress) handleProgress(`${progress}%`);
-      }
-    }
-
-    return fullText.trim();
-  } catch (error) {
-    throw new Error(`Failed to extract text: ${(error as Error).message}`);
-  }
-}
-
-async function extractTextFromScannedPdf(
-  pdfFile: File,
-  start: number,
-  end: number,
-  handleProgress?: (progress: string) => void
-): Promise<string> {
-  const SCALE = 1.2; // Slightly downscaled for better memory efficiency
-  const MAX_CONCURRENT_OCR = 3; // Limit OCR concurrency for memory optimization
-
-  const canvas = document.createElement("canvas");
-  try {
-    const pdfData = new Uint8Array(await pdfFile.arrayBuffer());
-    const pdf = await pdfjs.getDocument({ data: pdfData }).promise;
-
-    const context = canvas.getContext("2d", {
-      alpha: false,
-      willReadFrequently: true,
-    });
-
-    let fullText = "";
-    let pendingOCRPromises: Promise<string>[] = [];
-
-    const numPages = pdf.numPages;
-    const endIndex = end ? end : numPages;
-    const startIndex = start ? start : 1;
-
-    const pages: number[] = [];
-
-    for (let i = startIndex; i <= endIndex; i++) {
-      pages.push(i);
-    }
-
-    for (const pageNumber of pages) {
-      const page = await pdf.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: SCALE });
-
-      // Set canvas size to match page viewport dimensions
-      canvas.width = viewport.width;
-      canvas.height = viewport.height;
-
-      // Render page to canvas
-      await page.render({
-        canvasContext: context!,
-        viewport,
-      }).promise;
-
-      // Compress and prepare blob
-      const blob = await new Promise<Blob>((resolve, reject) => {
-        canvas.toBlob(
-          (blob) =>
-            blob ? resolve(blob) : reject(new Error("Blob conversion failed")),
-          "image/jpeg",
-          0.6
-        );
-      });
-
-      // OCR operation with limited concurrency
-      const ocrPromise = Tesseract.recognize(blob, "eng")
-        .then(({ data: { text } }) => {
-          return text;
-        })
-        .catch((error) => {
-          console.error(`Error processing page ${pageNumber}:`, error);
-          return ""; // Skip this page on error
-        });
-
-      pendingOCRPromises.push(ocrPromise);
-
-      // Limit concurrent OCR operations
-      if (
-        pendingOCRPromises.length >= MAX_CONCURRENT_OCR ||
-        pageNumber === endIndex
-      ) {
-        const ocrResults = await Promise.all(pendingOCRPromises);
-        fullText += ocrResults.join("\n\n");
-        pendingOCRPromises = []; // Reset for next batch
-      }
-
-      // Progress tracking (for browsers)
-      if (typeof window !== "undefined") {
-        const progress = Math.round((pageNumber / endIndex) * 100);
-        if (handleProgress) handleProgress(`${progress}%`);
-      }
-    }
-
-    return fullText.trim();
-  } catch (error) {
-    throw new Error(`Failed to extract text: ${(error as Error).message}`);
-  } finally {
-    // Clean up
-    canvas.width = 0;
-    canvas.height = 0;
-  }
-}
 
 const createFileFromText = (
   text: string,

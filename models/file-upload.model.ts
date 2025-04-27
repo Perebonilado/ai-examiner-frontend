@@ -14,3 +14,9 @@ export interface FileUploadPayloadModel {
   start?: string;
   end?: string;
 }
+
+export interface ExtractWrittenTextPayload {
+  payload: FormData;
+  start?: string;
+  end?: string;
+}

@@ -1,12 +1,6 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import PageControls from "./PageControls";
-import { EditorProvider, FloatingMenu, BubbleMenu } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import DOMPurify from "dompurify";
-import { marked } from "marked";
 import EditIcon from "@/icons/EditIcon";
-
-const extensions = [StarterKit];
 
 interface Props {
   totalCount: number;
@@ -14,10 +8,6 @@ interface Props {
   handleNextPage: () => void;
   handlePreviousPage: () => void;
 }
-
-const content = `
-- O & M history  diabetes neuropathy (brief)\n- Introduction\n- obtaining biodata\n  - Name, age, sex, marital status, religion, address, ethnicity, occupation, level of education\n- Presenting complaint (cotton duration), location, aggravating history\n- feces, frequency, content of vomitus\n- Past medical history (surgeries), drug history\n- Family and social history\n  - Aggregate alcohol exposure during work\n- Previous investigation\n- Review of systems\n- Fears, idea, function, expectation\n- Inspection, palpation, percussion, auscultation\n  - Lying\n  - R side of pt\n  - tenderness\n  - any enlargement, lymph nodes\n  - Derus\n  - Pallor\n  - Jaundice\n  - Cyanosis\n  - Dehydration\n  - General state\n  - Swelling\n  - Abdominal distention\n- Diagnosis\n- Differentials\n- Investigation\n  - Mp, electolytes, urea & creatinine, renal function tests
-`;
 
 const EditTextContainer: FC<Props> = ({ ...pageControls }) => {
   const [text, setText] = useState(
@@ -30,11 +20,6 @@ const EditTextContainer: FC<Props> = ({ ...pageControls }) => {
         <p className="text-right text-[#9333EA] text-sm font-medium flex items-center justify-end gap-2">
           <EditIcon width={15} height={15} fill="#9333EA"/>Edit text
         </p>
-
-        {/* <EditorProvider extensions={extensions} content={text}>
-          <FloatingMenu editor={null}>This is the floating menu</FloatingMenu>
-          <BubbleMenu editor={null}>This is the bubble menu</BubbleMenu>
-        </EditorProvider> */}
         <div className="flex-1">
           <textarea
             value={text}

@@ -103,7 +103,7 @@ const UploadFileBox: FC<Props> = ({
               setStagedImages(null);
             }
           }}
-          handleUploadFiles={async (blob, isHandWritten) => {
+          handleUploadFiles={async (blob, isHandWritten, convertedImages) => {
             const file = new File([blob], "Untitled", {
               type: "application/pdf",
               lastModified: new Date().getTime(),
@@ -112,6 +112,10 @@ const UploadFileBox: FC<Props> = ({
               const formData = new FormData();
 
               formData.append("document", file);
+
+              if (convertedImages?.length) {
+                setPdfExtractedImages(convertedImages);
+              }
 
               extractHandWrittenText({ payload: formData });
 
@@ -288,7 +292,7 @@ const UploadFileBox: FC<Props> = ({
               handleSelectFile(file);
               setShowWritingReview(false);
               setExtractedWrittenTextTitle("Untitled");
-              setPdfExtractedImages([])
+              setPdfExtractedImages([]);
             }
           }}
         />
@@ -309,7 +313,7 @@ const UploadFileBox: FC<Props> = ({
           await handleImagesChange(e);
         }}
         className="hidden"
-        accept=".png, .jpeg, .jpg"
+        accept=".png, .jpeg, .jpg, .heic"
         multiple
       />
       <div>

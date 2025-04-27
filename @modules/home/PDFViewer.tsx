@@ -304,7 +304,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
         )}
 
         <div
-          className="flex items-center gap-2 mb-4"
+          className="flex items-center gap-2 mb-4 cursor-pointer"
           onClick={() => {
             setIsHandWritten(!isHandWritten);
           }}

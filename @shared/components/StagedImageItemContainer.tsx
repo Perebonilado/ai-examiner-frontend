@@ -58,7 +58,7 @@ const StagedImageItemContainer: FC<Props> = ({
 
           try {
             setIsConvertingHeic(true);
-            const buffer = await fileToBuffer(item.file);
+            const buffer = await fileToBuffer(item.file) as any;
             const image = await convert.all({
               buffer,
               format: "JPEG",

@@ -4,7 +4,7 @@ import ExpandIconAlt from "@/icons/ExpandIconAlt";
 import Image from "next/image";
 
 interface Props {
-  handleExpand: () => void;
+  handleExpand: (imageSrc: string) => void;
   totalCount: number;
   currentPage: number;
   handleNextPage: () => void;
@@ -22,7 +22,9 @@ const ViewImageContainer: FC<Props> = ({
       <div className="w-full h-[300px] relative border border-[#9E69E3] mb-3 rounded-2xl p-4">
         <button
           className="absolute top-2 right-2 z-[200]"
-          onClick={handleExpand}
+          onClick={() => {
+            handleExpand(imageSrc);
+          }}
         >
           <ExpandIconAlt />
         </button>

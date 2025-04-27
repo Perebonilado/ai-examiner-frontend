@@ -13,7 +13,7 @@ import Checkbox from "../ui/Input/Checkbox/Checkbox";
 interface Props {
   data: StagedImage[];
   handleDelete: (id: number) => void;
-  handleUploadFiles: (blob: Blob) => void;
+  handleUploadFiles: (blob: Blob, isForTextExtraction?: boolean) => void;
   handleCancel: () => void;
   allowedFileSize: number;
   currentFileSize: number;
@@ -53,6 +53,7 @@ const StagedImageItemContainer: FC<Props> = ({
   );
 
   const [blob_, setBlob] = useState<Blob | null>(null);
+  const [isHandWritten, setIsHandWritten] = useState(false);
 
   return (
     <div className="w-full flex flex-col relative max-h-[80vh] min-h-[400px] max-w-[410px] max-md:max-w-[320px] rounded-xl shadow-lg p-4 py-5 bg-white">
@@ -68,7 +69,6 @@ const StagedImageItemContainer: FC<Props> = ({
         <BlobProvider document={myDoc}>
           {({ blob, url, loading, error }) => {
             if (!blob_) setBlob(blob);
-            console.log(blob);
             return (
               <div
                 className="flex flex-col items-center justify-center gap-4 overflow-y-auto"
@@ -90,7 +90,12 @@ const StagedImageItemContainer: FC<Props> = ({
       </div>
       <div className="mt-10">
         <div className="flex items-center gap-2 mb-4">
-          <Checkbox />
+          <Checkbox
+            checked={isHandWritten}
+            onChange={() => {
+              setIsHandWritten(!isHandWritten);
+            }}
+          />
           <p className="text-sm">
             Please <span className="font-bold">SELECT</span> if the file is hand
             written
@@ -101,7 +106,7 @@ const StagedImageItemContainer: FC<Props> = ({
             title="Continue"
             onClick={() => {
               if (blob_) {
-                handleUploadFiles(blob_);
+                handleUploadFiles(blob_, isHandWritten);
               }
             }}
             disabled={currentFileSize > allowedFileSize}

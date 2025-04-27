@@ -21,6 +21,7 @@ const PageControls: FC<Props> = ({
         <button
           onClick={handlePreviousPage}
           className="w-[28px] h-[28px] bg-[#F4F4F4] flex items-center justify-center"
+          type="button"
         >
           <ChevronLeft />
         </button>
@@ -30,6 +31,7 @@ const PageControls: FC<Props> = ({
         <button
           onClick={handleNextPage}
           className="w-[28px] h-[28px] rotate-180 bg-[#F4F4F4] flex items-center justify-center"
+          type="button"
         >
           <ChevronLeft />
         </button>

@@ -20,6 +20,8 @@ import PDFIconAlt from "@/icons/PDFIconAlt";
 import JPGIcon from "@/icons/JPGIcon";
 import FileUploadSpinner from "./FileUploadSpinner";
 import ProcessedWritingContainer from "./HandWritten/ProcessedWritingContainer";
+import { useExteactWrittenTextMutation } from "@/api-services/file-upload.service";
+import ProcessingHandWrittenImagesLoader from "./HandWritten/ProcessingHandWrittenImagesLoader";
 pdfjs.GlobalWorkerOptions.workerSrc = `/pdf.worker.min.mjs`;
 
 const options = {
@@ -101,11 +103,22 @@ const UploadFileBox: FC<Props> = ({
               setStagedImages(null);
             }
           }}
-          handleUploadFiles={async (blob) => {
+          handleUploadFiles={async (blob, isHandWritten) => {
             const file = new File([blob], "Untitled", {
               type: "application/pdf",
               lastModified: new Date().getTime(),
             });
+            if (isHandWritten) {
+              const formData = new FormData();
+
+              formData.append("document", file);
+
+              extractHandWrittenText({ payload: formData });
+
+              setModalContent(null);
+
+              return;
+            }
             handleSelectFile(file);
             setModalContent(null);
           }}
@@ -202,9 +215,44 @@ const UploadFileBox: FC<Props> = ({
     }
   };
 
+  const [
+    extractHandWrittenText,
+    {
+      isLoading: extractingText,
+      error: extractingTextError,
+      data: extractedText,
+    },
+  ] = useExteactWrittenTextMutation();
+
+  const [showWritingReview, setShowWritingReview] = useState(false);
+
+  useEffect(() => {
+    if (extractedText) {
+      setShowWritingReview(true);
+    }
+  }, [extractedText]);
+
   return isClient ? (
     <>
-      <ProcessedWritingContainer />
+      {extractingText && <ProcessingHandWrittenImagesLoader />}
+      {stagedImages && extractedText && showWritingReview && (
+        <ProcessedWritingContainer
+          images={stagedImages.map((img) => {
+            return URL.createObjectURL(img.file);
+          })}
+          textContent={extractedText}
+          handleClose={() => {
+            setShowWritingReview(false);
+          }}
+          handleUpload={(content) => {
+            const file = createFileFromText(content.join("\n"), "Untitled.txt");
+            if (file) {
+              handleSelectFile(file);
+              setShowWritingReview(false);
+            }
+          }}
+        />
+      )}
       <input
         ref={filesRef}
         type="file"

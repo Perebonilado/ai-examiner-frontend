@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import StagedImageItem, { StagedImage } from "./StagedImageItem";
 import {
   BlobProvider,
@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
-    objectFit: "contain", // Ensures the image covers the entire page
+    objectFit: "contain",
   },
 });
 
@@ -42,6 +42,8 @@ const StagedImageItemContainer: FC<Props> = ({
   handleCancel,
   handleUploadFiles,
 }) => {
+  const [isHandWritten, setIsHandWritten] = useState(false);
+
   const myDoc = (
     <Document>
       {data.map((d, index) => (
@@ -52,11 +54,9 @@ const StagedImageItemContainer: FC<Props> = ({
     </Document>
   );
 
-  const [blob_, setBlob] = useState<Blob | null>(null);
-  const [isHandWritten, setIsHandWritten] = useState(false);
-
   return (
     <div className="w-full flex flex-col relative max-h-[80vh] min-h-[400px] max-w-[410px] max-md:max-w-[320px] rounded-xl shadow-lg p-4 py-5 bg-white">
+      {/* Header */}
       <div className="flex flex-col gap-2 mb-4 w-full">
         {currentFileSize > allowedFileSize && (
           <p className="text-sm text-rose-500 italic text-center">
@@ -65,60 +65,57 @@ const StagedImageItemContainer: FC<Props> = ({
         )}
         <h3 className="max-sm:text-center mb-1">Choose Images</h3>
       </div>
-      <div style={{ flex: 1 }} className="overflow-y-auto">
+
+      {/* Content */}
+      <div className="flex flex-col flex-1 overflow-hidden">
         <BlobProvider document={myDoc}>
-          {({ blob, url, loading, error }) => {
-            if (!blob_) setBlob(blob);
-            return (
-              <div
-                className="flex flex-col items-center justify-center gap-4 overflow-y-auto"
-                style={{ flex: 1 }}
-              >
-                {data.map((img, idx) => {
-                  return (
+          {({ blob }) => (
+            <>
+              {/* Images Scroll Area */}
+              <div className="flex-1 overflow-y-auto pr-2">
+                <div className="flex flex-col items-center gap-4">
+                  {data.map((img, idx) => (
                     <StagedImageItem
+                      key={idx}
                       data={img}
                       handleDelete={handleDelete}
-                      key={idx}
                     />
-                  );
-                })}
+                  ))}
+                </div>
               </div>
-            );
-          }}
+
+              {/* Bottom Actions (Checkbox + Buttons) */}
+              <div className="pt-6">
+                <div
+                  className="flex items-center gap-2 mb-4 cursor-pointer"
+                  onClick={() => setIsHandWritten(!isHandWritten)}
+                >
+                  <Checkbox checked={isHandWritten} />
+                  <p className="text-sm">
+                    Please <span className="font-bold">SELECT</span> if the file is hand written
+                  </p>
+                </div>
+
+                <div className="flex items-center justify-end gap-4 w-full">
+                  <Button
+                    title="Continue"
+                    onClick={() => {
+                      if (blob) {
+                        handleUploadFiles(blob, isHandWritten);
+                      }
+                    }}
+                    disabled={currentFileSize > allowedFileSize}
+                  />
+                  <Button
+                    title="Cancel"
+                    variant="outlined"
+                    onClick={handleCancel}
+                  />
+                </div>
+              </div>
+            </>
+          )}
         </BlobProvider>
-      </div>
-      <div className="mt-10">
-        <div className="flex items-center gap-2 mb-4">
-          <Checkbox
-            checked={isHandWritten}
-            onChange={() => {
-              setIsHandWritten(!isHandWritten);
-            }}
-          />
-          <p className="text-sm">
-            Please <span className="font-bold">SELECT</span> if the file is hand
-            written
-          </p>
-        </div>
-        <div className="flex items-center justify-end gap-4 w-full ">
-          <Button
-            title="Continue"
-            onClick={() => {
-              if (blob_) {
-                handleUploadFiles(blob_, isHandWritten);
-              }
-            }}
-            disabled={currentFileSize > allowedFileSize}
-          />
-          <Button
-            title="Cancel"
-            variant="outlined"
-            onClick={() => {
-              handleCancel();
-            }}
-          />
-        </div>
       </div>
     </div>
   );

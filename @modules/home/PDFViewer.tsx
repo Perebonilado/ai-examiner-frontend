@@ -12,6 +12,7 @@ import type { PDFDocumentProxy } from "pdfjs-dist";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import ZoomOutIcon from "@/icons/ZoomOutIcon";
 import ZoomInIcon from "@/icons/ZoomInIcon";
+import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
 
 const options = {
   cMapUrl: "/cmaps/",
@@ -20,7 +21,13 @@ const options = {
 
 interface Props {
   fileUrl: string;
-  handleUploadPDF: (pages: string, start: string, end: string) => void;
+  handleUploadPDF: (
+    pages: string,
+    start: string,
+    end: string,
+    isHandWritten?: boolean,
+    images?: string[]
+  ) => void;
 }
 
 const resizeObserverOptions = {};
@@ -105,6 +112,36 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
     setEndPageOptions(pagesOptions);
   }
 
+  const extractImagesFromPdf = async (fileUrl: string): Promise<string[]> => {
+    const loadingTask = pdfjs.getDocument(fileUrl);
+    const pdf = await loadingTask.promise;
+
+    const images: string[] = [];
+
+    for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+      const page = await pdf.getPage(pageNum);
+
+      const viewport = page.getViewport({ scale: 2 }); // you can tweak the scale for higher resolution
+      const canvas = document.createElement("canvas");
+      const context = canvas.getContext("2d");
+
+      canvas.height = viewport.height;
+      canvas.width = viewport.width;
+
+      const renderContext = {
+        canvasContext: context!,
+        viewport,
+      };
+
+      await page.render(renderContext).promise;
+
+      const dataUrl = canvas.toDataURL("image/png"); // or 'image/jpeg'
+      images.push(dataUrl);
+    }
+
+    return images; // ordered array of images
+  };
+
   const zoomChangeValue = 0.2;
 
   const zoomIn = () => {
@@ -130,6 +167,8 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
     return options;
   };
 
+  const [isHandWritten, setIsHandWritten] = useState(false);
+
   return (
     <div className="w-[90vw] max-sm:w-[97vw] max-w-[550px] h-[97vh] max-sm:h-[97vh] bg-[#F1EDFD] rounded-xl p-4 pt-2 overflow-y-auto">
       <div className="flex justify-end pb-2">
@@ -138,7 +177,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
             setModalContent(null);
           }}
         >
-          <CloseIcon fill="black"/>
+          <CloseIcon fill="black" />
         </button>
       </div>
       <div className="h-[50px] flex gap-4 justify-between items-center px-4 bg-white border-b-[2px] border-b-gray-300">
@@ -229,8 +268,8 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
         />
 
         {pages === "custom" && (
-          <div className="flex gap-3 border">
-            <div style={{flex: 1}}>
+          <div className="flex gap-3">
+            <div style={{ flex: 1 }}>
               <DropDown
                 options={startPageOptions}
                 label="Start Page"
@@ -250,7 +289,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
               />
             </div>
 
-            <div style={{flex: 1}}>
+            <div style={{ flex: 1 }}>
               <DropDown
                 options={endPageOptions}
                 label="End Page"
@@ -264,6 +303,19 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
           </div>
         )}
 
+        <div
+          className="flex items-center gap-2 mb-4"
+          onClick={() => {
+            setIsHandWritten(!isHandWritten);
+          }}
+        >
+          <Checkbox checked={isHandWritten} />
+          <p className="text-sm">
+            Please <span className="font-bold">SELECT</span> if the file is hand
+            written
+          </p>
+        </div>
+
         <Button
           disabled={
             isSubmitDisabled || Boolean(startPageError) || Boolean(endPageError)
@@ -275,8 +327,20 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
               ? "bg-gray-300"
               : ""
           }`}
-          onClick={() => {
-            handleUploadPDF(pages, startPage, endPage);
+          onClick={async () => {
+            if (isHandWritten) {
+              let images = await extractImagesFromPdf(fileUrl);
+              if (startPage.length && endPage.length) {
+                images = images.slice(
+                  Number(startPage) - 1,
+                  Number(endPage) 
+                );
+              }
+
+              handleUploadPDF(pages, startPage, endPage, isHandWritten, images);
+            } else {
+              handleUploadPDF(pages, startPage, endPage);
+            }
           }}
         />
       </div>

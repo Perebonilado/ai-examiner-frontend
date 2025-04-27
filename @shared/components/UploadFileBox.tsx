@@ -160,9 +160,35 @@ const UploadFileBox: FC<Props> = ({
             setModalContent(
               <PDFViewer
                 fileUrl={fileUrl}
-                handleUploadPDF={async (pages, start, end) => {
+                handleUploadPDF={async (
+                  pages,
+                  start,
+                  end,
+                  isHandWritten,
+                  images
+                ) => {
+                  if (isHandWritten) {
+                    const formData = new FormData();
+
+                    formData.append("document", file);
+                    if (images) {
+                      setPdfExtractedImages(images);
+                    }
+
+                    setExtractedWrittenTextTitle(
+                      getFileNameWithoutExtension(file.name)
+                    );
+
+                    extractHandWrittenText({ payload: formData, start, end });
+
+                    setModalContent(null);
+
+                    return;
+                  }
+
                   setModalContent(null);
                   setPdfProcessing(true);
+
                   const text = await extractText(
                     file,
                     Number(start),
@@ -232,23 +258,37 @@ const UploadFileBox: FC<Props> = ({
     }
   }, [extractedText]);
 
+  const [pdfExtractedImages, setPdfExtractedImages] = useState<string[]>([]);
+  const [extractedWrittenTextTitle, setExtractedWrittenTextTitle] =
+    useState<string>("Untitled");
+
   return isClient ? (
     <>
       {extractingText && <ProcessingHandWrittenImagesLoader />}
-      {stagedImages && extractedText && showWritingReview && (
+      {extractedText && showWritingReview && (
         <ProcessedWritingContainer
-          images={stagedImages.map((img) => {
-            return URL.createObjectURL(img.file);
-          })}
+          images={
+            pdfExtractedImages.length
+              ? pdfExtractedImages
+              : (stagedImages as StagedImage[]).map((img) => {
+                  return URL.createObjectURL(img.file);
+                })
+          }
           textContent={extractedText}
           handleClose={() => {
             setShowWritingReview(false);
+            setExtractedWrittenTextTitle("Untitled");
           }}
           handleUpload={(content) => {
-            const file = createFileFromText(content.join("\n"), "Untitled.txt");
+            const file = createFileFromText(
+              content.join("\n"),
+              extractedWrittenTextTitle
+            );
             if (file) {
               handleSelectFile(file);
               setShowWritingReview(false);
+              setExtractedWrittenTextTitle("Untitled");
+              setPdfExtractedImages([])
             }
           }}
         />

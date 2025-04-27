@@ -78,14 +78,21 @@ export const FileUploadService = createApi({
       },
     }),
     exteactWrittenText: build.mutation<string[], ExtractWrittenTextPayload>({
-      query: ({ payload }) => ({
+      query: ({ payload, start, end }) => ({
         url: "/extract-written-text",
         method: "POST",
         body: payload,
+        params: {
+          start: start || "",
+          end: end || "",
+        },
       }),
     }),
   }),
 });
 
-export const { useUploadFileMutation, useUploadFileV2Mutation, useExteactWrittenTextMutation } =
-  FileUploadService;
+export const {
+  useUploadFileMutation,
+  useUploadFileV2Mutation,
+  useExteactWrittenTextMutation,
+} = FileUploadService;

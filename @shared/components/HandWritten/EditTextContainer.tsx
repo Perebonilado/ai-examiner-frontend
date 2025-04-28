@@ -31,7 +31,7 @@ const EditTextContainer: FC<Props> = ({
             onChange={(e) => {
               handleChange(e.target.value.trim(), index);
             }}
-            className="w-full h-full resize-none no-scrollbar outline-none border-none"
+            className="w-full h-full resize-none no-scrollbar outline-none border-none text-sm leading-6"
           ></textarea>
         </div>
       </div>

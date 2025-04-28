@@ -56,12 +56,19 @@ const ProcessedWritingContainer: FC<Props> = ({
   ) : (
     <Modal>
       <div className="w-full gap-6 p-5 max-w-[500px] max-sm:max-w-[96vw] rounded-lg bg-white h-[85vh] flex flex-col justify-between">
-        <p className="text-xl font-bold flex items-center justify-between">
-          {isViewingText ? "Generated Text" : "Your uploaded image"}
+        <div className="flex items-start justify-between">
+          <div>
+            <p className="text-xl font-bold ">
+              {isViewingText ? "Generated Text" : "Your uploaded image"}
+            </p>
+            <p className="text-xs w-full max-w-[350px] mt-1 text-gray-600">Give your text a quick proofread to catch any mistakes we might have missed!</p>
+          </div>
+
           <button type="button" onClick={handleClose}>
             <CloseIcon />
           </button>
-        </p>
+        </div>
+
         {isViewingText && (
           <EditTextContainer
             handleNextPage={handleNext}

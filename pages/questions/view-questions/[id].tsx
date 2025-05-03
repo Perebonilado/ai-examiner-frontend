@@ -140,9 +140,14 @@ const ViewQuestions: NextPage = () => {
     { skip: !documentId }
   );
 
-  const { data: relatedVideos } = useGetRelatedYoutubeVideosQuery(
+  const {
+    data: relatedVideos,
+    isLoading: relatedVideosLoading,
+    isError: relatedVideosError,
+    refetch: refetchRelatedVideos,
+  } = useGetRelatedYoutubeVideosQuery(
     { documentId },
-    { skip: !documentId || activeTab !== 'Related Videos' }
+    { skip: !documentId || activeTab !== "Related Videos" }
   );
 
   const [currentRelatedVideoId, setCurrentRelatedVideoId] = useState<
@@ -206,12 +211,35 @@ const ViewQuestions: NextPage = () => {
         )}
 
         {activeTab === "Related Videos" && (
-          <RelatedVideosContainer
-            data={relatedVideos ?? []}
-            handlePlay={(title) => {
-              setCurrentRelatedVideoId(title);
-            }}
-          />
+          <div>
+            {!relatedVideos && relatedVideosError && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <ErrorMessage message="Something went wrong while trying to load related videos" />
+                <Button title="Reload related videos" onClick={refetchRelatedVideos} />
+              </div>
+            )}
+            {relatedVideosLoading && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <Spinner size="sm" />
+                <p className="text-center font-semibold">
+                  Loading related videos
+                </p>
+              </div>
+            )}
+            {relatedVideos && !relatedVideosLoading && (
+              <RelatedVideosContainer
+                data={relatedVideos ?? []}
+                handlePlay={(title) => {
+                  setCurrentRelatedVideoId(title);
+                }}
+              />
+            )}
+            {relatedVideos && !relatedVideos.length && !relatedVideosLoading && !relatedVideosError && (
+              <div className="flex flex-col gap-4 justify-center items-center py-8">
+                <p className="text-center font-semibold">No related videos</p>
+              </div>
+            )}
+          </div>
         )}
 
         {activeTab === "Questions" && (

@@ -138,6 +138,7 @@ export const DocumentService = createApi({
       query: ({ documentId }) => ({
         url: `/youtube-search/${documentId}`,
       }),
+      extraOptions: { triggerLoading: false },
       providesTags: ['related-videos'],
       transformResponse: (res: YouTubeVideoItemDTO[]) => {
         if (!res) return <YoutubeRelatedVideoModel[]>[];

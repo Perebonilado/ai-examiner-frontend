@@ -25,6 +25,12 @@ const nextConfig = {
       },
       {
         protocol: "https",
+        hostname: "i.ytimg.com",
+        port: "",
+        pathname: "/**", // Allow all paths under this hostname
+      },
+      {
+        protocol: "https",
         hostname: "flagcdn.com",
         port: "",
         pathname: "/**", // Allow all paths under this hostname

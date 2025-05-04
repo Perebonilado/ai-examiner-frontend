@@ -20,6 +20,11 @@ import {
   CreateDocumentDto,
   DocumentSummaryDto,
 } from "@/dto/document.dto";
+import {
+  GetRelatedYoutubeVideosQuery,
+  YoutubeRelatedVideoModel,
+} from "@/models/youtube.model";
+import { YouTubeVideoItemDTO } from "@/dto/youtube.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/course-document`,
@@ -38,7 +43,7 @@ const baseQuery = fetchBaseQuery({
 export const DocumentService = createApi({
   reducerPath: "document-api",
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
-  tagTypes: ["all-documents"],
+  tagTypes: ["all-documents", "related-videos", 'summary'],
   endpoints: (build) => ({
     getAllUserDocuments: build.query<
       GetAllDocumentsModel,
@@ -108,6 +113,7 @@ export const DocumentService = createApi({
         query: ({ documentId }) => ({
           url: `/summary/${documentId}`,
         }),
+        providesTags: ['summary'],
         transformResponse: (res: DocumentSummaryDto) => {
           if (!res) return <DocumentSummaryModel>{};
           return res;
@@ -125,6 +131,28 @@ export const DocumentService = createApi({
       }),
       invalidatesTags: ["all-documents"],
     }),
+    getRelatedYoutubeVideos: build.query<
+      YoutubeRelatedVideoModel[],
+      GetRelatedYoutubeVideosQuery
+    >({
+      query: ({ documentId }) => ({
+        url: `/youtube-search/${documentId}`,
+      }),
+      extraOptions: { triggerLoading: false },
+      providesTags: ['related-videos'],
+      transformResponse: (res: YouTubeVideoItemDTO[]) => {
+        if (!res) return <YoutubeRelatedVideoModel[]>[];
+        return res.map((data) => {
+          return {
+            videoId: data.videoId,
+            title: data.title,
+            description: data.description,
+            channelTitle: data.author.name,
+            thumbnail: data.thumbnail,
+          };
+        });
+      },
+    }),
   }),
 });
 
@@ -133,4 +161,5 @@ export const {
   useAddDocumentMutation,
   useUpdateDocumentMutation,
   useGetDocumentSummaryQuery,
+  useGetRelatedYoutubeVideosQuery,
 } = DocumentService;

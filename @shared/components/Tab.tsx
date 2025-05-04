@@ -55,15 +55,6 @@ const Tab: FC<Props> = ({ tabs, activeTab, handleClickTab }) => {
             handleClick={handleClickTab}
           />
         ))}
-
-        {/* Indicator without animation */}
-        <div 
-          className="absolute bottom-0 h-[3px] bg-[#360B58]"
-          style={{ 
-            left: `${indicatorStyle.left}px`, 
-            width: `${indicatorStyle.width}px` 
-          }}
-        />
       </div>
     </div>
   );

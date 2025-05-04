@@ -16,10 +16,17 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 const nextConfig = {
   // ... other options you like
   images: {
+    unoptimized: false,
     remotePatterns: [
       {
         protocol: "https",
         hostname: "avatar.iran.liara.run",
+        port: "",
+        pathname: "/**", // Allow all paths under this hostname
+      },
+      {
+        protocol: "https",
+        hostname: "i.ytimg.com",
         port: "",
         pathname: "/**", // Allow all paths under this hostname
       },

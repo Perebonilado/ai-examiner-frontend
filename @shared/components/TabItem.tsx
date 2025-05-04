@@ -15,7 +15,6 @@ const TabItem: FC<Props> = ({ isActive, title, handleClick }) => {
       "text-[#360B58]": isActive,
       "border-b-[3px] border-b-[#360B58]": isActive,
     }
-    // Removed the border styling since we're using the animated indicator
   );
 
   return (

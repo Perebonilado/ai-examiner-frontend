@@ -16,6 +16,7 @@ const withPWA = require("@ducanh2912/next-pwa").default({
 const nextConfig = {
   // ... other options you like
   images: {
+    unoptimized: false,
     remotePatterns: [
       {
         protocol: "https",

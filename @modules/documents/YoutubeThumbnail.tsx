@@ -1,5 +1,4 @@
 import { YoutubeRelatedVideoModel } from "@/models/youtube.model";
-import Image from "next/image";
 import React, { FC } from "react";
 
 interface Props extends YoutubeRelatedVideoModel {
@@ -31,17 +30,15 @@ const YoutubeThumbnail: FC<Props> = ({
             </svg>
           </div>
         </div>
-        
-        {/* Image */}
-        <Image
+
+        {/* Image using regular <img> */}
+        <img
           src={thumbnail}
           alt={title}
-          fill
-          placeholder="blur"
-          className="object-cover transform group-hover:scale-105 transition-transform duration-500"
+          className="absolute inset-0 w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-500 rounded-2xl"
         />
       </div>
-      
+
       {/* Content */}
       <div className="mt-3 px-1">
         <h3 className="text-base font-semibold w-full max-w-[350px] text-gray-800 line-clamp-2 group-hover:text-[#360B58] transition-colors duration-300">{title}</h3>

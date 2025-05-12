@@ -6,8 +6,10 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
 import {
   useGetAllUserDocumentsQuery,
+  useGetModifiedDocumentFileQuery,
   useGetDocumentSummaryQuery,
   useGetRelatedYoutubeVideosQuery,
+  DocumentService,
 } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -20,7 +22,7 @@ import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "@/config/redux-config";
+import { reduxStore, RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import Tab from "@/@shared/components/Tab";
@@ -36,6 +38,13 @@ import SummaryContainer from "@/@modules/documents/SummaryContainer";
 import RelatedVideosContainer from "@/@modules/documents/RelatedVideosContainer";
 import Modal from "@/@shared/components/Modal";
 import RelatedVideoPlayer from "@/@modules/documents/RelatedVideoPlayer";
+import dynamic from "next/dynamic";
+const PDFReader = dynamic(
+  () => import("@/@modules/questions/EasyRead/PDFReader"),
+  {
+    ssr: false,
+  }
+);
 
 interface SearchParams {
   lastMessageCreatedOn?: Date;
@@ -124,7 +133,12 @@ const ViewQuestions: NextPage = () => {
   // tabs
 
   const [activeTab, setActiveTab] = useState("Questions");
-  const [tabs, setTabs] = useState(["Questions", "Summary", "Related Videos"]);
+  const [tabs, setTabs] = useState([
+    "Questions",
+    "Summary",
+    "Easy Study",
+    "Related Videos",
+  ]);
 
   useEffect(() => {
     const { tab } = router.query;
@@ -153,6 +167,28 @@ const ViewQuestions: NextPage = () => {
   const [currentRelatedVideoId, setCurrentRelatedVideoId] = useState<
     string | null
   >(null);
+
+  const [fileUrls, setFileUrls] = useState({ original: "", modified: "" });
+
+  useEffect(() => {
+    const getFileUrls = async (documentId: string) => {
+      const { getModifiedDocumentFile, getOriginalDocumentFile } =
+        DocumentService.endpoints;
+      const [originalFileUrl, modifiedFileUrl] = await Promise.all([
+        reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
+        reduxStore.dispatch(getModifiedDocumentFile.initiate({ documentId })),
+      ]);
+      if (originalFileUrl.data && modifiedFileUrl.data)
+        setFileUrls({
+          modified: modifiedFileUrl.data?.modifiedFile,
+          original: originalFileUrl.data?.modifiedFile,
+        });
+    };
+
+    if (documentId && activeTab === "Easy Study") {
+      getFileUrls(documentId);
+    }
+  }, [documentId, activeTab]);
 
   return (
     <>
@@ -210,12 +246,34 @@ const ViewQuestions: NextPage = () => {
           </div>
         )}
 
+        {activeTab === "Easy Study" && (
+          <div>
+            
+            <Button
+              title="Open"
+              onClick={() => {
+                if (fileUrls.modified && fileUrls.original) {
+                  setModalContent(
+                    <PDFReader
+                      modifiedFileUrl={fileUrls.modified}
+                      originalFileUrl={fileUrls.original}
+                    />
+                  );
+                }
+              }}
+            />
+          </div>
+        )}
+
         {activeTab === "Related Videos" && (
           <div>
             {!relatedVideos && relatedVideosError && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <ErrorMessage message="Something went wrong while trying to load related videos" />
-                <Button title="Reload related videos" onClick={refetchRelatedVideos} />
+                <Button
+                  title="Reload related videos"
+                  onClick={refetchRelatedVideos}
+                />
               </div>
             )}
             {relatedVideosLoading && (
@@ -234,11 +292,14 @@ const ViewQuestions: NextPage = () => {
                 }}
               />
             )}
-            {relatedVideos && !relatedVideos.length && !relatedVideosLoading && !relatedVideosError && (
-              <div className="flex flex-col gap-4 justify-center items-center py-8">
-                <p className="text-center font-semibold">No related videos</p>
-              </div>
-            )}
+            {relatedVideos &&
+              !relatedVideos.length &&
+              !relatedVideosLoading &&
+              !relatedVideosError && (
+                <div className="flex flex-col gap-4 justify-center items-center py-8">
+                  <p className="text-center font-semibold">No related videos</p>
+                </div>
+              )}
           </div>
         )}
 

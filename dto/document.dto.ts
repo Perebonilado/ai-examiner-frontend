@@ -34,3 +34,8 @@ export interface DocumentSummaryDto {
   summary: string;
   createdOn: string;
 }
+
+export interface DocumentFileDto {
+  originalFile: Buffer;
+  modifiedFile: Buffer;
+}

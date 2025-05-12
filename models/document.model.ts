@@ -58,3 +58,12 @@ export interface DocumentSummaryModel {
 export interface DocumentSummaryQuery {
   documentId: string;
 }
+
+export interface DocumentFileQuery {
+  documentId: string;
+}
+
+export interface DocumentFileModel {
+  // originalFile: string;
+  modifiedFile: string;
+}

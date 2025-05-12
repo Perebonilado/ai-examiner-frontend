@@ -10,6 +10,8 @@ import {
   AllDocumentsModel,
   AllDocumentsQueryModel,
   CreateDocumentModel,
+  DocumentFileModel,
+  DocumentFileQuery,
   DocumentSummaryModel,
   DocumentSummaryQuery,
   GetAllDocumentsModel,
@@ -18,6 +20,7 @@ import {
 import {
   AllDocumentsDto,
   CreateDocumentDto,
+  DocumentFileDto,
   DocumentSummaryDto,
 } from "@/dto/document.dto";
 import {
@@ -43,7 +46,7 @@ const baseQuery = fetchBaseQuery({
 export const DocumentService = createApi({
   reducerPath: "document-api",
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
-  tagTypes: ["all-documents", "related-videos", 'summary'],
+  tagTypes: ["all-documents", "related-videos", "summary"],
   endpoints: (build) => ({
     getAllUserDocuments: build.query<
       GetAllDocumentsModel,
@@ -113,7 +116,7 @@ export const DocumentService = createApi({
         query: ({ documentId }) => ({
           url: `/summary/${documentId}`,
         }),
-        providesTags: ['summary'],
+        providesTags: ["summary"],
         transformResponse: (res: DocumentSummaryDto) => {
           if (!res) return <DocumentSummaryModel>{};
           return res;
@@ -139,7 +142,7 @@ export const DocumentService = createApi({
         url: `/youtube-search/${documentId}`,
       }),
       extraOptions: { triggerLoading: false },
-      providesTags: ['related-videos'],
+      providesTags: ["related-videos"],
       transformResponse: (res: YouTubeVideoItemDTO[]) => {
         if (!res) return <YoutubeRelatedVideoModel[]>[];
         return res.map((data) => {
@@ -153,6 +156,32 @@ export const DocumentService = createApi({
         });
       },
     }),
+    getModifiedDocumentFile: build.query<DocumentFileModel, DocumentFileQuery>({
+      query: ({ documentId }) => ({
+        url: `/modified-document-file/${documentId}`,
+        responseHandler: (response) => response.blob(), 
+      }),
+      transformResponse: (blob: Blob) => {
+        if (!blob) return {} as DocumentFileModel;
+    
+        return {
+          modifiedFile: URL.createObjectURL(blob),
+        };
+      },
+    }),
+    getOriginalDocumentFile: build.query<DocumentFileModel, DocumentFileQuery>({
+      query: ({ documentId }) => ({
+        url: `/original-document-file/${documentId}`,
+        responseHandler: (response) => response.blob(), 
+      }),
+      transformResponse: (blob: Blob) => {
+        if (!blob) return {} as DocumentFileModel;
+    
+        return {
+          modifiedFile: URL.createObjectURL(blob),
+        };
+      },
+    }),
   }),
 });
 
@@ -162,4 +191,6 @@ export const {
   useUpdateDocumentMutation,
   useGetDocumentSummaryQuery,
   useGetRelatedYoutubeVideosQuery,
+  useGetModifiedDocumentFileQuery,
+  useGetOriginalDocumentFileQuery
 } = DocumentService;

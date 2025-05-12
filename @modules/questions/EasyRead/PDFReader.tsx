@@ -42,7 +42,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
 
   const { setModalContent } = useModalContext();
 
-  const tabs = ["Original", "Simplified", "Key Points"];
+  const tabs = ["Original", "Simplified"];
 
   const onResize = useCallback<ResizeObserverCallback>((entries) => {
     const [entry] = entries;
@@ -67,9 +67,10 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
   };
 
   const renderPDF = (fileUrl: string) => (
-    <div className="min-w-full flex justify-center py-4 overflow-x-hidden">
+    <div className="min-w-full no-scrollbar overflow-y-auto h-full  flex justify-center py-4 overflow-x-hidden">
       <Document
         file={fileUrl}
+        renderMode="canvas"
         onLoadSuccess={onDocumentLoadSuccess as any}
         onLoadError={(error) => {
           console.log("error", error);
@@ -81,12 +82,6 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
           pageNumber={pageNumber}
           width={containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth}
           scale={zoom}
-          
-          onRenderSuccess={({ height }) => {
-            if (!pageHeight || height > pageHeight) {
-              setPageHeight(height);
-            }
-          }}
         />
       </Document>
     </div>
@@ -99,10 +94,50 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg max-w-[97vw] w-full max-h-[95vh]"
+      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg max-w-[97vw] w-full h-[95vh]"
     >
       {/* Header */}
-      <div className="flex justify-between items-center h-[50px] px-4 pt-3 bg-white z-10">
+
+      {/* Tabs */}
+      <div className="border-b pt-1">
+        <div className="w-fit mx-auto py-4 flex gap-4">
+          {tabs.map((tab) => (
+            <Button
+              key={tab}
+              title={tab}
+              variant={activeTab === tab ? "contained" : "outlined"}
+              onClick={() => setActiveTab(tab)}
+            >
+              {tab}
+            </Button>
+          ))}
+        </div>
+      </div>
+
+      {/* PDF Content */}
+
+      <div
+        ref={setContainerRef}
+        className="flex-1 overflow-y-auto bg-[#FAFAFA] overflow-x-hidden"
+        style={{
+          flex: 1,
+        }}
+      >
+        <div
+          className="flex transition-transform duration-500 ease-in-out min-w-full h-full"
+          style={{
+            transform: `translateX(-${
+              tabs.findIndex((t) => t === activeTab) * 100
+            }%)`,
+          }}
+        >
+          {renderPDF(originalFileUrl)}
+          {renderPDF(modifiedFileUrl)}
+          {/* {renderPDF(modifiedFileUrl)} */}
+        </div>
+      </div>
+
+      <div className="flex justify-center items-center h-[50px] px-4 py-3 bg-white z-10 border-t">
         <div className="flex items-center gap-3 text-sm">
           <p className="text-gray-700">Page</p>
           <div className="flex items-center gap-1">
@@ -148,7 +183,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
           <p className="text-gray-500 ml-1">of {totalPages}</p>
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* <div className="flex items-center gap-4">
           <button onClick={zoomOut} title="Zoom Out">
             <ZoomOutIcon />
           </button>
@@ -158,55 +193,8 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
           <button onClick={() => setModalContent(null)} title="Close">
             <CloseIcon />
           </button>
-        </div>
+        </div> */}
       </div>
-
-      {/* Tabs */}
-      <div className="border-b pt-1">
-        <div className="w-fit mx-auto py-4 flex gap-4">
-          {tabs.map((tab) => (
-            <Button
-              key={tab}
-              title={tab}
-              variant={activeTab === tab ? "contained" : "outlined"}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </Button>
-          ))}
-        </div>
-      </div>
-
-      {/* PDF Content */}
-      <HighlightableTextArea
-        popoverItem={(HighlightedText, setPopoverState) => (
-          <TextSelectionPopup
-            selectedText={HighlightedText}
-            clearSelection={() => setPopoverState(false)}
-          />
-        )}
-      >
-        <div
-          ref={setContainerRef}
-          className="flex-1 overflow-y-auto bg-[#FAFAFA] overflow-x-hidden"
-          style={{
-            minHeight: pageHeight ? `${pageHeight + 32}px` : "auto", // Prevent height jumps
-          }}
-        >
-          <div
-            className="flex transition-transform duration-500 ease-in-out min-w-full"
-            style={{
-              transform: `translateX(-${
-                tabs.findIndex((t) => t === activeTab) * 100
-              }%)`,
-            }}
-          >
-            {renderPDF(originalFileUrl)}
-            {renderPDF(modifiedFileUrl)}
-            {renderPDF(modifiedFileUrl)}
-          </div>
-        </div>
-      </HighlightableTextArea>
     </motion.div>
   );
 };

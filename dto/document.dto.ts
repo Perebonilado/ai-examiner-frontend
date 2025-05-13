@@ -39,3 +39,8 @@ export interface DocumentFileDto {
   originalFile: Buffer;
   modifiedFile: Buffer;
 }
+
+export interface StoredFileThumbnailDto {
+  thumbnailUrl: string | null;
+  iframUrl: string | null;
+}

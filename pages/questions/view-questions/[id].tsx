@@ -10,6 +10,7 @@ import {
   useGetDocumentSummaryQuery,
   useGetRelatedYoutubeVideosQuery,
   DocumentService,
+  useGetFileThumbnailDetailsQuery,
 } from "@/api-services/document.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import AppLayout from "@/layouts/AppLayout";
@@ -39,6 +40,9 @@ import RelatedVideosContainer from "@/@modules/documents/RelatedVideosContainer"
 import Modal from "@/@shared/components/Modal";
 import RelatedVideoPlayer from "@/@modules/documents/RelatedVideoPlayer";
 import dynamic from "next/dynamic";
+import ViewFileReaderThumbnail from "@/@modules/questions/ViewFileReaderThumbnail";
+import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
+import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -133,12 +137,7 @@ const ViewQuestions: NextPage = () => {
   // tabs
 
   const [activeTab, setActiveTab] = useState("Questions");
-  const [tabs, setTabs] = useState([
-    "Questions",
-    "Summary",
-    "Easy Study",
-    "Related Videos",
-  ]);
+  const [tabs, setTabs] = useState(["Questions", "Summary", "Related Videos"]);
 
   useEffect(() => {
     const { tab } = router.query;
@@ -170,25 +169,37 @@ const ViewQuestions: NextPage = () => {
 
   const [fileUrls, setFileUrls] = useState({ original: "", modified: "" });
 
-  useEffect(() => {
-    const getFileUrls = async (documentId: string) => {
+  const { data: thumbnail } = useGetFileThumbnailDetailsQuery(
+    { documentId },
+    { skip: !documentId }
+  );
+
+  const [isFetchingFile, setIsFetchingFile] = useState(false);
+
+  const getFileUrls = async (documentId: string) => {
+    setIsFetchingFile(true);
+    try {
       const { getModifiedDocumentFile, getOriginalDocumentFile } =
         DocumentService.endpoints;
       const [originalFileUrl, modifiedFileUrl] = await Promise.all([
         reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
         reduxStore.dispatch(getModifiedDocumentFile.initiate({ documentId })),
       ]);
-      if (originalFileUrl.data && modifiedFileUrl.data)
-        setFileUrls({
+      setIsFetchingFile(false);
+      if (originalFileUrl.data && modifiedFileUrl.data) {
+        return {
           modified: modifiedFileUrl.data?.modifiedFile,
           original: originalFileUrl.data?.modifiedFile,
-        });
-    };
+        };
+      }
 
-    if (documentId && activeTab === "Easy Study") {
-      getFileUrls(documentId);
+      return null;
+    } catch (error) {
+      setIsFetchingFile(false);
+      toast.error("Failed to load file");
     }
-  }, [documentId, activeTab]);
+    setIsFetchingFile(false);
+  };
 
   return (
     <>
@@ -202,6 +213,7 @@ const ViewQuestions: NextPage = () => {
           />
         </Modal>
       )}
+      {isFetchingFile && <LoadingReader />}
       <AppHead title="View Questions" />
       <AppLayout>
         <Button
@@ -214,20 +226,52 @@ const ViewQuestions: NextPage = () => {
           }}
         />
 
-        <div className="flex items-center justify-between w-full pb-4 max-md:flex-col max-md:gap-12">
-          <h2 className="text-2xl font-bold max-md:text-center max-w-[60%] md:truncate max-md:max-w-full">
+        <div className="flex items-center justify-between w-full pb-4 max-lg:flex-col max-lg:gap-12">
+          <h2 className="text-2xl font-bold max-lg:text-center max-w-[60%] lg:truncate max-lg:max-w-full">
             {document &&
               capitalizeFirstLetterOfEachWord(
                 document.documents[0].title.toLowerCase()
               )}{" "}
           </h2>
-          {permissions && (
-            <Button
-              title="New Questions"
-              onClick={handleGenerateQuestions}
-              size="large"
-            />
-          )}
+          <div className="flex items-center gap-4">
+            {!thumbnail?.thumbnailUrl.length ? (
+              <></>
+            ) : (
+              <Button
+                title="Easy Read"
+                variant="outlined"
+                size="large"
+                onClick={async () => {
+                  if (!fileUrls.modified && !fileUrls.original) {
+                    const urls = await getFileUrls(documentId);
+
+                    if (urls) {
+                      setModalContent(
+                        <PDFReader
+                          modifiedFileUrl={urls.modified}
+                          originalFileUrl={urls.original}
+                        />
+                      );
+                    }
+                  } else {
+                    setModalContent(
+                      <PDFReader
+                        modifiedFileUrl={fileUrls.modified}
+                        originalFileUrl={fileUrls.original}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
+            {permissions && (
+              <Button
+                title="New Test"
+                onClick={handleGenerateQuestions}
+                size="large"
+              />
+            )}
+          </div>
         </div>
 
         <Tab
@@ -248,20 +292,33 @@ const ViewQuestions: NextPage = () => {
 
         {activeTab === "Easy Study" && (
           <div>
-            
-            <Button
-              title="Open"
-              onClick={() => {
-                if (fileUrls.modified && fileUrls.original) {
-                  setModalContent(
-                    <PDFReader
-                      modifiedFileUrl={fileUrls.modified}
-                      originalFileUrl={fileUrls.original}
-                    />
-                  );
-                }
-              }}
-            />
+            {thumbnail && (
+              <ViewFileReaderThumbnail
+                // iframUrl={thumbnail.iframUrl}
+                // thumbnailUrl={thumbnail.thumbnailUrl}
+                handleClick={async () => {
+                  if (!fileUrls.modified && !fileUrls.original) {
+                    const urls = await getFileUrls(documentId);
+
+                    if (urls) {
+                      setModalContent(
+                        <PDFReader
+                          modifiedFileUrl={urls.modified}
+                          originalFileUrl={urls.original}
+                        />
+                      );
+                    }
+                  } else {
+                    setModalContent(
+                      <PDFReader
+                        modifiedFileUrl={fileUrls.modified}
+                        originalFileUrl={fileUrls.original}
+                      />
+                    );
+                  }
+                }}
+              />
+            )}
           </div>
         )}
 

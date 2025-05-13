@@ -15,6 +15,8 @@ import {
   DocumentSummaryModel,
   DocumentSummaryQuery,
   GetAllDocumentsModel,
+  StoredFileThumbnailModel,
+  StoredFileThumbnailQuery,
   UpdateDocumentPayloadModel,
 } from "@/models/document.model";
 import {
@@ -22,6 +24,7 @@ import {
   CreateDocumentDto,
   DocumentFileDto,
   DocumentSummaryDto,
+  StoredFileThumbnailDto,
 } from "@/dto/document.dto";
 import {
   GetRelatedYoutubeVideosQuery,
@@ -159,26 +162,51 @@ export const DocumentService = createApi({
     getModifiedDocumentFile: build.query<DocumentFileModel, DocumentFileQuery>({
       query: ({ documentId }) => ({
         url: `/modified-document-file/${documentId}`,
-        responseHandler: (response) => response.blob(), 
+        responseHandler: (response) => response.blob(),
       }),
       transformResponse: (blob: Blob) => {
         if (!blob) return {} as DocumentFileModel;
-    
+
         return {
           modifiedFile: URL.createObjectURL(blob),
         };
+      },
+      extraOptions: {
+        triggerLoading: false,
       },
     }),
     getOriginalDocumentFile: build.query<DocumentFileModel, DocumentFileQuery>({
       query: ({ documentId }) => ({
         url: `/original-document-file/${documentId}`,
-        responseHandler: (response) => response.blob(), 
+        responseHandler: (response) => response.blob(),
       }),
       transformResponse: (blob: Blob) => {
         if (!blob) return {} as DocumentFileModel;
-    
+
         return {
           modifiedFile: URL.createObjectURL(blob),
+        };
+      },
+      extraOptions: {
+        triggerLoading: false,
+      },
+    }),
+    getFileThumbnailDetails: build.query<
+      StoredFileThumbnailModel,
+      StoredFileThumbnailQuery
+    >({
+      query: ({ documentId }) => ({
+        url: `/stored-file-information/${documentId}`,
+      }),
+      transformResponse: (res: StoredFileThumbnailDto) => {
+        if (!res)
+          return <StoredFileThumbnailModel>{
+            thumbnailUrl: "",
+            iframUrl: "",
+          };
+        return {
+          thumbnailUrl: res.thumbnailUrl ?? "",
+          iframUrl: res.iframUrl ?? "",
         };
       },
     }),
@@ -192,5 +220,6 @@ export const {
   useGetDocumentSummaryQuery,
   useGetRelatedYoutubeVideosQuery,
   useGetModifiedDocumentFileQuery,
-  useGetOriginalDocumentFileQuery
+  useGetOriginalDocumentFileQuery,
+  useGetFileThumbnailDetailsQuery,
 } = DocumentService;

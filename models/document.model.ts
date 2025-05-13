@@ -67,3 +67,12 @@ export interface DocumentFileModel {
   // originalFile: string;
   modifiedFile: string;
 }
+
+export interface StoredFileThumbnailModel {
+  thumbnailUrl: string;
+  iframUrl: string;
+}
+
+export interface StoredFileThumbnailQuery {
+  documentId: string;
+}

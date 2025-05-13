@@ -78,11 +78,26 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
         options={options}
         onItemClick={(e) => goToPage(e.pageNumber)}
       >
-        <Page
-          pageNumber={pageNumber}
-          width={containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth}
-          scale={zoom}
-        />
+        <HighlightableTextArea
+          popoverItem={(HighlightedText, setPopoverState) => {
+            return (
+              <TextSelectionPopup
+                selectedText={HighlightedText}
+                clearSelection={() => {
+                  setPopoverState(false);
+                }}
+              />
+            );
+          }}
+        >
+          <Page
+            pageNumber={pageNumber}
+            width={
+              containerWidth ? Math.min(containerWidth, maxWidth) : maxWidth
+            }
+            scale={zoom}
+          />
+        </HighlightableTextArea>
       </Document>
     </div>
   );
@@ -94,12 +109,12 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg max-w-[97vw] w-full h-[95vh]"
+      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg w-[97vw] max-w-[1200px] h-[95vh]"
     >
       {/* Header */}
 
       {/* Tabs */}
-      <div className="border-b pt-1">
+      <div className="border-b pt-1 relative">
         <div className="w-fit mx-auto py-4 flex gap-4">
           {tabs.map((tab) => (
             <Button
@@ -112,6 +127,14 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
             </Button>
           ))}
         </div>
+        <button
+          className="absolute right-6 top-1/2 -translate-y-1/2"
+          onClick={() => {
+            setModalContent(null);
+          }}
+        >
+          <CloseIcon />
+        </button>
       </div>
 
       {/* PDF Content */}
@@ -182,18 +205,6 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
 
           <p className="text-gray-500 ml-1">of {totalPages}</p>
         </div>
-
-        {/* <div className="flex items-center gap-4">
-          <button onClick={zoomOut} title="Zoom Out">
-            <ZoomOutIcon />
-          </button>
-          <button onClick={zoomIn} title="Zoom In">
-            <ZoomInIcon />
-          </button>
-          <button onClick={() => setModalContent(null)} title="Close">
-            <CloseIcon />
-          </button>
-        </div> */}
       </div>
     </motion.div>
   );

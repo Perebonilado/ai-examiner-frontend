@@ -190,43 +190,44 @@ const UploadFileBox: FC<Props> = ({
                     return;
                   }
 
-                  setModalContent(null);
-                  setPdfProcessing(true);
+                  // setModalContent(null);
+                  // setPdfProcessing(true);
 
-                  const text = await extractText(
-                    file,
-                    Number(start),
-                    Number(end)
-                  );
-                  const keywords = ["cam scanner", "camscanner"];
-                  const isCamScanned =
-                    text.toLowerCase().includes(keywords[0]) ||
-                    text.toLowerCase().includes(keywords[1]);
+                  // const text = await extractText(
+                  //   file,
+                  //   Number(start),
+                  //   Number(end)
+                  // );
+                  // const keywords = ["cam scanner", "camscanner"];
+                  // const isCamScanned =
+                  //   text.toLowerCase().includes(keywords[0]) ||
+                  //   text.toLowerCase().includes(keywords[1]);
 
-                  if (isCamScanned) {
-                    setPdfProcessing(false);
-                    setOcrProgress(null);
-                    handleSelectFile(file, pages, start, end);
-                    setModalContent(null);
-                    return;
-                  }
+                  // if (isCamScanned) {
+                  //   setPdfProcessing(false);
+                  //   setOcrProgress(null);
+                  //   handleSelectFile(file, pages, start, end);
+                  //   setModalContent(null);
+                  //   return;
+                  // }
 
-                  if (!text.trim().length) {
-                    setPdfProcessing(false);
-                    setOcrProgress(null);
-                    handleSelectFile(file, pages, start, end);
-                    setModalContent(null);
-                    return;
-                  }
+                  // if (!text.trim().length) {
+                  //   setPdfProcessing(false);
+                  //   setOcrProgress(null);
+                  //   handleSelectFile(file, pages, start, end);
+                  //   setModalContent(null);
+                  //   return;
+                  // }
 
-                  const newTxtFile = createFileFromText(
-                    text,
-                    `${getFileNameWithoutExtension(file.name)}.txt`
-                  );
-                  setPdfProcessing(false);
-                  if (newTxtFile) {
-                    handleSelectFile(newTxtFile);
-                  }
+                  // const newTxtFile = createFileFromText(
+                  //   text,
+                  //   `${getFileNameWithoutExtension(file.name)}.txt`
+                  // );
+                  // setPdfProcessing(false);
+                  // if (newTxtFile) {
+                  //   handleSelectFile(newTxtFile);
+                  // }
+                  handleSelectFile(file, pages, start, end);
                   setModalContent(null);
                 }}
               />

@@ -42,6 +42,7 @@
     "react-chartjs-2": "^5.2.0",
     "react-confetti-explosion": "^2.1.2",
     "react-countup": "^6.5.3",
+    "react-doc-viewer": "^0.1.14",
     "react-dom": "^18",
     "react-drag-drop-files": "^2.3.10",
     "react-highlight-popover": "^1.1.1",

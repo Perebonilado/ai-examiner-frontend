@@ -139,24 +139,32 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
 
       {/* PDF Content */}
 
-      <div
-        ref={setContainerRef}
-        className="flex-1 overflow-y-auto bg-[#FAFAFA] overflow-x-hidden"
-        style={{
-          flex: 1,
-        }}
-      >
+      <div className="relative w-full h-full">
         <div
-          className="flex transition-transform duration-500 ease-in-out min-w-full h-full"
           style={{
-            transform: `translateX(-${
-              tabs.findIndex((t) => t === activeTab) * 100
-            }%)`,
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: activeTab === "Original" ? 10 : 0,
+            visibility: activeTab === "Original" ? "visible" : "hidden",
           }}
         >
           {renderPDF(originalFileUrl)}
+        </div>
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: activeTab === "Simplified" ? 10 : 0,
+            visibility: activeTab === "Simplified" ? "visible" : "hidden",
+          }}
+        >
           {renderPDF(modifiedFileUrl)}
-          {/* {renderPDF(modifiedFileUrl)} */}
         </div>
       </div>
 

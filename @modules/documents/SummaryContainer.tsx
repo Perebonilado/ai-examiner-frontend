@@ -1,8 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import { useDispatch } from "react-redux";
-import { useTextSelectionPopUp } from "@/hooks/useTextSelectionPopUp";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 import { HighlightableTextArea } from "react-highlight-popover";
 
@@ -26,10 +24,6 @@ const SummaryContainer: FC<Props> = ({ summary }) => {
     setHtmlSummary(parsed);
   };
 
-  // const { popupPosition, selectedText, clearSelection } =
-  //   useTextSelectionPopUp();
-  const dispatch = useDispatch();
-
   return (
     <>
       <div className="w-full h-full flex flex-col">
@@ -41,7 +35,6 @@ const SummaryContainer: FC<Props> = ({ summary }) => {
                   selectedText={HighlightedText}
                   clearSelection={() => {
                     setPopoverState(false);
-                    console.log('set to false')
                   }}
                 />
               );
@@ -60,13 +53,6 @@ const SummaryContainer: FC<Props> = ({ summary }) => {
           </div>
         )}
       </div>
-      {/* <TextSelectionPopup
-        visible={!!popupPosition}
-        top={popupPosition?.top || 0}
-        left={popupPosition?.left || 0}
-        selectedText={selectedText}
-        clearSelection={clearSelection}
-      /> */}
     </>
   );
 };

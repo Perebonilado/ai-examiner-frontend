@@ -1,7 +1,7 @@
-import React, { FC, useCallback, useMemo, useState } from "react";
+import React, { ElementRef, FC, useCallback, useMemo, useRef, useState } from "react";
 import { pdfjs, Document, Page } from "react-pdf";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import type { PDFDocumentProxy } from "pdfjs-dist";
 
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
@@ -28,19 +28,19 @@ const options = {
   standardFontDataUrl: "/standard_fonts/",
 };
 
-const maxWidth = 800;
+const maxWidth = 600;
 
 const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
   const [zoom, setZoom] = useState(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageInputVal, setPageInputVal] = useState("1");
   const [totalPages, setTotalPages] = useState(0);
-  const [containerRef, setContainerRef] = useState<HTMLElement | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>();
   const [activeTab, setActiveTab] = useState("Original");
   const [pageHeight, setPageHeight] = useState<number | null>(null);
 
   const { setModalContent } = useModalContext();
+  const containerRef = useRef<ElementRef<'div'>>(null);
 
   const tabs = ["Original", "Simplified"];
 
@@ -51,7 +51,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
     }
   }, []);
 
-  useResizeObserver(containerRef, {}, onResize);
+  useResizeObserver(containerRef.current, {}, onResize);
 
   const onDocumentLoadSuccess = ({ numPages }: PDFDocumentProxy) => {
     setTotalPages(numPages);
@@ -67,7 +67,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
   };
 
   const renderPDF = (fileUrl: string) => (
-    <div className="min-w-full no-scrollbar overflow-y-auto h-full  flex justify-center py-4 overflow-x-hidden">
+    <div ref={containerRef} className="min-w-full no-scrollbar overflow-y-auto h-full flex justify-center py-4 overflow-x-hidden">
       <Document
         file={fileUrl}
         renderMode="canvas"
@@ -109,10 +109,9 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg w-[97vw] max-w-[1200px] h-[95vh]"
+      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg w-[97vw] max-w-[1200px] h-[85vh]"
     >
       {/* Header */}
-
       {/* Tabs */}
       <div className="border-b pt-1 relative">
         <div className="w-fit mx-auto py-4 flex gap-4">
@@ -138,7 +137,6 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
       </div>
 
       {/* PDF Content */}
-
       <div className="relative w-full h-full">
         <div
           style={{

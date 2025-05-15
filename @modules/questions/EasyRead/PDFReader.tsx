@@ -109,7 +109,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: 50, opacity: 0 }}
       transition={{ duration: 0.3 }}
-      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg w-[97vw] max-w-[1200px] h-[85vh]"
+      className="flex flex-col bg-white rounded-2xl overflow-hidden shadow-lg w-[97vw] max-w-[1200px] h-[95vh] max-sm:!-translate-y-[30px] max-sm:h-[75vh]"
     >
       {/* Header */}
       {/* Tabs */}

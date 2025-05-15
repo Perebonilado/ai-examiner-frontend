@@ -43,6 +43,7 @@ import dynamic from "next/dynamic";
 import ViewFileReaderThumbnail from "@/@modules/questions/ViewFileReaderThumbnail";
 import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
+import EasyReadIcon from "@/icons/EasyReadIcon";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -239,8 +240,14 @@ const ViewQuestions: NextPage = () => {
             ) : (
               <Button
                 title="Easy Read"
-                variant="outlined"
+                starticon={
+                  <span className="-translate-y-[2px] translate-x-[5px]">
+                    <EasyReadIcon />
+                  </span>
+                }
+                variant="text"
                 size="large"
+                className="!text-[#9333EA]"
                 onClick={async () => {
                   if (!fileUrls.modified && !fileUrls.original) {
                     const urls = await getFileUrls(documentId);

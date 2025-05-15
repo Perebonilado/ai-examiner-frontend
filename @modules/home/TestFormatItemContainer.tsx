@@ -9,8 +9,9 @@ import TransitionUp from "@/transitions/TransitionUp";
 interface Props {
   testFormats: TestFormatItemProps[];
   handleSelected: (value: number) => void;
-  selected: number;
+  selected?: number;
   handleClose: () => void;
+  title?: string;
 }
 
 const TestFormatItemContainer: FC<Props> = ({
@@ -18,6 +19,7 @@ const TestFormatItemContainer: FC<Props> = ({
   handleSelected,
   selected,
   handleClose,
+  title = 'Select test format'
 }) => {
   const ref = useClickOutside<HTMLDivElement>(() => {
     handleClose();
@@ -34,7 +36,7 @@ const TestFormatItemContainer: FC<Props> = ({
             <CloseIcon />
           </button>
         </div>
-        <h3 className="text-lg font-bold mb-6">Select test format</h3>
+        <h3 className="text-lg font-bold mb-6">{title}</h3>
         <div className="mt-4 flex flex-col gap-6">
           {testFormats.map((tf, idx) => {
             return (

@@ -50,6 +50,8 @@ import VivaIcon from "@/icons/VivaIcon";
 import TotalQuestionsContainer from "./TotalQuestionsContainer";
 import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
 import AdditionalSettingsContainer from "./AdditionalSettingsContainer";
+import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
+import { IAltTabItem } from "@/@shared/components/Tab/AltTabItem";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -219,8 +221,41 @@ const GenerateQuestionsForm: FC = () => {
 
   const [isAdditionalSettings, setIsAdditionalSettings] = useState(false);
 
+  const [tabs, setTabs] = useState<Omit<IAltTabItem, "handleClick">[]>([
+    { isActive: true, title: "Test Mode" },
+    { isActive: false, title: "Study Mode" },
+  ]);
+  const [activeTab, setActiveTab] = useState(
+    tabs.filter((t) => t.isActive)[0].title
+  );
+  const [isStudyModeModal, setIsStudyModeModal] = useState(false);
+  const [selectedStudyTool, setSelectedStudyTool] = useState<number>();
+
+  useEffect(() => {
+    setActiveTab(tabs.filter((t) => t.isActive)[0].title);
+  }, [JSON.stringify(tabs)]);
+
+  const handleStartStudying = () => {
+    const [summary, easyRead, relatedVideos] = studyModeFormats.map(
+      (f) => f.value
+    );
+    if (selectedStudyTool === summary) {
+      router.push(`/questions/view-questions/${documentId}?tab=Summary`);
+    } else if (selectedStudyTool === easyRead) {
+      router.push(
+        `/questions/view-questions/${documentId}?tab=Summary&tool=easyRead`
+      );
+    } else {
+      router.push(
+        `/questions/view-questions/${documentId}?tab=${encodeURIComponent(
+          "Related Videos"
+        )}`
+      );
+    }
+  };
+
   return !permissions ? null : (
-    <section>
+    <section className="min-h-[900px]">
       {isAdditionalSettings && (
         <Modal>
           <AdditionalSettingsContainer
@@ -282,6 +317,36 @@ const GenerateQuestionsForm: FC = () => {
           />
         </Modal>
       )}
+      {isStudyModeModal && (
+        <Modal>
+          <TestFormatItemContainer
+            handleClose={() => {
+              setIsStudyModeModal(false);
+            }}
+            testFormats={studyModeFormats}
+            handleSelected={(value) => {
+              setSelectedStudyTool(value);
+              setIsStudyModeModal(false);
+            }}
+            selected={selectedStudyTool}
+            title="Select Study Tool"
+          />
+        </Modal>
+      )}
+      <div className="my-3">
+        <AltTabContainer
+          data={tabs}
+          handleClick={(tab) => {
+            const mutatedTabs = tabs.map((t) => {
+              if (t.title === tab) {
+                return { ...t, isActive: true };
+              }
+              return { ...t, isActive: false };
+            });
+            setTabs(mutatedTabs);
+          }}
+        />
+      </div>
       <FormikProvider value={formik}>
         <Form>
           <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
@@ -304,71 +369,108 @@ const GenerateQuestionsForm: FC = () => {
               maxFileSizeMB={permissions.maxFileSizeAllowed}
             />
 
-            <TextField
-              label="Document Title"
-              placeholder="Enter a title for your document"
-              {...formik.getFieldProps("title")}
-              error={formik.touched.title ? formik.errors.title : undefined}
-            />
-
-            <div>
-              <label className="text-sm font-semibold flex items-center gap-4">
-                Test Format{" "}
-              </label>
-              <div className="mt-2 cursor-pointer">
+            {activeTab === "Study Mode" && (
+              <div className="w-full flex flex-col gap-6">
                 <TextField
                   label=""
                   cursorPointer={true}
                   readOnly={true}
-                  value={selectedQuestionType}
+                  value={
+                    studyModeFormats.filter(
+                      (m) => m.value === selectedStudyTool
+                    )[0]?.title || ""
+                  }
+                  placeholder="Select Study Tool"
                   handleClick={() => {
-                    setIsTestFormatModal(true);
+                    setIsStudyModeModal(true);
                   }}
                 />
-              </div>
-            </div>
-
-            {formik.values.questionType !== "6" && (
-              <div>
-                <label className="text-sm font-semibold flex items-center gap-4">
-                  Total questions{" "}
-                </label>
-                <div className="mt-2 cursor-pointer">
-                  <TextField
-                    label=""
-                    readOnly={true}
-                    cursorPointer={true}
-                    value={formik.values.questionCount || "5"}
-                    handleClick={() => {
-                      setIsTotalQuestionsForm(true);
-                    }}
-                  />
-                </div>
+                <Button
+                  title="Start Studying"
+                  size="large"
+                  fullWidth
+                  type="button"
+                  disabled={
+                    !fileId ||
+                    !file ||
+                    uploadFileLoading ||
+                    !documentId ||
+                    !selectedStudyTool
+                  }
+                  onClick={handleStartStudying}
+                />
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => {
-                setIsAdditionalSettings(true);
-              }}
-              className="flex items-center gap-2 text-sm text-[#9333EA] font-medium"
-            >
-              <AdditionalSettingsIcon /> Additional Settings
-            </button>
+            {activeTab === "Test Mode" && (
+              <>
+                <TextField
+                  label="Document Title"
+                  placeholder="Enter a title for your document"
+                  {...formik.getFieldProps("title")}
+                  error={formik.touched.title ? formik.errors.title : undefined}
+                />
 
-            <Button
-              title="Generate Test"
-              size="large"
-              disabled={
-                !formik.isValid ||
-                !fileId ||
-                !file ||
-                uploadFileLoading ||
-                !documentId ||
-                isLoading
-              }
-            />
+                <div>
+                  <label className="text-sm font-semibold flex items-center gap-4">
+                    Test Format{" "}
+                  </label>
+                  <div className="mt-2 cursor-pointer">
+                    <TextField
+                      label=""
+                      cursorPointer={true}
+                      readOnly={true}
+                      value={selectedQuestionType}
+                      handleClick={() => {
+                        setIsTestFormatModal(true);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                {formik.values.questionType !== "6" && (
+                  <div>
+                    <label className="text-sm font-semibold flex items-center gap-4">
+                      Total questions{" "}
+                    </label>
+                    <div className="mt-2 cursor-pointer">
+                      <TextField
+                        label=""
+                        readOnly={true}
+                        cursorPointer={true}
+                        value={formik.values.questionCount || "5"}
+                        handleClick={() => {
+                          setIsTotalQuestionsForm(true);
+                        }}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsAdditionalSettings(true);
+                  }}
+                  className="flex items-center gap-2 text-sm text-[#9333EA] font-medium"
+                >
+                  <AdditionalSettingsIcon /> Additional Settings
+                </button>
+
+                <Button
+                  title="Generate Test"
+                  size="large"
+                  disabled={
+                    !formik.isValid ||
+                    !fileId ||
+                    !file ||
+                    uploadFileLoading ||
+                    !documentId ||
+                    isLoading
+                  }
+                />
+              </>
+            )}
           </div>
         </Form>
       </FormikProvider>
@@ -377,6 +479,29 @@ const GenerateQuestionsForm: FC = () => {
 };
 
 export default GenerateQuestionsForm;
+
+const studyModeFormats: TestFormatItem[] = [
+  {
+    title: "Summary",
+    value: 1,
+    description: "Get a brief summary of key points from your material",
+    icon: <MultipleTrueFalseIcon />,
+  },
+  {
+    title: "Easy Read",
+    value: 2,
+    description:
+      "Simplifies each page of your material into easier-to-understand language",
+    icon: <VivaIcon />,
+    isBeta: true,
+  },
+  {
+    title: "Related Videos",
+    value: 7,
+    description: "Helpful videos to reinforce your understanding",
+    icon: <EssayIcon />,
+  },
+];
 
 const testFormats: TestFormatItem[] = [
   {

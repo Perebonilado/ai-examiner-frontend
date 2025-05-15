@@ -209,6 +209,9 @@ export const DocumentService = createApi({
           iframUrl: res.iframUrl ?? "",
         };
       },
+      extraOptions: {
+        triggerLoading: false,
+      },
     }),
   }),
 });

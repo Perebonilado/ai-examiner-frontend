@@ -112,14 +112,6 @@ const ViewQuestions: NextPage = () => {
     }
   }, [error]);
 
-  useEffect(() => {
-    if (isLoading) {
-      setModalContent(<AppLoader />);
-    } else {
-      setModalContent(null);
-    }
-  }, [isLoading]);
-
   const router = useRouter();
   const dispatch = useDispatch();
 
@@ -148,6 +140,24 @@ const ViewQuestions: NextPage = () => {
       setActiveTab(tabs[0]);
     }
   }, [router.query]);
+
+  useEffect(() => {
+    const openEasyReader = async () => {
+      const urls = await getFileUrls(documentId);
+
+      if (urls) {
+        setModalContent(
+          <PDFReader
+            modifiedFileUrl={urls.modified}
+            originalFileUrl={urls.original}
+          />
+        );
+      }
+    };
+    if (documentId && router.query?.tool === "easyRead") {
+      openEasyReader();
+    }
+  }, [documentId, router.query]);
 
   const { data: summaryData } = useGetDocumentSummaryQuery(
     { documentId },

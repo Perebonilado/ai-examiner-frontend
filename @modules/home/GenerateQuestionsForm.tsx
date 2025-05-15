@@ -52,6 +52,8 @@ import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
 import AdditionalSettingsContainer from "./AdditionalSettingsContainer";
 import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import { IAltTabItem } from "@/@shared/components/Tab/AltTabItem";
+import EasyReadIcon from "@/icons/EasyReadIcon";
+import SummarizeIcon from "@/icons/SummarizeIcon";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -236,7 +238,7 @@ const GenerateQuestionsForm: FC = () => {
   }, [JSON.stringify(tabs)]);
 
   const handleStartStudying = () => {
-    const [summary, easyRead, relatedVideos] = studyModeFormats.map(
+    const [summary, easyRead] = studyModeFormats.map(
       (f) => f.value
     );
     if (selectedStudyTool === summary) {
@@ -482,25 +484,25 @@ export default GenerateQuestionsForm;
 
 const studyModeFormats: TestFormatItem[] = [
   {
-    title: "Summary",
+    title: "Summarize",
     value: 1,
     description: "Get a brief summary of key points from your material",
-    icon: <MultipleTrueFalseIcon />,
+    icon: <SummarizeIcon />,
   },
   {
-    title: "Easy Read",
+    title: "Easy read",
     value: 2,
     description:
       "Simplifies each page of your material into easier-to-understand language",
-    icon: <VivaIcon />,
+    icon: <EasyReadIcon />,
     isBeta: true,
   },
-  {
-    title: "Related Videos",
-    value: 7,
-    description: "Helpful videos to reinforce your understanding",
-    icon: <EssayIcon />,
-  },
+  // {
+  //   title: "Related Videos",
+  //   value: 7,
+  //   description: "Helpful videos to reinforce your understanding",
+  //   icon: <EssayIcon />,
+  // },
 ];
 
 const testFormats: TestFormatItem[] = [

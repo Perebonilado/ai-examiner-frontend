@@ -3,10 +3,12 @@ import React, { FC } from "react";
 
 interface Props {
   title?: string;
+  showIcon?: boolean;
 }
 
 const FileUploadSpinner: FC<Props> = ({
   title = "File upload in progress",
+  showIcon = true,
 }) => {
   return (
     <div className="flex flex-col items-center">
@@ -26,9 +28,11 @@ const FileUploadSpinner: FC<Props> = ({
           </svg>
         </div>
 
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-          <UploadIconBox />
-        </div>
+        {showIcon && (
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <UploadIconBox />
+          </div>
+        )}
       </div>
     </div>
   );

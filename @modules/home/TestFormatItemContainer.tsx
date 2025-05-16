@@ -19,7 +19,7 @@ const TestFormatItemContainer: FC<Props> = ({
   handleSelected,
   selected,
   handleClose,
-  title = 'Select test format'
+  title = "Select test format",
 }) => {
   const ref = useClickOutside<HTMLDivElement>(() => {
     handleClose();
@@ -27,7 +27,8 @@ const TestFormatItemContainer: FC<Props> = ({
   return (
     <TransitionUp className="w-full max-w-[420px] max-sm:max-w-[96vw]">
       <div className="bg-white p-6 rounded-2xl" ref={ref}>
-        <div className="flex items-center justify-end mb-4">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-bold">{title}</h3>
           <button
             onClick={() => {
               handleClose();
@@ -36,7 +37,6 @@ const TestFormatItemContainer: FC<Props> = ({
             <CloseIcon />
           </button>
         </div>
-        <h3 className="text-lg font-bold mb-6">{title}</h3>
         <div className="mt-4 flex flex-col gap-6">
           {testFormats.map((tf, idx) => {
             return (

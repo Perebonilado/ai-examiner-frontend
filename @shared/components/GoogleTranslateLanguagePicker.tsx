@@ -11,12 +11,12 @@ const GoogleTranslateLanguagePicker: FC = () => {
   const { selectedLanguageName, selectedLanguageFlag, isLanguageSet } =
     useGoogleTranslationContext();
 
-  useEffect(() => {
-    const isDefaultLangEnglish = Cookies.get(DEFAULT_LANGUAGE_ENGLISH_KEY);
-    if (!isLanguageSet && isDefaultLangEnglish != "true") {
-      setModalContent(<GoogleTranslateLanguagePickerModal />);
-    }
-  }, [isLanguageSet]);
+  // useEffect(() => {
+  //   const isDefaultLangEnglish = Cookies.get(DEFAULT_LANGUAGE_ENGLISH_KEY);
+  //   if (!isLanguageSet && isDefaultLangEnglish != "true") {
+  //     setModalContent(<GoogleTranslateLanguagePickerModal />);
+  //   }
+  // }, [isLanguageSet]);
 
   return (
     <button

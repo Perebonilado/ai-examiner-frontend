@@ -76,3 +76,12 @@ export interface StoredFileThumbnailModel {
 export interface StoredFileThumbnailQuery {
   documentId: string;
 }
+
+export interface DocumentContentQuery {
+  documentId: string;
+}
+
+export interface DocumentContentModel {
+  content: string[];
+  pageCount: number;
+}

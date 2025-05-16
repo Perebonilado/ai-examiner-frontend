@@ -1,4 +1,11 @@
-import React, { ElementRef, FC, useCallback, useMemo, useRef, useState } from "react";
+import React, {
+  ElementRef,
+  FC,
+  useCallback,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { pdfjs, Document, Page } from "react-pdf";
 import { useResizeObserver } from "@wojtekmaj/react-hooks";
 import { motion } from "framer-motion";
@@ -15,12 +22,14 @@ import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
 import { HighlightableTextArea } from "react-highlight-popover";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
+import { DocumentContentModel } from "@/models/document.model";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 interface Props {
-  modifiedFileUrl: string;
+  // modifiedFileUrl: string;
   originalFileUrl: string;
+  modifiedContent: DocumentContentModel;
 }
 
 const options = {
@@ -30,7 +39,11 @@ const options = {
 
 const maxWidth = 600;
 
-const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
+const PDFReader: FC<Props> = ({
+  // modifiedFileUrl,
+  originalFileUrl,
+  modifiedContent,
+}) => {
   const [zoom, setZoom] = useState(1);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageInputVal, setPageInputVal] = useState("1");
@@ -40,7 +53,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
   const [pageHeight, setPageHeight] = useState<number | null>(null);
 
   const { setModalContent } = useModalContext();
-  const containerRef = useRef<ElementRef<'div'>>(null);
+  const containerRef = useRef<ElementRef<"div">>(null);
 
   const tabs = ["Original", "Simplified"];
 
@@ -67,7 +80,10 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
   };
 
   const renderPDF = (fileUrl: string) => (
-    <div ref={containerRef} className="min-w-full no-scrollbar overflow-y-auto h-full flex justify-center py-4 overflow-x-hidden">
+    <div
+      ref={containerRef}
+      className="min-w-full no-scrollbar overflow-y-auto h-full flex justify-center py-4 overflow-x-hidden"
+    >
       <Document
         file={fileUrl}
         renderMode="canvas"
@@ -137,7 +153,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
       </div>
 
       {/* PDF Content */}
-      <div className="relative w-full h-full">
+      <div className="relative w-full h-full ">
         <div
           style={{
             position: "absolute",
@@ -161,14 +177,21 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
             zIndex: activeTab === "Simplified" ? 10 : 0,
             visibility: activeTab === "Simplified" ? "visible" : "hidden",
           }}
+          className="overflow-y-auto no-scrollbar px-6"
         >
-          {renderPDF(modifiedFileUrl)}
+          <div
+            className="w-full max-w-[800px] mx-auto no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
+            dangerouslySetInnerHTML={{
+              __html: modifiedContent.content[pageNumber - 1],
+            }}
+          ></div>
+          {/* {renderPDF(modifiedFileUrl)} */}
         </div>
       </div>
 
-      <div className="flex justify-center items-center h-[50px] px-4 py-3 bg-white z-10 border-t">
-        <div className="flex items-center gap-3 text-sm">
-          <p className="text-gray-700">Page</p>
+      <div className="flex justify-center  px-4 py-3 bg-white z-10 border-t">
+        <div className="flex items-center gap-3 text-sm h-full">
+          <div className="text-gray-700">Page</div>
           <div className="flex items-center gap-1">
             <button
               onClick={() => pageNumber > 1 && goToPage(pageNumber - 1)}
@@ -209,7 +232,7 @@ const PDFReader: FC<Props> = ({ modifiedFileUrl, originalFileUrl }) => {
             </button>
           </div>
 
-          <p className="text-gray-500 ml-1">of {totalPages}</p>
+          <div className="text-gray-500 ml-1">of {totalPages}</div>
         </div>
       </div>
     </motion.div>

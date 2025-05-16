@@ -6,7 +6,6 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
 import {
   useGetAllUserDocumentsQuery,
-  useGetModifiedDocumentFileQuery,
   useGetDocumentSummaryQuery,
   useGetRelatedYoutubeVideosQuery,
   DocumentService,
@@ -25,15 +24,11 @@ import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic
 import { useDispatch, useSelector } from "react-redux";
 import { reduxStore, RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
-import { AppLoader } from "@/@shared/components/AppLoader";
 import Tab from "@/@shared/components/Tab";
-import ChatContainer from "@/@modules/chat/ChatContainer";
-import { useGetDocumentMessagesQuery } from "@/api-services/document-message.service";
 import Spinner from "@/@shared/components/Spinner";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
-  setMessages,
 } from "@/features/documentChatSlice";
 import SummaryContainer from "@/@modules/documents/SummaryContainer";
 import RelatedVideosContainer from "@/@modules/documents/RelatedVideosContainer";
@@ -41,9 +36,9 @@ import Modal from "@/@shared/components/Modal";
 import RelatedVideoPlayer from "@/@modules/documents/RelatedVideoPlayer";
 import dynamic from "next/dynamic";
 import ViewFileReaderThumbnail from "@/@modules/questions/ViewFileReaderThumbnail";
-import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
 import EasyReadIcon from "@/icons/EasyReadIcon";
+import { DocumentContentModel } from "@/models/document.model";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -148,16 +143,33 @@ const ViewQuestions: NextPage = () => {
       if (urls) {
         setModalContent(
           <PDFReader
-            modifiedFileUrl={urls.modified}
             originalFileUrl={urls.original}
+            modifiedContent={urls.content}
           />
         );
       }
     };
     if (documentId && router.query?.tool === "easyRead") {
       openEasyReader();
+      removeQueryParam('tool')
     }
   }, [documentId, router.query]);
+
+  const removeQueryParam = (paramToRemove: string) => {
+    const { pathname, query } = router;
+    const newQuery = { ...query };
+
+    delete newQuery[paramToRemove]; // remove the param
+
+    router.replace(
+      {
+        pathname,
+        query: newQuery,
+      },
+      undefined,
+      { shallow: true } // no page reload
+    );
+  }
 
   const { data: summaryData } = useGetDocumentSummaryQuery(
     { documentId },
@@ -190,17 +202,22 @@ const ViewQuestions: NextPage = () => {
   const getFileUrls = async (documentId: string) => {
     setIsFetchingFile(true);
     try {
-      const { getModifiedDocumentFile, getOriginalDocumentFile } =
-        DocumentService.endpoints;
-      const [originalFileUrl, modifiedFileUrl] = await Promise.all([
-        reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
-        reduxStore.dispatch(getModifiedDocumentFile.initiate({ documentId })),
-      ]);
+      const {
+        getOriginalDocumentFile,
+        getModifiedContent,
+      } = DocumentService.endpoints;
+      const [originalFileUrl, documentContent] =
+        await Promise.all([
+          reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
+          reduxStore.dispatch(getModifiedContent.initiate({ documentId })),
+        ]);
       setIsFetchingFile(false);
-      if (originalFileUrl.data && modifiedFileUrl.data) {
+      if (
+        (originalFileUrl.data && documentContent.data)
+      ) {
         return {
-          modified: modifiedFileUrl.data?.modifiedFile,
-          original: originalFileUrl.data?.modifiedFile,
+          original: originalFileUrl.data?.modifiedFile as string,
+          content: documentContent.data,
         };
       }
 
@@ -259,22 +276,13 @@ const ViewQuestions: NextPage = () => {
                 size="large"
                 className="!text-[#9333EA]"
                 onClick={async () => {
-                  if (!fileUrls.modified && !fileUrls.original) {
-                    const urls = await getFileUrls(documentId);
+                  const urls = await getFileUrls(documentId);
 
-                    if (urls) {
-                      setModalContent(
-                        <PDFReader
-                          modifiedFileUrl={urls.modified}
-                          originalFileUrl={urls.original}
-                        />
-                      );
-                    }
-                  } else {
+                  if (urls) {
                     setModalContent(
                       <PDFReader
-                        modifiedFileUrl={fileUrls.modified}
-                        originalFileUrl={fileUrls.original}
+                        originalFileUrl={urls.original}
+                        modifiedContent={urls.content}
                       />
                     );
                   }
@@ -304,38 +312,6 @@ const ViewQuestions: NextPage = () => {
             {summaryData ? (
               <SummaryContainer summary={summaryData?.summary || ""} />
             ) : null}
-          </div>
-        )}
-
-        {activeTab === "Easy Study" && (
-          <div>
-            {thumbnail && (
-              <ViewFileReaderThumbnail
-                // iframUrl={thumbnail.iframUrl}
-                // thumbnailUrl={thumbnail.thumbnailUrl}
-                handleClick={async () => {
-                  if (!fileUrls.modified && !fileUrls.original) {
-                    const urls = await getFileUrls(documentId);
-
-                    if (urls) {
-                      setModalContent(
-                        <PDFReader
-                          modifiedFileUrl={urls.modified}
-                          originalFileUrl={urls.original}
-                        />
-                      );
-                    }
-                  } else {
-                    setModalContent(
-                      <PDFReader
-                        modifiedFileUrl={fileUrls.modified}
-                        originalFileUrl={fileUrls.original}
-                      />
-                    );
-                  }
-                }}
-              />
-            )}
           </div>
         )}
 
@@ -420,4 +396,3 @@ const ViewQuestions: NextPage = () => {
 };
 
 export default ViewQuestions;
-

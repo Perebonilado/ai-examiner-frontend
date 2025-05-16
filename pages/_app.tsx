@@ -60,10 +60,9 @@ export default function App({ Component, pageProps }: AppProps) {
             <ModalProvider>
               <LoaderProvider>
                 <GenerateQuestionsProvider>
-
-                <DocumentChatContainer>
-                  <Component {...pageProps} />
-                </DocumentChatContainer>
+                  <DocumentChatContainer>
+                    <Component {...pageProps} />
+                  </DocumentChatContainer>
                 </GenerateQuestionsProvider>
               </LoaderProvider>
             </ModalProvider>

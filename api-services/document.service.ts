@@ -10,6 +10,8 @@ import {
   AllDocumentsModel,
   AllDocumentsQueryModel,
   CreateDocumentModel,
+  DocumentContentModel,
+  DocumentContentQuery,
   DocumentFileModel,
   DocumentFileQuery,
   DocumentSummaryModel,
@@ -213,6 +215,16 @@ export const DocumentService = createApi({
         triggerLoading: false,
       },
     }),
+    getModifiedContent: build.query<DocumentContentModel, DocumentContentQuery>(
+      {
+        query: ({ documentId }) => ({
+          url: `/modified-content/${documentId}`,
+        }),
+        extraOptions: {
+          triggerLoading: false,
+        },
+      }
+    ),
   }),
 });
 
@@ -225,4 +237,5 @@ export const {
   useGetModifiedDocumentFileQuery,
   useGetOriginalDocumentFileQuery,
   useGetFileThumbnailDetailsQuery,
+  useGetModifiedContentQuery
 } = DocumentService;

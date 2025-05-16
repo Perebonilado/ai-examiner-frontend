@@ -23,6 +23,7 @@ import { useModalContext } from "@/contexts/ModalContext";
 import { HighlightableTextArea } from "react-highlight-popover";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 import { DocumentContentModel } from "@/models/document.model";
+import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -44,7 +45,7 @@ const PDFReader: FC<Props> = ({
   originalFileUrl,
   modifiedContent,
 }) => {
-  const [zoom, setZoom] = useState(1);
+  const [zoom, setZoom] = useState(1.1);
   const [pageNumber, setPageNumber] = useState(1);
   const [pageInputVal, setPageInputVal] = useState("1");
   const [totalPages, setTotalPages] = useState(0);
@@ -131,16 +132,14 @@ const PDFReader: FC<Props> = ({
       {/* Tabs */}
       <div className="border-b pt-1 relative">
         <div className="w-fit mx-auto py-4 flex gap-4">
-          {tabs.map((tab) => (
-            <Button
-              key={tab}
-              title={tab}
-              variant={activeTab === tab ? "contained" : "outlined"}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </Button>
-          ))}
+          <AltTabContainer
+            data={tabs.map((t) => {
+              return { isActive: activeTab === t, title: t };
+            })}
+            handleClick={(tab) => {
+              setActiveTab(tab);
+            }}
+          />
         </div>
         <button
           className="absolute right-6 top-1/2 -translate-y-1/2"
@@ -179,12 +178,25 @@ const PDFReader: FC<Props> = ({
           }}
           className="overflow-y-auto no-scrollbar px-6"
         >
-          <div
-            className="w-full max-w-[800px] mx-auto no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
-            dangerouslySetInnerHTML={{
-              __html: modifiedContent.content[pageNumber - 1],
+          <HighlightableTextArea
+            popoverItem={(HighlightedText, setPopoverState) => {
+              return (
+                <TextSelectionPopup
+                  selectedText={HighlightedText}
+                  clearSelection={() => {
+                    setPopoverState(false);
+                  }}
+                />
+              );
             }}
-          ></div>
+          >
+            <div
+              className="w-full max-w-[800px] mx-auto no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
+              dangerouslySetInnerHTML={{
+                __html: modifiedContent.content[pageNumber - 1],
+              }}
+            ></div>
+          </HighlightableTextArea>
           {/* {renderPDF(modifiedFileUrl)} */}
         </div>
       </div>

@@ -374,7 +374,7 @@ const GenerateQuestionsForm: FC = () => {
             {activeTab === "Study Mode" && (
               <div className="w-full flex flex-col gap-6">
                 <TextField
-                  label=""
+                  label="Study Tool"
                   cursorPointer={true}
                   readOnly={true}
                   value={

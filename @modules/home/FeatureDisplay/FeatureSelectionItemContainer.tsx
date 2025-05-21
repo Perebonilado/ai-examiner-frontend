@@ -147,13 +147,13 @@ export default FeatureSelectionItemContainer;
 const featuresArr = [
   {
     title: "MCQ's",
-    isActive: false,
+    isActive: true,
     copy: `Instantly generated from your uploaded files, these questions challenge learners to think critically while reinforcing key concepts.`,
     image: "/home/features/mcq.png",
   },
   {
     title: "Flashcards",
-    isActive: true,
+    isActive: false,
     copy: `Perfect for on-the-go reviews or quick study sessions, flashcards provide a proven way to enhance retention.`,
     image: "/home/features/flashcards.png",
   },

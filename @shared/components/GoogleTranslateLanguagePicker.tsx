@@ -5,6 +5,7 @@ import GoogleTranslateLanguagePickerModal from "./GoogleTranslateLanguagePickerM
 import { useGoogleTranslationContext } from "@/contexts/GoogleTransalationContext";
 import Cookies from "js-cookie";
 import { DEFAULT_LANGUAGE_ENGLISH_KEY } from "@/constants";
+import ArrowDownStub from "@/icons/ArrowDownStub";
 
 const GoogleTranslateLanguagePicker: FC = () => {
   const { setModalContent } = useModalContext();
@@ -19,19 +20,22 @@ const GoogleTranslateLanguagePicker: FC = () => {
   // }, [isLanguageSet]);
 
   return (
-    <button
-      className="w-[30px] h-[30px] relative"
-      onClick={() => {
-        setModalContent(<GoogleTranslateLanguagePickerModal />);
-      }}
-    >
-      <Image
-        layout="fill"
-        objectFit="contain"
-        objectPosition="100% 50%"
-        src={`https://flagcdn.com/w40/${selectedLanguageFlag.toLowerCase()}.png`}
-        alt={selectedLanguageName}
-      />
+    <button className="flex items-center gap-1">
+      <div
+        className="w-[30px] h-[30px] relative"
+        onClick={() => {
+          setModalContent(<GoogleTranslateLanguagePickerModal />);
+        }}
+      >
+        <Image
+          layout="fill"
+          objectFit="contain"
+          objectPosition="100% 50%"
+          src={`https://flagcdn.com/w40/${selectedLanguageFlag.toLowerCase()}.png`}
+          alt={selectedLanguageName}
+        />
+      </div>
+      <ArrowDownStub />
     </button>
   );
 };

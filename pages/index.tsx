@@ -15,6 +15,9 @@ import MCQIcon from "@/icons/MCQIcon";
 import TopicsIcon from "@/icons/TopicsIcon";
 import ContactTeamMemberContainer from "@/@modules/home/ContactTeamMemberContainer";
 import CaseStudyIcon from "@/icons/CaseStudyIcon";
+import NavbarV2 from "@/@shared/components/Navbar/NavbarV2";
+import JumbotronV2 from "@/@modules/home/JumbotronV2";
+import FeatureDisplaySection from "@/@modules/home/FeatureDisplay/FeatureDisplaySection";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -49,8 +52,9 @@ export default function Home() {
       return;
     }
 
-    const selectElement = document.querySelector<HTMLSelectElement>(".goog-te-combo");
-    console.log(selectElement)
+    const selectElement =
+      document.querySelector<HTMLSelectElement>(".goog-te-combo");
+    console.log(selectElement);
     if (selectElement) {
       selectElement.value = lang;
       selectElement.dispatchEvent(new Event("change"));
@@ -65,46 +69,28 @@ export default function Home() {
   ];
 
   return (
-    <WebLayout>
-      
-      {/* <div
-        style={{
-          position: "fixed",
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-          background: "white",
-          padding: "8px 12px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-        }}
-      >
-        {languages.map(({ code, label }) => (
-          <button
-            key={code}
-            onClick={() => changeLanguage(code)}
-            disabled={!isGoogleLoaded}
-            style={{
-              margin: "5px",
-              padding: "5px 10px",
-              borderRadius: "5px",
-              border: "none",
-              background: isGoogleLoaded ? "#f5f5f5" : "#ddd",
-              cursor: isGoogleLoaded ? "pointer" : "not-allowed",
-              fontSize: "14px",
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </div> */}
+    <>
       <AppHead />
-      <Jumbotron />
-      <HowItWorksItemContainer data={howItWorksData} />
-      <SupportLeaningContainer data={supportLearningData} />
-      <ContactTeamMemberContainer />
-      <FAQContainer />
-    </WebLayout>
+      <section>
+        <div
+          style={{
+            background:
+              "linear-gradient(to bottom, #DFCBFA 34%, #F7F5F9 79%, #FFFFFF 95%)",
+          }}
+          className="sm:min-h-[100vh] flex flex-col"
+        >
+          <NavbarV2  />
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <JumbotronV2 />
+          </div>
+        </div>
+        <HowItWorksItemContainer data={howItWorksData} />
+        <FeatureDisplaySection />
+        {/* <SupportLeaningContainer data={supportLearningData} /> */}
+        <ContactTeamMemberContainer />
+        <FAQContainer />
+      </section>
+    </>
   );
 }
 

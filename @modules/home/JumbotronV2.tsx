@@ -1,4 +1,5 @@
 import Container from "@/@shared/ui/Container";
+import Link from "next/link";
 import React, { FC } from "react";
 
 const JumbotronV2: FC = () => {
@@ -28,9 +29,11 @@ const JumbotronV2: FC = () => {
         </p>
 
         <div className="inline-block mt-20 rounded-[50px] bg-gradient-to-r from-[#9333EA] to-[#F89AEE] p-[2px]">
-          <button className="w-[263px] h-[58px] bg-[#2F004F] text-white rounded-[50px]">
-            Generate test
-          </button>
+          <Link href={'/auth/login'}>
+            <button className="w-[263px] h-[58px] bg-[#2F004F] text-white rounded-[50px]">
+              Try for free
+            </button>
+          </Link>
         </div>
       </div>
     </Container>

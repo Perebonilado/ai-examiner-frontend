@@ -17,8 +17,8 @@ const SupportLearningItem: FC<ISupportLearningItem> = ({
       <div className="w-full max-w-[270px] h-[380px] border border-[#9D6EC2] rounded-xl shadow-xl p-6">
         <div className="h-[40%]">{icon}</div>
         <div className="h-[60%] flex flex-col gap-6">
-          <h3 className="text-xl font-bold">{title}</h3>
-          <p className="text-sm">{body}</p>
+          <h3 className="text-2xl ">{title}</h3>
+          <p className="text-sm font-light">{body}</p>
         </div>
       </div>
     </TransitionUp>

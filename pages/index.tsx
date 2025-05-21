@@ -18,6 +18,10 @@ import CaseStudyIcon from "@/icons/CaseStudyIcon";
 import NavbarV2 from "@/@shared/components/Navbar/NavbarV2";
 import JumbotronV2 from "@/@modules/home/JumbotronV2";
 import FeatureDisplaySection from "@/@modules/home/FeatureDisplay/FeatureDisplaySection";
+import EasyReadIcon from "@/icons/EasyReadIcon";
+import SummarizeIcon from "@/icons/SummarizeIcon";
+import RelatedVideosIcon from "@/icons/RelatedVideosIcon";
+import ExplainDefineIcon from "@/icons/ExplainDefineIcon";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -84,9 +88,9 @@ export default function Home() {
             <JumbotronV2 />
           </div>
         </div>
-        <HowItWorksItemContainer data={howItWorksData} />
+        {/* <HowItWorksItemContainer data={howItWorksData} /> */}
         <FeatureDisplaySection />
-        {/* <SupportLeaningContainer data={supportLearningData} /> */}
+        <SupportLeaningContainer data={supportLearningData} />
         <ContactTeamMemberContainer />
         <FAQContainer />
       </section>
@@ -96,23 +100,23 @@ export default function Home() {
 
 const supportLearningData = [
   {
-    title: "Flashcards",
-    body: "Perfect for on-the-go reviews or quick study sessions, they provide a proven way to enhance retention.",
-    icon: <FlashcardsIcon />,
+    title: "Easy Read",
+    body: "Simplify each page of your material into easier-to-understand language.",
+    icon: <EasyReadIcon width={50} height={50}/>,
   },
   {
-    title: "Multiple Choice Questions",
-    body: "Instantly generated from your uploaded files, these questions challenge learners to think critically while reinforcing key concepts.",
-    icon: <MCQIcon />,
+    title: "Summaries",
+    body: "Get a brief summary of key points from your material.",
+    icon: <SummarizeIcon width={50} height={50}/>,
   },
   {
-    title: "AI Generated Topics",
-    body: "Our AI generates personalized topic suggestions, making it easy for you to quiz yourself on areas that matter most.",
-    icon: <TopicsIcon />,
+    title: "Related videos",
+    body: "Explore relevant online videos linked to your uploaded content for extra clarity and context.",
+    icon: <RelatedVideosIcon />,
   },
   {
-    title: "Case Study Questions",
-    body: "These questions go beyond rote memorization, encouraging critical thinking and problem-solving by presenting complex, practical cases.",
-    icon: <CaseStudyIcon />,
+    title: "Explain, Simplify, Define.",
+    body: "Highlight text in your material to simplify it, define key terms, and clarify confusing concepts.",
+    icon: <ExplainDefineIcon />,
   },
 ];

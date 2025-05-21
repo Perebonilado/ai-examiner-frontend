@@ -1,10 +1,15 @@
 import React, { FC } from "react";
 
-const SummarizeIcon: FC = () => {
+interface Props {
+  width?: number;
+  height?: number;
+}
+
+const SummarizeIcon: FC<Props> = ({width=25, height=24}) => {
   return (
     <svg
-      width="25"
-      height="24"
+      width={width}
+      height={height}
       viewBox="0 0 25 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -38,9 +38,9 @@ const SupportLeaningContainer: FC<Props> = ({ data }) => {
         ))}
       </section>
       <div className="py-24 flex justify-center">
-        <Link href={"/pricing"}>
+        <Link href={"/auth/login"}>
           <Button
-            title="View pricing"
+            title="Get started for free"
             size="large"
             endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
           />

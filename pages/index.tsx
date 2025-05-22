@@ -22,6 +22,7 @@ import EasyReadIcon from "@/icons/EasyReadIcon";
 import SummarizeIcon from "@/icons/SummarizeIcon";
 import RelatedVideosIcon from "@/icons/RelatedVideosIcon";
 import ExplainDefineIcon from "@/icons/ExplainDefineIcon";
+import TwitterReviewContainer from "@/@modules/home/TwitterReviews/TwitterReviewContainer";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -91,6 +92,7 @@ export default function Home() {
         {/* <HowItWorksItemContainer data={howItWorksData} /> */}
         <FeatureDisplaySection />
         <SupportLeaningContainer data={supportLearningData} />
+        <TwitterReviewContainer />
         <ContactTeamMemberContainer />
         <FAQContainer />
       </section>

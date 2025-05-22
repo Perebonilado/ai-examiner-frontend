@@ -43,6 +43,7 @@ const TwitterReviewContainer: FC = () => {
             title="Try it now"
             size="large"
             endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
+            className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
           />
         </Link>
       </div>

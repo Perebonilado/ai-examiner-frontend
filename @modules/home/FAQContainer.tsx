@@ -8,7 +8,7 @@ const FAQContainer: FC = () => {
   return (
     <section className="bg-[#D8CAFF33] pt-20">
       <Container>
-        <h3 className="text-center text-3xl font-bold text-[#360B58]">
+        <h3 className="text-center text-3xl sm:text-4xl md:text-5xl font-bold text-[#360B58]">
           Frequently asked questions
         </h3>
         <div className="py-16">

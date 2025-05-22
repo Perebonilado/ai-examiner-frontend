@@ -1,10 +1,15 @@
 import React, { FC } from "react";
 
-const EasyReadIcon: FC = () => {
+interface Props {
+  width?: number;
+  height?: number;
+}
+
+const EasyReadIcon: FC<Props> = ({ height = 30, width = 28 }) => {
   return (
     <svg
-      width="28"
-      height="30"
+      width={width}
+      height={height}
       viewBox="0 0 28 30"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

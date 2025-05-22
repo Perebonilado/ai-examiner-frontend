@@ -15,6 +15,14 @@ import MCQIcon from "@/icons/MCQIcon";
 import TopicsIcon from "@/icons/TopicsIcon";
 import ContactTeamMemberContainer from "@/@modules/home/ContactTeamMemberContainer";
 import CaseStudyIcon from "@/icons/CaseStudyIcon";
+import NavbarV2 from "@/@shared/components/Navbar/NavbarV2";
+import JumbotronV2 from "@/@modules/home/JumbotronV2";
+import FeatureDisplaySection from "@/@modules/home/FeatureDisplay/FeatureDisplaySection";
+import EasyReadIcon from "@/icons/EasyReadIcon";
+import SummarizeIcon from "@/icons/SummarizeIcon";
+import RelatedVideosIcon from "@/icons/RelatedVideosIcon";
+import ExplainDefineIcon from "@/icons/ExplainDefineIcon";
+import TwitterReviewContainer from "@/@modules/home/TwitterReviews/TwitterReviewContainer";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -49,8 +57,9 @@ export default function Home() {
       return;
     }
 
-    const selectElement = document.querySelector<HTMLSelectElement>(".goog-te-combo");
-    console.log(selectElement)
+    const selectElement =
+      document.querySelector<HTMLSelectElement>(".goog-te-combo");
+    console.log(selectElement);
     if (selectElement) {
       selectElement.value = lang;
       selectElement.dispatchEvent(new Event("change"));
@@ -65,68 +74,51 @@ export default function Home() {
   ];
 
   return (
-    <WebLayout>
-      
-      {/* <div
-        style={{
-          position: "fixed",
-          top: 10,
-          right: 10,
-          zIndex: 1000,
-          background: "white",
-          padding: "8px 12px",
-          borderRadius: "8px",
-          boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
-        }}
-      >
-        {languages.map(({ code, label }) => (
-          <button
-            key={code}
-            onClick={() => changeLanguage(code)}
-            disabled={!isGoogleLoaded}
-            style={{
-              margin: "5px",
-              padding: "5px 10px",
-              borderRadius: "5px",
-              border: "none",
-              background: isGoogleLoaded ? "#f5f5f5" : "#ddd",
-              cursor: isGoogleLoaded ? "pointer" : "not-allowed",
-              fontSize: "14px",
-            }}
-          >
-            {label}
-          </button>
-        ))}
-      </div> */}
+    <>
       <AppHead />
-      <Jumbotron />
-      <HowItWorksItemContainer data={howItWorksData} />
-      <SupportLeaningContainer data={supportLearningData} />
-      <ContactTeamMemberContainer />
-      <FAQContainer />
-    </WebLayout>
+      <section>
+        <div
+          style={{
+            background:
+              "linear-gradient(to bottom, #DFCBFA 34%, #F7F5F9 79%, #FFFFFF 95%)",
+          }}
+          className="sm:min-h-[100vh] flex flex-col"
+        >
+          <NavbarV2  />
+          <div className="flex-1 flex flex-col items-center justify-center">
+            <JumbotronV2 />
+          </div>
+        </div>
+        {/* <HowItWorksItemContainer data={howItWorksData} /> */}
+        <FeatureDisplaySection />
+        <SupportLeaningContainer data={supportLearningData} />
+        <TwitterReviewContainer />
+        <ContactTeamMemberContainer />
+        <FAQContainer />
+      </section>
+    </>
   );
 }
 
 const supportLearningData = [
   {
-    title: "Flashcards",
-    body: "Perfect for on-the-go reviews or quick study sessions, they provide a proven way to enhance retention.",
-    icon: <FlashcardsIcon />,
+    title: "Easy Read",
+    body: "Simplify each page of your material into easier-to-understand language.",
+    icon: <EasyReadIcon width={50} height={50}/>,
   },
   {
-    title: "Multiple Choice Questions",
-    body: "Instantly generated from your uploaded files, these questions challenge learners to think critically while reinforcing key concepts.",
-    icon: <MCQIcon />,
+    title: "Summaries",
+    body: "Get a brief summary of key points from your material.",
+    icon: <SummarizeIcon width={50} height={50}/>,
   },
   {
-    title: "AI Generated Topics",
-    body: "Our AI generates personalized topic suggestions, making it easy for you to quiz yourself on areas that matter most.",
-    icon: <TopicsIcon />,
+    title: "Related videos",
+    body: "Explore relevant online videos linked to your uploaded content for extra clarity and context.",
+    icon: <RelatedVideosIcon />,
   },
   {
-    title: "Case Study Questions",
-    body: "These questions go beyond rote memorization, encouraging critical thinking and problem-solving by presenting complex, practical cases.",
-    icon: <CaseStudyIcon />,
+    title: "Explain, Simplify, Define.",
+    body: "Highlight text in your material to simplify it, define key terms, and clarify confusing concepts.",
+    icon: <ExplainDefineIcon />,
   },
 ];

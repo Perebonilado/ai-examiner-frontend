@@ -1,0 +1,38 @@
+.animate-infinite-scroll {
+  animation: scroll 30s linear infinite;
+}
+
+.animate-infinite-scroll:hover {
+  animation-play-state: paused;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-1 * (300px + 2rem) * 5));
+  }
+}
+
+@media (min-width: 640px) {
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-1 * (350px + 2rem) * 5));
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  @keyframes scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(calc(-1 * (400px + 2rem) * 5));
+    }
+  }
+}

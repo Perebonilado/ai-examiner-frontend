@@ -16,15 +16,16 @@ const SupportLeaningContainer: FC<Props> = ({ data }) => {
     <Container>
       <div className="flex flex-col md:flex-row items-start justify-between gap-8 mt-24 mb-16">
         <div className="flex-1">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
             Make your{" "}
             <span className="bg-gradient-to-r from-[#9333EA] to-[#F89AEE] bg-clip-text text-transparent">
-              study routine easier
-            </span>
+              study routine
+            </span>{" "}
+            easier
           </h2>
         </div>
         <div className="flex-1 md:flex md:justify-end">
-          <p className="text-base sm:text-lg text-[#606060] w-full max-w-[500px] font-light">
+          <p className="text-xl text-[#606060] w-full max-w-[500px] font-light">
             Designed to streamline your learning, these study tools offer
             simplified explanations, concise summaries, and clean layouts for
             faster reading and better focus.
@@ -37,7 +38,7 @@ const SupportLeaningContainer: FC<Props> = ({ data }) => {
           <SupportLearningItem {...d} key={idx} />
         ))}
       </section>
-      <div className="py-24 flex justify-center">
+      <div className="pt-24 pb-48 flex justify-center">
         <Link href={"/auth/login"}>
           <Button
             title="Get started for free"

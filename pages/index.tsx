@@ -23,6 +23,7 @@ import SummarizeIcon from "@/icons/SummarizeIcon";
 import RelatedVideosIcon from "@/icons/RelatedVideosIcon";
 import ExplainDefineIcon from "@/icons/ExplainDefineIcon";
 import TwitterReviewContainer from "@/@modules/home/TwitterReviews/TwitterReviewContainer";
+import Footer from "@/@shared/components/Footer";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -84,7 +85,7 @@ export default function Home() {
           }}
           className="sm:min-h-[100vh] flex flex-col"
         >
-          <NavbarV2  />
+          <NavbarV2 />
           <div className="flex-1 flex flex-col items-center justify-center">
             <JumbotronV2 />
           </div>
@@ -96,6 +97,7 @@ export default function Home() {
         <ContactTeamMemberContainer />
         <FAQContainer />
       </section>
+      <Footer />
     </>
   );
 }
@@ -104,12 +106,12 @@ const supportLearningData = [
   {
     title: "Easy Read",
     body: "Simplify each page of your material into easier-to-understand language.",
-    icon: <EasyReadIcon width={50} height={50}/>,
+    icon: <EasyReadIcon width={50} height={50} />,
   },
   {
     title: "Summaries",
     body: "Get a brief summary of key points from your material.",
-    icon: <SummarizeIcon width={50} height={50}/>,
+    icon: <SummarizeIcon width={50} height={50} />,
   },
   {
     title: "Related videos",

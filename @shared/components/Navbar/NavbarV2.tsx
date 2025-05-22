@@ -24,13 +24,13 @@ const NavbarV2: FC = () => {
   return (
     <Container>
       <nav className="flex items-center pt-6 gap-10">
-        <div className="flex items-center gap-4" style={{ flex: 1 }}>
+        <div className="flex items-center gap-16" style={{ flex: 1 }}>
           <AppLogo />
 
           <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-8 max-md:hidden">
             {navLinks.map((link, idx) => (
               <Link href={link.link} key={idx}>
-                <span className="text-base sm:text-[18px]">{link.title}</span>
+                <span className="text-sm font-light">{link.title}</span>
               </Link>
             ))}
           </div>
@@ -41,7 +41,7 @@ const NavbarV2: FC = () => {
             <>
               <div className="max-md:hidden">
                 <Link href={"/auth/login"}>
-                  <button className="w-[105px] h-[58px] bg-white rounded-[50px] border border-[#2F004F] font-[600]">
+                  <button className="py-3 px-8 text-sm bg-white rounded-[50px] border border-[#2F004F] font-[600]">
                     Sign in
                   </button>
                 </Link>
@@ -63,7 +63,7 @@ const NavbarV2: FC = () => {
             <>
               <div className="max-md:hidden">
                 <Link href={"/auth/signup"}>
-                  <button className="w-[247px] h-[58px]  text-white rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] ">
+                  <button className="py-3 px-8  text-sm  text-white rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] ">
                     Create account
                   </button>
                 </Link>

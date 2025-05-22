@@ -41,7 +41,7 @@ const FeatureSelectionItemContainer: FC = () => {
 
   return (
     <>
-      <div className="relative w-full max-w-[1400px] mx-auto my-10">
+      <div className="relative w-full max-w-[580px] mx-auto mt-12">
         {/* Fade left */}
         {canScrollLeft && (
           <div className="absolute left-0 top-0 h-full w-10 z-10 pointer-events-none bg-gradient-to-r from-white to-transparent rounded-l-[60px]" />
@@ -111,23 +111,23 @@ const FeatureSelectionItemContainer: FC = () => {
       {/* Active Feature Section */}
       <div
         className="min-h-[50vh]"
-        style={{
-          background:
-            "linear-gradient(to bottom, #FFFFFF 0%, #B692EA66 60%, #B692EA66 40%, #FFFFFF 100%)",
-        }}
+        // style={{
+        //   background:
+        //     "linear-gradient(to bottom, #FFFFFF 0%, #B692EA66 60%, #B692EA66 40%, #FFFFFF 100%)",
+        // }}
       >
         <Container>
-          <div className="w-full flex  flex-col md:flex-row">
-            <div className="flex-1">
-              <h2 className="text-xl text-[#2F004F] sm:text-2xl md:text-3xl lg:text-4xl font-semibold">
+          <div className="flex  flex-col md:flex-row mt-[100px] w-fit mx-auto">
+            <div className="">
+              <h2 className="text-2xl text-[#2F004F] font-semibold md:pt-7">
                 {activeFeature.title}
               </h2>
-              <p className="text-base sm:text-lg leading-relaxed mt-10 font-light text-[#737373]">
+              <p className="text-base leading-relaxed mt-2 font-light text-[#737373] w-full max-w-[460px]">
                 {activeFeature.copy}
               </p>
             </div>
             <div className="flex-1 mt-10 md:mt-0">
-              <div className="w-full max-w-[500px] mx-auto px-4">
+              <div className="w-full max-w-[500px]  px-4">
                 <img
                   src={activeFeature.image}
                   alt={activeFeature.title}

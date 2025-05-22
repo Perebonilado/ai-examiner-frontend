@@ -130,7 +130,7 @@ const FeatureSelectionItemContainer: FC = () => {
               <div className="w-full max-w-[500px] mx-auto px-4">
                 <img
                   src={activeFeature.image}
-                  alt="viva"
+                  alt={activeFeature.title}
                   className="w-full h-auto object-contain"
                 />
               </div>

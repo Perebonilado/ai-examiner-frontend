@@ -15,6 +15,7 @@ import Script from "next/script";
 import GoogleTranslationProvider from "@/contexts/GoogleTransalationContext";
 import DocumentChatContainer from "@/@modules/chat/DocumentChatContainer";
 import GenerateQuestionsProvider from "@/contexts/GenerateQuestionsContext";
+import ImageSearchContainer from "@/@shared/components/ImageSearch/ImageSearchContainer";
 
 declare global {
   interface Window {
@@ -61,7 +62,9 @@ export default function App({ Component, pageProps }: AppProps) {
               <LoaderProvider>
                 <GenerateQuestionsProvider>
                   <DocumentChatContainer>
-                    <Component {...pageProps} />
+                    <ImageSearchContainer>
+                      <Component {...pageProps} />
+                    </ImageSearchContainer>
                   </DocumentChatContainer>
                 </GenerateQuestionsProvider>
               </LoaderProvider>

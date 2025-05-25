@@ -195,7 +195,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
             <div>
               {[...messages].map((message, idx) => {
                 if (message.sender === "user") {
-                  return <UserMessage message={message.message} key={idx} />;
+                  return <UserMessage message={message.message} image={message.image} key={idx} />;
                 }
                 return (
                   <SystemMessage

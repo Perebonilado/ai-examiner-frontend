@@ -14,6 +14,8 @@ import {
   DocumentContentQuery,
   DocumentFileModel,
   DocumentFileQuery,
+  DocumentImageSearchModel,
+  DocumentImageSearchQuery,
   DocumentSummaryModel,
   DocumentSummaryQuery,
   GetAllDocumentsModel,
@@ -225,6 +227,20 @@ export const DocumentService = createApi({
         },
       }
     ),
+    getWebImageSearch: build.query<
+      DocumentImageSearchModel[],
+      DocumentImageSearchQuery
+    >({
+      query: ({ query, documentId }) => ({
+        url: `/web-images/search/${documentId}`,
+        params: {
+          query,
+        },
+      }),
+      extraOptions: {
+        triggerLoading: false,
+      },
+    }),
   }),
 });
 
@@ -237,5 +253,6 @@ export const {
   useGetModifiedDocumentFileQuery,
   useGetOriginalDocumentFileQuery,
   useGetFileThumbnailDetailsQuery,
-  useGetModifiedContentQuery
+  useGetModifiedContentQuery,
+  useGetWebImageSearchQuery
 } = DocumentService;

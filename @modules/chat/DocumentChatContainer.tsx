@@ -5,8 +5,10 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   appendNewMessage,
   clearMessages,
+  ImageDescription,
   MessageItem,
   setHighlightToPrompt,
+  setImageDescription,
   setIsChatOpen,
   setMessages,
   setNotSureMessage,
@@ -33,6 +35,7 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
     notSureMessage,
     notSureQuestion,
     highlightToPrompt,
+    imageDescription,
   } = useSelector((state: RootState) => state.documentChatReducer);
 
   useEffect(() => {
@@ -74,6 +77,32 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
       }, 100);
     }
   }, [highlightToPrompt]);
+
+  useEffect(() => {
+    if (imageDescription) {
+      const question = `Tell me more about this image`;
+      dispatch(
+        appendNewMessage({
+          createdOn: new Date().toString() as unknown as Date,
+          id: new Date().getTime().toString(),
+          message: question,
+          sender: "user",
+          image: imageDescription.image,
+        })
+      );
+
+      getSystemResponse(
+        imageDescription.searchPhrase,
+        undefined,
+        undefined,
+        imageDescription
+      );
+
+      setTimeout(() => {
+        dispatch(setImageDescription(null));
+      }, 100);
+    }
+  }, [imageDescription]);
 
   const limit = 4;
   const [isFetchingMessages, setIsFetchingMessages] = useState(false);
@@ -128,7 +157,8 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
   const getSystemResponse = async (
     message: string,
     notSureQuestionToBeSent?: NotSureQuestion,
-    highlightToPrompt?: HighlightToPrompt
+    highlightToPrompt?: HighlightToPrompt,
+    imageDescription?: ImageDescription
   ) => {
     try {
       setSystemResponseError(false);
@@ -140,6 +170,9 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
           responseFormat: "indepth",
           notSureQuestion: notSureQuestionToBeSent || undefined,
           highlightToPrompt: highlightToPrompt || undefined,
+          imageDescriptionData: imageDescription
+            ? { imageUrl: imageDescription.image }
+            : undefined,
         })
       );
       const systemResponse = data.data?.message;

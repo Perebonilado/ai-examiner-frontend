@@ -138,6 +138,7 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
             sender: item.sender,
             id: item.id,
             createdOn: item.createdOn,
+            image: item?.image
           } as MessageItem;
         });
         dispatch(setTotalMessagesInDb(data.data.count));

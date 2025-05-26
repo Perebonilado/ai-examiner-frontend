@@ -3,6 +3,7 @@ export interface DocumentMessageDTO {
   message: string;
   sender: string;
   createdOn: Date;
+  image?: string;
 }
 
 export interface DocumentMessagesDTO {

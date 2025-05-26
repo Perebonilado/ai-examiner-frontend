@@ -8,6 +8,12 @@ export interface MessageItem {
   sender: "user" | "system";
   id: string;
   createdOn: Date;
+  image?: string;
+}
+
+export interface ImageDescription {
+  image: string;
+  searchPhrase: string;
 }
 
 interface DocumentChatState {
@@ -19,6 +25,7 @@ interface DocumentChatState {
   isChatOpen: boolean;
   notSureQuestion: NotSureQuestion | null;
   highlightToPrompt: HighlightToPrompt | null;
+  imageDescription: ImageDescription | null;
 }
 
 const initialState: DocumentChatState = {
@@ -30,6 +37,7 @@ const initialState: DocumentChatState = {
   isChatOpen: false,
   notSureQuestion: null,
   highlightToPrompt: null,
+  imageDescription: null,
 };
 
 export const documentChatSlice = createSlice({
@@ -69,6 +77,12 @@ export const documentChatSlice = createSlice({
     ) => {
       state.highlightToPrompt = action.payload;
     },
+    setImageDescription: (
+      state,
+      action: PayloadAction<ImageDescription | null>
+    ) => {
+      state.imageDescription = action.payload;
+    },
     setIsChatOpen: (state, action: PayloadAction<boolean>) => {
       state.isChatOpen = action.payload;
     },
@@ -90,6 +104,7 @@ export const {
   clearMessages,
   setIsChatOpen,
   resetDocumentChat,
+  setImageDescription,
 } = documentChatSlice.actions;
 
 export const documentChatReducer = documentChatSlice.reducer;

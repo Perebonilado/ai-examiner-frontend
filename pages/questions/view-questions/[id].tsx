@@ -46,12 +46,6 @@ const PDFReader = dynamic(
   }
 );
 
-interface SearchParams {
-  lastMessageCreatedOn?: Date;
-  courseDocumentId: string;
-  limit: number;
-}
-
 const ViewQuestions: NextPage = () => {
   // Question tab logic
 

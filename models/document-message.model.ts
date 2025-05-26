@@ -5,6 +5,7 @@ export interface DocumentMessageModel {
   message: string;
   sender: string;
   createdOn: Date;
+  image?: string;
 }
 
 export interface DocumentMessagesModel {
@@ -22,15 +23,22 @@ export interface SendMessagePayloadModel {
   message: string;
   courseDocumentId: string;
   responseFormat: string;
-  notSureQuestion?: NotSureQuestion
+  notSureQuestion?: NotSureQuestion;
   highlightToPrompt?: HighlightToPrompt;
+  imageDescriptionData?: {
+    imageUrl: string;
+  };
 }
 
 export interface SendMessageModel {
   message: string;
 }
 
-export type HighlightToPromptType = 'explain' | 'simplify' | 'define';
+export type HighlightToPromptType =
+  | "explain"
+  | "simplify"
+  | "define"
+  | "visualize";
 
 export interface HighlightToPrompt {
   question: string;

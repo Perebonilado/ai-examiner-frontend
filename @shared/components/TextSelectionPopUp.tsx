@@ -11,6 +11,10 @@ import {
   HighlightToPrompt,
   HighlightToPromptType,
 } from "@/models/document-message.model";
+import {
+  setImageSearchOpen,
+  setImageSearchQuery,
+} from "@/features/imageSearchSlice";
 
 export interface TextSelectionPopupProps {
   selectedText: string;
@@ -23,7 +27,21 @@ const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
     const dispatch = useDispatch();
 
     const handleAction = (action: HighlightToPrompt) => {
-      dispatch(setHighlightToPrompt({ question: action.question, highlight: action.highlight }));
+      if (action.highlight === "visualize") {
+        dispatch(setImageSearchQuery(action.question));
+        setTimeout(() => {
+          dispatch(setImageSearchOpen(true));
+        }, 300);
+        if (callBackOnAction) callBackOnAction();
+        return;
+      }
+
+      dispatch(
+        setHighlightToPrompt({
+          question: action.question,
+          highlight: action.highlight,
+        })
+      );
       setTimeout(() => dispatch(setIsChatOpen(true)), 300);
       if (callBackOnAction) callBackOnAction();
     };
@@ -38,7 +56,7 @@ const TextSelectionPopup = forwardRef<HTMLDivElement, TextSelectionPopupProps>(
           <div
             className={`bg-purple-500 text-white shadow-md border border-gray-200 rounded-lg px-4 py-3 flex gap-3`}
           >
-            {["Explain", "Simplify", "Define"].map((action) => (
+            {["Explain", "Simplify", "Define", "Visualize"].map((action) => (
               <button
                 key={action}
                 onClick={(e) => {

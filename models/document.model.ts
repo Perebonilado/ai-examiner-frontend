@@ -85,3 +85,13 @@ export interface DocumentContentModel {
   content: string[];
   pageCount: number;
 }
+
+export interface DocumentImageSearchQuery {
+  query: string;
+  documentId: string;
+}
+
+export interface DocumentImageSearchModel {
+  imageUrl: string;
+  title: string;
+}

@@ -13,6 +13,10 @@ import { useRouter } from "next/router";
 import { accessToken, navLinks, typeBasedRoutes } from "@/constants";
 import Cookies from "js-cookie";
 import NavLink from "./NavLink";
+import CollapsibleButton from "./AppLayout/CollapsibleButton";
+import AllDocumentsIcon from "@/icons/AllDocumentsIcon";
+import RecentDocumentContainer from "./AppLayout/RecentDocumentContainer";
+import LogoutIconAlt from "@/icons/LogoutIconAlt";
 
 interface Props {
   isSideNav: boolean;
@@ -61,7 +65,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
     const activeRoute = typeBasedRoutes.find(
       (r) => r.route === router.pathname
     );
-    
+
     if (activeRoute) {
       if (activeRoute.type === "web") {
         setIsWebRoute(true);
@@ -91,29 +95,41 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
 
         {!isWebRoute && (
           <>
-            <SidebarItem
-              icon={<NewDocumentIcon />}
+            <CollapsibleButton
+              icon={
+                <NewDocumentIcon
+                  fill={
+                    activeNavLink === "/new-document" ? "#2F004F" : "#FFFFFF"
+                  }
+                />
+              }
               isActive={activeNavLink === "/new-document"}
               title="New Document"
               link="/new-document"
             />
-            <SidebarItem
-              icon={<CourseIcon />}
+            <CollapsibleButton
+              icon={
+                <AllDocumentsIcon
+                  fill={activeNavLink === "/documents" ? "#2F004F" : "#FFFFFF"}
+                />
+              }
               isActive={activeNavLink === "/documents"}
               title="All Documents"
               link="/documents"
             />
 
-            <div className="pt-10">
-              <ExpandableSidebarItem
-                title="Recent Documents"
-                data={recentDocuments?.documents.map((t) => ({
-                  link: `/questions/view-questions/${t.id}`,
-                  title: t.title,
-                }))}
-                callbackOnClick={handleCloseSidebar}
-              />
-            </div>
+            <div className="w-full h-[2px] bg-white rounded-full my-3"></div>
+
+            <RecentDocumentContainer
+              data={
+                !recentDocuments
+                  ? []
+                  : recentDocuments?.documents.map((t) => ({
+                      link: `/questions/view-questions/${t.id}`,
+                      title: t.title,
+                    }))
+              }
+            />
           </>
         )}
       </div>
@@ -122,7 +138,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
           <Button
             title="Logout"
             variant="text"
-            endicon={<LogoutIcon />}
+            endicon={<LogoutIconAlt />}
             className="!text-white"
             onClick={() => {
               logout(() => {

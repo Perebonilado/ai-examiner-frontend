@@ -123,6 +123,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
             <div className="w-full h-[2px] bg-white rounded-full my-3"></div>
 
             <RecentDocumentContainer
+              forceRender={true}
               data={
                 !recentDocuments
                   ? []

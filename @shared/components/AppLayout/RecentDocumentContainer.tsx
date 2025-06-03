@@ -6,9 +6,10 @@ import { RootState } from "@/config/redux-config";
 
 interface Props {
   data: IRecentDocumentItem[];
+  forceRender?: boolean | null
 }
 
-const RecentDocumentContainer: FC<Props> = ({ data }) => {
+const RecentDocumentContainer: FC<Props> = ({ data, forceRender = null }) => {
   const { navOpen: isOpen } = useSelector(
     (state: RootState) => state.navigationSliceReducer
   );
@@ -34,13 +35,13 @@ const RecentDocumentContainer: FC<Props> = ({ data }) => {
   return (
     <div
       className={cn(`w-full transition-all`, {
-        "opacity-100 scale-x-100": shouldRender,
-        "opacity-0 scale-x-0": !shouldRender,
+        "opacity-100 scale-x-100": forceRender ?? shouldRender,
+        "opacity-0 scale-x-0": forceRender ?? !shouldRender,
       })}
     >
-      <p className="font-mediun mb-6 text-white text-sm">Recent Documents</p>
+      <p className="font-bold mb-5 text-white text-sm">Recent Documents</p>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
         {data.map((d, idx) => {
           return <RecentDocumentItem {...d} key={idx} />;
         })}

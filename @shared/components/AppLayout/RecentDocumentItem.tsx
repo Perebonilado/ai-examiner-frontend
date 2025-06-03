@@ -27,9 +27,9 @@ const RecentDocumentItem: FC<IRecentDocumentItem> = ({ title, callbackOnClick, l
         onClick={() => {
           if (callbackOnClick) callbackOnClick();
         }}
-        className="relative text-xs max-w-[200px] overflow-hidden whitespace-nowrap"
+        className="relative text-xs max-w-[170px] overflow-hidden whitespace-nowrap"
       >
-        <span ref={textRef} className="block text-white">
+        <span ref={textRef} className="block pr-6 text-white">
           {capitalizeFirstLetterOfEachWord(title.toLowerCase())}
         </span>
 

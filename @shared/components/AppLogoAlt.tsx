@@ -4,18 +4,25 @@ import React, { FC } from "react";
 import cn from "classnames";
 
 interface Props {
-  size?: "md" | "sm";
+  size?: "md" | "sm" | "xs";
 }
 
 const AppLogoAlt: FC<Props> = ({ size = "md" }) => {
   const rootClassName = cn(`relative`, {
     "h-16 w-48": size === "md",
     "h-11 w-48": size === "sm",
+    "h-8 w-42": size === "xs",
   });
 
   return (
     <Link href={"/"}>
-      <div className={rootClassName}>
+      <div
+        className={cn(`relative`, {
+          "h-16 w-48": size === "md",
+          "h-9 w-48": size === "sm",
+          "h-8 w-42": size === "xs",
+        })}
+      >
         {" "}
         <Image
           layout="fill"

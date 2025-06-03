@@ -1,10 +1,15 @@
 import React, { FC } from "react";
 
-const DocumentIcon:FC = () => {
+interface Props {
+  width?: number;
+  height?: number;
+}
+
+const DocumentIcon: FC<Props> = ({ height=16, width=22 }) => {
   return (
     <svg
-      width="16"
-      height="22"
+      width={width}
+      height={height}
       viewBox="0 0 16 22"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

@@ -31,7 +31,7 @@ const CollapsibleButton: FC<Props> = ({
     <button
       id={title}
       className={cn(
-        "relative flex items-center px-2 w-full transition-all duration-300 h-[45px]",
+        "relative flex items-center px-2 w-full transition-all duration-300 h-[40px]",
         {
           ["bg-[#F2E1FF] !text-[#2F004F] rounded-md"]: isActive,
           ["!text-white"]: !isActive,
@@ -55,7 +55,7 @@ const CollapsibleButton: FC<Props> = ({
 
       {/* Text transition wrapper */}
       <span
-        className={cn("ml-3 origin-left transition-all duration-300 text-sm", {
+        className={cn("ml-3 origin-left transition-all duration-300 text-sm font-[550]", {
           "opacity-100 scale-x-100": showTextByDefault ?? isOpen,
           "opacity-0 scale-x-0": showTextByDefault ?? !isOpen,
         })}

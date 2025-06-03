@@ -96,6 +96,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
         {!isWebRoute && (
           <>
             <CollapsibleButton
+              showTextByDefault={true}
               icon={
                 <NewDocumentIcon
                   fill={
@@ -108,6 +109,7 @@ const MobileSidebar: FC<Props> = ({ isSideNav, handleCloseSidebar }) => {
               link="/new-document"
             />
             <CollapsibleButton
+              showTextByDefault={true}
               icon={
                 <AllDocumentsIcon
                   fill={activeNavLink === "/documents" ? "#2F004F" : "#FFFFFF"}

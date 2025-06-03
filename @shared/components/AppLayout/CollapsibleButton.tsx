@@ -11,6 +11,7 @@ interface Props {
   isActive: boolean;
   link: string;
   icon: React.ReactNode;
+  showTextByDefault?: boolean | null;
   callBackOnClick?: () => void;
 }
 
@@ -20,6 +21,7 @@ const CollapsibleButton: FC<Props> = ({
   link,
   icon,
   callBackOnClick,
+  showTextByDefault = null
 }) => {
   const { navOpen: isOpen } = useSelector(
     (state: RootState) => state.navigationSliceReducer
@@ -54,8 +56,8 @@ const CollapsibleButton: FC<Props> = ({
       {/* Text transition wrapper */}
       <span
         className={cn("ml-3 origin-left transition-all duration-300 text-sm", {
-          "opacity-100 scale-x-100": isOpen,
-          "opacity-0 scale-x-0": !isOpen,
+          "opacity-100 scale-x-100": showTextByDefault ?? isOpen,
+          "opacity-0 scale-x-0": showTextByDefault ?? !isOpen,
         })}
         style={{ transitionProperty: "opacity, transform" }}
       >

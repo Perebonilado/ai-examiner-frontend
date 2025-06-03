@@ -20,8 +20,6 @@ const Sidebar: FC = () => {
     (state: RootState) => state.navigationSliceReducer
   );
 
-  const dispatch = useDispatch();
-
   const sidebarClass = cn(
     `h-[calc(100vh-50px)] bg-[#2F004F] flex flex-col gap-4 items-start pt-10 transition-all ease-in-out duration-300 px-4`,
     {
@@ -42,16 +40,16 @@ const Sidebar: FC = () => {
 
   return (
     <div className={sidebarClass}>
-        <CollapsibleButton
-          icon={
-            <NewDocumentIcon
-              fill={activeNavLink === "/new-document" ? "#2F004F" : "#FFFFFF"}
-            />
-          }
-          isActive={activeNavLink === "/new-document"}
-          title="New Document"
-          link="/new-document"
-        />
+      <CollapsibleButton
+        icon={
+          <NewDocumentIcon
+            fill={activeNavLink === "/new-document" ? "#2F004F" : "#FFFFFF"}
+          />
+        }
+        isActive={activeNavLink === "/new-document"}
+        title="New Document"
+        link="/new-document"
+      />
       <CollapsibleButton
         icon={
           <AllDocumentsIcon

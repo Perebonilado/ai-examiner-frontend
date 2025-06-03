@@ -7,7 +7,7 @@ const ContactTeamMemberContainer: FC = () => {
     <Container>
       <section className="py-20">
         <div className="text-center flex flex-col items-center justify-center gap-3">
-          <h3 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#2F004F]">
+          <h3 className="text-5xl font-bold text-[#2F004F]">
             We're here for you
           </h3>
           <p>

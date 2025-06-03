@@ -16,7 +16,7 @@ const SupportLeaningContainer: FC<Props> = ({ data }) => {
     <Container>
       <div className="flex flex-col md:flex-row items-start justify-between gap-8 mt-24 mb-16">
         <div className="flex-1">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <h2 className="text-5xl font-extrabold leading-tight">
             Make your{" "}
             <span className="bg-gradient-to-r from-[#9333EA] to-[#F89AEE] bg-clip-text text-transparent">
               study routine

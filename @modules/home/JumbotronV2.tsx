@@ -11,7 +11,7 @@ const JumbotronV2: FC = () => {
           <span className="text-[#9333EA]">Medical students</span>
         </p>
 
-        <p className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-[50px] w-full max-w-[752px]">
+        <p className=" text-5xl font-extrabold leading-[50px] w-full max-w-[752px]">
           Turn your study materials into{" "}
           <span className="bg-gradient-to-r from-[#9333EA] to-[#F89AEE] bg-clip-text text-transparent">
             practice tests

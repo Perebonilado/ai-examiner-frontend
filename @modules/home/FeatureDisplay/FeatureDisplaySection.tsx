@@ -10,7 +10,7 @@ const FeatureDisplaySection: FC = () => {
     <section>
       <Container>
         <div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#2F004F] text-center mb-14">
+          <h2 className="text-5xl font-extrabold text-[#2F004F] text-center mb-14">
             <span className="bg-gradient-to-r from-[#9333EA] to-[#F89AEE] bg-clip-text text-transparent">
               Smart tests
             </span>{" "}

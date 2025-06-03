@@ -20,7 +20,7 @@ const TwitterReviewContainer: FC = () => {
       className="min-h-[500px]"
     >
       <Container>
-        <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight text-center text-[#2F004F] mb-10">
+        <h2 className="text-5xl font-extrabold leading-tight text-center text-[#2F004F] mb-10">
           What our users say
         </h2>
       </Container>

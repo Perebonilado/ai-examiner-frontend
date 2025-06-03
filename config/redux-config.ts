@@ -23,6 +23,7 @@ import { CallCreditsService } from "@/api-services/call-credits.service";
 import { PreferredLanguageService } from "@/api-services/preferred-language.service";
 import { documentChatReducer } from "@/features/documentChatSlice";
 import { imageSearchReducer } from "@/features/imageSearchSlice";
+import { navigationSliceReducer } from "@/features/navigationSlice";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -49,7 +50,8 @@ export const reduxStore = configureStore({
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
     documentChatReducer: documentChatReducer,
-    imageSearchReducer: imageSearchReducer
+    imageSearchReducer: imageSearchReducer,
+    navigationSliceReducer: navigationSliceReducer
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([

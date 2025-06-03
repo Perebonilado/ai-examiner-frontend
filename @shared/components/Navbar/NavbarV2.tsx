@@ -23,7 +23,7 @@ const NavbarV2: FC = () => {
   }, []);
   return (
     <Container>
-      <nav className="flex items-center pt-6 gap-10">
+      <nav className="flex items-center py-3 gap-10">
         <div className="flex items-center gap-16" style={{ flex: 1 }}>
           <AppLogo />
 

@@ -1,6 +1,6 @@
 
 .root {
-    @apply relative  overflow-hidden flex items-center justify-center border border-[#360B58] p-[2px]
+    @apply relative  overflow-hidden flex items-center justify-center border border-[#360B58] p-[2px] transition-all ease-out duration-300
 }
 
 .slateBg {
@@ -16,11 +16,11 @@
 }
 
 .sm {
-    @apply w-10 h-10
+    @apply w-8 h-8
 }
 
 .md {
-    @apply w-14 h-14
+    @apply w-12 h-12
 }
 
 .lg {

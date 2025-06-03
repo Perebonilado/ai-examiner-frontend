@@ -23,7 +23,7 @@ const UserLogoutBox: FC = () => {
   return !data ? null : (
     <div
       className={cn("py-10 w-full mt-auto flex items-center gap-2", {
-        ["flex-col gap-8"]: !isOpen,
+        ["flex-col gap-4"]: !isOpen,
       })}
     >
       <div className="relative" ref={popUpContainer}>
@@ -46,7 +46,7 @@ const UserLogoutBox: FC = () => {
       </div>
       {isOpen && (
         <div className="text-white">
-          <p className="max-w-[100px] truncate text-ellipsis font-bold text-sm">
+          <p className="max-w-[100px] truncate text-ellipsis font-semibold text-sm">
             {data.firstName}
           </p>
         </div>

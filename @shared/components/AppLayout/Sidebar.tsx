@@ -23,7 +23,7 @@ const Sidebar: FC = () => {
   const sidebarClass = cn(
     `h-[calc(100vh-50px)] bg-[#2F004F] flex flex-col gap-4 items-start pt-10 transition-all ease-in-out duration-300 px-4`,
     {
-      ["w-[300px]"]: isOpen,
+      ["w-[212px]"]: isOpen,
       ["w-[63px]"]: !isOpen,
     }
   );
@@ -61,7 +61,7 @@ const Sidebar: FC = () => {
         link="/documents"
       />
 
-      <div className="w-full h-[2px] bg-white rounded-full my-3"></div>
+      <div className="w-full h-[1px] bg-white rounded-full my-3"></div>
 
       <RecentDocumentContainer
         data={

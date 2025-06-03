@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import Hamburger from "../Hamburger";
 import { toggleNavigation } from "@/features/navigationSlice";
-import { AppLogo } from "../AppLogo";
 import AppLogoAlt from "../AppLogoAlt";
 
 const TopNav: FC = () => {
@@ -19,7 +18,7 @@ const TopNav: FC = () => {
       className={cn(
         `transition-all bg-[#2F004F] ease-in-out duration-300 h-[50px] pt-6 flex items-center px-4`,
         {
-          ["w-[300px]"]: isOpen,
+          ["w-[212px]"]: isOpen,
           ["w-[63px]"]: !isOpen,
         }
       )}

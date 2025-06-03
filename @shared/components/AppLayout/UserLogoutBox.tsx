@@ -30,7 +30,7 @@ const UserLogoutBox: FC = () => {
         <Avatar
           fallBack="U"
           imageUrl="https://avatar.iran.liara.run/public/49"
-          size={isOpen ? "md" : "sm"}
+          size={"sm"}
           alt="user image"
           slateBg={false}
           onClick={() => {
@@ -46,11 +46,8 @@ const UserLogoutBox: FC = () => {
       </div>
       {isOpen && (
         <div className="text-white">
-          <p className="max-w-[100px] truncate text-ellipsis font-medium text-sm">
+          <p className="max-w-[100px] truncate text-ellipsis font-bold text-sm">
             {data.firstName}
-          </p>
-          <p className="text-xs max-w-[150px] truncate text-ellipsis">
-            {data.email}
           </p>
         </div>
       )}

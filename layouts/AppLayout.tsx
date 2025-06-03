@@ -8,6 +8,7 @@ import { useGetUserProfileQuery } from "@/api-services/user.service";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import PreferredLanguageButton from "@/@shared/components/PreferredLanguageButton";
 import GoogleTranslateLanguagePicker from "@/@shared/components/GoogleTranslateLanguagePicker";
+import AppLayoutV2 from "./AppLayoutV2";
 
 interface Props {
   showWelcomeMessage?: boolean;
@@ -68,4 +69,4 @@ const AppLayout: FC<PropsWithChildren<Props>> = ({
   );
 };
 
-export default AppLayout;
+export default AppLayoutV2;

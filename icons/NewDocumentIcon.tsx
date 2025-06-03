@@ -1,17 +1,49 @@
 import React, { FC } from "react";
 
-const NewDocumentIcon: FC = () => {
+interface Props {
+  width?: number;
+  height?: number;
+  fill?: string;
+}
+
+const NewDocumentIcon: FC<Props> = ({
+  fill = "#FFFFFF",
+  height = 15,
+  width = 15,
+}) => {
   return (
     <svg
-      id="Layer_1"
-      height="16"
-      viewBox="0 0 24 24"
-      width="16"
+      width={width}
+      height={height}
+      viewBox="0 0 15 14"
+      fill={'none'}
       xmlns="http://www.w3.org/2000/svg"
-      data-name="Layer 1"
-      fill="current"
     >
-      <path d="m14 7v-6.54a6.977 6.977 0 0 1 2.465 1.59l3.484 3.486a6.954 6.954 0 0 1 1.591 2.464h-6.54a1 1 0 0 1 -1-1zm8 3.485v8.515a5.006 5.006 0 0 1 -5 5h-10a5.006 5.006 0 0 1 -5-5v-14a5.006 5.006 0 0 1 5-5h4.515c.163 0 .324.013.485.024v6.976a3 3 0 0 0 3 3h6.976c.011.161.024.322.024.485zm-6 6.515a1 1 0 0 0 -1-1h-2v-2a1 1 0 0 0 -2 0v2h-2a1 1 0 0 0 0 2h2v2a1 1 0 0 0 2 0v-2h2a1 1 0 0 0 1-1z" />
+      <rect
+        x="0.65"
+        y="0.65"
+        width="13.7"
+        height="12.7"
+        rx="1.56226"
+        stroke={fill}
+        stroke-width="1.3"
+      />
+      <line
+        x1="7.55697"
+        y1="3.68164"
+        x2="7.55697"
+        y2="10.3184"
+        stroke={fill}
+        stroke-width="1.10613"
+      />
+      <line
+        x1="3.90234"
+        y1="6.8339"
+        x2="11.0998"
+        y2="6.8339"
+        stroke={fill}
+        stroke-width="1.10613"
+      />
     </svg>
   );
 };

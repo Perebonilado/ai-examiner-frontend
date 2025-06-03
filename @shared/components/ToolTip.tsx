@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, PropsWithChildren } from "react";
 import { Tooltip as ReactToolTip } from "react-tooltip";
 
 interface Props {
@@ -6,16 +6,15 @@ interface Props {
   message: string;
 }
 
-const ToolTip: FC<Props> = ({ id, message }) => {
+const ToolTip: FC<PropsWithChildren<Props>> = ({ id, message, children }) => {
   return (
     <div>
-      <p
+      <div
         data-tooltip-content={message}
         data-tooltip-id={id}
-        className="text-xs flex items-center justify-center w-[17px] h-[17px] rounded-full border-[2px] border-gray-600 text-gray-600 font-bold cursor-pointer"
       >
-        i
-      </p>
+        {children || 'i'}
+      </div>
       <ReactToolTip id={id} />
     </div>
   );

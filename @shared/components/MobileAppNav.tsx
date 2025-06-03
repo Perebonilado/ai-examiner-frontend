@@ -24,7 +24,7 @@ const MobileAppNav: FC<Props> = ({
           <AppLogoAlt size="sm" />
         </div>
         {isLoggedIn && (
-          <div className="flex items-center justify-end gap-6">
+          <div className="flex items-center justify-end gap-3">
             <GoogleTranslateLanguagePicker />
             <UserManagementBox />
           </div>

@@ -17,6 +17,12 @@
   font-style: normal;
 }
 
+* {
+  /* border-color: unset; */
+  padding: 0;
+  margin: 0;
+}
+
 :root {
   --font-sans: 'Proxima Nova', sans-serif;
 }

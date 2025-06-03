@@ -39,7 +39,7 @@ const RecentDocumentContainer: FC<Props> = ({ data, forceRender = null }) => {
         "opacity-0 scale-x-0": forceRender ?? !shouldRender,
       })}
     >
-      <p className="font-bold mb-5 text-white text-sm">Recent Documents</p>
+      <p className="font-semibold mb-5 text-white text-sm">Recent Documents</p>
 
       <div className="flex flex-col gap-1">
         {data.map((d, idx) => {

@@ -63,8 +63,14 @@ const PaymentConfirmationContainer: FC = () => {
     };
   }, [pollIntervalTimeMs]);
 
+  const handleGtagConversion = () => {
+    // @ts-ignore
+    window.gtagSendEvent(`${window.origin}/new-document`);
+  };
+
   const handleGetStarted = () => {
-    window.location.pathname = "/new-document";
+    handleGtagConversion();
+    // window.location.pathname = "/new-document";
   };
 
   return (
@@ -104,7 +110,11 @@ const PaymentConfirmationContainer: FC = () => {
               <p>{paymentConfirmationMessage}</p>
 
               <div className="mt-10 bg-white p-10 rounded-xl border border-gray-500">
-                <Button title="Get Started" size="large" onClick={handleGetStarted}/>
+                <Button
+                  title="Get Started"
+                  size="large"
+                  onClick={handleGetStarted}
+                />
               </div>
             </div>
           )}

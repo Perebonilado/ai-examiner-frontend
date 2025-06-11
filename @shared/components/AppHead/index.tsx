@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, PropsWithChildren } from "react";
 
 import Head from "next/head";
 import Script from "next/script";
@@ -7,7 +7,7 @@ interface Props {
   title?: string;
 }
 
-const AppHead: FC<Props> = ({ title }) => {
+const AppHead: FC<PropsWithChildren<Props>> = ({ title, children }) => {
   return (
     <Head>
       <meta
@@ -62,6 +62,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
 })(window,document,'script','dataLayer','GTM-WXV3SGHG');`}
       </script>
+      <script>
+        {
+          `
+          <!-- Google tag (gtag.js) event - delayed navigation helper -->
+  // Helper function to delay opening a URL until a gtag event is sent.
+  // Call it in response to an action that should navigate to a URL.
+  function gtagSendEvent(url) {
+    var callback = function () {
+      if (typeof url === 'string') {
+        window.location = url;
+      }
+    };
+    gtag('event', 'purchase', {
+      'event_callback': callback,
+      'event_timeout': 2000,
+      // <event_parameters>
+    });
+    return false;
+  }
+          `
+        }
+      </script>
+      {children}
     </Head>
   );
 };

@@ -51,6 +51,15 @@ export default function App({ Component, pageProps }: AppProps) {
         ></iframe>
       </noscript>
 
+      <noscript>
+        <iframe
+          src="https://www.googletagmanager.com/ns.html?id=GTM-M5DRN2FJ"
+          height="0"
+          width="0"
+          style={{ display: "none", visibility: "hidden" }}
+        ></iframe>
+      </noscript>
+
       <Script
         strategy="afterInteractive"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"

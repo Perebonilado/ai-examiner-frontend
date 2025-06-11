@@ -8,16 +8,7 @@ import React from "react";
 const PaymentConfirmation: NextPage = () => {
   return (
     <>
-      <AppHead title="Payment Confirmation">
-        <script>
-          {`
-          <!-- Google tag (gtag.js) event -->
-           gtag('event', 'purchase', {
-           // <event_parameters>
-             });
-          `}
-        </script>
-      </AppHead>
+      <AppHead title="Payment Confirmation" />
       <Navbar />
       <PaymentConfirmationContainer />
       <Footer />

@@ -63,14 +63,8 @@ const PaymentConfirmationContainer: FC = () => {
     };
   }, [pollIntervalTimeMs]);
 
-  const handleGtagConversion = () => {
-    // @ts-ignore
-    window.gtagSendEvent(`${window.origin}/new-document`);
-  };
-
   const handleGetStarted = () => {
-    handleGtagConversion();
-    // window.location.pathname = "/new-document";
+    window.location.pathname = "/new-document";
   };
 
   return (

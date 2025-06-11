@@ -16,7 +16,7 @@ const TopNav: FC = () => {
   return (
     <nav
       className={cn(
-        `transition-all bg-[#2F004F] ease-in-out duration-300 h-[50px] pt-6 flex items-center px-4`,
+        `transition-all bg-[#2F004F] ease-in-out duration-300 h-[50px] flex items-center px-4`,
         {
           ["w-[212px]"]: isOpen,
           ["w-[63px]"]: !isOpen,

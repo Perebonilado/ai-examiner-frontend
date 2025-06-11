@@ -31,7 +31,7 @@ const IconButton = forwardRef<HTMLButtonElement, Props>(
         className="flex flex-col gap-1 items-center justify-center"
       >
         <div className={rootClassName}>{icon}</div>
-        <p className="text-xs">{title}</p>
+       {title &&  <p className="text-xs">{title}</p>}
       </button>
     );
   }

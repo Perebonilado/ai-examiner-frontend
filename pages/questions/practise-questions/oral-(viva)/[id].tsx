@@ -344,7 +344,11 @@ const VivaQuestion: NextPage = () => {
 
   return (
     <div translate={data && !data.analysis ? "no" : "yes"}>
-      <AppLayout>
+      <AppLayout
+        handleBack={() => {
+          router.push(`/questions/view-questions/${data?.documentId}`);
+        }}
+      >
         <AppHead title="Viva" />
         {!isPlaying && (
           <button
@@ -357,15 +361,21 @@ const VivaQuestion: NextPage = () => {
         )}
         {data && credits && (
           <div className="flex items-center justify-between mb-6">
-            <Button
-              title="Back"
-              variant="text"
-              starticon={<ChevronLeft />}
-              className="!gap-1 mb-6 mt-7"
-              onClick={() => {
-                router.push(`/questions/view-questions/${data?.documentId}`);
-              }}
-            />
+            <div>
+              <div className="md:hidden">
+                <Button
+                  title="Back"
+                  variant="text"
+                  starticon={<ChevronLeft />}
+                  className="!gap-1 mb-6 mt-7"
+                  onClick={() => {
+                    router.push(
+                      `/questions/view-questions/${data?.documentId}`
+                    );
+                  }}
+                />
+              </div>
+            </div>
             <GetMoreCreditsCard
               minuteLeft={millisecondsToMinutesSeconds(
                 credits?.remainingCreditsMs ?? 0
@@ -409,7 +419,7 @@ const VivaQuestion: NextPage = () => {
             systemSpeaking={systemSpeaking}
             userSpeaking={userSpeaking}
             maxCallDurationInSeconds={
-              credits ? credits.remainingCreditsMs/ 1000 : 0
+              credits ? credits.remainingCreditsMs / 1000 : 0
             }
           />
         )}

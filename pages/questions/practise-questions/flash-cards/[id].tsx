@@ -23,7 +23,12 @@ import { GetQuestionByIdModel } from "@/models/questions.model";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useDispatch } from "react-redux";
-import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
+import {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+} from "@/features/documentChatSlice";
+import TestPageTitle from "@/@modules/questions/TestPageTitle";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
@@ -43,19 +48,19 @@ const FlashCards: NextPage = () => {
       { skip: !documentId, refetchOnMountOrArgChange: true }
     );
 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
 
-    useEffect(() => {
-      if (documentId) {
-        dispatch(setDocumentIdInView(documentId));
-      }
-    }, [documentId]);
-  
-    useEffect(() => {
-      if (data?.documentTitle) {
-        dispatch(setDocumentTitleInView(data.documentTitle));
-      }
-    }, [data]);
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
+
+  useEffect(() => {
+    if (data?.documentTitle) {
+      dispatch(setDocumentTitleInView(data.documentTitle));
+    }
+  }, [data]);
 
   useEffect(() => {
     if (data) {
@@ -103,46 +108,11 @@ const FlashCards: NextPage = () => {
   return (
     <>
       <AppHead title="Flash Cards" />
-      <AppLayout>
-        {data && (
-          <div className="flex items-center justify-between mb-6">
-            <Button
-              title="Back"
-              variant="text"
-              starticon={<ChevronLeft />}
-              className="!gap-1 mb-6 mt-7"
-              onClick={() => {
-                router.push(`/questions/view-questions/${data?.documentId}`);
-              }}
-            />
-
-            <IconButton
-              icon={<DotsIcon />}
-              title="More"
-              onClick={() => {
-                setModalContent(
-                  <Dialog>
-                    <div className="min-w-[165px]">
-                      <Button
-                        title="Share"
-                        variant="contained"
-                        endicon={<ShareIcon fill="#FFFFFF" />}
-                        fullWidth
-                        onClick={() => {
-                          setModalContent(
-                            <ShareQuestionDialog
-                              handleCopy={handleCopyShareLink}
-                            />
-                          );
-                        }}
-                      />
-                    </div>
-                  </Dialog>
-                );
-              }}
-            />
-          </div>
-        )}
+      <AppLayout
+        handleBack={() => {
+          router.push(`/questions/view-questions/${data?.documentId}`);
+        }}
+      >
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
             <ErrorMessage message="Something went wrong while trying to get questions" />
@@ -152,16 +122,13 @@ const FlashCards: NextPage = () => {
 
         {data && (
           <>
-            <h1 className="text-center mb-3 text-xl font-semibold">
-              {capitalizeFirstLetterOfEachWord(
-                data.documentTitle.toLowerCase()
-              )}{" "}
-              Questions
-            </h1>
-            <p className="text-center text-sm text-gray-500">
-              Date Created:{" "}
-              {moment.utc(data.createdOn).local().format("MMMM D, YYYY h:mma")}
-            </p>
+            <TestPageTitle
+              handleBack={() => {
+                router.push(`/questions/view-questions/${data?.documentId}`);
+              }}
+              title={data.documentTitle.toLowerCase()}
+              handleCopyShareLink={handleCopyShareLink}
+            />
           </>
         )}
 

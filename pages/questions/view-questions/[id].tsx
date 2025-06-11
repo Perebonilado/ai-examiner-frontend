@@ -145,7 +145,7 @@ const ViewQuestions: NextPage = () => {
     };
     if (documentId && router.query?.tool === "easyRead") {
       openEasyReader();
-      removeQueryParam('tool')
+      removeQueryParam("tool");
     }
   }, [documentId, router.query]);
 
@@ -163,7 +163,7 @@ const ViewQuestions: NextPage = () => {
       undefined,
       { shallow: true } // no page reload
     );
-  }
+  };
 
   const { data: summaryData } = useGetDocumentSummaryQuery(
     { documentId },
@@ -196,19 +196,14 @@ const ViewQuestions: NextPage = () => {
   const getFileUrls = async (documentId: string) => {
     setIsFetchingFile(true);
     try {
-      const {
-        getOriginalDocumentFile,
-        getModifiedContent,
-      } = DocumentService.endpoints;
-      const [originalFileUrl, documentContent] =
-        await Promise.all([
-          reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
-          reduxStore.dispatch(getModifiedContent.initiate({ documentId })),
-        ]);
+      const { getOriginalDocumentFile, getModifiedContent } =
+        DocumentService.endpoints;
+      const [originalFileUrl, documentContent] = await Promise.all([
+        reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
+        reduxStore.dispatch(getModifiedContent.initiate({ documentId })),
+      ]);
       setIsFetchingFile(false);
-      if (
-        (originalFileUrl.data && documentContent.data)
-      ) {
+      if (originalFileUrl.data && documentContent.data) {
         return {
           original: originalFileUrl.data?.modifiedFile as string,
           content: documentContent.data,
@@ -237,16 +232,22 @@ const ViewQuestions: NextPage = () => {
       )}
       {isFetchingFile && <LoadingReader />}
       <AppHead title="View Questions" />
-      <AppLayout>
-        <Button
-          title="Back"
-          variant="text"
-          starticon={<ChevronLeft />}
-          className="!gap-1 mb-4 mt-7 max-sm:mt-0"
-          onClick={() => {
-            router.push(`/documents`);
-          }}
-        />
+      <AppLayout
+        handleBack={() => {
+          router.push(`/documents`);
+        }}
+      >
+        <div className="hidden max-md:block">
+          <Button
+            title="Back"
+            variant="text"
+            starticon={<ChevronLeft />}
+            className="!gap-1 mb-4 mt-7 max-sm:mt-0"
+            onClick={() => {
+              router.push(`/documents`);
+            }}
+          />
+        </div>
 
         <div className="flex items-center justify-between w-full pb-4 max-lg:flex-col max-lg:gap-12">
           <h2 className="text-2xl font-bold max-lg:text-center max-w-[60%] lg:truncate max-lg:max-w-full">

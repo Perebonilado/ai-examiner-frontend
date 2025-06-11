@@ -25,7 +25,12 @@ import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import { useDispatch } from "react-redux";
-import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
+import {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+} from "@/features/documentChatSlice";
+import TestPageTitle from "@/@modules/questions/TestPageTitle";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -147,47 +152,13 @@ const MultipleTrueFalse: NextPage = () => {
   const topOfContainerRef = useRef<ElementRef<"div">>(null);
 
   return (
-    <AppLayout>
+    <AppLayout
+      handleBack={() => {
+        router.push(`/questions/view-questions/${data?.documentId}`);
+      }}
+    >
       <AppHead title="Multiple True False" />
-      {data && (
-        <div className="flex items-center justify-between mb-6">
-          <Button
-            title="Back"
-            variant="text"
-            starticon={<ChevronLeft />}
-            className="!gap-1 mb-6 mt-7"
-            onClick={() => {
-              router.push(`/questions/view-questions/${data?.documentId}`);
-            }}
-          />
 
-          <IconButton
-            icon={<DotsIcon />}
-            title="More"
-            onClick={() => {
-              setModalContent(
-                <Dialog>
-                  <div className="min-w-[165px]">
-                    <Button
-                      title="Share"
-                      variant="contained"
-                      endicon={<ShareIcon fill="#FFFFFF" />}
-                      fullWidth
-                      onClick={() => {
-                        setModalContent(
-                          <ShareQuestionDialog
-                            handleCopy={handleCopyShareLink}
-                          />
-                        );
-                      }}
-                    />
-                  </div>
-                </Dialog>
-              );
-            }}
-          />
-        </div>
-      )}
       {!data && error && (
         <div className="flex flex-col gap-4 justify-center items-center py-8">
           <ErrorMessage message="Something went wrong while trying to get questions" />
@@ -197,14 +168,12 @@ const MultipleTrueFalse: NextPage = () => {
       <div ref={topOfContainerRef}></div>
       {data && (
         <div>
-          <h1 className="text-center text-xl font-semibold">
-            {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
-            Questions
-          </h1>
-          <p className="text-center text-sm text-gray-500 my-3">
-            Date Created:{" "}
-            {moment.utc(data.createdOn).local().format("MMMM D, YYYY h:mma")}
-          </p>
+          <TestPageTitle
+            handleBack={() => {
+              router.push(`/questions/view-questions/${data?.documentId}`);
+            }}
+            title={data.documentTitle.toLowerCase()}
+          />
           {isSubmitted && (
             <div className="mx-auto w-full max-w-[300px]">
               <Button
@@ -256,7 +225,9 @@ const MultipleTrueFalse: NextPage = () => {
                   return q["topic"] !== undefined;
                 })}
                 handlePerformanceOverview={() => {
-                  router.push(`/performance-tracking/question/${id}?type=multiple-true-false`);
+                  router.push(
+                    `/performance-tracking/question/${id}?type=multiple-true-false`
+                  );
                 }}
               />
             );

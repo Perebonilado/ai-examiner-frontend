@@ -24,7 +24,12 @@ import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
 import { useDispatch } from "react-redux";
-import { setDocumentIdInView, setDocumentTitleInView, setMessages } from "@/features/documentChatSlice";
+import {
+  setDocumentIdInView,
+  setDocumentTitleInView,
+  setMessages,
+} from "@/features/documentChatSlice";
+import TestPageTitle from "@/@modules/questions/TestPageTitle";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -149,38 +154,11 @@ const Practice: NextPage = () => {
     <>
       <AppHead title="Multiple Choice" />
 
-      <AppLayout>
-        {data && (
-          <div className="flex items-center justify-between mb-6">
-            <Button
-              title="Back"
-              variant="text"
-              starticon={<ChevronLeft />}
-              className="!gap-1 mb-6 mt-7"
-              onClick={() => {
-                router.push(`/questions/view-questions/${data?.documentId}`);
-              }}
-            />
-
-            <IconButton
-              icon={<DotsIcon />}
-              title="More"
-              onClick={() => {
-                setModalContent(
-                  <Dialog>
-                    <MCQItemContainerPDF
-                      data={(data as GetQuestionByIdModel).data}
-                      title={capitalizeFirstLetterOfEachWord(
-                        data.documentTitle.toLowerCase()
-                      )}
-                      handleCopyShareLink={handleCopyShareLink}
-                    />
-                  </Dialog>
-                );
-              }}
-            />
-          </div>
-        )}
+      <AppLayout
+        handleBack={() => {
+          router.push(`/questions/view-questions/${data?.documentId}`);
+        }}
+      >
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
             <ErrorMessage message="Something went wrong while trying to get questions" />
@@ -190,16 +168,15 @@ const Practice: NextPage = () => {
         <div ref={topOfContainerRef}></div>
         {data && (
           <>
-            <h1 className="text-center text-xl font-semibold">
-              {capitalizeFirstLetterOfEachWord(
-                data.documentTitle.toLowerCase()
-              )}{" "}
-              Questions
-            </h1>
-            <p className="text-center text-sm text-gray-500 my-3">
-              Date Created:{" "}
-              {moment.utc(data.createdOn).local().format("MMMM D, YYYY h:mma")}
-            </p>
+            <TestPageTitle
+              handleBack={() => {
+                router.push(`/questions/view-questions/${data?.documentId}`);
+              }}
+              title={data.documentTitle.toLowerCase()}
+              handleCopyShareLink={handleCopyShareLink}
+              questions={(data as GetQuestionByIdModel).data}
+            />
+
             {isSubmitted && (
               <div className="mx-auto w-full max-w-[300px]">
                 <Button
@@ -254,7 +231,9 @@ const Practice: NextPage = () => {
                       (q) => q["topic"] !== undefined
                     )}
                     handlePerformanceOverview={() => {
-                      router.push(`/performance-tracking/question/${id}?type=multiple-choice`);
+                      router.push(
+                        `/performance-tracking/question/${id}?type=multiple-choice`
+                      );
                     }}
                   />
                 );

@@ -21,7 +21,7 @@ const Sidebar: FC = () => {
   );
 
   const sidebarClass = cn(
-    `h-[calc(100vh-50px)] bg-[#2F004F] flex flex-col gap-4 items-start pt-10 transition-all ease-in-out duration-300 px-4`,
+    `h-[calc(100vh-50px)] bg-[#2F004F] flex flex-col gap-4 items-start pt-4 transition-all ease-in-out duration-300 px-4`,
     {
       ["w-[212px]"]: isOpen,
       ["w-[63px]"]: !isOpen,

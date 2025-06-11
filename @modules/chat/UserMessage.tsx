@@ -12,11 +12,13 @@ const UserMessage: FC<Props> = ({ message, image }) => {
       <ScaleAndUp>
         <div className="flex justify-end py-3">
           <div className="p-3 prose prose-sm bg-[#F2E1FF] rounded-xl w-fit max-w-[85%]">
-            <img
-              src={image}
-              alt="image attachment"
-              className="object-contain w-full h-auto rounded-lg border m-0"
-            />
+            {image && (
+              <img
+                src={image}
+                alt="image attachment"
+                className="object-contain w-full h-auto rounded-lg border m-0"
+              />
+            )}
             <p className="!mt-2">{message}</p>
           </div>
         </div>

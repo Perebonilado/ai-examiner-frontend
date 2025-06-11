@@ -92,10 +92,10 @@ const PlanCard: FC<Props> = ({
                   <span className="font-bold">2</span> practice tests per month
                 </p>
                 <p>
-                  <span className="font-bold">5 questions</span> per test
+                  <span className="font-bold">40 questions</span> per test
                 </p>
                 <p>
-                  Max file size <span className="font-bold">15mb</span>
+                  Max file size <span className="font-bold">300mb</span>
                 </p>
               </>
             )}

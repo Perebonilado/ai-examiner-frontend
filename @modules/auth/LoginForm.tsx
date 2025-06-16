@@ -41,10 +41,8 @@ const LoginForm: FC = () => {
   useEffect(() => {
     if (data) {
       Cookies.set(accessToken, data.data.token, {
-        expires: 60 * 60 * 24 * 365, // 1 year = 31,536,000 seconds
-        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes('localhost'), // HTTPS in production
-        sameSite: "lax", // CSRF protection
-        path: "/", // Available site-wide
+        expires: 365, 
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes('localhost'),
       });
 
       if (returnUrl) {

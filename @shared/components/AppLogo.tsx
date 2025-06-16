@@ -1,10 +1,12 @@
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
 
 export const AppLogo: FC = () => {
+  const { isLoggedIn } = useIsLoggedIn();
   return (
-    <Link href={"/"}>
+    <Link href={isLoggedIn ? "/new-document" : "/"}>
       <div className="relative h-14 w-40">
         {" "}
         <Image

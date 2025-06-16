@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { FC } from "react";
 import cn from "classnames";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 
 interface Props {
   size?: "md" | "sm" | "xs";
@@ -13,9 +14,10 @@ const AppLogoAlt: FC<Props> = ({ size = "md" }) => {
     "h-11 w-48": size === "sm",
     "h-8 w-42": size === "xs",
   });
+  const { isLoggedIn } = useIsLoggedIn();
 
   return (
-    <Link href={"/"}>
+    <Link href={isLoggedIn ? "/new-document" : "/"}>
       <div
         className={cn(`relative`, {
           "h-16 w-48": size === "md",

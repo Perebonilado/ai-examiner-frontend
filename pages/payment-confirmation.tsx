@@ -8,7 +8,17 @@ import React from "react";
 const PaymentConfirmation: NextPage = () => {
   return (
     <>
-      <AppHead title="Payment Confirmation" />
+      <AppHead title="Payment Confirmation">
+        <script type="text/javascript">
+          {`
+           // Insert Twitter Event ID
+  twq('event', 'tw-q01qs-q02ab', {
+    conversion_id: null // use this to pass a unique ID for the conversion event for deduplication (e.g. order id '1a2b3c')
+  });
+</script>
+          `}
+        </script>
+      </AppHead>
       <Navbar />
       <PaymentConfirmationContainer />
       <Footer />

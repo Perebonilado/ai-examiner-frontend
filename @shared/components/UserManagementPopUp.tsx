@@ -3,10 +3,13 @@ import React, { forwardRef } from "react";
 import Button from "../ui/Button";
 import { logout } from "@/utils";
 import cn from "classnames";
+import { useModalContext } from "@/contexts/ModalContext";
+import UpgradeAccountForm from "./UpgradeAccountForm";
 
 interface Props {
   firstName: string;
   lastName: string;
+  role: string;
   email: string;
   isOpen: boolean;
   position?: string;
@@ -22,6 +25,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
       isOpen,
       position = "top-full right-0",
       showSignOut = true,
+      role,
     },
     ref
   ) => {
@@ -33,39 +37,59 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
       }
     );
 
+    const { setModalContent } = useModalContext()
+
     return (
       <div className={baseStyles} ref={ref}>
-        <div className="pb-8">
+        <div
+          className={cn({
+            ["pb-8"]: role.toLowerCase() !== "guest",
+            ["pb-3"]: role.toLowerCase() == "guest",
+          })}
+        >
           <p className="text-sm font-bold">
-            {firstName} {lastName}
+            {firstName} {role.toLowerCase() === "guest" ? "" : lastName}
           </p>
-          <p className="text-xs text-gray-400">{email}</p>
+          {role.toLowerCase() !== "guest" && (
+            <p className="text-xs text-gray-400">{email}</p>
+          )}
         </div>
 
         <div
-          className={cn(
-            "flex flex-col gap-y-3 pb-[12px]",
-            {
-              ["border-b border-b-gray-200"]: showSignOut,
-            }
-          )}
+          className={cn("flex flex-col gap-y-3 pb-[12px]", {
+            ["border-b border-b-gray-200"]: showSignOut,
+          })}
         >
-          <Link href={"/account/profile"}>
+          {role.toLowerCase() == "guest" && (
             <Button
-              title="View Profile"
-              variant="text"
+              title="Upgrade Account"
+              variant="contained"
               size="small"
-              className="!text-black"
+              onClick={()=>{
+                setModalContent(<UpgradeAccountForm />)
+              }}
             />
-          </Link>
-          <Link href={"/account/settings"}>
-            <Button
-              title="Manage your subscription"
-              variant="text"
-              size="small"
-              className="!text-black"
-            />
-          </Link>
+          )}
+          {role.toLowerCase() !== "guest" && (
+            <Link href={"/account/profile"}>
+              <Button
+                title="View Profile"
+                variant="text"
+                size="small"
+                className="!text-black"
+              />
+            </Link>
+          )}
+          {role.toLowerCase() !== "guest" && (
+            <Link href={"/account/settings"}>
+              <Button
+                title="Manage your subscription"
+                variant="text"
+                size="small"
+                className="!text-black"
+              />
+            </Link>
+          )}
           {/* <Link href={""}>
             <Button
               title="Support"

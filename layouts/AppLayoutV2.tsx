@@ -3,7 +3,10 @@ import Sidebar from "@/@shared/components/AppLayout/Sidebar";
 import TopNav from "@/@shared/components/AppLayout/TopNav";
 import MobileAppNav from "@/@shared/components/MobileAppNav";
 import MobileSidebar from "@/@shared/components/MobileSidebar";
+import UpgradeAccountForm from "@/@shared/components/UpgradeAccountForm";
 import Button from "@/@shared/ui/Button";
+import { useGetUserProfileQuery } from "@/api-services/user.service";
+import { useModalContext } from "@/contexts/ModalContext";
 import ChevronLeft from "@/icons/ChevronLeft";
 import React, { FC, PropsWithChildren, useState } from "react";
 
@@ -16,6 +19,8 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
   handleBack,
 }) => {
   const [isSideNav, setIsSideNav] = useState(false);
+  const { data } = useGetUserProfileQuery("");
+  const { setModalContent } = useModalContext();
 
   return (
     <div className="h-screen overflow-hidden">
@@ -51,7 +56,22 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
                 }}
               />
             )}
-            <LanguageChangeBar />
+            <div className="flex items-center justify-end ml-auto gap-6">
+              {data?.role.toLowerCase() === "guest" && (
+                <div className="max-md:hidden">
+                  <Button
+                    title="Upgrade Account"
+                    variant="outlined"
+                    size="small"
+                    className="!w-fit min-w-[150px]"
+                    onClick={() => {
+                      setModalContent(<UpgradeAccountForm />);
+                    }}
+                  />
+                </div>
+              )}
+              <LanguageChangeBar />
+            </div>
           </div>
           <div className="p-4 max-md:pt-[110px]">{children}</div>
         </main>

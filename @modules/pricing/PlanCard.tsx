@@ -7,6 +7,8 @@ import { useRouter } from "next/router";
 import CancelIcon from "@/icons/CancelIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import PaymentMethodSelection from "./PaymentMethodSelection";
+import { useGetUserProfileQuery } from "@/api-services/user.service";
+import UpgradeAccountForm from "@/@shared/components/UpgradeAccountForm";
 
 interface Props extends PlanModel {
   isLoggedIn: boolean;
@@ -19,7 +21,7 @@ const PlanCard: FC<Props> = ({
   offers,
   planId,
   isLoggedIn,
-  interval
+  interval,
 }) => {
   const buttonTextBasedOnPlanType = new Map<string, string>([
     ["free", "Try Free Plan"],
@@ -51,6 +53,7 @@ const PlanCard: FC<Props> = ({
   const handlePayWithTransfer = () => {
     inititateSubscription({ planId: `${planId}`, oneTimeSubscription: true });
   };
+  const { data: userData } = useGetUserProfileQuery("");
 
   return (
     <div className="rounded-lg w-full max-w-[290px] px-6 flex flex-col py-6 h-[640px] bg-white shadow-lg">
@@ -61,7 +64,7 @@ const PlanCard: FC<Props> = ({
             {currencySignMap.get(currency)}
             {costPerMonth.toLocaleString()}
           </span>
-          /{interval === 'monthly' ? 'month' : '3 months'}
+          /{interval === "monthly" ? "month" : "3 months"}
         </p>
       </div>
 
@@ -136,6 +139,11 @@ const PlanCard: FC<Props> = ({
           title={`${buttonTextBasedOnPlanType.get(type.toLowerCase())}`}
           onClick={() => {
             if (isLoggedIn) {
+              if (userData?.role.toLowerCase() === "guest") {
+                setModalContent(<UpgradeAccountForm />);
+                return
+              }
+
               if (type.toLowerCase() === "free") {
                 router.push("/new-document");
               } else {

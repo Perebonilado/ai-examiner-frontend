@@ -12,7 +12,10 @@ import {
   ResetPasswordPayload,
   SignUpPayload,
 } from "@/models/auth.model";
-import { baseQueryWithLogoutOnTokenExpiration, secondsToMilliSeconds } from "@/utils";
+import {
+  baseQueryWithLogoutOnTokenExpiration,
+  secondsToMilliSeconds,
+} from "@/utils";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/auth/`,
@@ -37,6 +40,13 @@ export const AuthService = createApi({
         body,
       }),
     }),
+    createGuestAccount: build.mutation<SignUpDto, undefined>({
+      query: () => ({
+        url: "create-guest-account",
+        method: "POST",
+        body: {},
+      }),
+    }),
     forgotPassword: build.mutation<ForgotPasswordDto, ForgotPasswordPayload>({
       query: (body) => ({
         url: "forgot-password",
@@ -59,4 +69,5 @@ export const {
   useSignUpMutation,
   useForgotPasswordMutation,
   useResetPasswordMutation,
+  useCreateGuestAccountMutation
 } = AuthService;

@@ -4,7 +4,11 @@ import TestKnowledge from "@/@modules/home/TestKnowledge";
 import FAQContainer from "@/@modules/home/FAQContainer";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
-import { accessToken } from "@/constants";
+import {
+  accessToken,
+  guestAccessToken,
+  hasUpgradedAccountInThePastToken,
+} from "@/constants";
 import { useRouter } from "next/router";
 import WebLayout from "@/layouts/WebLayout";
 import HowItWorksItemContainer from "@/@modules/home/HowItWorksItemContainer";
@@ -24,6 +28,7 @@ import RelatedVideosIcon from "@/icons/RelatedVideosIcon";
 import ExplainDefineIcon from "@/icons/ExplainDefineIcon";
 import TwitterReviewContainer from "@/@modules/home/TwitterReviews/TwitterReviewContainer";
 import Footer from "@/@shared/components/Footer";
+import { useCreateGuestAccountMutation } from "@/api-services/auth.service";
 
 export default function Home() {
   const [userIsLoggedIn, setUserIsLoggedIn] = useState(false);
@@ -74,6 +79,22 @@ export default function Home() {
     { code: "de", label: "🇩🇪 German" },
   ];
 
+  const [createGuestAccount, { data }] = useCreateGuestAccountMutation();
+
+  useEffect(() => {
+    if (data) {
+      Cookies.set(guestAccessToken, data.data.token, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
+      Cookies.set(accessToken, data.data.token, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
+      router.push("/new-document");
+    }
+  }, [data]);
+
   return (
     <>
       <AppHead />
@@ -87,7 +108,30 @@ export default function Home() {
         >
           <NavbarV2 />
           <div className="flex-1 flex flex-col items-center justify-center">
-            <JumbotronV2 />
+            <JumbotronV2
+              handleTryForFree={() => {
+                const guestToken = Cookies.get(guestAccessToken);
+                const userHasUsedGuestAccountAndUpgradedBefore = Cookies.get(
+                  hasUpgradedAccountInThePastToken
+                );
+                if (userHasUsedGuestAccountAndUpgradedBefore) {
+                  router.push("/auth/login");
+                  return
+                }
+                
+                if (guestToken) {
+                  Cookies.set(accessToken, guestToken, {
+                    expires: 365,
+                    secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes(
+                      "localhost"
+                    ),
+                  });
+                  router.push("/new-document");
+                } else {
+                  createGuestAccount(undefined);
+                }
+              }}
+            />
           </div>
         </div>
         {/* <HowItWorksItemContainer data={howItWorksData} /> */}

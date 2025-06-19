@@ -1,6 +1,4 @@
-import Jumbotron from "@/@modules/home/Jumbotron";
 import AppHead from "@/@shared/components/AppHead";
-import TestKnowledge from "@/@modules/home/TestKnowledge";
 import FAQContainer from "@/@modules/home/FAQContainer";
 import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
@@ -10,15 +8,8 @@ import {
   hasUpgradedAccountInThePastToken,
 } from "@/constants";
 import { useRouter } from "next/router";
-import WebLayout from "@/layouts/WebLayout";
-import HowItWorksItemContainer from "@/@modules/home/HowItWorksItemContainer";
-import howItWorksData from "../json-data/how-it-works.json";
 import SupportLeaningContainer from "@/@modules/home/SupportLeaningContainer";
-import FlashcardsIcon from "@/icons/FlashcardsIcon";
-import MCQIcon from "@/icons/MCQIcon";
-import TopicsIcon from "@/icons/TopicsIcon";
 import ContactTeamMemberContainer from "@/@modules/home/ContactTeamMemberContainer";
-import CaseStudyIcon from "@/icons/CaseStudyIcon";
 import NavbarV2 from "@/@shared/components/Navbar/NavbarV2";
 import JumbotronV2 from "@/@modules/home/JumbotronV2";
 import FeatureDisplaySection from "@/@modules/home/FeatureDisplay/FeatureDisplaySection";
@@ -95,6 +86,27 @@ export default function Home() {
     }
   }, [data]);
 
+  const handleTryForFree = () => {
+    const guestToken = Cookies.get(guestAccessToken);
+    const userHasUsedGuestAccountAndUpgradedBefore = Cookies.get(
+      hasUpgradedAccountInThePastToken
+    );
+    if (userHasUsedGuestAccountAndUpgradedBefore) {
+      router.push("/auth/login");
+      return;
+    }
+
+    if (guestToken) {
+      Cookies.set(accessToken, guestToken, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
+      router.push("/new-document");
+    } else {
+      createGuestAccount(undefined);
+    }
+  };
+
   return (
     <>
       <AppHead />
@@ -108,36 +120,15 @@ export default function Home() {
         >
           <NavbarV2 />
           <div className="flex-1 flex flex-col items-center justify-center">
-            <JumbotronV2
-              handleTryForFree={() => {
-                const guestToken = Cookies.get(guestAccessToken);
-                const userHasUsedGuestAccountAndUpgradedBefore = Cookies.get(
-                  hasUpgradedAccountInThePastToken
-                );
-                if (userHasUsedGuestAccountAndUpgradedBefore) {
-                  router.push("/auth/login");
-                  return
-                }
-                
-                if (guestToken) {
-                  Cookies.set(accessToken, guestToken, {
-                    expires: 365,
-                    secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes(
-                      "localhost"
-                    ),
-                  });
-                  router.push("/new-document");
-                } else {
-                  createGuestAccount(undefined);
-                }
-              }}
-            />
+            <JumbotronV2 handleTryForFree={handleTryForFree} />
           </div>
         </div>
-        {/* <HowItWorksItemContainer data={howItWorksData} /> */}
-        <FeatureDisplaySection />
-        <SupportLeaningContainer data={supportLearningData} />
-        <TwitterReviewContainer />
+        <FeatureDisplaySection handleTryForFree={handleTryForFree} />
+        <SupportLeaningContainer
+          data={supportLearningData}
+          handleTryForFree={handleTryForFree}
+        />
+        <TwitterReviewContainer handleTryForFree={handleTryForFree} />
         <ContactTeamMemberContainer />
         <FAQContainer />
       </section>

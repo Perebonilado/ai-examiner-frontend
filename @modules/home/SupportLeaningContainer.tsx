@@ -9,9 +9,10 @@ import Link from "next/link";
 
 interface Props {
   data: ISupportLearningItem[];
+  handleTryForFree: () => void;
 }
 
-const SupportLeaningContainer: FC<Props> = ({ data }) => {
+const SupportLeaningContainer: FC<Props> = ({ data, handleTryForFree }) => {
   return (
     <Container>
       <div className="flex flex-col md:flex-row items-start justify-between gap-8 mt-24 mb-16">
@@ -39,14 +40,13 @@ const SupportLeaningContainer: FC<Props> = ({ data }) => {
         ))}
       </section>
       <div className="pt-24 pb-48 flex justify-center">
-        <Link href={"/auth/login"}>
-          <Button
-            title="Get started for free"
-            size="large"
-            endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
-            className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
-          />
-        </Link>
+        <Button
+          title="Get started for free"
+          size="large"
+          onClick={handleTryForFree}
+          endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
+          className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
+        />
       </div>
     </Container>
   );

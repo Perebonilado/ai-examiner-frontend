@@ -6,7 +6,11 @@ import Link from "next/link";
 import Button from "@/@shared/ui/Button";
 import ArrowDiagonalRightIcon from "@/icons/ArrowDiagonalRightIcon";
 
-const TwitterReviewContainer: FC = () => {
+interface Props {
+  handleTryForFree: () => void;
+}
+
+const TwitterReviewContainer: FC<Props> = ({ handleTryForFree }) => {
   const images = [1, 2, 3, 4, 5].map(
     (img) => `/home/twitter reviews/${img}.png`
   );
@@ -38,14 +42,13 @@ const TwitterReviewContainer: FC = () => {
       </div>
 
       <div className="py-24 flex justify-center">
-        <Link href={"/auth/login"}>
-          <Button
-            title="Try it now"
-            size="large"
-            endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
-            className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
-          />
-        </Link>
+        <Button
+          title="Try it now"
+          onClick={handleTryForFree}
+          size="large"
+          endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
+          className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
+        />
       </div>
     </div>
   );

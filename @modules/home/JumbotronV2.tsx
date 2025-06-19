@@ -2,7 +2,11 @@ import Container from "@/@shared/ui/Container";
 import Link from "next/link";
 import React, { FC } from "react";
 
-const JumbotronV2: FC = () => {
+interface Props {
+  handleTryForFree: () => void;
+}
+
+const JumbotronV2: FC<Props> = ({ handleTryForFree }) => {
   return (
     <Container>
       <div className="flex flex-col items-center justify-center text-center py-[120px]">
@@ -25,11 +29,12 @@ const JumbotronV2: FC = () => {
         </p>
 
         <div className="inline-block mt-20 mb-40 rounded-[50px] bg-gradient-to-r from-[#9333EA] to-[#F89AEE] p-[4px]">
-          <Link href={"/auth/login"}>
-            <button className="py-5 px-12 text-sm bg-[#2F004F] text-white rounded-[50px]">
-              Try for free
-            </button>
-          </Link>
+          <button
+            className="py-5 px-12 text-sm bg-[#2F004F] text-white rounded-[50px]"
+            onClick={handleTryForFree}
+          >
+            Try for free
+          </button>
         </div>
       </div>
     </Container>

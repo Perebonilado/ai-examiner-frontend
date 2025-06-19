@@ -37,7 +37,10 @@ const SignUpForm: FC = () => {
 
   useEffect(() => {
     if (data) {
-      Cookies.set(accessToken, data.data.token);
+      Cookies.set(accessToken, data.data.token, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
 
       if (returnUrl) {
         router.push(decodeURIComponent(returnUrl as string));

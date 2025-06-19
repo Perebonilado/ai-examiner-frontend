@@ -11,6 +11,8 @@ import {
 import Cookies from "js-cookie";
 import { UserProfileModel } from "@/models/user.model";
 import { UserProfileDto } from "@/dto/user.dto";
+import { SignUpPayload } from "@/models/auth.model";
+import { SignUpDto } from "@/dto/auth.dto";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/user`,
@@ -49,10 +51,21 @@ export const UserService = createApi({
               res.lastName.toLowerCase()
             ),
             email: res.email,
+            role: res.role
           };
       },
+    }),
+    upgradeUserAccount: build.mutation<SignUpDto, SignUpPayload>({
+      query: (body) => ({
+        url: "upgrade-guest-account",
+        method: "POST",
+        body,
+      }),
+      extraOptions: {
+        triggerLoading: false
+     }
     }),
   }),
 });
 
-export const { useGetUserProfileQuery } = UserService;
+export const { useGetUserProfileQuery, useUpgradeUserAccountMutation } = UserService;

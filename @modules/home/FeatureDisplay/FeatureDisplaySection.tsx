@@ -5,7 +5,11 @@ import Link from "next/link";
 import Button from "@/@shared/ui/Button";
 import ArrowDiagonalRightIcon from "@/icons/ArrowDiagonalRightIcon";
 
-const FeatureDisplaySection: FC = () => {
+interface Props {
+  handleTryForFree: () => void;
+}
+
+const FeatureDisplaySection: FC<Props> = ({ handleTryForFree }) => {
   return (
     <section>
       <Container>
@@ -22,14 +26,13 @@ const FeatureDisplaySection: FC = () => {
       <FeatureSelectionItemContainer />
 
       <div className="py-24 flex justify-center">
-        <Link href={"/pricing"}>
-          <Button
-            title="View pricing"
-            size="large"
-            endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
-            className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
-          />
-        </Link>
+        <Button
+          title="Get started for free"
+          size="large"
+          onClick={handleTryForFree}
+          endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
+          className="!py-3 !px-8  !text-sm  !text-white !rounded-[50px] border border-[#2F004F] bg-[#2F004F] font-[600] "
+        />
       </div>
     </section>
   );

@@ -7,6 +7,7 @@ import UpgradeAccountForm from "@/@shared/components/UpgradeAccountForm";
 import Button from "@/@shared/ui/Button";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
 import { useModalContext } from "@/contexts/ModalContext";
+import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 import ChevronLeft from "@/icons/ChevronLeft";
 import React, { FC, PropsWithChildren, useState } from "react";
 
@@ -19,7 +20,8 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
   handleBack,
 }) => {
   const [isSideNav, setIsSideNav] = useState(false);
-  const { data } = useGetUserProfileQuery("");
+  const { isLoggedIn } = useIsLoggedIn();
+  const { data } = useGetUserProfileQuery("", { skip: !isLoggedIn });
   const { setModalContent } = useModalContext();
 
   return (

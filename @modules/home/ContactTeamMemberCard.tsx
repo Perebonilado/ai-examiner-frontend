@@ -43,7 +43,7 @@ const ContactTeamMemberCard: FC<Props> = ({
       >
         <div>
           <p className="font-medium">{name}</p>
-          <p className="text-xs text-gray-400">{title}</p>
+          {/* <p className="text-xs text-gray-400">{title}</p> */}
         </div>
         <p className="text-xs mb-3">{body}</p>
 

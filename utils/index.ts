@@ -1,4 +1,8 @@
-import { accessToken, GOOGLE_TRANSLATE_KEY, milliSecondToSecondConversionRate } from "@/constants";
+import {
+  accessToken,
+  GOOGLE_TRANSLATE_KEY,
+  milliSecondToSecondConversionRate,
+} from "@/constants";
 import { LookUpModel } from "@/models/look-up.model";
 import { PermissionModel } from "@/models/permission.model";
 import Cookie from "js-cookie";
@@ -41,7 +45,9 @@ export const baseQueryWithLogoutOnTokenExpiration = (
     if (result.error) {
       if (result.error.status === 401) {
         logout(() => {
-          window.location.pathname = "/auth/login";
+          if (!window.location.pathname.includes("/pricing")) {
+            window.location.pathname = "/auth/login";
+          }
         });
       } else if ("status" in result.error) {
         const { message } = result.error.data as { message: string };

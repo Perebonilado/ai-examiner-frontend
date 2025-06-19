@@ -2,7 +2,6 @@ import AppLogoAlt from "@/@shared/components/AppLogoAlt";
 import Hamburger from "@/@shared/components/Hamburger";
 import React, { FC } from "react";
 import UserManagementBox from "./UserManagementBox";
-import PreferredLanguageButton from "./PreferredLanguageButton";
 import GoogleTranslateLanguagePicker from "./GoogleTranslateLanguagePicker";
 
 interface Props {

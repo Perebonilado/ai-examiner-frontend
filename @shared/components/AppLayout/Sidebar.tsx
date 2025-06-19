@@ -1,19 +1,17 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import cn from "classnames";
-import DocumentIcon from "@/icons/DocumentIcon";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
-import { toggleNavigation } from "@/features/navigationSlice";
 import CollapsibleButton from "./CollapsibleButton";
 import NewDocumentIcon from "@/icons/NewDocumentIcon";
-import CourseIcon from "@/icons/CourseIcon";
 import { useActiveNavLink } from "@/hooks/useActiveNavLink";
 import AllDocumentsIcon from "@/icons/AllDocumentsIcon";
-import RecentDocumentItem from "./RecentDocumentItem";
 import RecentDocumentContainer from "./RecentDocumentContainer";
 import { useGetAllUserDocumentsQuery } from "@/api-services/document.service";
 import UserLogoutBox from "./UserLogoutBox";
-import ToolTip from "../ToolTip";
+import { accessToken, typeBasedRoutes } from "@/constants";
+import { useRouter } from "next/router";
+import Cookies from "js-cookie";
 
 const Sidebar: FC = () => {
   const { navOpen: isOpen } = useSelector(
@@ -28,13 +26,45 @@ const Sidebar: FC = () => {
     }
   );
 
-  const { data: recentDocuments } = useGetAllUserDocumentsQuery({
-    courseId: "",
-    page: 1,
-    pageSize: 5,
-    title: "",
-    id: "",
-  });
+  const [isWebRoute, setIsWebRoute] = useState(true);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    checkRouteType();
+  }, [router.pathname]);
+
+  const checkRouteType = () => {
+    const userIsLoggedIn = Cookies.get(accessToken);
+    const activeRoute = typeBasedRoutes.find(
+      (r) => r.route === router.pathname
+    );
+
+    if (activeRoute) {
+      if (activeRoute.type === "web") {
+        setIsWebRoute(true);
+      } else {
+        if (userIsLoggedIn) {
+          setIsWebRoute(false);
+        } else {
+          setIsWebRoute(true);
+        }
+      }
+    } else {
+      setIsWebRoute(false);
+    }
+  };
+
+  const { data: recentDocuments } = useGetAllUserDocumentsQuery(
+    {
+      courseId: "",
+      page: 1,
+      pageSize: 5,
+      title: "",
+      id: "",
+    },
+    { skip: isWebRoute }
+  );
 
   const [activeNavLink] = useActiveNavLink();
 

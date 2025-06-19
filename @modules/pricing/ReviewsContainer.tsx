@@ -1,13 +1,52 @@
 import Container from "@/@shared/ui/Container";
-import React, { FC } from "react";
-import StatisticItem from "./StatisticItem";
+import React, { FC, useEffect } from "react";
 import ReviewItem from "./ReviewItem";
-import Button from "@/@shared/ui/Button";
-import ArrowDiagonalRightIcon from "@/icons/ArrowDiagonalRightIcon";
-import Link from "next/link";
 import StatisticsContainer from "./StatisticsContainer";
+import Cookies from "js-cookie";
+import {
+  accessToken,
+  guestAccessToken,
+  hasUpgradedAccountInThePastToken,
+} from "@/constants";
+import { useCreateGuestAccountMutation } from "@/api-services/auth.service";
+import { useRouter } from "next/router";
 
 const ReviewsContainer: FC = () => {
+  const [createGuestAccount, { data }] = useCreateGuestAccountMutation();
+  const router = useRouter();
+  const handleTryForFree = () => {
+    const guestToken = Cookies.get(guestAccessToken);
+    const userHasUsedGuestAccountAndUpgradedBefore = Cookies.get(
+      hasUpgradedAccountInThePastToken
+    );
+    if (userHasUsedGuestAccountAndUpgradedBefore) {
+      router.push("/auth/login");
+      return;
+    }
+
+    if (guestToken) {
+      Cookies.set(accessToken, guestToken, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
+      router.push("/new-document");
+    } else {
+      createGuestAccount(undefined);
+    }
+  };
+  useEffect(() => {
+    if (data) {
+      Cookies.set(guestAccessToken, data.data.token, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
+      Cookies.set(accessToken, data.data.token, {
+        expires: 365,
+        secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
+      });
+      router.push("/new-document");
+    }
+  }, [data]);
   return (
     <div className="bg-[#FAFAFA]">
       <Container>
@@ -45,13 +84,22 @@ const ReviewsContainer: FC = () => {
               Start free, upgrade anytime
             </h3>
 
-            <Link href={"/new-document"}>
+            <div className="inline-block mt-20 mb-40 rounded-[50px] bg-gradient-to-r from-[#9333EA] to-[#F89AEE] p-[4px]">
+              <button
+                className="py-5 px-12 text-sm bg-[#2F004F] text-white rounded-[50px]"
+                onClick={handleTryForFree}
+              >
+                Get started
+              </button>
+            </div>
+
+            {/* <Link href={"/new-document"}>
               <Button
                 title="Get started"
                 size="large"
                 endicon={<ArrowDiagonalRightIcon fill="#FFFFFF" />}
               />
-            </Link>
+            </Link> */}
           </div>
         </section>
       </Container>

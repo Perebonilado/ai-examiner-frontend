@@ -73,16 +73,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           `
         }
       </script>
-      <script>
-        {`
-         gtag('event', 'conversion', {
-      'send_to': 'AW-17184244899/C5BYCL7WqtgaEKOJi4JA',
-      'value': 5.0,
-      'currency': 'USD',
-      'transaction_id': ''
-  });
-        `}
-      </script>
+    
       {children}
     </Head>
   );

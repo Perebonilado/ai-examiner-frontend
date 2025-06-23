@@ -11,12 +11,13 @@ const PaymentConfirmation: NextPage = () => {
       <AppHead title="Payment Confirmation">
         <script type="text/javascript">
           {`
-           // Insert Twitter Event ID
-  twq('event', 'tw-q01qs-q02ab', {
-    conversion_id: null // use this to pass a unique ID for the conversion event for deduplication (e.g. order id '1a2b3c')
-  });
-</script>
-          `}
+         gtag('event', 'conversion', {
+      'send_to': 'AW-17184244899/C5BYCL7WqtgaEKOJi4JA',
+      'value': 5.0,
+      'currency': 'USD',
+      'transaction_id': ''
+        });
+      `}
         </script>
       </AppHead>
       <Navbar />

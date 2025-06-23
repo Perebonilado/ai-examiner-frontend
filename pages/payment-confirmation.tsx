@@ -11,13 +11,8 @@ const PaymentConfirmation: NextPage = () => {
       <AppHead title="Payment Confirmation">
         <script type="text/javascript">
           {`
-         gtag('event', 'conversion', {
-      'send_to': 'AW-17184244899/C5BYCL7WqtgaEKOJi4JA',
-      'value': 5.0,
-      'currency': 'USD',
-      'transaction_id': ''
-        });
-      `}
+          gtag('event', 'conversion', {'send_to': 'AW-17184244899/SIj6CI3i8OAaEKOJi4JA'});
+          `}
         </script>
       </AppHead>
       <Navbar />

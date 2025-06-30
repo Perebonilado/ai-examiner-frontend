@@ -15,18 +15,13 @@ import type { PDFDocumentProxy } from "pdfjs-dist";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import CloseIcon from "@/icons/CloseIcon";
-import ChevronLeft from "@/icons/ChevronLeft";
-import ZoomOutIcon from "@/icons/ZoomOutIcon";
-import ZoomInIcon from "@/icons/ZoomInIcon";
-import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
 import { HighlightableTextArea } from "react-highlight-popover";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 import { DocumentContentModel } from "@/models/document.model";
 import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
-import { pages } from "next/dist/build/templates/app-page";
 import PageControls from "./PageControls";
+import cn from "classnames";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -156,7 +151,12 @@ const PDFReader: FC<Props> = ({
           {new Array(totalPages).fill("").map((arr, idx) => {
             return (
               <div
-                className="mb-4 relative rounded-lg overflow-hidden shadow-md"
+                className={cn(
+                  "mb-4 relative rounded-lg overflow-hidden flex items-center justify-center",
+                  {
+                    ["shadow-md"]: activeTab === "Simplified",
+                  }
+                )}
                 key={`page-${idx + 1}`}
                 data-page-number={idx + 1}
                 ref={(el) => {

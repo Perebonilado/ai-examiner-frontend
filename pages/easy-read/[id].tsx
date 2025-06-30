@@ -62,7 +62,11 @@ const EasyRead: NextPage = () => {
               />
             )}
 
-          {urlFetching || modifiedContentFetching ? <LoadingReader /> : null}
+          {urlFetching || modifiedContentFetching ? (
+            <div className="flex items-center justify-center py-20">
+              <LoadingReader />
+            </div>
+          ) : null}
 
           {!urlFetching &&
           !modifiedContentFetching &&

@@ -238,15 +238,11 @@ const GenerateQuestionsForm: FC = () => {
   }, [JSON.stringify(tabs)]);
 
   const handleStartStudying = () => {
-    const [summary, easyRead] = studyModeFormats.map(
-      (f) => f.value
-    );
+    const [summary, easyRead] = studyModeFormats.map((f) => f.value);
     if (selectedStudyTool === summary) {
       router.push(`/questions/view-questions/${documentId}?tab=Summary`);
     } else if (selectedStudyTool === easyRead) {
-      router.push(
-        `/questions/easy-read/${documentId}`
-      );
+      router.push(`/easy-read/${documentId}`);
     } else {
       router.push(
         `/questions/view-questions/${documentId}?tab=${encodeURIComponent(

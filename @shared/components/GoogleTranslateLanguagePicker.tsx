@@ -21,7 +21,7 @@ const GoogleTranslateLanguagePicker: FC<Props> = ({ showLabel = false }) => {
         setModalContent(<GoogleTranslateLanguagePickerModal />);
       }}
     >
-      {showLabel && <p className="font-medium text-xs">Choose Language</p>}
+      {showLabel && <p className="font-medium text-xs mb-0">Choose Language</p>}
       <div className="flex items-center gap-1">
         <div className="w-[30px] h-[30px] relative">
           <Image

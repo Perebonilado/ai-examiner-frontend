@@ -10,14 +10,17 @@ import { useModalContext } from "@/contexts/ModalContext";
 import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 import ChevronLeft from "@/icons/ChevronLeft";
 import React, { FC, PropsWithChildren, useState } from "react";
+import cn from "classnames";
 
 interface Props {
   handleBack?: () => void;
+  noPadding?: boolean;
 }
 
 const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
   children,
   handleBack,
+  noPadding = false,
 }) => {
   const [isSideNav, setIsSideNav] = useState(false);
   const { isLoggedIn } = useIsLoggedIn();
@@ -75,7 +78,13 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
               <LanguageChangeBar />
             </div>
           </div>
-          <div className="p-4 max-md:pt-[110px]">{children}</div>
+          <div
+            className={cn(`max-md:pt-[115px]`, {
+              ["p-4"]: !noPadding,
+            })}
+          >
+            {children}
+          </div>
         </main>
       </section>
     </div>

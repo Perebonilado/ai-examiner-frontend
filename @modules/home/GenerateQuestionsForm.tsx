@@ -245,7 +245,7 @@ const GenerateQuestionsForm: FC = () => {
       router.push(`/questions/view-questions/${documentId}?tab=Summary`);
     } else if (selectedStudyTool === easyRead) {
       router.push(
-        `/questions/view-questions/${documentId}?tab=Summary&tool=easyRead`
+        `/questions/easy-read/${documentId}`
       );
     } else {
       router.push(

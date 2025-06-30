@@ -130,41 +130,6 @@ const ViewQuestions: NextPage = () => {
     }
   }, [router.query]);
 
-  useEffect(() => {
-    const openEasyReader = async () => {
-      const urls = await getFileUrls(documentId);
-
-      if (urls) {
-        setModalContent(
-          <PDFReader
-            originalFileUrl={urls.original}
-            modifiedContent={urls.content}
-          />
-        );
-      }
-    };
-    if (documentId && router.query?.tool === "easyRead") {
-      openEasyReader();
-      removeQueryParam("tool");
-    }
-  }, [documentId, router.query]);
-
-  const removeQueryParam = (paramToRemove: string) => {
-    const { pathname, query } = router;
-    const newQuery = { ...query };
-
-    delete newQuery[paramToRemove]; // remove the param
-
-    router.replace(
-      {
-        pathname,
-        query: newQuery,
-      },
-      undefined,
-      { shallow: true } // no page reload
-    );
-  };
-
   const { data: summaryData } = useGetDocumentSummaryQuery(
     { documentId },
     { skip: !documentId }
@@ -191,33 +156,6 @@ const ViewQuestions: NextPage = () => {
     { skip: !documentId }
   );
 
-  const [isFetchingFile, setIsFetchingFile] = useState(false);
-
-  const getFileUrls = async (documentId: string) => {
-    setIsFetchingFile(true);
-    try {
-      const { getOriginalDocumentFile, getModifiedContent } =
-        DocumentService.endpoints;
-      const [originalFileUrl, documentContent] = await Promise.all([
-        reduxStore.dispatch(getOriginalDocumentFile.initiate({ documentId })),
-        reduxStore.dispatch(getModifiedContent.initiate({ documentId })),
-      ]);
-      setIsFetchingFile(false);
-      if (originalFileUrl.data && documentContent.data) {
-        return {
-          original: originalFileUrl.data?.modifiedFile as string,
-          content: documentContent.data,
-        };
-      }
-
-      return null;
-    } catch (error) {
-      setIsFetchingFile(false);
-      toast.error("Failed to load file");
-    }
-    setIsFetchingFile(false);
-  };
-
   return (
     <>
       {currentRelatedVideoId && (
@@ -230,7 +168,6 @@ const ViewQuestions: NextPage = () => {
           />
         </Modal>
       )}
-      {isFetchingFile && <LoadingReader />}
       <AppHead title="View Questions" />
       <AppLayout
         handleBack={() => {
@@ -264,23 +201,14 @@ const ViewQuestions: NextPage = () => {
                 title="Easy Read"
                 starticon={
                   <span className="-translate-y-[2px] translate-x-[5px]">
-                    <EasyReadIcon />
+                    <EasyReadIcon width={20} height={20} />
                   </span>
                 }
-                variant="text"
-                size="large"
-                className="!text-[#9333EA]"
+                variant="outlined"
+                size="medium"
+                className="!text-[#9333EA] !border-[#9333EA]"
                 onClick={async () => {
-                  const urls = await getFileUrls(documentId);
-
-                  if (urls) {
-                    setModalContent(
-                      <PDFReader
-                        originalFileUrl={urls.original}
-                        modifiedContent={urls.content}
-                      />
-                    );
-                  }
+                  router.push(`/easy-read/${documentId}`);
                 }}
               />
             )}
@@ -288,7 +216,7 @@ const ViewQuestions: NextPage = () => {
               <Button
                 title="New Test"
                 onClick={handleGenerateQuestions}
-                size="large"
+                size="medium"
               />
             )}
           </div>

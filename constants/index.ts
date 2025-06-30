@@ -9,6 +9,7 @@ export const milliSecondToSecondConversionRate = 1000;
 export const routesWithDocumentChat = [
   "questions/view-questions",
   "questions/practise-questions",
+  "easy-read"
 ];
 
 export const alphabets = ["a", "b"];

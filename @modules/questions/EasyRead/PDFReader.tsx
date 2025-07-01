@@ -160,7 +160,7 @@ const PDFReader: FC<Props> = ({
                   pageRefs.current[idx] = el;
                 }}
               >
-                {activeTab === "Simplified" && renderModifiedContent(idx)}
+                {renderModifiedContent(idx)}
                 <Page
                   pageNumber={idx + 1}
                   width={

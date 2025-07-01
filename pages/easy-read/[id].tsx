@@ -51,7 +51,7 @@ const EasyRead: NextPage = () => {
         }}
         noPadding={true}
       >
-        <div className="h-[calc(100vh-50px)] bg-gray-200 p-2 overflow-y-auto">
+        
           {!urlFetching &&
             !modifiedContentFetching &&
             originalFileUrl?.modifiedFile &&
@@ -87,7 +87,6 @@ const EasyRead: NextPage = () => {
               />
             </div>
           ) : null}
-        </div>
       </AppLayout>
     </>
   );

@@ -79,8 +79,8 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
             </div>
           </div>
           <div
-            className={cn(`max-md:pt-[115px]`, {
-              ["p-4"]: !noPadding,
+            className={cn(``, {
+              ["p-4 max-md:pt-[115px]"]: !noPadding,
             })}
           >
             {children}

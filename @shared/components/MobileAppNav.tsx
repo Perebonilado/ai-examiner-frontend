@@ -16,7 +16,7 @@ const MobileAppNav: FC<Props> = ({
   isLoggedIn = true,
 }) => {
   return (
-    <nav className="bg-[#2F004F] px-4 h-[60px] w-full fixed z-50 flex items-center md:hidden">
+    <nav className="bg-[#2F004F] px-4 h-[50px] w-full fixed z-50 flex items-center md:hidden">
       <div className="px-0 flex justify-between items-center w-full">
         <div className="flex items-center gap-5">
           <Hamburger isSideNavOpen={isSideNav} onClick={handleClick} />

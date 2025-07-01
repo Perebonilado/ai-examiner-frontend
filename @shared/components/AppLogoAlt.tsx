@@ -11,7 +11,7 @@ interface Props {
 const AppLogoAlt: FC<Props> = ({ size = "md" }) => {
   const rootClassName = cn(`relative`, {
     "h-16 w-48": size === "md",
-    "h-11 w-48": size === "sm",
+    "h-9 w-44": size === "sm",
     "h-8 w-42": size === "xs",
   });
   const { isLoggedIn } = useIsLoggedIn();

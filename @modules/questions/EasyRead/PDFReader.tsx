@@ -122,10 +122,7 @@ const PDFReader: FC<Props> = ({
   };
 
   const renderPDF = (fileUrl: string) => (
-    <div
-      ref={containerRef}
-      className="no-scrollbar overflow-y-auto h-full py-4 overflow-x-hidden"
-    >
+    <div className="no-scrollbar overflow-y-auto h-full py-4 overflow-x-hidden px-2 ">
       <HighlightableTextArea
         popoverItem={(HighlightedText, setPopoverState) => {
           return (
@@ -148,7 +145,7 @@ const PDFReader: FC<Props> = ({
           options={options}
           onItemClick={(e) => goToPage(e.pageNumber)}
         >
-          {new Array(totalPages).fill("").map((arr, idx) => {
+          {new Array(totalPages).fill("").map((_, idx) => {
             return (
               <div
                 className={cn(
@@ -218,50 +215,42 @@ const PDFReader: FC<Props> = ({
   }, [totalPages, containerWidth]);
 
   return (
-    <motion.div
-      key="modal"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.3 }}
-      className=" w-full max-w-[800px] h-full mx-auto"
-    >
-      <div className="w-fit mx-auto flex items-center gap-4 absolute z-[1] top-1 left-1/2  -translate-x-1/2 rounded-md bg-white max-md:top-[67px]">
-        <div>
-          <AltTabContainer
-            data={tabs.map((t) => {
-              return { isActive: activeTab === t, title: t };
-            })}
-            handleClick={(tab) => {
-              setActiveTab(tab);
-            }}
+    <div className="h-[calc(100vh-52px)] bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar" ref={containerRef}>
+      <motion.div
+        key="modal"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className=" w-full max-w-[800px] h-full mx-auto"
+      >
+        <div className="z-10 max-md:shadow-lg max-md:w-full max-md:fixed w-fit mx-auto flex items-center max-md:justify-center max-md:py-1 gap-4 md:absolute md:top-1 left-1/2  -translate-x-1/2 md:rounded-md bg-white">
+          <div>
+            <AltTabContainer
+              data={tabs.map((t) => {
+                return { isActive: activeTab === t, title: t };
+              })}
+              handleClick={(tab) => {
+                setActiveTab(tab);
+              }}
+            />
+          </div>
+
+          <PageControls
+            handlePageInputVal={setPageInputVal}
+            goToPage={goToPage}
+            pageInputVal={pageInputVal}
+            pageNumber={pageNumber}
+            totalPages={totalPages}
           />
         </div>
 
-        <PageControls
-          handlePageInputVal={setPageInputVal}
-          goToPage={goToPage}
-          pageInputVal={pageInputVal}
-          pageNumber={pageNumber}
-          totalPages={totalPages}
-        />
-      </div>
-
-      {/* PDF Content */}
-      <div className="relative w-full h-full">
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-          }}
-        >
-          {renderPDF(originalFileUrl)}
+        {/* PDF Content */}
+        <div className="relative w-full h-full max-md:pt-[74px]">
+          <div>{renderPDF(originalFileUrl)}</div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 };
 

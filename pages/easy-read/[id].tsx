@@ -12,6 +12,8 @@ import dynamic from "next/dynamic";
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import Button from "@/@shared/ui/Button";
+import { useDispatch } from "react-redux";
+import { setDocumentIdInView } from "@/features/documentChatSlice";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -41,6 +43,14 @@ const EasyRead: NextPage = () => {
     isError: modifiedContentError,
     refetch: refetchModifiedContent,
   } = useGetModifiedContentQuery({ documentId }, { skip: !documentId });
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (documentId) {
+      dispatch(setDocumentIdInView(documentId));
+    }
+  }, [documentId]);
 
   return (
     <>

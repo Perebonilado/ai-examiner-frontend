@@ -109,8 +109,7 @@ const PDFReader: FC<Props> = ({
             display: activeTab === "Simplified" ? "flex" : "none",
           }}
           className={cn(
-            `overflow-y-auto no-scrollbar px-6 bg-white max-w-[800px] mx-auto rounded-lg`,
-
+            `overflow-y-auto no-scrollbar md:px-6 bg-white max-w-[800px] mx-auto rounded-lg`,
             {
               ["shadow-md"]: activeTab === "Simplified",
             }
@@ -130,7 +129,7 @@ const PDFReader: FC<Props> = ({
   };
 
   const renderPDF = (fileUrl: string) => (
-    <div className="no-scrollbar overflow-y-auto h-full py-4 px-2">
+    <div className="no-scrollbar overflow-y-auto h-full py-4">
       <Document
         file={fileUrl}
         renderMode="canvas"
@@ -152,29 +151,33 @@ const PDFReader: FC<Props> = ({
               }}
             >
               {renderModifiedContent(idx)}
-              <HighlightableTextArea
-                popoverItem={(HighlightedText, setPopoverState) => {
-                  return (
-                    <TextSelectionPopup
-                      selectedText={HighlightedText}
-                      clearSelection={() => {
-                        setPopoverState(false);
-                      }}
-                    />
-                  );
-                }}
-              >
-                <Page
-                  pageNumber={idx + 1}
-                  width={
-                    containerWidth
-                      ? Math.min(containerWidth, maxWidth)
-                      : maxWidth
-                  }
-                  className={"relative"}
-                  scale={zoom}
-                ></Page>
-              </HighlightableTextArea>
+              <div className={cn(``, {
+                ['opacity-0']: activeTab == "Simplified"
+              })}>
+                <HighlightableTextArea
+                  popoverItem={(HighlightedText, setPopoverState) => {
+                    return (
+                      <TextSelectionPopup
+                        selectedText={HighlightedText}
+                        clearSelection={() => {
+                          setPopoverState(false);
+                        }}
+                      />
+                    );
+                  }}
+                >
+                  <Page
+                    pageNumber={idx + 1}
+                    width={
+                      containerWidth
+                        ? Math.min(containerWidth, maxWidth)
+                        : maxWidth
+                    }
+                    className={"relative"}
+                    scale={zoom}
+                  ></Page>
+                </HighlightableTextArea>
+              </div>
             </div>
           );
         })}
@@ -219,7 +222,7 @@ const PDFReader: FC<Props> = ({
 
   return (
     <div
-      className="h-[calc(100vh-52px)] bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar"
+      className="h-[calc(100vh-52px)] bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar px-2"
       ref={containerRef}
     >
       <motion.div

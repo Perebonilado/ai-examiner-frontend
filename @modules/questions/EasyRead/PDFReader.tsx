@@ -86,43 +86,6 @@ const PDFReader: FC<Props> = ({
 
   const renderModifiedContent = (idx: number) => {
     return (
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 5,
-          display: activeTab === "Simplified" ? "flex" : "none",
-        }}
-        className="overflow-y-auto no-scrollbar px-6 min-w-full bg-white"
-      >
-        <HighlightableTextArea
-          popoverItem={(HighlightedText, setPopoverState) => {
-            return (
-              <TextSelectionPopup
-                selectedText={HighlightedText}
-                clearSelection={() => {
-                  setPopoverState(false);
-                }}
-              />
-            );
-          }}
-        >
-          <div
-            className="w-full max-w-[800px] mb-4 mx-auto bg-white p-6 no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
-            dangerouslySetInnerHTML={{
-              __html: modifiedContent.content[idx],
-            }}
-          ></div>
-        </HighlightableTextArea>
-      </div>
-    );
-  };
-
-  const renderPDF = (fileUrl: string) => (
-    <div className="no-scrollbar overflow-y-auto h-full py-4 overflow-x-hidden px-2 ">
       <HighlightableTextArea
         popoverItem={(HighlightedText, setPopoverState) => {
           return (
@@ -135,47 +98,90 @@ const PDFReader: FC<Props> = ({
           );
         }}
       >
-        <Document
-          file={fileUrl}
-          renderMode="canvas"
-          onLoadSuccess={onDocumentLoadSuccess as any}
-          onLoadError={(error) => {
-            console.log("error", error);
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 5,
+            display: activeTab === "Simplified" ? "flex" : "none",
           }}
-          options={options}
-          onItemClick={(e) => goToPage(e.pageNumber)}
+          className={cn(
+            `overflow-y-auto no-scrollbar md:px-6 bg-white max-w-[800px] mx-auto rounded-lg`,
+            {
+              ["shadow-md"]: activeTab === "Simplified",
+            }
+          )}
         >
-          {new Array(totalPages).fill("").map((_, idx) => {
-            return (
-              <div
-                className={cn(
-                  "mb-4 relative rounded-lg overflow-hidden flex items-center justify-center",
-                  {
-                    ["shadow-md"]: activeTab === "Simplified",
-                  }
-                )}
-                key={`page-${idx + 1}`}
-                data-page-number={idx + 1}
-                ref={(el) => {
-                  pageRefs.current[idx] = el;
-                }}
-              >
-                {renderModifiedContent(idx)}
-                <Page
-                  pageNumber={idx + 1}
-                  width={
-                    containerWidth
-                      ? Math.min(containerWidth, maxWidth)
-                      : maxWidth
-                  }
-                  className={"relative"}
-                  scale={zoom}
-                ></Page>
-              </div>
-            );
-          })}
-        </Document>
+          <div className="mx-auto">
+            <div
+              className="w-full mb-4 mx-auto bg-white p-6 no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
+              dangerouslySetInnerHTML={{
+                __html: modifiedContent.content[idx],
+              }}
+            ></div>
+          </div>
+        </div>
       </HighlightableTextArea>
+    );
+  };
+
+  const renderPDF = (fileUrl: string) => (
+    <div className="no-scrollbar overflow-y-auto h-full py-4">
+      <Document
+        file={fileUrl}
+        renderMode="canvas"
+        onLoadSuccess={onDocumentLoadSuccess as any}
+        onLoadError={(error) => {
+          console.log("error", error);
+        }}
+        options={options}
+        onItemClick={(e) => goToPage(e.pageNumber)}
+      >
+        {new Array(totalPages).fill("").map((_, idx) => {
+          return (
+            <div
+              className={cn("mb-4 relative  flex items-center justify-center")}
+              key={`page-${idx + 1}`}
+              data-page-number={idx + 1}
+              ref={(el) => {
+                pageRefs.current[idx] = el;
+              }}
+            >
+              {renderModifiedContent(idx)}
+              <div className={cn(``, {
+                ['opacity-0']: activeTab == "Simplified"
+              })}>
+                <HighlightableTextArea
+                  popoverItem={(HighlightedText, setPopoverState) => {
+                    return (
+                      <TextSelectionPopup
+                        selectedText={HighlightedText}
+                        clearSelection={() => {
+                          setPopoverState(false);
+                        }}
+                      />
+                    );
+                  }}
+                >
+                  <Page
+                    pageNumber={idx + 1}
+                    width={
+                      containerWidth
+                        ? Math.min(containerWidth, maxWidth)
+                        : maxWidth
+                    }
+                    className={"relative"}
+                    scale={zoom}
+                  ></Page>
+                </HighlightableTextArea>
+              </div>
+            </div>
+          );
+        })}
+      </Document>
     </div>
   );
 
@@ -215,14 +221,17 @@ const PDFReader: FC<Props> = ({
   }, [totalPages, containerWidth]);
 
   return (
-    <div className="h-[calc(100vh-52px)] bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar" ref={containerRef}>
+    <div
+      className="h-[calc(100vh-52px)] bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar px-2"
+      ref={containerRef}
+    >
       <motion.div
         key="modal"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
         transition={{ duration: 0.3 }}
-        className=" w-full max-w-[800px] h-full mx-auto"
+        className=" w-full h-full mx-auto "
       >
         <div className="z-10 max-md:shadow-lg max-md:w-full max-md:fixed w-fit mx-auto flex items-center max-md:justify-center max-md:py-1 gap-4 md:absolute md:top-1 left-1/2  -translate-x-1/2 md:rounded-md bg-white">
           <div>

@@ -13,7 +13,7 @@ const MoreActionsDefaultView: FC<Props> = ({
   handleViewPerformanceReport,
 }) => {
   return (
-    <div className="absolute top-6 right-1 overflow-hidden w-[250px] rounded-xl shadow-lg flex flex-col justify-center bg-white">
+    <div className="absolute top-1/2 -translate-y-1/2 right-1 overflow-hidden w-[250px] rounded-xl shadow-lg flex flex-col justify-center bg-white">
       <div className="my-3">
         <button
           className="flex items-center gap-5 p-4 w-full"

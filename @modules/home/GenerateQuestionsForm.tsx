@@ -5,7 +5,11 @@ import React, { FC, useState } from "react";
 import { Form, useFormik, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
 import Button from "@/@shared/ui/Button";
-import { useAddDocumentMutation } from "@/api-services/document.service";
+import {
+  DocumentService,
+  useAddDocumentMutation,
+  useUpdateDocumentMutation,
+} from "@/api-services/document.service";
 import { toast } from "react-toastify";
 import DropDown from "@/@shared/ui/Input/DropDown";
 import { useEffect } from "react";
@@ -31,7 +35,7 @@ import {
 } from "@/utils";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../config/redux-config";
+import { reduxStore, RootState } from "../../config/redux-config";
 import { difficultyOptions } from "@/constants";
 import { DifficultyType } from "@/models/questions.model";
 import { useGenerateQuestionsV2Mutation } from "@/api-services/questions.service";
@@ -237,7 +241,31 @@ const GenerateQuestionsForm: FC = () => {
     setActiveTab(tabs.filter((t) => t.isActive)[0].title);
   }, [JSON.stringify(tabs)]);
 
-  const handleStartStudying = () => {
+  const [
+    updateDocument,
+    {
+      isLoading: docUpdateLoading,
+      isSuccess: docUpdateSuccess,
+      error: docUpdateError,
+    },
+  ] = useUpdateDocumentMutation();
+
+  const handleStartStudying = async () => {
+    if (formik.values.title.trim().length) {
+      setModalContent(<AppLoader loaderMessage="Loading..."/>)
+      const data = await reduxStore.dispatch(
+        DocumentService.endpoints.updateDocument.initiate({
+          id: documentId as string,
+          title: formik.values.title.trim(),
+        })
+      );
+      setModalContent(null)
+
+      if (data.error) {
+        toast.error("Oops! An error occurred updating document title");
+      }
+    }
+
     const [summary, easyRead] = studyModeFormats.map((f) => f.value);
     if (selectedStudyTool === summary) {
       router.push(`/questions/view-questions/${documentId}?tab=Summary`);
@@ -370,6 +398,13 @@ const GenerateQuestionsForm: FC = () => {
             {activeTab === "Study Mode" && (
               <div className="w-full flex flex-col gap-6">
                 <TextField
+                  label="Document Title"
+                  placeholder="Enter a title for your document"
+                  {...formik.getFieldProps("title")}
+                  error={formik.touched.title ? formik.errors.title : undefined}
+                />
+
+                <TextField
                   label="Study Tool"
                   cursorPointer={true}
                   readOnly={true}
@@ -395,7 +430,9 @@ const GenerateQuestionsForm: FC = () => {
                     !documentId ||
                     !selectedStudyTool
                   }
-                  onClick={handleStartStudying}
+                  onClick={async () => {
+                    await handleStartStudying();
+                  }}
                 />
               </div>
             )}

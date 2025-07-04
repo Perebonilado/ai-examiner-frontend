@@ -263,7 +263,6 @@ const GenerateQuestionsForm: FC = () => {
 
       if (data.error) {
         toast.error("Oops! An error occurred updating document title");
-        return;
       }
     }
 

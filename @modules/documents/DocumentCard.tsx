@@ -37,14 +37,27 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
       onClick={() => {
         router.push(`/questions/view-questions/${id}`);
       }}
-      className="w-full cursor-pointer p-4 py-5 max-w-[350px] h-[180px] rounded-xl bg-white drop-shadow-sm border border-gray-200"
+      className="w-full cursor-pointer p-4 py-4 max-w-[350px] rounded-xl bg-white drop-shadow-sm border border-gray-200"
     >
-      <div className="h-[60%] flex items-start justify-between gap-2">
-        <FileIcon />
+      <div className="flex items-start justify-between gap-2">
+        <div className="flex items-center gap-2 overflow-hidden flex-1">
+          <FileIcon />
+          <div className="flex flex-col justify-end gap-1 overflow-hidden pr-2">
+            <p className="text-sm truncate text-[#1E1E1E] font-semibold">
+              {capitalizeFirstLetterOfEachWord(title)}
+            </p>
+            <div className="flex items-center gap-2 justify-between">
+              <p className="text-xs text-[#8E8E8E]">
+                Created{" "}
+                {moment.utc(createdAt).local().format("ddd, MMM D, h:mma")}
+              </p>
+            </div>
+          </div>
+        </div>
 
         <button
           ref={ref}
-          className="w-[45px] h-[45px] relative flex items-center justify-center"
+          className="w-[45px] h-[45px] relative flex items-center justify-center flex-shrink-0"
           onClick={(e) => {
             e.stopPropagation();
             setIsMoreActions(!isMoreActions);
@@ -86,19 +99,10 @@ const DocumentCard: FC<Props> = ({ createdAt, id, title }) => {
               }}
             />
           )}
-          <DotsIcon fill="#939393" width={20} height={20} />
+          <span className="rotate-90">
+            <DotsIcon fill="#939393" width={20} height={20} />
+          </span>
         </button>
-      </div>
-      <div className="h-[40%] flex flex-col justify-end gap-1 overflow-hidden px-2">
-        <p className="text-sm truncate text-[#1E1E1E] font-semibold">
-          {capitalizeFirstLetterOfEachWord(title)}
-        </p>
-        <div className="flex items-center gap-2 justify-between">
-          <p className="text-xs text-[#8E8E8E]">
-            Created{" "}
-            {moment.utc(createdAt).local().format("ddd, MMM D YYYY h:mma")}
-          </p>
-        </div>
       </div>
     </div>
   );

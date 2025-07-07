@@ -26,7 +26,10 @@ const UserLogoutBox: FC = () => {
         ["flex-col gap-4"]: !isOpen,
       })}
     >
-      <div className="relative" ref={popUpContainer}>
+      <div
+        className="relative"
+        ref={popUpContainer}
+      >
         <Avatar
           fallBack="U"
           imageUrl="https://avatar.iran.liara.run/public/49"
@@ -36,6 +39,8 @@ const UserLogoutBox: FC = () => {
           onClick={() => {
             setIsPopUp(!isPopUp);
           }}
+          username={data.firstName}
+          showUsername={isOpen}
         />
         <UserManagementPopUp
           {...data}
@@ -44,13 +49,6 @@ const UserLogoutBox: FC = () => {
           showSignOut={false}
         />
       </div>
-      {isOpen && (
-        <div className="text-white">
-          <p className="max-w-[100px] truncate text-ellipsis font-semibold text-sm">
-            {data.firstName}
-          </p>
-        </div>
-      )}
 
       <button
         className="ml-auto"

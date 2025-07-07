@@ -6,7 +6,7 @@ interface Props {
   fill?: string;
 }
 
-const CloseIcon: FC<Props> = ({ width = 13, height = 13, fill = "#CECECE" }) => {
+const CloseIcon: FC<Props> = ({ width = 13, height = 13, fill = "#000000" }) => {
   return (
     <svg
       width={width}

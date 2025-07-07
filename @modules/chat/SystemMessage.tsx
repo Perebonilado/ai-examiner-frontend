@@ -1,9 +1,6 @@
 import React, { FC, useEffect, useState, useRef } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import { useTextSelectionPopUp } from "@/hooks/useTextSelectionPopUp";
-import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
-import { HighlightableTextArea } from "react-highlight-popover";
 
 interface Props {
   message: string;
@@ -37,9 +34,6 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
     setHtmlMessage(parsed);
   };
 
-  // const { popupPosition, selectedText, clearSelection,} =
-  //   useTextSelectionPopUp();
-
   return (
     <>
       <div className="relative w-full max-w-[93%] bg-white p-3 rounded-xl">
@@ -47,31 +41,11 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
           className="transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden"
           style={{ maxHeight: contentHeight ?? 200 }}
         >
-          {/* <HighlightableTextArea
-            zIndex={9999}
-            yOffset={0}
-            popoverItem={(HighlightedText, setPopoverState) => {
-              return (
-                <TextSelectionPopup
-                  selectedText={HighlightedText}
-                  clearSelection={() => {
-                    setPopoverState(false);
-                  }}
-                  callBackOnAction={() => {
-                    setTimeout(() => {
-                      scrollToBottom && scrollToBottom();
-                    }, 600);
-                  }}
-                />
-              );
-            }}
-          > */}
-            <div
-              ref={innerRef}
-              className="prose prose-sm max-w-none break-words overflow-x-hidden"
-              dangerouslySetInnerHTML={{ __html: htmlMessage }}
-            />
-          {/* </HighlightableTextArea> */}
+          <div
+            ref={innerRef}
+            className="prose prose-sm max-w-none break-words overflow-x-hidden"
+            dangerouslySetInnerHTML={{ __html: htmlMessage }}
+          />
         </div>
 
         {!isExpanded && shouldShowToggle && (
@@ -87,18 +61,6 @@ const SystemMessage: FC<Props> = ({ message, scrollToBottom }) => {
           </button>
         )}
       </div>
-      {/* <TextSelectionPopup
-        visible={!!popupPosition}
-        top={popupPosition?.top || 0}
-        left={popupPosition?.left || 0}
-        selectedText={selectedText}
-        clearSelection={clearSelection}
-        callBackOnAction={() => {
-          setTimeout(() => {
-            scrollToBottom && scrollToBottom();
-          }, 600);
-        }}
-      /> */}
     </>
   );
 };

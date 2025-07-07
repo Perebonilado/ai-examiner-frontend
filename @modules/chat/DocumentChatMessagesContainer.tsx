@@ -14,8 +14,7 @@ import RetrySendingMessageButton from "./RetrySendingMessageButton";
 import CollapseIcon from "@/icons/CollapseIcon";
 import ExpandIcon from "@/icons/ExpandIcon";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
-import { HighlightableTextArea } from "react-highlight-popover";
-import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
+import { HighlightableText } from "@/@shared/components/HighlightableText";
 
 interface Props {
   handleFetchOlderMessages: () => void;
@@ -175,27 +174,17 @@ const DocumentChatMessagesContainer: FC<Props> = ({
           className="flex-1 flex-col overflow-y-auto py-8 space-y-2 no-scrollbar"
           ref={messagesContainerRef}
         >
-          <HighlightableTextArea
-            popoverItem={(HighlightedText, setPopoverState) => {
-              return (
-                <TextSelectionPopup
-                  selectedText={HighlightedText}
-                  clearSelection={() => {
-                    setPopoverState(false);
-                  }}
-                  callBackOnAction={() => {
-                    setTimeout(() => {
-                      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-                    }, 600);
-                  }}
-                />
-              );
-            }}
-          >
+          <HighlightableText>
             <div>
               {[...messages].map((message, idx) => {
                 if (message.sender === "user") {
-                  return <UserMessage message={message.message} image={message.image} key={idx} />;
+                  return (
+                    <UserMessage
+                      message={message.message}
+                      image={message.image}
+                      key={idx}
+                    />
+                  );
                 }
                 return (
                   <SystemMessage
@@ -211,7 +200,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
               })}
               {getFooterElement()}
             </div>
-          </HighlightableTextArea>
+          </HighlightableText>
           <div ref={messagesEndRef} />
         </div>
 

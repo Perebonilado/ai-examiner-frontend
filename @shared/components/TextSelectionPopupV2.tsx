@@ -90,11 +90,11 @@ const TextSelectionPopupV2 = forwardRef<
                 onClick={(e) => {
                   const selection = window.getSelection();
                   const selectedText = selection ? selection.toString() : "";
+                  hidePopUp();
                   handleAction({
                     highlight: action.toLowerCase() as HighlightToPromptType,
                     question: selectedText,
                   });
-                  hidePopUp();
                 }}
                 onMouseOver={() => {
                   setIsHovering(true);

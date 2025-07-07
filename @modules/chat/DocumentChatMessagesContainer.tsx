@@ -69,7 +69,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
   useEffect(() => {
     if (isChatOpen)
       messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [isChatOpen]);
+  }, [isChatOpen, JSON.stringify(messages)]);
 
   const [showLoader, setShowLoader] = useState(false);
 

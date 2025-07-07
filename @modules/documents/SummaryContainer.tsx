@@ -1,8 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
-import { HighlightableTextArea } from "react-highlight-popover";
+import { HighlightableText } from "@/@shared/components/HighlightableText";
 
 interface Props {
   summary: string;
@@ -28,25 +27,14 @@ const SummaryContainer: FC<Props> = ({ summary }) => {
     <>
       <div className="w-full h-full flex flex-col">
         {htmlSummary ? (
-          <HighlightableTextArea
-            popoverItem={(HighlightedText, setPopoverState) => {
-              return (
-                <TextSelectionPopup
-                  selectedText={HighlightedText}
-                  clearSelection={() => {
-                    setPopoverState(false);
-                  }}
-                />
-              );
-            }}
-          >
+          <HighlightableText>
             <div className="flex-1 w-full h-full overflow-auto">
               <div
                 className="prose prose-sm max-w-none break-words px-4 py-2"
                 dangerouslySetInnerHTML={{ __html: htmlSummary }}
               />
             </div>
-          </HighlightableTextArea>
+          </HighlightableText>
         ) : (
           <div className="flex-1 w-full h-full flex items-center justify-center text-gray-500">
             Summary Unavailable

@@ -16,12 +16,12 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
 import { useModalContext } from "@/contexts/ModalContext";
-import { HighlightableTextArea } from "react-highlight-popover";
 import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 import { DocumentContentModel } from "@/models/document.model";
 import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import PageControls from "./PageControls";
 import cn from "classnames";
+import { HighlightableText } from "@/@shared/components/HighlightableText";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -86,85 +86,65 @@ const PDFReader: FC<Props> = ({
 
   const renderModifiedContent = (idx: number) => {
     return (
-      <HighlightableTextArea
-        popoverItem={(HighlightedText, setPopoverState) => {
-          return (
-            <TextSelectionPopup
-              selectedText={HighlightedText}
-              clearSelection={() => {
-                setPopoverState(false);
-              }}
-            />
-          );
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          zIndex: 5,
+          display: activeTab === "Simplified" ? "flex" : "none",
         }}
+        className={cn(
+          `overflow-y-auto no-scrollbar md:px-6 bg-white max-w-[800px] mx-auto rounded-lg`,
+          {
+            ["shadow-md"]: activeTab === "Simplified",
+          }
+        )}
       >
-        <div
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            zIndex: 5,
-            display: activeTab === "Simplified" ? "flex" : "none",
-          }}
-          className={cn(
-            `overflow-y-auto no-scrollbar md:px-6 bg-white max-w-[800px] mx-auto rounded-lg`,
-            {
-              ["shadow-md"]: activeTab === "Simplified",
-            }
-          )}
-        >
-          <div className="mx-auto">
-            <div
-              className="w-full mb-4 mx-auto bg-white p-6 no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
-              dangerouslySetInnerHTML={{
-                __html: modifiedContent.content[idx],
-              }}
-            ></div>
-          </div>
+        <div className="mx-auto">
+          <div
+            className="w-full mb-4 mx-auto bg-white p-6 no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
+            dangerouslySetInnerHTML={{
+              __html: modifiedContent.content[idx],
+            }}
+          ></div>
         </div>
-      </HighlightableTextArea>
+      </div>
     );
   };
 
   const renderPDF = (fileUrl: string) => (
     <div className="no-scrollbar overflow-y-auto h-full py-4">
-      <Document
-        file={fileUrl}
-        renderMode="canvas"
-        onLoadSuccess={onDocumentLoadSuccess as any}
-        onLoadError={(error) => {
-          console.log("error", error);
-        }}
-        options={options}
-        onItemClick={(e) => goToPage(e.pageNumber)}
-      >
-        {new Array(totalPages).fill("").map((_, idx) => {
-          return (
-            <div
-              className={cn("mb-4 relative  flex items-center justify-center")}
-              key={`page-${idx + 1}`}
-              data-page-number={idx + 1}
-              ref={(el) => {
-                pageRefs.current[idx] = el;
-              }}
-            >
-              {renderModifiedContent(idx)}
-              <div className={cn(``, {
-                ['opacity-0']: activeTab == "Simplified"
-              })}>
-                <HighlightableTextArea
-                  popoverItem={(HighlightedText, setPopoverState) => {
-                    return (
-                      <TextSelectionPopup
-                        selectedText={HighlightedText}
-                        clearSelection={() => {
-                          setPopoverState(false);
-                        }}
-                      />
-                    );
-                  }}
+      <HighlightableText>
+        <Document
+          file={fileUrl}
+          renderMode="canvas"
+          onLoadSuccess={onDocumentLoadSuccess as any}
+          onLoadError={(error) => {
+            console.log("error", error);
+          }}
+          options={options}
+          onItemClick={(e) => goToPage(e.pageNumber)}
+        >
+          {new Array(totalPages).fill("").map((_, idx) => {
+            return (
+              <div
+                className={cn(
+                  "mb-4 relative  flex items-center justify-center"
+                )}
+                key={`page-${idx + 1}`}
+                data-page-number={idx + 1}
+                ref={(el) => {
+                  pageRefs.current[idx] = el;
+                }}
+              >
+                {renderModifiedContent(idx)}
+                <div
+                  className={cn(``, {
+                    ["opacity-0"]: activeTab == "Simplified",
+                  })}
                 >
                   <Page
                     pageNumber={idx + 1}
@@ -176,12 +156,12 @@ const PDFReader: FC<Props> = ({
                     className={"relative"}
                     scale={zoom}
                   ></Page>
-                </HighlightableTextArea>
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </Document>
+            );
+          })}
+        </Document>
+      </HighlightableText>
     </div>
   );
 

@@ -1,5 +1,6 @@
 import ScaleAndUp from "@/transitions/ScaleAndUp";
 import React, { FC } from "react";
+import cn from "classnames";
 
 interface Props {
   message: string;
@@ -19,7 +20,13 @@ const UserMessage: FC<Props> = ({ message, image }) => {
                 className="object-contain w-full h-auto rounded-lg border m-0"
               />
             )}
-            <p className="!mt-2">{message}</p>
+            <p
+              className={cn(``, {
+                ["!mt-2"]: image,
+              })}
+            >
+              {message}
+            </p>
           </div>
         </div>
       </ScaleAndUp>

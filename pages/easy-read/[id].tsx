@@ -14,6 +14,9 @@ import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import Button from "@/@shared/ui/Button";
 import { useDispatch } from "react-redux";
 import { setDocumentIdInView } from "@/features/documentChatSlice";
+import Modal from "@/@shared/components/Modal";
+import EasyReadHighlightModal from "@/@modules/questions/EasyRead/EasyReadHighlightModal";
+import { hasSeenEasyReadHowToUseModal } from "@/constants";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -52,8 +55,28 @@ const EasyRead: NextPage = () => {
     }
   }, [documentId]);
 
+  const [isEasyReadHighlightModal, setIsEasyReadHighlightModal] =
+    useState(false);
+
+  useEffect(() => {
+    const hasSeenModal = localStorage.getItem(hasSeenEasyReadHowToUseModal);
+    if (!hasSeenModal) {
+      setIsEasyReadHighlightModal(true);
+    }
+  }, []);
+
   return (
     <>
+      {isEasyReadHighlightModal && (
+        <Modal>
+          <EasyReadHighlightModal
+            handleClose={() => {
+              localStorage.setItem(hasSeenEasyReadHowToUseModal, "true");
+              setIsEasyReadHighlightModal(false);
+            }}
+          />
+        </Modal>
+      )}
       <AppHead title="Easy Read" />
       <AppLayout
         handleBack={() => {
@@ -61,42 +84,41 @@ const EasyRead: NextPage = () => {
         }}
         noPadding={true}
       >
-        
-          {!urlFetching &&
-            !modifiedContentFetching &&
-            originalFileUrl?.modifiedFile &&
-            modifiedContent?.content && (
-              <PDFReader
-                originalFileUrl={originalFileUrl.modifiedFile}
-                modifiedContent={modifiedContent}
-              />
-            )}
-
-          {urlFetching || modifiedContentFetching ? (
-            <div className="flex items-center justify-center py-20">
-              <LoadingReader />
-            </div>
-          ) : null}
-
-          {!urlFetching &&
+        {!urlFetching &&
           !modifiedContentFetching &&
-          (urlFetchError || modifiedContentError) ? (
-            <div className="flex flex-col items-center justify-center py-20 gap-2">
-              <ErrorMessage message="Something went wrong while loading your file" />
-              <Button
-                title="Retry"
-                onClick={() => {
-                  if (urlFetchError) {
-                    refetchUrl();
-                  }
+          originalFileUrl?.modifiedFile &&
+          modifiedContent?.content && (
+            <PDFReader
+              originalFileUrl={originalFileUrl.modifiedFile}
+              modifiedContent={modifiedContent}
+            />
+          )}
 
-                  if (modifiedContentError) {
-                    refetchModifiedContent();
-                  }
-                }}
-              />
-            </div>
-          ) : null}
+        {urlFetching || modifiedContentFetching ? (
+          <div className="flex items-center justify-center py-20">
+            <LoadingReader />
+          </div>
+        ) : null}
+
+        {!urlFetching &&
+        !modifiedContentFetching &&
+        (urlFetchError || modifiedContentError) ? (
+          <div className="flex flex-col items-center justify-center py-20 gap-2">
+            <ErrorMessage message="Something went wrong while loading your file" />
+            <Button
+              title="Retry"
+              onClick={() => {
+                if (urlFetchError) {
+                  refetchUrl();
+                }
+
+                if (modifiedContentError) {
+                  refetchModifiedContent();
+                }
+              }}
+            />
+          </div>
+        ) : null}
       </AppLayout>
     </>
   );

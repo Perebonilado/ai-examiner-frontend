@@ -3,6 +3,7 @@ export const API_BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}`;
 export const accessToken = "access_token";
 export const guestAccessToken = "guest_access_token";
 export const hasUpgradedAccountInThePastToken = "has_upgraded_account_previously";
+export const hasSeenEasyReadHowToUseModal = 'easy_read_how_to_use_modal';
 
 export const milliSecondToSecondConversionRate = 1000;
 

@@ -22,6 +22,7 @@ import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import PageControls from "./PageControls";
 import cn from "classnames";
 import { HighlightableText } from "@/@shared/components/HighlightableText";
+import VirtualScroll from "react-dynamic-virtual-scroll";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -128,7 +129,44 @@ const PDFReader: FC<Props> = ({
           options={options}
           onItemClick={(e) => goToPage(e.pageNumber)}
         >
-          {new Array(totalPages).fill("").map((_, idx) => {
+          <VirtualScroll
+            className="List"
+            minItemHeight={40}
+            totalLength={totalPages}
+            renderItem={(idx: number) => {
+              return (
+                <div
+                  className={cn(
+                    "mb-4 relative  flex items-center justify-center"
+                  )}
+                  key={`page-${idx + 1}`}
+                  data-page-number={idx + 1}
+                  ref={(el) => {
+                    pageRefs.current[idx] = el;
+                  }}
+                >
+                  {renderModifiedContent(idx)}
+                  <div
+                    className={cn(``, {
+                      ["opacity-0"]: activeTab == "Simplified",
+                    })}
+                  >
+                    <Page
+                      pageNumber={idx + 1}
+                      width={
+                        containerWidth
+                          ? Math.min(containerWidth, maxWidth)
+                          : maxWidth
+                      }
+                      className={"relative"}
+                      scale={zoom}
+                    ></Page>
+                  </div>
+                </div>
+              );
+            }}
+          />
+          {/* {new Array(totalPages).fill("").map((_, idx) => {
             return (
               <div
                 className={cn(
@@ -159,7 +197,7 @@ const PDFReader: FC<Props> = ({
                 </div>
               </div>
             );
-          })}
+          })} */}
         </Document>
       </HighlightableText>
     </div>

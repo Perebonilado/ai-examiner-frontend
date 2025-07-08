@@ -74,7 +74,7 @@ const TextSelectionPopupV2 = forwardRef<
         left: `${position.x}px`,
         opacity: isVisible ? 1 : 0,
         pointerEvents: isVisible ? "auto" : "none",
-        zIndex: 10000,
+        zIndex: 3000,
       }}
       ref={ref}
     >

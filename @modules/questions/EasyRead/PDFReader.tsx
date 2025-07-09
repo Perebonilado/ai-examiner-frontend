@@ -129,9 +129,9 @@ const PDFReader: FC<Props> = ({
           options={options}
           onItemClick={(e) => goToPage(e.pageNumber)}
         >
-          <VirtualScroll
+          {/* <VirtualScroll
             className="List"
-            minItemHeight={40}
+            minItemHeight={20}
             totalLength={totalPages}
             renderItem={(idx: number) => {
               return (
@@ -165,8 +165,8 @@ const PDFReader: FC<Props> = ({
                 </div>
               );
             }}
-          />
-          {/* {new Array(totalPages).fill("").map((_, idx) => {
+          /> */}
+          {new Array(totalPages).fill("").map((_, idx) => {
             return (
               <div
                 className={cn(
@@ -197,7 +197,7 @@ const PDFReader: FC<Props> = ({
                 </div>
               </div>
             );
-          })} */}
+          })}
         </Document>
       </HighlightableText>
     </div>

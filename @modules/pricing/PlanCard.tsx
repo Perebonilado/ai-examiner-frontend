@@ -92,7 +92,7 @@ const PlanCard: FC<Props> = ({
             {type.toLowerCase() === "free" && (
               <>
                 <p>
-                  <span className="font-bold">2</span> practice tests per month
+                  <span className="font-bold">1</span> practice tests per month
                 </p>
                 <p>
                   <span className="font-bold">40 questions</span> per test

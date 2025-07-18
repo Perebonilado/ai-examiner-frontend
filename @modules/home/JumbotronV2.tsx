@@ -16,16 +16,15 @@ const JumbotronV2: FC<Props> = ({ handleTryForFree }) => {
         </p>
 
         <p className=" text-5xl font-extrabold leading-[50px] w-full max-w-[752px]">
-          Turn your study materials into{" "}
+          We took the edge off your{" "}<br />
           <span className="bg-gradient-to-r from-[#9333EA] to-[#F89AEE] bg-clip-text text-transparent">
-            practice tests
+            study materials
           </span>{" "}
-          in seconds
         </p>
 
         <p className="mt-5 text-base sm:text-lg md:text-xl font-light w-full max-w-[752px]">
-          Simply upload your study material and AI Examiner will generate the
-          perfect challenging <span>questions for you.</span>
+          Upload, read, and generate customizable practice tests to master any
+          subject.
         </p>
 
         <div className="inline-block mt-20 mb-40 rounded-[50px] bg-gradient-to-r from-[#9333EA] to-[#F89AEE] p-[4px]">

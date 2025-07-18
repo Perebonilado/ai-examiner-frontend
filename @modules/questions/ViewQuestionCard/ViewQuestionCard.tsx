@@ -15,6 +15,7 @@ import ShareIcon from "@/icons/ShareIcon";
 import ShareQuestionDialog from "../ShareQuestionDialog";
 import { toast } from "react-toastify";
 import styles from "./styles.module.css";
+import { useRouter } from "next/router";
 
 interface Props extends QuestionSummaryModel {
   index: number;
@@ -36,7 +37,7 @@ const ViewQuestionCard: FC<Props> = ({
   const [isNew, setIsNew] = useState(false);
 
   const rootClassName = cn(
-    `w-full flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`,
+    `w-full cursor-pointer flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`,
     {
       [`${styles["animate-border"]} animate-bounce`]: isNew,
     }
@@ -97,8 +98,19 @@ const ViewQuestionCard: FC<Props> = ({
     }
   };
 
+  const router = useRouter();
+
   return (
-    <div className={rootClassName}>
+    <div
+      className={rootClassName}
+      onClick={(e) => {
+        router.push(
+          `/questions/practise-questions/${hyphenateString(
+            type.toLowerCase()
+          )}/${id}`
+        );
+      }}
+    >
       <div className="flex flex-col">
         <div className="flex items-center justify-between py-1">
           <div className="flex items-center gap-3">
@@ -132,7 +144,8 @@ const ViewQuestionCard: FC<Props> = ({
           {topics.length ? (
             <div
               className={chevronClasses}
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation()
                 setTopicsExpanded(!topicsExpanded);
               }}
             >
@@ -152,13 +165,21 @@ const ViewQuestionCard: FC<Props> = ({
                 type.toLowerCase()
               )}/${id}`}
             >
-              <Button title={getButtonText()} size="small" variant="text" />
+              <Button
+                title={getButtonText()}
+                size="small"
+                variant="text"
+                onClick={(e) => {
+                  e.stopPropagation();
+                }}
+              />
             </Link>
           </div>
 
           <div className="flex items-center gap-4">
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setModalContent(
                   <ShareQuestionDialog handleCopy={handleCopyShareLink} />
                 );
@@ -167,7 +188,8 @@ const ViewQuestionCard: FC<Props> = ({
               <ShareIcon fill="#d1d5db" />
             </button>
             <button
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setModalContent(<DeleteQuestionConfirmation questionId={id} />);
               }}
             >

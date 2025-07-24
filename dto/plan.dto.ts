@@ -13,7 +13,7 @@ export type PlanInterval =
   | "monthly"
   | "quarterly"
   | "bianually"
-  | "annualy";
+  | "annually";
 
 interface Description {
   features: {

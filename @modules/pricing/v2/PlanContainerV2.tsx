@@ -90,7 +90,7 @@ const PlanContainerV2: FC = () => {
     <div className="bg-white mb-24">
       <div className="w-full max-w-[1000px] min-h-[600px] border mx-auto rounded-2xl overflow-hidden max-md:rounded-none max-md:border-none">
         <div className="py-10 bg-[#F7F5FF] flex flex-col justify-center p-4 max-md:text-center">
-          <h3 className="text-3xl font-bold mb-1">
+          <h3 className="text-3xl font-bold mb-1 max-md:text-2xl">
             Ready to keep practicing ?
           </h3>
           <p>For unlimited access, please select a plan below</p>

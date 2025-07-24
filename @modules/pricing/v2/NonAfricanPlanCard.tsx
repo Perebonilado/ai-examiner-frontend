@@ -70,7 +70,7 @@ const NonAfricanPlanCard: FC<Props> = ({
 
       <ul>
         {[
-          type.toLowerCase() === "free" ? "2 practice test per month" :"Unlimited practice tests",
+          type.toLowerCase() === "free" ? "1 practice test per month" :"Unlimited practice tests",
           "Unlimited file uploads",
           "Easy Read features",
           "Ai Discussions",

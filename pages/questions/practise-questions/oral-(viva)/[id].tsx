@@ -37,6 +37,8 @@ import {
   setDocumentTitleInView,
   setMessages,
 } from "@/features/documentChatSlice";
+import { useGetUserProfileQuery } from "@/api-services/user.service";
+import UpgradeAccountForm from "@/@shared/components/UpgradeAccountForm";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -48,7 +50,7 @@ const VivaQuestion: NextPage = () => {
     undefined,
     { pollingInterval: 30000, refetchOnMountOrArgChange: true }
   );
-  console.log(credits);
+  const { data: userData } = useGetUserProfileQuery("");
   const params = useParams();
   const router = useRouter();
   const { setModalContent } = useModalContext();
@@ -271,6 +273,14 @@ const VivaQuestion: NextPage = () => {
 
   const handleStartCallConfirmation = async () => {
     const hasEnoughtCredits = verifyUserHasEnoughCallCredits();
+    const userIsGuest = userData?.role?.toLowerCase() === "guest";
+
+    if (userIsGuest) {
+      setModalContent(
+        <UpgradeAccountForm redirectToPricingOnSuccess={false} />
+      );
+      return;
+    }
 
     if (hasEnoughtCredits) {
       const hasPermission = await requestMicPermission();

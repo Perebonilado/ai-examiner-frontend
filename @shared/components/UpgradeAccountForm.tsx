@@ -23,7 +23,13 @@ const initialValues = {
   password: "",
 };
 
-const UpgradeAccountForm: FC = () => {
+interface Props {
+  redirectToPricingOnSuccess?: boolean;
+}
+
+const UpgradeAccountForm: FC<Props> = ({
+  redirectToPricingOnSuccess = true,
+}) => {
   const [upgradeAccount, { data, isLoading }] = useUpgradeUserAccountMutation();
   const [hidePassword, setHidePassword] = useState<boolean>(true);
   const handleSubmit = (values: typeof initialValues) => {
@@ -43,13 +49,16 @@ const UpgradeAccountForm: FC = () => {
         new Date().getTime().toString(),
         {
           expires: 365,
-          secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes(
-            "localhost"
-          ),
+          secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
         }
       );
       Cookies.remove(guestAccessToken);
-      window.location.pathname = "/pricing";
+
+      if (redirectToPricingOnSuccess) {
+        window.location.pathname = "/pricing";
+      } else {
+        window.location.reload()
+      }
     }
   }, [data]);
   const { setModalContent } = useModalContext();

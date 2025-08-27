@@ -12,6 +12,7 @@ import {
 } from "@/models/document-topic.model";
 import {
   DocumentTopicDto,
+  DocumentTopicv2DTO,
   SavedDocumentTopicDto,
 } from "@/dto/document-topic.dto";
 
@@ -32,7 +33,7 @@ const baseQuery = fetchBaseQuery({
 export const DocumentTopicService = createApi({
   reducerPath: "document-topic-api",
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
-  tagTypes: ["document-topics"],
+  tagTypes: ["document-topics", "document-topics-v2"],
   endpoints: (build) => ({
     generateDocumentTopics: build.mutation<
       DocumentTopicModel,
@@ -81,10 +82,23 @@ export const DocumentTopicService = createApi({
         }
       },
     }),
+    getAllSavedDocumentTopicsV2: build.query<
+      DocumentTopicv2DTO[],
+      SavedDocumentTopicQueryModel
+    >({
+      query: ({ documentId }) => ({
+        url: `/${documentId}`,
+      }),
+      extraOptions: {
+        triggerLoading: false,
+      },
+      providesTags: ["document-topics-v2"],
+    }),
   }),
 });
 
 export const {
   useGenerateDocumentTopicsMutation,
   useGetAllSavedDocumentTopicsQuery,
+  useGetAllSavedDocumentTopicsV2Query
 } = DocumentTopicService;

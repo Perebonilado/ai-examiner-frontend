@@ -72,6 +72,19 @@ export const FileUploadService = createApi({
             fileId: res.data.fileId,
             documentId: res.data.documentId,
             topics: res.data.topics,
+            topicsWithPages: res.data.topicsWithPages
+              .map((t) => {
+                return {
+                  endPage: t.endPage,
+                  startPage: t.startPage,
+                  title: t.title,
+                  id: t.id,
+                  shortDescription: t.shortDescription
+                };
+              })
+              .sort((a, b) => {
+                return a.startPage > b.startPage ? 1 : -1;
+              }),
             summary: res.data.summary,
           };
         }

@@ -8,27 +8,19 @@ import React, { useEffect, useState } from "react";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useRouter } from "next/router";
 import Button from "@/@shared/ui/Button";
-import ChevronLeft from "@/icons/ChevronLeft";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
-import { capitalizeFirstLetterOfEachWord } from "@/utils";
-import * as moment from "moment";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { toast } from "react-toastify";
-import IconButton from "@/@shared/ui/IconButton";
-import DotsIcon from "@/icons/DotsIcon";
-import Dialog from "@/@shared/components/Dialog";
-import ShareIcon from "@/icons/ShareIcon";
-import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 import { GetQuestionByIdModel } from "@/models/questions.model";
-import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { useGetAllSavedDocumentTopicsQuery, useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import { useDispatch } from "react-redux";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
-  setMessages,
 } from "@/features/documentChatSlice";
 import TestPageTitle from "@/@modules/questions/TestPageTitle";
+import { openNewTestForm } from "@/features/newTestSlice";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
@@ -41,12 +33,6 @@ const FlashCards: NextPage = () => {
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
-
-  const { data: topics, isLoading: topicsLoading } =
-    useGetAllSavedDocumentTopicsQuery(
-      { documentId },
-      { skip: !documentId, refetchOnMountOrArgChange: true }
-    );
 
   const dispatch = useDispatch();
 
@@ -105,6 +91,20 @@ const FlashCards: NextPage = () => {
     }
   };
 
+  const { data: topicsWithPages } = useGetAllSavedDocumentTopicsV2Query(
+    { documentId },
+    { skip: !documentId }
+  );
+
+  const handleNewTest = () => {
+    dispatch(
+      openNewTestForm({
+        documentId: documentId,
+        topics: topicsWithPages || [],
+      })
+    );
+  };
+
   return (
     <>
       <AppHead title="Flash Cards" />
@@ -143,15 +143,7 @@ const FlashCards: NextPage = () => {
                 };
               })}
               allowMoreQuestionGeneration={true}
-              handleGenerateMoreQuestions={() => {
-                setModalContent(
-                  <GenerateQuestionsForm
-                    fileId={data.fileId}
-                    topics={topics?.topics ?? []}
-                    documentIdProp={data.documentId}
-                  />
-                );
-              }}
+              handleGenerateMoreQuestions={handleNewTest}
               handleDone={() => {
                 router.push(`/questions/view-questions/${data?.documentId}`);
               }}

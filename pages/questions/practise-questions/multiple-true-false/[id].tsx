@@ -1,36 +1,28 @@
 import MultipleTrueFalseCardContainer from "@/@modules/questions/MultipleTrueFalseCardContainer";
 import AppHead from "@/@shared/components/AppHead";
 import Button from "@/@shared/ui/Button";
-import IconButton from "@/@shared/ui/IconButton";
 import { useGetQuestionsByIdQuery } from "@/api-services/questions.service";
-import ChevronLeft from "@/icons/ChevronLeft";
-import DotsIcon from "@/icons/DotsIcon";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { ElementRef, useEffect, useRef, useState } from "react";
-import * as moment from "moment";
-import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { GetMultipleTrueFalseQuestionByIdModel } from "@/models/questions.model";
 import { toast } from "react-toastify";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
-import Dialog from "@/@shared/components/Dialog";
-import ShareIcon from "@/icons/ShareIcon";
-import ShareQuestionDialog from "@/@modules/questions/ShareQuestionDialog";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
-import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { useGetAllSavedDocumentTopicsQuery, useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
 import { useDispatch } from "react-redux";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
-  setMessages,
 } from "@/features/documentChatSlice";
 import TestPageTitle from "@/@modules/questions/TestPageTitle";
+import { openNewTestForm } from "@/features/newTestSlice";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -44,12 +36,6 @@ const MultipleTrueFalse: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
-
-  const { data: topics, isLoading: topicsLoading } =
-    useGetAllSavedDocumentTopicsQuery(
-      { documentId },
-      { skip: !documentId, refetchOnMountOrArgChange: true }
-    );
 
   useEffect(() => {
     if (data) {
@@ -151,6 +137,20 @@ const MultipleTrueFalse: NextPage = () => {
 
   const topOfContainerRef = useRef<ElementRef<"div">>(null);
 
+  const { data: topicsWithPages } = useGetAllSavedDocumentTopicsV2Query(
+    { documentId },
+    { skip: !documentId }
+  );
+
+  const handleNewTest = () => {
+    dispatch(
+      openNewTestForm({
+        documentId: documentId,
+        topics: topicsWithPages || [],
+      })
+    );
+  };
+
   return (
     <AppLayout
       handleBack={() => {
@@ -200,15 +200,7 @@ const MultipleTrueFalse: NextPage = () => {
             router.push(`/questions/view-questions/${data.documentId}`);
           }}
           allowMoreQuestionGeneration={true}
-          handleGenerateMoreQuestions={() => {
-            setModalContent(
-              <GenerateQuestionsForm
-                fileId={data.fileId}
-                topics={topics?.topics ?? []}
-                documentIdProp={data.documentId}
-              />
-            );
-          }}
+          handleGenerateMoreQuestions={handleNewTest}
           handleShowSubmissionModal={({ score, title }) => {
             setModalContent(
               <SubmissionModal

@@ -286,7 +286,7 @@ const MCQItemContainer: FC<Props> = ({
       <div className="mt-3 mb-12 flex flex-col gap-3 mx-auto w-full max-w-[300px] items-center justify-center">
         {isSubmitted && allowMoreQuestionGeneration && (
           <Button
-            title="New Questions"
+            title="New Test"
             onClick={() => {
               if (handleGenerateMoreQuestions) {
                 handleGenerateMoreQuestions();
@@ -356,7 +356,7 @@ const MCQItemContainer: FC<Props> = ({
                 !timeLeftSeconds &&
                 !totalDuration && (
                   <Button
-                    title="New Questions"
+                    title="New Test"
                     onClick={() => {
                       if (handleGenerateMoreQuestions) {
                         handleGenerateMoreQuestions();
@@ -381,7 +381,7 @@ const MCQItemContainer: FC<Props> = ({
             <div className="flex max-sm:flex-col-reverse max-sm:w-full max-sm:justify-center items-center gap-3">
               {allowMoreQuestionGeneration && (
                 <Button
-                  title="New Questions"
+                  title="New Test"
                   onClick={() => {
                     if (handleGenerateMoreQuestions) {
                       handleGenerateMoreQuestions();

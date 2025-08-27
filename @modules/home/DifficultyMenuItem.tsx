@@ -17,7 +17,7 @@ const DifficultyMenuItem: FC<Props> = ({
   const rootClassname = cn(
     `flex items-center gap-6 border border-[#CECECE] rounded-lg p-4 cursor-pointer hover:border-[#9E69E3]`,
     {
-      ["bg-[#F7F4FF] border-[#9E69E3]"]: selected,
+      ["bg-[#F7F4FF] !border-[#9E69E3]"]: selected,
     }
   );
   return (

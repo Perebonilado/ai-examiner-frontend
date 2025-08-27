@@ -2,8 +2,17 @@ import BetaIcon from "@/icons/BetaIcon";
 import React, { FC } from "react";
 import cn from "classnames";
 
+export type StudyToolTitle = "Summarize" | "Easy read";
+
+export type TestFormatTitle =
+  | "Multiple Choice"
+  | "Flash Cards"
+  | "Multiple True-False"
+  | "Oral (viva)"
+  | "Essay";
+
 export interface TestFormatItem {
-  title: string;
+  title: TestFormatTitle | StudyToolTitle;
   description: string;
   value: number;
   icon: React.ReactNode;

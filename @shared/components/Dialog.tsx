@@ -9,8 +9,12 @@ const fadeVariants = {
   exit: { opacity: 0 },
 };
 
-const Dialog = forwardRef<HTMLDivElement, PropsWithChildren>(
-  ({ children }, ref) => {
+interface Props {
+  handleClose?: () => void;
+}
+
+const Dialog = forwardRef<HTMLDivElement, PropsWithChildren<Props>>(
+  ({ children, handleClose }, ref) => {
     const { setModalContent } = useModalContext();
     return (
       <AnimatePresence mode="wait">
@@ -26,6 +30,7 @@ const Dialog = forwardRef<HTMLDivElement, PropsWithChildren>(
           <button
             className="absolute top-5 right-5 cursor-pointer"
             onClick={() => {
+              handleClose && handleClose();
               setModalContent(null);
             }}
           >

@@ -20,7 +20,10 @@ import * as moment from "moment";
 import EssayItemContainer from "@/@modules/questions/Essay/EssayItemContainer";
 import { GetQuestionByIdModel } from "@/models/questions.model";
 import EssayAnalysisItemAccordion from "@/@modules/questions/Essay/EssayAnalysisItemAccordion";
-import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import {
+  useGetAllSavedDocumentTopicsQuery,
+  useGetAllSavedDocumentTopicsV2Query,
+} from "@/api-services/document-topic.service";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import EssayAnalysisContainer from "@/@modules/questions/Essay/EssayAnalysisContainer";
 import { useDispatch } from "react-redux";
@@ -30,6 +33,7 @@ import {
   setMessages,
 } from "@/features/documentChatSlice";
 import TestPageTitle from "@/@modules/questions/TestPageTitle";
+import { openNewTestForm } from "@/features/newTestSlice";
 
 const Essay: NextPage = () => {
   const [id, setId] = useState("");
@@ -39,11 +43,11 @@ const Essay: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
-  const { data: topics, isLoading: topicsLoading } =
-    useGetAllSavedDocumentTopicsQuery(
-      { documentId },
-      { skip: !documentId, refetchOnMountOrArgChange: true }
-    );
+
+  const { data: topicsWithPages } = useGetAllSavedDocumentTopicsV2Query(
+    { documentId },
+    { skip: !documentId }
+  );
 
   const dispatch = useDispatch();
 
@@ -109,6 +113,15 @@ const Essay: NextPage = () => {
     }
   }, [analysisData]);
 
+  const handleNewTest = () => {
+    dispatch(
+      openNewTestForm({
+        documentId: documentId,
+        topics: topicsWithPages || [],
+      })
+    );
+  };
+
   return (
     <>
       <AppHead title="Essay" />
@@ -141,30 +154,14 @@ const Essay: NextPage = () => {
             documentId={documentId}
             questionId={id}
             submitTest={submitTest}
-            handleGenerateMoreQuestions={() => {
-              setModalContent(
-                <GenerateQuestionsForm
-                  fileId={data.fileId}
-                  topics={topics?.topics ?? []}
-                  documentIdProp={data.documentId}
-                />
-              );
-            }}
+            handleGenerateMoreQuestions={handleNewTest}
           />
         )}
 
         {analysisData && analysisData.data && data && showAnalysis && (
           <EssayAnalysisContainer
             data={analysisData.data}
-            handleGenerateMoreQuestions={() => {
-              setModalContent(
-                <GenerateQuestionsForm
-                  fileId={data.fileId}
-                  topics={topics?.topics ?? []}
-                  documentIdProp={data.documentId}
-                />
-              );
-            }}
+            handleGenerateMoreQuestions={handleNewTest}
             handleDone={() => {
               router.push(`/questions/view-questions/${data?.documentId}`);
             }}

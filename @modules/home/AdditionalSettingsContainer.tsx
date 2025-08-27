@@ -7,14 +7,16 @@ import CloseIcon from "@/icons/CloseIcon";
 import DifficultyMenuContainer from "./DifficultyMenuContainer";
 import TopicSelectionContainer from "./TopicSelectionContainer";
 import ChevronLeft from "@/icons/ChevronLeft";
+import { TopicsV2Model } from "@/models/file-upload.model";
 
 interface Props {
   handleClose: () => void;
   selectedDifficulty: string;
   handleSelectDifficulty: (value: string) => void;
   allTopics: string[];
-  selectedTopics: string[];
-  handleSelectTopics: (topics: string[]) => void;
+  topicsWithPages: TopicsV2Model[];
+  selectedTopics: TopicsV2Model[];
+  handleSelectTopics: (topics: TopicsV2Model[]) => void;
   isCaseStudy: boolean;
   handleCaseStudy: () => void;
   canUseCaseStudy: boolean;
@@ -24,6 +26,7 @@ interface Props {
 const AdditionalSettingsContainer: FC<Props> = ({
   handleClose,
   allTopics,
+  topicsWithPages,
   canUseCaseStudy,
   handleCaseStudy,
   handleSelectDifficulty,
@@ -86,24 +89,29 @@ const AdditionalSettingsContainer: FC<Props> = ({
           }}
         />
         {isDifficultyView ? (
-          <DifficultyMenuContainer
-            handleSelect={(value) => {
-              handleSelectDifficulty(value);
-            }}
-            handleBack={() => {
-              setIsBaseView(true);
-            }}
-            selectedDifficulty={selectedDifficulty}
-          />
+          <div className="p-6 min-w-full">
+            <DifficultyMenuContainer
+              handleSelect={(value) => {
+                handleSelectDifficulty(value);
+              }}
+              handleBack={() => {
+                setIsBaseView(true);
+              }}
+              selectedDifficulty={selectedDifficulty}
+            />
+          </div>
         ) : (
-          <TopicSelectionContainer
-            topics={allTopics}
-            handleSave={(topics) => {
-              handleSelectTopics(topics);
-              setIsBaseView(true);
-            }}
-            selectedTopics={selectedTopics}
-          />
+          <div className="p-6 min-w-full">
+            <TopicSelectionContainer
+              topics={allTopics}
+              topicsWithPages={topicsWithPages}
+              handleSave={(topics) => {
+                handleSelectTopics(topics);
+                setIsBaseView(true);
+              }}
+              selectedTopics={selectedTopics}
+            />
+          </div>
         )}
       </div>
     </TransitionUp>

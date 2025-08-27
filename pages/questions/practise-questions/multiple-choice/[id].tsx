@@ -11,25 +11,19 @@ import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { ElementRef, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-import * as moment from "moment";
-import ChevronLeft from "@/icons/ChevronLeft";
-import MCQItemContainerPDF from "@/@modules/questions/MCQItemContainerPDF";
-import IconButton from "@/@shared/ui/IconButton";
-import DotsIcon from "@/icons/DotsIcon";
-import Dialog from "@/@shared/components/Dialog";
 import { AppLoader } from "@/@shared/components/AppLoader";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 import { GetQuestionByIdModel } from "@/models/questions.model";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
-import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import { useGetAllSavedDocumentTopicsQuery, useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
 import { useDispatch } from "react-redux";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
-  setMessages,
 } from "@/features/documentChatSlice";
 import TestPageTitle from "@/@modules/questions/TestPageTitle";
+import { openNewTestForm } from "@/features/newTestSlice";
 
 const Practice: NextPage = () => {
   const [id, setId] = useState("");
@@ -40,12 +34,6 @@ const Practice: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
-
-  const { data: topics, isLoading: topicsLoading } =
-    useGetAllSavedDocumentTopicsQuery(
-      { documentId },
-      { skip: !documentId, refetchOnMountOrArgChange: true }
-    );
 
   const { setModalContent } = useModalContext();
   const router = useRouter();
@@ -150,6 +138,20 @@ const Practice: NextPage = () => {
 
   const topOfContainerRef = useRef<ElementRef<"div">>(null);
 
+  const { data: topicsWithPages } = useGetAllSavedDocumentTopicsV2Query(
+    { documentId },
+    { skip: !documentId }
+  );
+
+  const handleNewTest = () => {
+    dispatch(
+      openNewTestForm({
+        documentId: documentId,
+        topics: topicsWithPages || [],
+      })
+    );
+  };
+
   return (
     <>
       <AppHead title="Multiple Choice" />
@@ -202,15 +204,7 @@ const Practice: NextPage = () => {
                 setIsSubmitted(value);
               }}
               allowMoreQuestionGeneration={true}
-              handleGenerateMoreQuestions={() => {
-                setModalContent(
-                  <GenerateQuestionsForm
-                    fileId={data.fileId}
-                    topics={topics?.topics ?? []}
-                    documentIdProp={data.documentId}
-                  />
-                );
-              }}
+              handleGenerateMoreQuestions={handleNewTest}
               documentId={data.documentId}
               title={capitalizeFirstLetterOfEachWord(
                 data.documentTitle.toLowerCase()

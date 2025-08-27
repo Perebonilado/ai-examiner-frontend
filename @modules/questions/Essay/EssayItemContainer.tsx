@@ -69,7 +69,7 @@ const EssayItemContainer: FC<Props> = ({
           <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
             <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
               <Button
-                title="New Questions"
+                title="New Test"
                 onClick={() => {
                   if (handleGenerateMoreQuestions) {
                     handleGenerateMoreQuestions();

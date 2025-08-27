@@ -10,9 +10,9 @@ const ReadingProgressBar: FC<Props> = ({ progress }) => {
       <span className="text-sm font-medium text-gray-800 mb-1">
         Reading Progress
       </span>
-      <div className="w-full bg-gray-200 rounded-full h-2">
+      <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
         <div
-          className="bg-green-500 h-2 rounded-full"
+          className="bg-green-500 h-2 rounded-full transition-all duration-500 ease-in-out"
           style={{ width: `${progress}%` }}
         />
       </div>

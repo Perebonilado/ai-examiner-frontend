@@ -6,7 +6,6 @@ import Button from "@/@shared/ui/Button";
 import { DocumentTopicv2DTO } from "@/dto/document-topic.dto";
 import { useDispatch } from "react-redux";
 import { openNewTestForm } from "@/features/newTestSlice";
-import cn from "classnames";
 import CheckboxAlt from "@/@shared/ui/Input/Checkbox/CheckboxAlt";
 import ReadingProgressBar from "./ReadingProgressBar";
 import {
@@ -33,14 +32,8 @@ const TopicsContainer: FC = () => {
 
   const dispatch = useDispatch();
 
-  const [
-    createReadingProgress,
-    { isLoading: creatingReadingProress, isError: createReadingProgressError },
-  ] = useCreateReadingProgressMutation();
-  const [
-    deleteReadingProgress,
-    { isLoading: deletingReadingProgress, isError: deleteReadingProgressError },
-  ] = useDeleteReadingProgressMutation();
+  const [createReadingProgress] = useCreateReadingProgressMutation();
+  const [deleteReadingProgress] = useDeleteReadingProgressMutation();
 
   const handleMarkAsRead = async () => {
     if (markedTopics.size > 0) {
@@ -78,12 +71,22 @@ const TopicsContainer: FC = () => {
     }
   };
 
+  const [ readingProgress, setReadingProgress ] = useState(0)
+
+  useEffect(()=>{
+    if(topics && topics.length) {
+      const readTopics = topics.filter((t)=>t.isRead)
+      const readingPercentage = Math.floor((readTopics.length / topics.length) * 100);
+      setReadingProgress(Math.floor(readingPercentage))
+    }
+  },[JSON.stringify(topics)])
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full">
       {/* Header */}
       <div className="flex flex-col gap-4 justify-between border-b border-gray-100 px-4 py-3 bg-gray-50">
         {markedTopics.size === 0 ? (
-          <ReadingProgressBar progress={0} />
+          <ReadingProgressBar progress={readingProgress} />
         ) : (
           <div className="flex justify-between gap-3">
             <div className="flex items-center gap-2">

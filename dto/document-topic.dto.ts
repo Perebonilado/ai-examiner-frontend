@@ -11,4 +11,5 @@ export interface DocumentTopicv2DTO {
   endPage: number;
   shortDescription: string;
   title: string;
+  isRead: boolean;
 }

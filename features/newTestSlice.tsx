@@ -27,6 +27,7 @@ export const testFormatsMap = new Map<
 interface OpenNewTestPayload {
   documentId: string;
   topics: TopicsV2Model[];
+  selectedTopics?: TopicsV2Model[]
 }
 
 export interface NewTestSlice {
@@ -100,6 +101,9 @@ export const newTestSlice = createSlice({
     openNewTestForm(state, action: PayloadAction<OpenNewTestPayload>) {
       state.documentId = action.payload.documentId;
       state.topics = action.payload.topics;
+      if (action.payload.selectedTopics?.length) {
+        state.selectedTopics = action.payload.selectedTopics
+      }
       state.isNewTestFormOpen = true;
     },
     patchAdditionalSettings(

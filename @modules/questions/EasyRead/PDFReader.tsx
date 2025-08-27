@@ -16,7 +16,6 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
 import { useModalContext } from "@/contexts/ModalContext";
-import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 import { DocumentContentModel } from "@/models/document.model";
 import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import PageControls from "./PageControls";

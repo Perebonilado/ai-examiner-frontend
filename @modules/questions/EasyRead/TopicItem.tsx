@@ -1,13 +1,17 @@
 import ArrowStubRightIcon from "@/icons/ArrowStubRightIcon";
 import React, { FC, useState } from "react";
 import cn from "classnames";
+import CheckboxAlt from "@/@shared/ui/Input/Checkbox/CheckboxAlt";
 
 interface Props {
   startPage: number;
   endPage: number;
   title: string;
+  id: number;
   shortDescription: string;
-  isRead?: boolean;
+  isRead: boolean;
+  handleCheck: (id: number) => void;
+  isChecked: boolean;
 }
 
 const TopicItem: FC<Props> = ({
@@ -15,15 +19,21 @@ const TopicItem: FC<Props> = ({
   shortDescription,
   startPage,
   title,
-  isRead = false,
+  isRead,
+  handleCheck,
+  isChecked,
+  id,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [isChecked, setIsChecked] = useState(false);
 
   return (
-    <div className={cn("border-b border-b-gray-200 flex flex-col gap-1")}>
+    <div
+      className={cn("border-b border-b-gray-200 flex flex-col gap-1", {
+        ["bg-gray-100"]: isRead,
+      })}
+    >
       {/* Header Row */}
-      <div className="p-4 pb-4 flex items-center justify-between gap-4">
+      <div className={cn("p-4 pb-4 flex items-center justify-between gap-4")}>
         {/* Expand Button */}
         <button
           className="flex items-start gap-2 flex-1 min-w-0" // min-w-0 allows truncate to work
@@ -56,32 +66,12 @@ const TopicItem: FC<Props> = ({
         </button>
 
         {/* Checkbox */}
-        <button
-          onClick={() => setIsChecked(!isChecked)}
-          className={cn(
-            "w-5 h-5 flex-shrink-0 flex items-center justify-center rounded border border-gray-300 transition-colors duration-200",
-            isChecked
-              ? "bg-[#9333EA] border-[#9333EA]"
-              : "bg-white hover:border-[#9333EA]"
-          )}
-        >
-          {isChecked && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-3 h-3 text-white"
-              fill="none"
-              viewBox="0 0 24 24"
-              strokeWidth="3"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M5 13l4 4L19 7"
-              />
-            </svg>
-          )}
-        </button>
+        <CheckboxAlt
+          handleCheck={() => {
+            handleCheck(id);
+          }}
+          isChecked={isChecked}
+        />
       </div>
 
       {/* Expandable Content */}

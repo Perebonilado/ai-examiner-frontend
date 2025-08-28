@@ -241,7 +241,7 @@ const PDFReader: FC<Props> = ({
   return (
     <div className="flex">
       <div
-        className="h-[calc(100vh-52px)] w-full bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar px-2 flex"
+        className="h-[calc(100vh-52px)] w-full bg-gray-200 overflow-y-auto  no-scrollbar px-2 flex"
         ref={containerRef}
       >
         <motion.div

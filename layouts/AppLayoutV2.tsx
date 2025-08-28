@@ -28,26 +28,31 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
   const { setModalContent } = useModalContext();
 
   return (
-    <div className="h-[100dvh] overflow-hidden">
-      <MobileAppNav
-        isSideNav={isSideNav}
-        handleClick={() => {
-          setIsSideNav(!isSideNav);
-        }}
-      />
+    <div className="min-h-[100dvh] flex flex-col">
+      {/* Mobile Nav - stays at top */}
+      <div className="sticky top-0 z-50 md:hidden">
+        <MobileAppNav
+          isSideNav={isSideNav}
+          handleClick={() => setIsSideNav(!isSideNav)}
+        />
+      </div>
 
+      {/* Mobile Sidebar */}
       <MobileSidebar
         isSideNav={isSideNav}
-        handleCloseSidebar={() => {
-          setIsSideNav(false);
-        }}
+        handleCloseSidebar={() => setIsSideNav(false)}
       />
-      <section className="flex h-[100dvh]">
+
+      {/* Main content area */}
+      <section className="flex flex-1 w-full">
+        {/* Desktop Sidebar + TopNav */}
         <div className="max-md:hidden">
           <TopNav />
           <Sidebar />
         </div>
-        <main className="flex-1 overflow-y-auto">
+
+        <main className="flex-1 w-full">
+          {/* Desktop-only header actions */}
           <div className="max-md:hidden flex items-center justify-between border-b border-b-gray-300">
             {handleBack && (
               <Button
@@ -56,9 +61,7 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
                 starticon={<ChevronLeft />}
                 className="!gap-1"
                 size="small"
-                onClick={() => {
-                  handleBack();
-                }}
+                onClick={handleBack}
               />
             )}
             <div className="flex items-center justify-end ml-auto gap-6">
@@ -78,9 +81,11 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
               <LanguageChangeBar />
             </div>
           </div>
+
+          {/* Page content */}
           <div
-            className={cn(``, {
-              ["p-4 max-md:pt-[115px]"]: !noPadding,
+            className={cn("", {
+              ["p-4"]: !noPadding,
             })}
           >
             {children}

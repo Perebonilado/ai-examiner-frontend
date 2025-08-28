@@ -28,7 +28,7 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
   const { setModalContent } = useModalContext();
 
   return (
-    <div className="h-screen overflow-hidden">
+    <div className="h-[100dvh] overflow-hidden">
       <MobileAppNav
         isSideNav={isSideNav}
         handleClick={() => {
@@ -42,7 +42,7 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
           setIsSideNav(false);
         }}
       />
-      <section className="flex h-screen">
+      <section className="flex h-[100dvh]">
         <div className="max-md:hidden">
           <TopNav />
           <Sidebar />

@@ -1,40 +1,50 @@
-import React, { FC } from "react";
-import AdditionalSettingsItem from "./AdditionalSettingsItem";
-import TextField from "@/@shared/ui/Input/TextField";
+import AdditionalSettingsItem from "@/@modules/home/AdditionalSettingsItem";
 import Switch from "@/@shared/components/Switch";
 import Button from "@/@shared/ui/Button";
+import { RootState } from "@/config/redux-config";
+import {
+  patchAdditionalSettings,
+  setSummaryView,
+} from "@/features/newTestSlice";
 import ChevronRight from "@/icons/ChevronRight";
-import { TopicsV2Model } from "@/models/file-upload.model";
+import React, { FC } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-interface Props {
-  handleSelectDifficulty: () => void;
-  handleSelectTopics: () => void;
-  isCaseStudies: boolean;
-  handleCaseStudies: () => void;
-  canUseCaseStudies: boolean;
-  canUseDifficulty: boolean;
-  difficulty: string;
-  selectedTopics: TopicsV2Model[];
-  handleClose: () => void;
-}
+const BaseSettings: FC = () => {
+  const { additionalSettings } = useSelector(
+    (state: RootState) => state.newTestSliceReducer
+  );
+  const dispatch = useDispatch();
+  const handleSelectDifficulty = () => {
+    dispatch(
+      patchAdditionalSettings({
+        isDifficultyView: true,
+        isBaseView: false,
+      })
+    );
+  };
 
-const AdditionalSettingsBaseSetting: FC<Props> = ({
-  handleSelectDifficulty,
-  handleSelectTopics,
-  isCaseStudies,
-  handleCaseStudies,
-  canUseCaseStudies,
-  difficulty,
-  selectedTopics,
-  canUseDifficulty,
-  handleClose,
-}) => {
+  const handleSelectTopics = () => {
+    dispatch(
+      patchAdditionalSettings({
+        isDifficultyView: false,
+        isBaseView: false,
+      })
+    );
+  };
+
+  const handleCaseStudies = () => {
+    dispatch(
+      patchAdditionalSettings({
+        isCaseStudies: !additionalSettings.isCaseStudies,
+      })
+    );
+  };
   return (
-    <div className="bg-white p-6 pt-0 rounded-2xl min-w-full">
-      <h3 className="text-lg font-bold mb-6">Test settings</h3>
-
+    <div className="min-w-full">
+      <h3 className="text-base font-bold mb-6">Test settings</h3>
       <div className="mt-4 flex flex-col gap-12">
-        {canUseDifficulty && (
+        {additionalSettings.permissions.canUseDifficulty && (
           <AdditionalSettingsItem
             title="Difficulty level"
             description="Control how challenging your questions will be"
@@ -60,14 +70,14 @@ const AdditionalSettingsBaseSetting: FC<Props> = ({
           </div>
         </AdditionalSettingsItem>
 
-        {canUseCaseStudies && (
+        {additionalSettings.permissions.canUseCaseStudies && (
           <AdditionalSettingsItem
             title="Case studies"
             description="Turn on to unlock real-world case scenarios tailored to your learning."
             handleClick={handleCaseStudies}
           >
             <Switch
-              isChecked={isCaseStudies}
+              isChecked={additionalSettings.isCaseStudies}
               handleChecked={handleCaseStudies}
               disabled={false}
             />
@@ -75,11 +85,17 @@ const AdditionalSettingsBaseSetting: FC<Props> = ({
         )}
 
         <div className="w-fit mx-auto">
-          <Button title="Save" size="large" onClick={handleClose} />
+          <Button
+            title="Save"
+            size="large"
+            onClick={() => {
+              dispatch(setSummaryView(true));
+            }}
+          />
         </div>
       </div>
     </div>
   );
 };
 
-export default AdditionalSettingsBaseSetting;
+export default BaseSettings;

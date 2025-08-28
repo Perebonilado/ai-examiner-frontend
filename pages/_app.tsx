@@ -16,6 +16,7 @@ import GoogleTranslationProvider from "@/contexts/GoogleTransalationContext";
 import DocumentChatContainer from "@/@modules/chat/DocumentChatContainer";
 import GenerateQuestionsProvider from "@/contexts/GenerateQuestionsContext";
 import ImageSearchContainer from "@/@shared/components/ImageSearch/ImageSearchContainer";
+import NewTestForm from "@/@modules/questions/NewTestForm";
 
 declare global {
   interface Window {
@@ -69,6 +70,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <GoogleTranslationProvider>
             <ModalProvider>
               <LoaderProvider>
+                <NewTestForm />
                 <GenerateQuestionsProvider>
                   <DocumentChatContainer>
                     <ImageSearchContainer>

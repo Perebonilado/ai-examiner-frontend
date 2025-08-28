@@ -29,7 +29,7 @@ const EssayAnalysisContainer: FC<Props> = ({
 
       <div className="flex max-sm:justify-center max-sm:items-center max-sm:flex-col-reverse gap-4 justify-end mt-20">
         <Button
-          title="New Questions"
+          title="New Test"
           onClick={() => {
             if (handleGenerateMoreQuestions) {
               handleGenerateMoreQuestions();

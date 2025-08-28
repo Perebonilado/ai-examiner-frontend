@@ -20,7 +20,10 @@ import React, { useEffect, useState } from "react";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
-import { useGetAllSavedDocumentTopicsQuery } from "@/api-services/document-topic.service";
+import {
+  useGetAllSavedDocumentTopicsQuery,
+  useGetAllSavedDocumentTopicsV2Query,
+} from "@/api-services/document-topic.service";
 import { useDispatch, useSelector } from "react-redux";
 import { reduxStore, RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
@@ -39,6 +42,10 @@ import ViewFileReaderThumbnail from "@/@modules/questions/ViewFileReaderThumbnai
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
 import EasyReadIcon from "@/icons/EasyReadIcon";
 import { DocumentContentModel } from "@/models/document.model";
+import NewTestForm from "@/@modules/questions/NewTestForm";
+import { openNewTestForm } from "@/features/newTestSlice";
+import TopicsContainer from "@/@modules/questions/EasyRead/TopicsContainer";
+import TopicsHeaderAlt from "@/@modules/questions/EasyRead/TopicsHeaderAlt";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -66,23 +73,22 @@ const ViewQuestions: NextPage = () => {
     { refetchOnMountOrArgChange: true, skip: !documentId }
   );
 
-  const { data: topics, isLoading: topicsLoading } =
-    useGetAllSavedDocumentTopicsQuery(
-      { documentId },
-      { skip: !documentId, refetchOnMountOrArgChange: true }
-    );
-
   const { setModalContent } = useModalContext();
   const permissions = useSelector(
     (state: RootState) => state.permissionsState.permissions
   );
 
-  const handleGenerateQuestions = () => {
-    setModalContent(
-      <GenerateQuestionsForm
-        topics={topics?.topics ?? []}
-        fileId={data?.fileId || ""}
-      />
+  const { data: topicsWithPages } = useGetAllSavedDocumentTopicsV2Query(
+    { documentId },
+    { skip: !documentId }
+  );
+
+  const handleNewTest = () => {
+    dispatch(
+      openNewTestForm({
+        documentId: documentId,
+        topics: topicsWithPages || [],
+      })
     );
   };
 
@@ -119,7 +125,12 @@ const ViewQuestions: NextPage = () => {
   // tabs
 
   const [activeTab, setActiveTab] = useState("Questions");
-  const [tabs, setTabs] = useState(["Questions", "Summary", "Related Videos"]);
+  const [tabs, setTabs] = useState([
+    "Tests",
+    "Topics",
+    "Summary",
+    "Related Videos",
+  ]);
 
   useEffect(() => {
     const { tab } = router.query;
@@ -148,8 +159,6 @@ const ViewQuestions: NextPage = () => {
   const [currentRelatedVideoId, setCurrentRelatedVideoId] = useState<
     string | null
   >(null);
-
-  const [fileUrls, setFileUrls] = useState({ original: "", modified: "" });
 
   const { data: thumbnail } = useGetFileThumbnailDetailsQuery(
     { documentId },
@@ -213,11 +222,7 @@ const ViewQuestions: NextPage = () => {
               />
             )}
             {permissions && (
-              <Button
-                title="New Test"
-                onClick={handleGenerateQuestions}
-                size="medium"
-              />
+              <Button title="New Test" onClick={handleNewTest} size="medium" />
             )}
           </div>
         </div>
@@ -276,7 +281,19 @@ const ViewQuestions: NextPage = () => {
           </div>
         )}
 
-        {activeTab === "Questions" && (
+        {activeTab === "Topics" && (
+          <div>
+            <TopicsContainer
+              easyReadView={false}
+              topicsScrollContainerMaxHeightPx={550}
+              customHeader={(props) => {
+                return <TopicsHeaderAlt {...props} />;
+              }}
+            />
+          </div>
+        )}
+
+        {activeTab === "Tests" && (
           <div>
             {!data && error && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
@@ -287,9 +304,7 @@ const ViewQuestions: NextPage = () => {
             {!data && isLoading && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <Spinner size="sm" />
-                <p className="text-center font-semibold">
-                  Fetching your questions
-                </p>
+                <p className="text-center font-semibold">Loading Tests</p>
               </div>
             )}
             {data && <ViewQuestionCardContainer data={data?.questions} />}

@@ -130,7 +130,7 @@ const GenerateQuestionsForm: FC<Props> = ({
       {generateQuestionsLoading && (
         <AppLoader loaderMessage="Hang in there while we generate your questions" />
       )}
-      <div className="bg-white rounded-xl max-sm:max-w-[95vw] shadow-xl py-12 px-6 w-full max-w-[380px] relative">
+      <div className="bg-white rounded-xl max-sm:max-w-[95vw] shadow-xl py-12 px-6 w-full max-w-[450px] relative">
         <span
           className="absolute top-5 right-8 cursor-pointer"
           onClick={() => {

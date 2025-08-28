@@ -133,6 +133,7 @@ export interface GenerateQuestionsPayloadModel {
 export interface GenerateQuestionsPayloadModelV2 {
   payload: {
     selectedQuestionTopics?: string[] | null;
+    selectedTopicIds?: number[];
     questionCount: number;
     questionType: number;
     includeUseCases: boolean;

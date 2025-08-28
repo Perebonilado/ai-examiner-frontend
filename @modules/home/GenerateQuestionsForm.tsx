@@ -58,6 +58,7 @@ import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import { IAltTabItem } from "@/@shared/components/Tab/AltTabItem";
 import EasyReadIcon from "@/icons/EasyReadIcon";
 import SummarizeIcon from "@/icons/SummarizeIcon";
+import { TopicsV2Model } from "@/models/file-upload.model";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -82,6 +83,7 @@ const GenerateQuestionsForm: FC = () => {
   const [documentId, setDocumentId] = useState<string | null>(null);
   const [isTopicsSelectVisible, setIsTopicsSelectVisible] = useState(false);
   const [includeUseCases, setIncludeUseCases] = useState(false);
+  const [topicsWithPages, setTopicsWithPages] = useState<TopicsV2Model[]>([]);
 
   const router = useRouter();
 
@@ -119,9 +121,7 @@ const GenerateQuestionsForm: FC = () => {
   const [documentTopics, setDocumentTopics] = useState<
     { label: string; value: string }[]
   >([]);
-  const [selectedTopics, setSelectedTopics] = useState<
-    { label: string; value: string }[]
-  >([]);
+  const [selectedTopics, setSelectedTopics] = useState<TopicsV2Model[]>([]);
 
   const handleSubmit = (values: typeof initialValues) => {
     if (!documentId || !file || !fileId) {
@@ -137,9 +137,10 @@ const GenerateQuestionsForm: FC = () => {
     generateQuestionsV2({
       payload: {
         title: values.title || getFileNameWithoutExtension(file.name),
-        selectedQuestionTopics: selectedTopics.length
-          ? selectedTopics.map((f) => f.label)
-          : undefined,
+        // selectedQuestionTopics: selectedTopics.length
+        //   ? selectedTopics.map((f) => f.label)
+        //   : undefined,
+        selectedTopicIds: selectedTopics.map(t=>t.id),
         questionCount: values.questionCount ? Number(values.questionCount) : 5,
         questionType: values.questionType ? Number(values.questionType) : 3,
         includeUseCases,
@@ -175,6 +176,7 @@ const GenerateQuestionsForm: FC = () => {
       });
 
       setDocumentTopics(topics);
+      setTopicsWithPages(uploadFileDataV2.topicsWithPages);
     }
   }, [uploadFileDataV2]);
 
@@ -228,8 +230,8 @@ const GenerateQuestionsForm: FC = () => {
   const [isAdditionalSettings, setIsAdditionalSettings] = useState(false);
 
   const [tabs, setTabs] = useState<Omit<IAltTabItem, "handleClick">[]>([
-    { isActive: true, title: "Test Mode" },
-    { isActive: false, title: "Study Mode" },
+    { isActive: true, title: "Study Mode" },
+    { isActive: false, title: "Test Mode" },
   ]);
   const [activeTab, setActiveTab] = useState(
     tabs.filter((t) => t.isActive)[0].title
@@ -252,14 +254,14 @@ const GenerateQuestionsForm: FC = () => {
 
   const handleStartStudying = async () => {
     if (formik.values.title.trim().length) {
-      setModalContent(<AppLoader loaderMessage="Loading..."/>)
+      setModalContent(<AppLoader loaderMessage="Loading..." />);
       const data = await reduxStore.dispatch(
         DocumentService.endpoints.updateDocument.initiate({
           id: documentId as string,
           title: formik.values.title.trim(),
         })
       );
-      setModalContent(null)
+      setModalContent(null);
 
       if (data.error) {
         toast.error("Oops! An error occurred updating document title");
@@ -290,13 +292,10 @@ const GenerateQuestionsForm: FC = () => {
               setIsAdditionalSettings(false);
             }}
             allTopics={documentTopics.map((t) => t.label)}
-            selectedTopics={selectedTopics.map((t) => t.label)}
+            topicsWithPages={topicsWithPages}
+            selectedTopics={selectedTopics}
             handleSelectTopics={(topics) => {
-              setSelectedTopics(
-                topics.map((t) => {
-                  return { label: t, value: t.toLowerCase() };
-                })
-              );
+              setSelectedTopics(topics)
             }}
             isCaseStudy={includeUseCases}
             handleCaseStudy={() => {
@@ -538,7 +537,7 @@ const studyModeFormats: TestFormatItem[] = [
   // },
 ];
 
-const testFormats: TestFormatItem[] = [
+export const testFormats: TestFormatItem[] = [
   {
     title: "Multiple Choice",
     value: 3,

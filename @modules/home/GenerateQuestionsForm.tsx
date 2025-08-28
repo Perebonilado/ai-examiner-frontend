@@ -230,8 +230,8 @@ const GenerateQuestionsForm: FC = () => {
   const [isAdditionalSettings, setIsAdditionalSettings] = useState(false);
 
   const [tabs, setTabs] = useState<Omit<IAltTabItem, "handleClick">[]>([
-    { isActive: true, title: "Test Mode" },
-    { isActive: false, title: "Study Mode" },
+    { isActive: true, title: "Study Mode" },
+    { isActive: false, title: "Test Mode" },
   ]);
   const [activeTab, setActiveTab] = useState(
     tabs.filter((t) => t.isActive)[0].title

@@ -44,6 +44,8 @@ import EasyReadIcon from "@/icons/EasyReadIcon";
 import { DocumentContentModel } from "@/models/document.model";
 import NewTestForm from "@/@modules/questions/NewTestForm";
 import { openNewTestForm } from "@/features/newTestSlice";
+import TopicsContainer from "@/@modules/questions/EasyRead/TopicsContainer";
+import TopicsHeaderAlt from "@/@modules/questions/EasyRead/TopicsHeaderAlt";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -123,7 +125,12 @@ const ViewQuestions: NextPage = () => {
   // tabs
 
   const [activeTab, setActiveTab] = useState("Questions");
-  const [tabs, setTabs] = useState(["Questions", "Summary", "Related Videos"]);
+  const [tabs, setTabs] = useState([
+    "Tests",
+    "Topics",
+    "Summary",
+    "Related Videos",
+  ]);
 
   useEffect(() => {
     const { tab } = router.query;
@@ -215,11 +222,7 @@ const ViewQuestions: NextPage = () => {
               />
             )}
             {permissions && (
-              <Button
-                title="New Test"
-                onClick={handleNewTest}
-                size="medium"
-              />
+              <Button title="New Test" onClick={handleNewTest} size="medium" />
             )}
           </div>
         </div>
@@ -278,7 +281,19 @@ const ViewQuestions: NextPage = () => {
           </div>
         )}
 
-        {activeTab === "Questions" && (
+        {activeTab === "Topics" && (
+          <div>
+            <TopicsContainer
+              easyReadView={false}
+              topicsScrollContainerMaxHeightPx={400}
+              customHeader={(props) => {
+                return <TopicsHeaderAlt {...props} />;
+              }}
+            />
+          </div>
+        )}
+
+        {activeTab === "Tests" && (
           <div>
             {!data && error && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
@@ -289,9 +304,7 @@ const ViewQuestions: NextPage = () => {
             {!data && isLoading && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <Spinner size="sm" />
-                <p className="text-center font-semibold">
-                  Fetching your questions
-                </p>
+                <p className="text-center font-semibold">Loading Tests</p>
               </div>
             )}
             {data && <ViewQuestionCardContainer data={data?.questions} />}

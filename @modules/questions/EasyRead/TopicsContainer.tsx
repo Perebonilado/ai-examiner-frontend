@@ -12,8 +12,20 @@ import {
   useCreateReadingProgressMutation,
   useDeleteReadingProgressMutation,
 } from "@/api-services/reading-progress.service";
+import cn from "classnames";
+import TopicsHeader, { TopicHeaderProps } from "./TopicsHeader";
 
-const TopicsContainer: FC = () => {
+interface Props {
+  easyReadView?: boolean;
+  topicsScrollContainerMaxHeightPx?: number | null;
+  customHeader?: (props: TopicHeaderProps) => React.ReactNode;
+}
+
+const TopicsContainer: FC<Props> = ({
+  easyReadView = true,
+  topicsScrollContainerMaxHeightPx = null,
+  customHeader,
+}) => {
   const params = useParams();
   const [documentId, setDocumentId] = useState("");
   useEffect(() => {
@@ -94,78 +106,84 @@ const TopicsContainer: FC = () => {
     }
   }, [JSON.stringify(topics)]);
 
-  return !showTopicsContainer ? null : (
-    <div className="h-[calc(100vh-52px)] w-[500px] bg-gray-200 p-4 max-md:hidden">
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full">
-        {/* Header */}
-        <div className="flex flex-col gap-4 justify-between border-b border-gray-100 px-4 py-3 bg-gray-50">
-          {markedTopics.size === 0 ? (
-            <ReadingProgressBar progress={readingProgress} />
-          ) : (
-            <div className="flex justify-between gap-3">
-              <div className="flex items-center gap-2">
-                <Button
-                  title="New test"
-                  size="small"
-                  onClick={() => {
-                    dispatch(
-                      openNewTestForm({
-                        documentId,
-                        topics: topics || [],
-                        selectedTopics: markedTopics.values().toArray(),
-                      })
-                    );
-                  }}
-                />
-                {markedTopics
-                  .values()
-                  .some((topic) => topic.isRead === false) ? (
-                  <Button
-                    title="Mark as read"
-                    size="small"
-                    variant="outlined"
-                    onClick={handleMarkAsRead}
-                  />
-                ) : (
-                  <Button
-                    title="Mark as unread"
-                    size="small"
-                    variant="outlined"
-                    onClick={handleMarkAsUnread}
-                  />
-                )}
-              </div>
+  const handleMarkAll = () => {
+    if (topics?.length) {
+      if (markedTopics.size === topics.length) {
+        setMarkedTopics((prev) => {
+          const emtpyMap: typeof prev = new Map();
+          return emtpyMap;
+        });
+      } else {
+        setMarkedTopics((prev) => {
+          const newMap: typeof prev = new Map();
+          for (const topic of topics) {
+            newMap.set(topic.id, topic);
+          }
+          return newMap;
+        });
+      }
+    }
+  };
 
-              <div className="flex items-center mr-0">
-                <CheckboxAlt
-                  handleCheck={() => {
-                    if (topics?.length) {
-                      if (markedTopics.size === topics.length) {
-                        setMarkedTopics((prev) => {
-                          const emtpyMap: typeof prev = new Map();
-                          return emtpyMap;
-                        });
-                      } else {
-                        setMarkedTopics((prev) => {
-                          const newMap: typeof prev = new Map();
-                          for (const topic of topics) {
-                            newMap.set(topic.id, topic);
-                          }
-                          return newMap;
-                        });
-                      }
-                    }
-                  }}
-                  isChecked={markedTopics.size === topics?.length}
-                />
-              </div>
-            </div>
-          )}
-        </div>
+  const handleNewTest = () => {
+    dispatch(
+      openNewTestForm({
+        documentId,
+        topics: topics || [],
+        selectedTopics: markedTopics.values().toArray(),
+      })
+    );
+  };
+
+  return !showTopicsContainer ? null : (
+    <div
+      className={cn("", {
+        ["h-[calc(100vh-52px)] w-[500px] bg-gray-200 p-4 max-md:hidden"]:
+          easyReadView,
+      })}
+    >
+      <div
+        className={cn("", {
+          ["bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full"]:
+            easyReadView,
+        })}
+      >
+        {/* Header */}
+        {easyReadView && (
+          <TopicsHeader
+            markedTopics={markedTopics}
+            readingProgress={readingProgress}
+            topics={topics || []}
+            handleNewTest={handleNewTest}
+            handleMarkAsRead={handleMarkAsRead}
+            handleMarkAsUnread={handleMarkAsUnread}
+            handleMarkAll={handleMarkAll}
+          />
+        )}
+
+        {!easyReadView &&
+          customHeader &&
+          customHeader({
+            markedTopics,
+            readingProgress,
+            topics: topics || [],
+            handleMarkAll,
+            handleMarkAsRead,
+            handleMarkAsUnread,
+            handleNewTest,
+          })}
 
         {/* Scrollable List */}
         {topics && (
-          <div className="w-full  overflow-y-auto no-scrollbar h-full pb-20">
+          <div
+            className="w-full  overflow-y-auto no-scrollbar h-full pb-20"
+            style={{
+              maxHeight:
+                topicsScrollContainerMaxHeightPx === null
+                  ? "unset"
+                  : `${topicsScrollContainerMaxHeightPx}px`,
+            }}
+          >
             {topics.map((topic, idx) => {
               return (
                 <TopicItem

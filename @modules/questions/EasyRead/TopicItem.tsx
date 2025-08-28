@@ -2,6 +2,7 @@ import ArrowStubRightIcon from "@/icons/ArrowStubRightIcon";
 import React, { FC, useState } from "react";
 import cn from "classnames";
 import CheckboxAlt from "@/@shared/ui/Input/Checkbox/CheckboxAlt";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
 interface Props {
   startPage: number;
@@ -28,7 +29,7 @@ const TopicItem: FC<Props> = ({
 
   return (
     <div
-      className={cn("border-b border-b-gray-200 flex flex-col gap-1", {
+      className={cn("border-b border-b-gray-200 flex flex-col", {
         ["bg-gray-100"]: isRead,
       })}
     >
@@ -60,7 +61,7 @@ const TopicItem: FC<Props> = ({
                 : `Pages ${startPage} - ${endPage}`}
             </p>
             <p className="text-[#8B8B8B] text-sm m-0 mt-2 leading-snug truncate text-left">
-              {title}
+              {capitalizeFirstLetterOfEachWord(title)}
             </p>
           </div>
         </button>
@@ -78,12 +79,12 @@ const TopicItem: FC<Props> = ({
       <div
         className={cn(
           "grid transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 "
         )}
       >
         <div className="overflow-hidden">
-          <div className="m-0 px-4 py-2 pl-8 -mt-2">
-            <p className="text-sm">{shortDescription}</p>
+          <div className="m-0 px-4 py-2 pl-8 ">
+            <p className="text-sm w-full">{shortDescription}</p>
           </div>
         </div>
       </div>

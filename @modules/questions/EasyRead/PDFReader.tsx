@@ -239,51 +239,52 @@ const PDFReader: FC<Props> = ({
   }, [totalPages, containerWidth]);
 
   return (
-    <div className="flex">
-      <div
-        className="h-[calc(100vh-52px)] w-full bg-gray-200 overflow-y-auto  no-scrollbar px-2 flex"
-        ref={containerRef}
-      >
-        <motion.div
-          key="modal"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.3 }}
-          className=" w-full h-full mx-auto "
-        >
-          <div className="z-10 max-md:shadow-lg max-md:w-full max-md:fixed w-fit mx-auto flex items-center max-md:justify-center max-md:py-1 gap-4 md:absolute md:top-1 left-1/2  -translate-x-1/2 md:rounded-md bg-white">
-            <div>
-              <AltTabContainer
-                data={tabs.map((t) => {
-                  return { isActive: activeTab === t, title: t };
-                })}
-                handleClick={(tab) => {
-                  setActiveTab(tab);
-                }}
-              />
-            </div>
+    <>
+      <div className="z-10 max-md:shadow-lg max-md:w-full max-md:sticky max-md:top-0 w-fit mx-auto flex items-center max-md:justify-center max-md:py-1 gap-4 md:absolute md:top-1 left-1/2  md:-translate-x-1/2 md:rounded-md bg-white">
+        <div>
+          <AltTabContainer
+            data={tabs.map((t) => {
+              return { isActive: activeTab === t, title: t };
+            })}
+            handleClick={(tab) => {
+              setActiveTab(tab);
+            }}
+          />
+        </div>
 
-            <PageControls
-              handlePageInputVal={setPageInputVal}
-              goToPage={goToPage}
-              pageInputVal={pageInputVal}
-              pageNumber={pageNumber}
-              totalPages={totalPages}
-            />
-          </div>
-
-          {/* PDF Content */}
-          <div className="relative w-full h-full max-md:pt-[74px]">
-            <div>{renderPDF(originalFileUrl)}</div>
-          </div>
-        </motion.div>
+        <PageControls
+          handlePageInputVal={setPageInputVal}
+          goToPage={goToPage}
+          pageInputVal={pageInputVal}
+          pageNumber={pageNumber}
+          totalPages={totalPages}
+        />
       </div>
+      <div className="flex">
+        <div
+          className="h-[calc(100vh-50px)] w-full bg-gray-200 overflow-y-auto  no-scrollbar px-2 flex"
+          ref={containerRef}
+        >
+          <motion.div
+            key="modal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className=" w-full h-full mx-auto "
+          >
+            {/* PDF Content */}
+            <div className="relative w-full h-full">
+              <div>{renderPDF(originalFileUrl)}</div>
+            </div>
+          </motion.div>
+        </div>
 
-      {/* topics */}
+        {/* topics */}
 
-      <TopicsContainer />
-    </div>
+        <TopicsContainer />
+      </div>
+    </>
   );
 };
 

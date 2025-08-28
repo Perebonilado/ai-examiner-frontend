@@ -175,17 +175,17 @@ const TopicsContainer: FC<Props> = ({
 
         {/* Scrollable List */}
         {topics && (
-          <div
-            className="w-full  overflow-y-auto no-scrollbar h-full pb-20"
-            style={{
-              maxHeight:
-                topicsScrollContainerMaxHeightPx === null
-                  ? "unset"
-                  : `${topicsScrollContainerMaxHeightPx}px`,
-            }}
-          >
-            {topics.map((topic, idx) => {
-              return (
+          <div className="relative w-full h-full">
+            <div
+              className="w-full overflow-y-auto no-scrollbar h-full pb-20"
+              style={{
+                maxHeight:
+                  topicsScrollContainerMaxHeightPx === null
+                    ? "unset"
+                    : `${topicsScrollContainerMaxHeightPx}px`,
+              }}
+            >
+              {topics.map((topic, idx) => (
                 <TopicItem
                   {...topic}
                   key={idx}
@@ -202,8 +202,11 @@ const TopicsContainer: FC<Props> = ({
                     });
                   }}
                 />
-              );
-            })}
+              ))}
+            </div>
+
+            {/* Fade overlay */}
+            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
           </div>
         )}
       </div>

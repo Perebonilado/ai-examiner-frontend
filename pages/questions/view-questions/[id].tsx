@@ -285,7 +285,7 @@ const ViewQuestions: NextPage = () => {
           <div>
             <TopicsContainer
               easyReadView={false}
-              topicsScrollContainerMaxHeightPx={400}
+              topicsScrollContainerMaxHeightPx={550}
               customHeader={(props) => {
                 return <TopicsHeaderAlt {...props} />;
               }}

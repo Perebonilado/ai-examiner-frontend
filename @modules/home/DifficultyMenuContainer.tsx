@@ -15,7 +15,7 @@ const DifficultyMenuContainer: FC<Props> = ({
   handleBack
 }) => {
   return (
-    <div className="bg-white p-6 pt-0 rounded-2xl min-w-full">
+    <div className="bg-white pt-0 rounded-2xl min-w-full">
       <h3 className="text-lg font-bold mb-6">Choose your difficulty level</h3>
 
       <div className="mt-4 flex flex-col gap-5">

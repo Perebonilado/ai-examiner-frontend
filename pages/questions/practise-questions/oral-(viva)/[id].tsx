@@ -20,7 +20,6 @@ import { toast } from "react-toastify";
 import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
 import InitiateVivaContainer from "@/@modules/questions/InitiateVivaContainer";
 import VivaAnalysisContainer from "@/@modules/questions/VivaAnalysisContainer";
-import { VivaAnalysisModel } from "@/models/viva.model";
 import CallPreparationConfirmation from "@/@modules/questions/CallPreparationConfirmation";
 import PulseCallIndicator from "@/@modules/questions/PulseCallIndicator";
 import {
@@ -35,7 +34,6 @@ import { useDispatch } from "react-redux";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
-  setMessages,
 } from "@/features/documentChatSlice";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
 import UpgradeAccountForm from "@/@shared/components/UpgradeAccountForm";

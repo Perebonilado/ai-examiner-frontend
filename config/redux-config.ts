@@ -24,6 +24,8 @@ import { PreferredLanguageService } from "@/api-services/preferred-language.serv
 import { documentChatReducer } from "@/features/documentChatSlice";
 import { imageSearchReducer } from "@/features/imageSearchSlice";
 import { navigationSliceReducer } from "@/features/navigationSlice";
+import { newTestSliceReducer } from "@/features/newTestSlice";
+import { ReadingProgressService } from "@/api-services/reading-progress.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -47,11 +49,13 @@ export const reduxStore = configureStore({
     [PerformanceTrackingService.reducerPath]:
       PerformanceTrackingService.reducer,
     [PreferredLanguageService.reducerPath]: PreferredLanguageService.reducer,
+    [ReadingProgressService.reducerPath]: ReadingProgressService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
     documentChatReducer: documentChatReducer,
     imageSearchReducer: imageSearchReducer,
-    navigationSliceReducer: navigationSliceReducer
+    navigationSliceReducer: navigationSliceReducer,
+    newTestSliceReducer: newTestSliceReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat([
@@ -74,6 +78,7 @@ export const reduxStore = configureStore({
       IpService.middleware,
       PerformanceTrackingService.middleware,
       PreferredLanguageService.middleware,
+      ReadingProgressService.middleware,
     ]),
 });
 

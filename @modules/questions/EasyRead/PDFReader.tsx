@@ -16,13 +16,13 @@ import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
 import { useModalContext } from "@/contexts/ModalContext";
-import TextSelectionPopup from "@/@shared/components/TextSelectionPopUp";
 import { DocumentContentModel } from "@/models/document.model";
 import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import PageControls from "./PageControls";
 import cn from "classnames";
 import { HighlightableText } from "@/@shared/components/HighlightableText";
 import VirtualScroll from "react-dynamic-virtual-scroll";
+import TopicsContainer from "./TopicsContainer";
 
 pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
@@ -239,44 +239,50 @@ const PDFReader: FC<Props> = ({
   }, [totalPages, containerWidth]);
 
   return (
-    <div
-      className="h-[calc(100vh-52px)] bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar px-2"
-      ref={containerRef}
-    >
-      <motion.div
-        key="modal"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        transition={{ duration: 0.3 }}
-        className=" w-full h-full mx-auto "
+    <div className="flex">
+      <div
+        className="h-[calc(100vh-52px)] w-full bg-gray-200 overflow-y-auto max-md:mt-[50px] no-scrollbar px-2 flex"
+        ref={containerRef}
       >
-        <div className="z-10 max-md:shadow-lg max-md:w-full max-md:fixed w-fit mx-auto flex items-center max-md:justify-center max-md:py-1 gap-4 md:absolute md:top-1 left-1/2  -translate-x-1/2 md:rounded-md bg-white">
-          <div>
-            <AltTabContainer
-              data={tabs.map((t) => {
-                return { isActive: activeTab === t, title: t };
-              })}
-              handleClick={(tab) => {
-                setActiveTab(tab);
-              }}
+        <motion.div
+          key="modal"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.3 }}
+          className=" w-full h-full mx-auto "
+        >
+          <div className="z-10 max-md:shadow-lg max-md:w-full max-md:fixed w-fit mx-auto flex items-center max-md:justify-center max-md:py-1 gap-4 md:absolute md:top-1 left-1/2  -translate-x-1/2 md:rounded-md bg-white">
+            <div>
+              <AltTabContainer
+                data={tabs.map((t) => {
+                  return { isActive: activeTab === t, title: t };
+                })}
+                handleClick={(tab) => {
+                  setActiveTab(tab);
+                }}
+              />
+            </div>
+
+            <PageControls
+              handlePageInputVal={setPageInputVal}
+              goToPage={goToPage}
+              pageInputVal={pageInputVal}
+              pageNumber={pageNumber}
+              totalPages={totalPages}
             />
           </div>
 
-          <PageControls
-            handlePageInputVal={setPageInputVal}
-            goToPage={goToPage}
-            pageInputVal={pageInputVal}
-            pageNumber={pageNumber}
-            totalPages={totalPages}
-          />
-        </div>
+          {/* PDF Content */}
+          <div className="relative w-full h-full max-md:pt-[74px]">
+            <div>{renderPDF(originalFileUrl)}</div>
+          </div>
+        </motion.div>
+      </div>
 
-        {/* PDF Content */}
-        <div className="relative w-full h-full max-md:pt-[74px]">
-          <div>{renderPDF(originalFileUrl)}</div>
-        </div>
-      </motion.div>
+      {/* topics */}
+
+      <TopicsContainer />
     </div>
   );
 };

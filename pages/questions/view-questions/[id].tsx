@@ -236,7 +236,7 @@ const ViewQuestions: NextPage = () => {
         />
 
         {activeTab === "Summary" && (
-          <div>
+          <div className="min-h-[800px]">
             {summaryData ? (
               <SummaryContainer summary={summaryData?.summary || ""} />
             ) : null}
@@ -244,7 +244,7 @@ const ViewQuestions: NextPage = () => {
         )}
 
         {activeTab === "Related Videos" && (
-          <div>
+          <div className="min-h-[800px]">
             {!relatedVideos && relatedVideosError && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <ErrorMessage message="Something went wrong while trying to load related videos" />
@@ -282,7 +282,7 @@ const ViewQuestions: NextPage = () => {
         )}
 
         {activeTab === "Topics" && (
-          <div>
+          <div className="min-h-[800px]">
             <TopicsContainer
               easyReadView={false}
               topicsScrollContainerMaxHeightPx={550}
@@ -294,7 +294,7 @@ const ViewQuestions: NextPage = () => {
         )}
 
         {activeTab === "Tests" && (
-          <div>
+          <div className="min-h-[800px]">
             {!data && error && (
               <div className="flex flex-col gap-4 justify-center items-center py-8">
                 <ErrorMessage message="Something went wrong while trying to get question summaries for this document" />

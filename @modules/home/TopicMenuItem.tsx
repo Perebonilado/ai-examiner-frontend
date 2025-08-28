@@ -23,11 +23,13 @@ const TopicMenuItem: FC<Props> = ({ handleSelect, selected, topic }) => {
       }}
     >
       <p className="text-sm w-full text-center">{topic.title}</p>
-      <p className="text-xs mt-1 text-gray-400 text-center">
-        {topic.startPage == topic.endPage
-          ? `Page ${topic.startPage}`
-          : `Pages ${topic.startPage} - ${topic.endPage}`}
-      </p>
+      {topic.startPage && topic.endPage && (
+        <p className="text-xs mt-1 text-gray-400 text-center">
+          {topic.startPage == topic.endPage
+            ? `Page ${topic.startPage}`
+            : `Pages ${topic.startPage} - ${topic.endPage}`}
+        </p>
+      )}
     </div>
   );
 };

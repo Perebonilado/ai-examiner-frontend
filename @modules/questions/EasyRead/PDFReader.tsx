@@ -281,9 +281,8 @@ const PDFReader: FC<Props> = ({
       </div>
 
       {/* topics */}
-      <div className="h-[calc(100vh-52px)] w-[500px] bg-gray-200 p-4 max-md:hidden">
-        <TopicsContainer />
-      </div>
+
+      <TopicsContainer />
     </div>
   );
 };

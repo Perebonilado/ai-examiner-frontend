@@ -71,107 +71,124 @@ const TopicsContainer: FC = () => {
     }
   };
 
-  const [ readingProgress, setReadingProgress ] = useState(0)
+  const [readingProgress, setReadingProgress] = useState(0);
+  const [showTopicsContainer, setShowTopicsContainer] = useState(true);
 
-  useEffect(()=>{
-    if(topics && topics.length) {
-      const readTopics = topics.filter((t)=>t.isRead)
-      const readingPercentage = Math.floor((readTopics.length / topics.length) * 100);
-      setReadingProgress(Math.floor(readingPercentage))
+  useEffect(() => {
+    if (topics && topics.length) {
+      const readTopics = topics.filter((t) => t.isRead);
+      const readingPercentage = Math.floor(
+        (readTopics.length / topics.length) * 100
+      );
+      setReadingProgress(Math.floor(readingPercentage));
     }
-  },[JSON.stringify(topics)])
 
-  return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full">
-      {/* Header */}
-      <div className="flex flex-col gap-4 justify-between border-b border-gray-100 px-4 py-3 bg-gray-50">
-        {markedTopics.size === 0 ? (
-          <ReadingProgressBar progress={readingProgress} />
-        ) : (
-          <div className="flex justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <Button
-                title="New test"
-                size="small"
-                onClick={() => {
-                  dispatch(
-                    openNewTestForm({
-                      documentId,
-                      topics: topics || [],
-                      selectedTopics: markedTopics.values().toArray(),
-                    })
-                  );
-                }}
-              />
-              {markedTopics.values().some((topic) => topic.isRead === false) ? (
-                <Button
-                  title="Mark as read"
-                  size="small"
-                  variant="outlined"
-                  onClick={handleMarkAsRead}
-                />
-              ) : (
-                <Button
-                  title="Mark as unread"
-                  size="small"
-                  variant="outlined"
-                  onClick={handleMarkAsUnread}
-                />
-              )}
-            </div>
+    if (topics?.length) {
+      const hasPages = topics.every(
+        (topic) => topic.startPage && topic.endPage
+      );
 
-            <div className="flex items-center mr-0">
-              <CheckboxAlt
-                handleCheck={() => {
-                  if (topics?.length) {
-                    if (markedTopics.size === topics.length) {
-                      setMarkedTopics((prev) => {
-                        const emtpyMap: typeof prev = new Map();
-                        return emtpyMap;
-                      });
-                    } else {
-                      setMarkedTopics((prev) => {
-                        const newMap: typeof prev = new Map();
-                        for (const topic of topics) {
-                          newMap.set(topic.id, topic);
-                        }
-                        return newMap;
-                      });
+      if (!hasPages) {
+        setShowTopicsContainer(false);
+      }
+    }
+  }, [JSON.stringify(topics)]);
+
+  return !showTopicsContainer ? null : (
+    <div className="h-[calc(100vh-52px)] w-[500px] bg-gray-200 p-4 max-md:hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full">
+        {/* Header */}
+        <div className="flex flex-col gap-4 justify-between border-b border-gray-100 px-4 py-3 bg-gray-50">
+          {markedTopics.size === 0 ? (
+            <ReadingProgressBar progress={readingProgress} />
+          ) : (
+            <div className="flex justify-between gap-3">
+              <div className="flex items-center gap-2">
+                <Button
+                  title="New test"
+                  size="small"
+                  onClick={() => {
+                    dispatch(
+                      openNewTestForm({
+                        documentId,
+                        topics: topics || [],
+                        selectedTopics: markedTopics.values().toArray(),
+                      })
+                    );
+                  }}
+                />
+                {markedTopics
+                  .values()
+                  .some((topic) => topic.isRead === false) ? (
+                  <Button
+                    title="Mark as read"
+                    size="small"
+                    variant="outlined"
+                    onClick={handleMarkAsRead}
+                  />
+                ) : (
+                  <Button
+                    title="Mark as unread"
+                    size="small"
+                    variant="outlined"
+                    onClick={handleMarkAsUnread}
+                  />
+                )}
+              </div>
+
+              <div className="flex items-center mr-0">
+                <CheckboxAlt
+                  handleCheck={() => {
+                    if (topics?.length) {
+                      if (markedTopics.size === topics.length) {
+                        setMarkedTopics((prev) => {
+                          const emtpyMap: typeof prev = new Map();
+                          return emtpyMap;
+                        });
+                      } else {
+                        setMarkedTopics((prev) => {
+                          const newMap: typeof prev = new Map();
+                          for (const topic of topics) {
+                            newMap.set(topic.id, topic);
+                          }
+                          return newMap;
+                        });
+                      }
                     }
-                  }
-                }}
-                isChecked={markedTopics.size === topics?.length}
-              />
+                  }}
+                  isChecked={markedTopics.size === topics?.length}
+                />
+              </div>
             </div>
+          )}
+        </div>
+
+        {/* Scrollable List */}
+        {topics && (
+          <div className="w-full  overflow-y-auto no-scrollbar h-full pb-20">
+            {topics.map((topic, idx) => {
+              return (
+                <TopicItem
+                  {...topic}
+                  key={idx}
+                  isChecked={!!markedTopics.get(topic.id)}
+                  handleCheck={(id) => {
+                    setMarkedTopics((prev) => {
+                      const newMap = new Map(prev);
+                      if (newMap.get(id)) {
+                        newMap.delete(id);
+                      } else {
+                        newMap.set(id, topic);
+                      }
+                      return newMap;
+                    });
+                  }}
+                />
+              );
+            })}
           </div>
         )}
       </div>
-
-      {/* Scrollable List */}
-      {topics && (
-        <div className="w-full  overflow-y-auto no-scrollbar h-full pb-20">
-          {topics.map((topic, idx) => {
-            return (
-              <TopicItem
-                {...topic}
-                key={idx}
-                isChecked={!!markedTopics.get(topic.id)}
-                handleCheck={(id) => {
-                  setMarkedTopics((prev) => {
-                    const newMap = new Map(prev);
-                    if (newMap.get(id)) {
-                      newMap.delete(id);
-                    } else {
-                      newMap.set(id, topic);
-                    }
-                    return newMap;
-                  });
-                }}
-              />
-            );
-          })}
-        </div>
-      )}
     </div>
   );
 };

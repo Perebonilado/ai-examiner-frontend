@@ -44,14 +44,14 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
       />
 
       {/* Main content area */}
-      <section className="flex flex-1 w-full max-h-screen overflow-hidden">
+      <section className="flex flex-1 w-full max-h-screen md:overflow-hidden">
         {/* Desktop Sidebar + TopNav */}
         <div className="max-md:hidden">
           <TopNav />
           <Sidebar />
         </div>
 
-        <main className="flex-1 w-full overflow-y-auto">
+        <main className="flex-1 w-full md:overflow-y-auto">
           {/* Desktop-only header actions */}
           <div className="max-md:hidden flex items-center justify-between border-b border-b-gray-300">
             {handleBack && (

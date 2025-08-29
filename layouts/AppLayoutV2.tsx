@@ -44,7 +44,7 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
       />
 
       {/* Main content area */}
-      <section className="flex flex-1 w-full max-h-screen md:overflow-hidden">
+      <section className="flex flex-1 w-full md:max-h-screen md:overflow-hidden">
         {/* Desktop Sidebar + TopNav */}
         <div className="max-md:hidden">
           <TopNav />

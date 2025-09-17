@@ -129,43 +129,6 @@ const PDFReader: FC<Props> = ({
           options={options}
           onItemClick={(e) => goToPage(e.pageNumber)}
         >
-          {/* <VirtualScroll
-            className="List"
-            minItemHeight={20}
-            totalLength={totalPages}
-            renderItem={(idx: number) => {
-              return (
-                <div
-                  className={cn(
-                    "mb-4 relative  flex items-center justify-center"
-                  )}
-                  key={`page-${idx + 1}`}
-                  data-page-number={idx + 1}
-                  ref={(el) => {
-                    pageRefs.current[idx] = el;
-                  }}
-                >
-                  {renderModifiedContent(idx)}
-                  <div
-                    className={cn(``, {
-                      ["opacity-0"]: activeTab == "Simplified",
-                    })}
-                  >
-                    <Page
-                      pageNumber={idx + 1}
-                      width={
-                        containerWidth
-                          ? Math.min(containerWidth, maxWidth)
-                          : maxWidth
-                      }
-                      className={"relative"}
-                      scale={zoom}
-                    ></Page>
-                  </div>
-                </div>
-              );
-            }}
-          /> */}
           {new Array(totalPages).fill("").map((_, idx) => {
             return (
               <div

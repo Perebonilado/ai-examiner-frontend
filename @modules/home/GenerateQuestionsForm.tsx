@@ -243,16 +243,13 @@ const GenerateQuestionsForm: FC = () => {
     setActiveTab(tabs.filter((t) => t.isActive)[0].title);
   }, [JSON.stringify(tabs)]);
 
-  const [
-    updateDocument,
-    {
-      isLoading: docUpdateLoading,
-      isSuccess: docUpdateSuccess,
-      error: docUpdateError,
-    },
-  ] = useUpdateDocumentMutation();
-
   const handleStartStudying = async () => {
+    const [summary, easyRead] = studyModeFormats.map((f) => f.value);
+    if (!!permissions && permissions.maxGenerationReached && selectedStudyTool === easyRead) {
+      setModalContent(<MaxGenerationModal body="An upgrade is required to use Easy Read"/>);
+      return
+    }
+
     if (formik.values.title.trim().length) {
       setModalContent(<AppLoader loaderMessage="Loading..." />);
       const data = await reduxStore.dispatch(
@@ -268,7 +265,6 @@ const GenerateQuestionsForm: FC = () => {
       }
     }
 
-    const [summary, easyRead] = studyModeFormats.map((f) => f.value);
     if (selectedStudyTool === summary) {
       router.push(`/questions/view-questions/${documentId}?tab=Summary`);
     } else if (selectedStudyTool === easyRead) {

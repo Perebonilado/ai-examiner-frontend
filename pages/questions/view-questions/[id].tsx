@@ -46,6 +46,7 @@ import NewTestForm from "@/@modules/questions/NewTestForm";
 import { openNewTestForm } from "@/features/newTestSlice";
 import TopicsContainer from "@/@modules/questions/EasyRead/TopicsContainer";
 import TopicsHeaderAlt from "@/@modules/questions/EasyRead/TopicsHeaderAlt";
+import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -133,11 +134,26 @@ const ViewQuestions: NextPage = () => {
   ]);
 
   useEffect(() => {
-    const { tab } = router.query;
+    const { tab, maxEasyRead } = router.query;
     if (tab && typeof tab === "string" && tabs.includes(tab)) {
       setActiveTab(tab);
     } else {
       setActiveTab(tabs[0]);
+    }
+
+    if (maxEasyRead) {
+      setModalContent(
+        <MaxGenerationModal body="An upgrade is required to continue using Easy Read" />
+      );
+      const tabQueryParam = tab && typeof tab === "string" ? `?tab=${tab || ""}` : ""
+      const [currentPath]= router.asPath.split("?")
+      router.push(
+        currentPath,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     }
   }, [router.query]);
 

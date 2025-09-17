@@ -12,11 +12,12 @@ import dynamic from "next/dynamic";
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import Button from "@/@shared/ui/Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setDocumentIdInView } from "@/features/documentChatSlice";
 import Modal from "@/@shared/components/Modal";
 import EasyReadHighlightModal from "@/@modules/questions/EasyRead/EasyReadHighlightModal";
 import { hasSeenEasyReadHowToUseModal } from "@/constants";
+import { RootState } from "@/config/redux-config";
 const PDFReader = dynamic(
   () => import("@/@modules/questions/EasyRead/PDFReader"),
   {
@@ -33,6 +34,15 @@ const EasyRead: NextPage = () => {
       setdocumentId(params.id as string);
     }
   }, [params]);
+  const permissions = useSelector(
+    (state: RootState) => state.permissionsState.permissions
+  );
+
+  useEffect(()=>{
+    if (!!permissions && permissions.maxGenerationReached && documentId) {
+      router.push(`/questions/view-questions/${documentId}?maxEasyRead=true`)
+    }
+  },[permissions.maxGenerationReached, documentId])
 
   const {
     data: originalFileUrl,
@@ -64,6 +74,10 @@ const EasyRead: NextPage = () => {
       setIsEasyReadHighlightModal(true);
     }
   }, []);
+
+  useEffect(()=>{
+
+  },[])
 
   return (
     <>

@@ -68,6 +68,15 @@ export interface DocumentFileModel {
   modifiedFile: string;
 }
 
+export interface SprintReadDocumentModel {
+  content: string[];
+  totalPages: number
+}
+
+export interface SprintReadDocumentFileQuery {
+  documentId: string;
+}
+
 export interface StoredFileThumbnailModel {
   thumbnailUrl: string;
   iframUrl: string;

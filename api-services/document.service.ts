@@ -19,6 +19,8 @@ import {
   DocumentSummaryModel,
   DocumentSummaryQuery,
   GetAllDocumentsModel,
+  SprintReadDocumentFileQuery,
+  SprintReadDocumentModel,
   StoredFileThumbnailModel,
   StoredFileThumbnailQuery,
   UpdateDocumentPayloadModel,
@@ -179,6 +181,14 @@ export const DocumentService = createApi({
         triggerLoading: false,
       },
     }),
+    getSprintReadDocumentFile: build.query<
+      SprintReadDocumentModel,
+      SprintReadDocumentFileQuery
+    >({
+      query: ({ documentId }) => ({
+        url: `/sprint-read/${documentId}`,
+      }),
+    }),
     getOriginalDocumentFile: build.query<DocumentFileModel, DocumentFileQuery>({
       query: ({ documentId }) => ({
         url: `/original-document-file/${documentId}`,
@@ -254,5 +264,6 @@ export const {
   useGetOriginalDocumentFileQuery,
   useGetFileThumbnailDetailsQuery,
   useGetModifiedContentQuery,
-  useGetWebImageSearchQuery
+  useGetWebImageSearchQuery,
+  useGetSprintReadDocumentFileQuery
 } = DocumentService;

@@ -21,7 +21,7 @@ const TestFormat: FC = () => {
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-base font-bold">Select test format</h3>
       </div>
-      <div className="mt-4 flex flex-col gap-6">
+      <div className="mt-4 flex flex-col gap-6 max-h-[320px] overflow-y-auto">
         {testFormats.map((tf, idx) => {
           return (
             <TestFormatItem

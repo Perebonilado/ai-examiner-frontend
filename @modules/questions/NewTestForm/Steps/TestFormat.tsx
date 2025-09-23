@@ -30,7 +30,6 @@ const TestFormat: FC = () => {
               handleSelect={(format) => {
                 dispatch(selectTestFormat(format));
 
-                // addon permissions
                 const allowCaseStudies = [
                   testFormatsMap.get("Multiple Choice")!.value,
                   testFormatsMap.get("Essay")!.value,

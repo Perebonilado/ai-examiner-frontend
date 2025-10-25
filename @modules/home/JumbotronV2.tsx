@@ -18,7 +18,7 @@ const JumbotronV2: FC<Props> = ({ handleTryForFree }) => {
         </p>
 
         <p className=" text-5xl font-extrabold leading-[50px] w-full max-w-[752px]">
-          Instantly turn your study
+          Turn your study
           <br />
           materials into <span className={textGradient}>practice</span>
           <br />

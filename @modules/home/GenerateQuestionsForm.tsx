@@ -28,6 +28,7 @@ import Spinner from "@/@shared/components/Spinner";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
 import { useGetLookUpsByTypeQuery } from "@/api-services/look-up.service";
 import {
+  capitalizeFirstLetterOfEachWord,
   generateQustionCountOptions,
   getFileNameWithoutExtension,
   getQuestionTypeBasedOnPermission,
@@ -59,6 +60,8 @@ import { IAltTabItem } from "@/@shared/components/Tab/AltTabItem";
 import EasyReadIcon from "@/icons/EasyReadIcon";
 import SummarizeIcon from "@/icons/SummarizeIcon";
 import { TopicsV2Model } from "@/models/file-upload.model";
+import Container from "@/@shared/ui/Container";
+import { useGetUserProfileQuery } from "@/api-services/user.service";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -140,7 +143,7 @@ const GenerateQuestionsForm: FC = () => {
         // selectedQuestionTopics: selectedTopics.length
         //   ? selectedTopics.map((f) => f.label)
         //   : undefined,
-        selectedTopicIds: selectedTopics.map(t=>t.id),
+        selectedTopicIds: selectedTopics.map((t) => t.id),
         questionCount: values.questionCount ? Number(values.questionCount) : 5,
         questionType: values.questionType ? Number(values.questionType) : 3,
         includeUseCases,
@@ -230,8 +233,8 @@ const GenerateQuestionsForm: FC = () => {
   const [isAdditionalSettings, setIsAdditionalSettings] = useState(false);
 
   const [tabs, setTabs] = useState<Omit<IAltTabItem, "handleClick">[]>([
-    { isActive: true, title: "Study Mode" },
-    { isActive: false, title: "Test Mode" },
+    { isActive: true, title: "Test Mode" },
+    { isActive: false, title: "Study Mode" },
   ]);
   const [activeTab, setActiveTab] = useState(
     tabs.filter((t) => t.isActive)[0].title
@@ -245,9 +248,15 @@ const GenerateQuestionsForm: FC = () => {
 
   const handleStartStudying = async () => {
     const [summary, easyRead] = studyModeFormats.map((f) => f.value);
-    if (!!permissions && permissions.maxGenerationReached && selectedStudyTool === easyRead) {
-      setModalContent(<MaxGenerationModal body="An upgrade is required to use Easy Read"/>);
-      return
+    if (
+      !!permissions &&
+      permissions.maxGenerationReached &&
+      selectedStudyTool === easyRead
+    ) {
+      setModalContent(
+        <MaxGenerationModal body="An upgrade is required to use Easy Read" />
+      );
+      return;
     }
 
     if (formik.values.title.trim().length) {
@@ -278,6 +287,8 @@ const GenerateQuestionsForm: FC = () => {
     }
   };
 
+  const { data: userProfile } = useGetUserProfileQuery('');
+
   return !permissions ? null : (
     <section className="min-h-[900px]">
       {isAdditionalSettings && (
@@ -291,7 +302,7 @@ const GenerateQuestionsForm: FC = () => {
             topicsWithPages={topicsWithPages}
             selectedTopics={selectedTopics}
             handleSelectTopics={(topics) => {
-              setSelectedTopics(topics)
+              setSelectedTopics(topics);
             }}
             isCaseStudy={includeUseCases}
             handleCaseStudy={() => {
@@ -354,20 +365,28 @@ const GenerateQuestionsForm: FC = () => {
           />
         </Modal>
       )}
-      <div className="my-3">
-        <AltTabContainer
-          data={tabs}
-          handleClick={(tab) => {
-            const mutatedTabs = tabs.map((t) => {
-              if (t.title === tab) {
-                return { ...t, isActive: true };
-              }
-              return { ...t, isActive: false };
-            });
-            setTabs(mutatedTabs);
-          }}
-        />
-      </div>
+      <Container>
+        <div className="mt-3 mb-4 flex items-center justify-between max-md:flex-col">
+          <p className="text-2xl font-semibold max-md:hidden">
+            Welcome back{userProfile ? <>, <span className="text-gray-500">{capitalizeFirstLetterOfEachWord(userProfile.firstName)}</span></> : null}
+          </p>
+          <div className="flex flex-col justify-center items-center gap-2">
+            <AltTabContainer
+              data={tabs}
+              handleClick={(tab) => {
+                const mutatedTabs = tabs.map((t) => {
+                  if (t.title === tab) {
+                    return { ...t, isActive: true };
+                  }
+                  return { ...t, isActive: false };
+                });
+                setTabs(mutatedTabs);
+              }}
+            />
+            <p className="text-xs text-gray-500 max-md:hidden">Simulate real test conditions</p>
+          </div>
+        </div>
+      </Container>
       <FormikProvider value={formik}>
         <Form>
           <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">

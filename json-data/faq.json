@@ -2,7 +2,7 @@
   {
     "id": 1,
     "body": "Our app supports PDF, DOCX, PPTX, PPT, PNG, JPG, and TXT file formats.",
-    "title": "What document types can I upload"
+    "title": "What document types can I upload?"
   },
   {
     "id": 2,
@@ -13,5 +13,10 @@
     "id": 3,
     "body": "Yes, AI Examiner provides detailed explanations for all questions you answer incorrectly. Understanding why an answer is incorrect is crucial for learning and improvement. When you get a question wrong, you will receive a thorough explanation that breaks down the correct answer and clarifies the key concepts.",
     "title": "Will I get explanations to questions I get wrong?"
+  },
+  {
+    "id": 4,
+    "body": "Some concrete measures we take are to i) never train on the input material, and ii) we never store the input material on our server, and iii) we never share input material between students.",
+    "title": "How do you protect my data?"
   }
 ]

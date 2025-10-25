@@ -287,7 +287,7 @@ const GenerateQuestionsForm: FC = () => {
     }
   };
 
-  const { data: userProfile } = useGetUserProfileQuery('');
+  const { data: userProfile } = useGetUserProfileQuery("");
 
   return !permissions ? null : (
     <section className="min-h-[900px]">
@@ -368,7 +368,15 @@ const GenerateQuestionsForm: FC = () => {
       <Container>
         <div className="mt-3 mb-4 flex items-center justify-between max-md:flex-col">
           <p className="text-2xl font-semibold max-md:hidden">
-            Welcome back{userProfile ? <>, <span className="text-gray-500">{capitalizeFirstLetterOfEachWord(userProfile.firstName)}</span></> : null}
+            Welcome back
+            {userProfile ? (
+              <>
+                ,{" "}
+                <span className="text-gray-500">
+                  {capitalizeFirstLetterOfEachWord(userProfile.firstName)}
+                </span>
+              </>
+            ) : null}
           </p>
           <div className="flex flex-col justify-center items-center gap-2">
             <AltTabContainer
@@ -383,7 +391,11 @@ const GenerateQuestionsForm: FC = () => {
                 setTabs(mutatedTabs);
               }}
             />
-            <p className="text-xs text-gray-500 max-md:hidden">Simulate real test conditions</p>
+            <p className="text-xs text-gray-500 max-md:hidden">
+              {activeTab === "Study Mode"
+                ? "Read with ease and absorb key summaries"
+                : "Simulate real test conditions"}
+            </p>
           </div>
         </div>
       </Container>

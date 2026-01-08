@@ -31,12 +31,17 @@ const JumbotronV2: FC<Props> = ({ handleTryForFree }) => {
         </p>
 
         <div className="inline-block mt-20 mb-40 rounded-[50px] bg-gradient-to-r from-[#9333EA] to-[#F89AEE] p-[4px]">
-          <button
+          {/* <button
             className="py-5 px-12 text-sm bg-[#2F004F] text-white rounded-[50px]"
             onClick={handleTryForFree}
           >
             Try for free
-          </button>
+          </button> */}
+          <Link href={"/auth/login"}>
+            <button className="py-5 px-12 text-sm bg-[#2F004F] text-white rounded-[50px]">
+              Get Started
+            </button>
+          </Link>
         </div>
       </div>
     </Container>

@@ -20,7 +20,7 @@ const UserManagementBox: FC = () => {
     >
       <Avatar
         fallBack="U"
-        imageUrl="https://avatar.iran.liara.run/public/49"
+        imageUrl="/shared/default-avatar.svg"
         size="md"
         alt="user image"
         slateBg={false}

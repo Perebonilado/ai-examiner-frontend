@@ -32,7 +32,7 @@ const UserLogoutBox: FC = () => {
       >
         <Avatar
           fallBack="U"
-          imageUrl="https://avatar.iran.liara.run/public/49"
+          imageUrl="/shared/default-avatar.svg"
           size={"sm"}
           alt="user image"
           slateBg={false}

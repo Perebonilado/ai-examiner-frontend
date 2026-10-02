@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Image from "next/image";
 import c from "classnames";
 import s from "./styles.module.css";
@@ -26,6 +26,12 @@ const Avatar: FC<Props> = ({
   showUsername = false,
   ...props
 }) => {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  useEffect(() => {
+    setImageFailed(false);
+  }, [imageUrl]);
+
   const rootClassName = c(s.root, {
     [s.sm]: size === "sm",
     [s.md]: size === "md",
@@ -38,7 +44,7 @@ const Avatar: FC<Props> = ({
   return (
     <div className="flex items-center gap-3 cursor-pointer" {...props}>
       <div className={rootClassName}>
-        {imageUrl ? (
+        {imageUrl && !imageFailed ? (
           <div className="w-full h-full relative rounded-full overflow-hidden">
             <Image
               layout="fill"
@@ -49,6 +55,8 @@ const Avatar: FC<Props> = ({
               }}
               src={imageUrl}
               alt={alt}
+              sizes={size === "lg" ? "250px" : "48px"}
+              onError={() => setImageFailed(true)}
             />
           </div>
         ) : (

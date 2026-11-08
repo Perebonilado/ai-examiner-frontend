@@ -353,7 +353,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
           }}
           loading={
             <div className="grid h-full place-items-center">
-              <Spinner size="sm" />
+              <Spinner size="sm" label="Loading the document" />
             </div>
           }
           className={cn("flex min-h-full", isZoomed ? "w-max min-w-full" : "")}
@@ -456,7 +456,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
         <div className="flex justify-end gap-2.5 px-5 py-3.5 mt-4 border-t border-line bg-canvas">
           {isExtractingImagesFromPDF ? (
             <div className="h-10 grid place-items-center px-6">
-              <Spinner size="sm" />
+              <Spinner size="sm" label="Getting the pages ready" />
             </div>
           ) : (
             <Button

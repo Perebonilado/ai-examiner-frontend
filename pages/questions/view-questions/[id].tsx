@@ -1,3 +1,4 @@
+import TestCardsSkeleton from "@/@modules/questions/TestCardsSkeleton";
 import ViewQuestionCardContainer from "@/@modules/questions/ViewQuestionCardContainer";
 import AppHead from "@/@shared/components/AppHead";
 import { Pagination } from "@/@shared/components/Pagination/Pagination";
@@ -25,7 +26,6 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { reduxStore, RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
-import Spinner from "@/@shared/components/Spinner";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
@@ -300,12 +300,7 @@ const ViewQuestions: NextPage = () => {
                 <Button title="Reload Question Summaries" onClick={refetch} />
               </div>
             )}
-            {!data && isLoading && (
-              <div className="flex flex-col gap-4 justify-center items-center py-8">
-                <Spinner size="sm" />
-                <p className="text-center font-semibold">Loading Tests</p>
-              </div>
-            )}
+            {!data && isLoading && <TestCardsSkeleton />}
             {data && <ViewQuestionCardContainer data={data?.questions} />}
 
             {data && !data.questions.length && !isLoading && !error && (

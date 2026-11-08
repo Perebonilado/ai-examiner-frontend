@@ -184,6 +184,46 @@ iframe.goog-te-banner-frame {
   }
 }
 
+/* Spinner (@shared/components/Spinner): the svg turns while its arc lengthens and shortens. */
+.aix-spinner {
+  animation: aix-spinner-turn 1.4s linear infinite;
+}
+.aix-spinner-arc {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 4 100;
+  stroke-dashoffset: 0;
+  animation: aix-spinner-dash 1.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes aix-spinner-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes aix-spinner-dash {
+  /* never shorter than 4% of the ring, so the smallest size doesn't flicker to a dot */
+  0% {
+    stroke-dasharray: 4 100;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 62 100;
+    stroke-dashoffset: -16;
+  }
+  100% {
+    stroke-dasharray: 62 100;
+    stroke-dashoffset: -96;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aix-spinner {
+    animation-duration: 2.4s;
+  }
+  .aix-spinner-arc {
+    animation: none;
+    stroke-dasharray: 28 100;
+  }
+}
+
 * {
   box-sizing: border-box;
 }

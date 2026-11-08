@@ -1,10 +1,12 @@
 import React, { FC } from "react";
 
+/* Small live dot shown beside "Test in progress..." during the call. */
 const PulseCallIndicator: FC = () => {
   return (
-    <div className="w-[15px] h-[15px] rounded-full flex items-center justify-center border border-[#27AA06] animate-pulse">
-      <div className="w-[70%] h-[70%] rounded-full bg-[#27AA06]"></div>
-    </div>
+    <span
+      aria-hidden
+      className="w-1.5 h-1.5 shrink-0 rounded-full bg-success shadow-[0_0_0_3px_var(--success-bg)]"
+    />
   );
 };
 

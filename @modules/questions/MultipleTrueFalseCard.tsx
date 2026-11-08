@@ -1,10 +1,16 @@
-import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import MultipleTrueFalseItem from "./MultipleTrueFalseItem";
 import { MultipleTrueFalseQuestionModel } from "@/models/questions.model";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
 import { QuestionProgressModel } from "@/models/question-progress.model";
 import QuestionExplanation from "./QuestionExplanation";
+import {
+  QuestionCard,
+  QuestionCardTop,
+  QuestionCount,
+  QuestionText,
+  Verdict,
+} from "./TestUI";
 
 interface Props extends MultipleTrueFalseQuestionModel {
   questionNumber: number;
@@ -47,35 +53,60 @@ const MultipleTrueFalseCard: FC<Props> = ({
 }) => {
   const [saveProgress, {}] = useSaveProgressMutation();
 
+  // Answers chosen in this session, so the card can show "3 of 4 correct" after submitting.
+  const [liveAnswers, setLiveAnswers] = useState<Record<string, boolean>>({});
+
+  const answerFor = (optionId: string): boolean | null => {
+    if (optionId in liveAnswers) return liveAnswers[optionId];
+    const fromProgress = progress?.find((p) => p.selectedOptionId === optionId);
+    return fromProgress && typeof fromProgress.selectedAnswer === "boolean"
+      ? fromProgress.selectedAnswer
+      : null;
+  };
+
+  const correctCount = options.filter(
+    (opt) => answerFor(opt.id) === opt.answer
+  ).length;
+
   return (
-    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[15px]">
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-base text-[#939393]">
-          {questionNumber} of {totalQuestionsCount}
-        </p>
-        <SpeechButtonWithProgress
-          question={`
+    <QuestionCard>
+      <QuestionCardTop
+        left={
+          submitted ? (
+            <Verdict
+              isRight={correctCount === options.length}
+              label={`${correctCount} of ${options.length} correct`}
+            />
+          ) : (
+            <QuestionCount
+              number={questionNumber}
+              total={totalQuestionsCount}
+            />
+          )
+        }
+        speakText={`
           ${question}
 
           Option A: ${options[0].value},
           Option B: ${options[1].value},
           Option C: ${options[2].value},
           Option D: ${options[3].value}.`}
-        />
-      </div>
+      />
 
-      <p className="my-3 font-semibold text-base">{question}</p>
+      <QuestionText>{question}</QuestionText>
 
-      <div className="py-4">
-        <div className="text-sm font-semibold flex gap-2 p-4 py-2">
-          <div className="w-[85%] max-sm:w-[70%]"></div>
-          <div className="max-sm:w-[30%] w-[15%] flex justify-between gap-1">
-            <span>True</span>
-            <span>or</span>
-            <span>False</span>
-          </div>
+      <div role="group" aria-label={`Statements for question ${questionNumber}`}>
+        <div className="grid grid-cols-[minmax(0,1fr)_88px] max-md:grid-cols-[minmax(0,1fr)_86px] gap-x-3.5 max-md:gap-x-3 items-center h-[30px] border-b border-line text-xs font-semibold text-muted">
+          <span>Statement</span>
+          <span className="text-center whitespace-nowrap">True or False</span>
         </div>
-        <div className="flex flex-col gap-6">
+        <div
+          className={
+            submitted
+              ? "flex flex-col gap-2 pt-2.5"
+              : "flex flex-col divide-y divide-line"
+          }
+        >
           {options.map((opt, idx) => {
             const selectedOptionInProgress =
               progress?.find((p) => p.selectedOptionId === opt.id) || null;
@@ -90,6 +121,11 @@ const MultipleTrueFalseCard: FC<Props> = ({
                 selectedAnswerInProgress={selectedAnswer as boolean | null}
                 key={idx}
                 handleSetQuestionAnswer={(val) => {
+                  setLiveAnswers((prev) => ({
+                    ...prev,
+                    [val.id]: val.selectedAnswer,
+                  }));
+
                   handleSetQuestionAnswer({
                     ...val,
                     questionIndex: questionNumber - 1,
@@ -115,11 +151,9 @@ const MultipleTrueFalseCard: FC<Props> = ({
       </div>
 
       {submitted && (
-        <div className="mt-3">
-          <QuestionExplanation explanation={explanation} allowViewSource={false}/>
-        </div>
+        <QuestionExplanation explanation={explanation} allowViewSource={false} />
       )}
-    </div>
+    </QuestionCard>
   );
 };
 

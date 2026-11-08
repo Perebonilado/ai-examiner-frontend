@@ -13,14 +13,14 @@ const Modal: FC<PropsWithChildren> = ({ children }) => {
       <motion.div
         className="fixed w-screen h-screen top-0 bottom-0 left-0 z-[1000] flex items-center justify-center"
         style={{
-          backdropFilter: "blur(1.5px)",
-          background: "rgba(0, 0, 0, 0.384)",
+          backdropFilter: "blur(2px)",
+          background: "rgba(15, 12, 24, 0.42)",
         }}
         initial="hidden"
         animate="visible"
         exit="exit"
         variants={fadeVariants}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.2 }}
       >
         {children}
       </motion.div>

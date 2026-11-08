@@ -1,19 +1,12 @@
 import { QuestionOption, QuestionsModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
 import MCQOption from "./MCQOption";
-import cn from "classnames";
-import Button from "@/@shared/ui/Button";
-import Link from "next/link";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
-import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import { useSaveProgressMutation } from "@/api-services/question-progress.service";
-import SpeakerIcon from "@/icons/SpeakerIcon";
-import { useSpeechToText } from "@/hooks/useSpeechToText";
-import { SpeechButtonWithProgress } from "@/@shared/components/SpeechButtonWithProgress";
 import QuestionExplanation from "./QuestionExplanation";
 import ViewSourceDialog from "./ViewSource/ViewSourceDialog";
 import {
@@ -25,6 +18,15 @@ import {
   setNotSureMessage,
   setNotSureQuestion,
 } from "@/features/documentChatSlice";
+import { MessageCircleQuestion } from "lucide-react";
+import {
+  linkButtonClassName,
+  QuestionCard,
+  QuestionCardTop,
+  QuestionCount,
+  QuestionText,
+  Verdict,
+} from "./TestUI";
 
 interface Props extends QuestionsModel {
   questionNumber: number;
@@ -81,11 +83,6 @@ const MCQItem: FC<Props> = ({
     }
   }, []);
 
-  const correctAnswerMarkerStyling = cn(`font-bold pb-4`, {
-    [`text-green-600`]: selectedOption?.id === correctAnswerId,
-    [`text-rose-600`]: selectedOption?.id !== correctAnswerId,
-  });
-
   const permissions = useSelector(
     (state: RootState) => state.permissionsState.permissions
   );
@@ -125,19 +122,44 @@ const MCQItem: FC<Props> = ({
 
   const dispatch = useDispatch();
 
+  const handleNotSure = () => {
+    if (!permissions.canDiscuss) {
+      showSubscribeModalOnDiscussionUnavailable();
+      return;
+    }
+    dispatch(
+      setNotSureQuestion({
+        options: options.map((opt) => opt.value),
+        question: question,
+        questionType: "Multiple Choice",
+      })
+    );
+    dispatch(setNotSureMessage(question));
+
+    setTimeout(() => {
+      dispatch(setIsChatOpen(true));
+    }, 300);
+  };
+
+  const isAnswerSaved = allowSaveProgress && !!selectedOption;
+
   return (
-    <div className="w-full bg-zinc-50 p-[50px] max-md:px-[20px] rounded-xl max-w-[800px] mx-auto border border-gray-200 max-sm:px-[15px]">
-      {submitted && (
-        <p className={correctAnswerMarkerStyling}>
-          {selectedOption?.id === correctAnswerId ? "Correct!" : "Wrong"}
-        </p>
-      )}
-      <div className="flex items-center justify-between gap-2">
-        <p className="text-base text-[#939393]">
-          {questionNumber} of {totalQuestionsCount}
-        </p>
-        <SpeechButtonWithProgress
-          question={`
+    <QuestionCard>
+      <QuestionCardTop
+        left={
+          submitted ? (
+            <Verdict
+              isRight={selectedOption?.id === correctAnswerId}
+              label={selectedOption?.id === correctAnswerId ? "Correct!" : "Wrong"}
+            />
+          ) : (
+            <QuestionCount
+              number={questionNumber}
+              total={totalQuestionsCount}
+            />
+          )
+        }
+        speakText={`
           ${question}
 
           Option A: ${options[0].value},
@@ -145,15 +167,19 @@ const MCQItem: FC<Props> = ({
           Option C: ${options[2].value},
           Option D: ${options[3].value}.
           `}
-        />
-      </div>
-      <p className="my-8 font-semibold text-base">{question}</p>
-      <div className="py-4 flex flex-col gap-6">
+      />
+      <QuestionText>{question}</QuestionText>
+      <div
+        className="flex flex-col gap-2.5"
+        role="group"
+        aria-label={`Options for question ${questionNumber}`}
+      >
         {options.map((opt, idx) => {
           return (
             <MCQOption
               option={opt}
               key={idx}
+              letter={String.fromCharCode(65 + idx)}
               isChecked={!selectedOption ? false : selectedOption.id === opt.id}
               submitted={submitted}
               isRightOption={correctAnswerId === opt.id}
@@ -184,62 +210,44 @@ const MCQItem: FC<Props> = ({
           );
         })}
       </div>
-      {!submitted &&
-        (!permissions.canDiscuss
-          ? allowNotSure && (
-              <div className="mt-3 flex justify-center gap-2">
-                <Button
-                  title="Not Sure?"
-                  className="hover:underline"
-                  variant="text"
-                  onClick={showSubscribeModalOnDiscussionUnavailable}
-                />
-              </div>
-            )
-          : allowNotSure && (
-              <div className="mt-3 flex justify-center gap-2">
-                <Button
-                  title="Not Sure?"
-                  variant="text"
-                  className="hover:underline"
-                  onClick={() => {
-                    dispatch(
-                      setNotSureQuestion({
-                        options: options.map((opt) => opt.value),
-                        question: question,
-                        questionType: "Multiple Choice",
-                      })
-                    );
-                    dispatch(setNotSureMessage(question));
-
-                    setTimeout(() => {
-                      dispatch(setIsChatOpen(true));
-                    }, 300);
-                  }}
-                />
-              </div>
-            ))}
-      {submitted && (
-        <div className="mt-3 flex flex-col gap-3 items-center">
-          <QuestionExplanation
-            explanation={explanation}
-            allowViewSource={allowNotSure}
-            handleViewSource={() => {
-              setModalContent(
-                <ViewSourceDialog
-                  question={question}
-                  documentId={documentId}
-                  handleSourceText={(text) => {
-                    setSource(text);
-                  }}
-                  sourceText={source}
-                />
-              );
-            }}
-          />
+      {!submitted && (allowNotSure || isAnswerSaved) && (
+        <div className="mt-3.5 pt-3 border-t border-dashed border-line flex items-center justify-between gap-2 min-h-[45px]">
+          {allowNotSure ? (
+            <button
+              type="button"
+              className={linkButtonClassName}
+              onClick={handleNotSure}
+            >
+              <MessageCircleQuestion size={16} strokeWidth={1.75} />
+              Not sure?
+            </button>
+          ) : (
+            <span />
+          )}
+          {isAnswerSaved && (
+            <span className="text-xs text-muted">Answer saved</span>
+          )}
         </div>
       )}
-    </div>
+      {submitted && (
+        <QuestionExplanation
+          explanation={explanation}
+          allowViewSource={allowNotSure}
+          handleViewSource={() => {
+            setModalContent(
+              <ViewSourceDialog
+                question={question}
+                documentId={documentId}
+                handleSourceText={(text) => {
+                  setSource(text);
+                }}
+                sourceText={source}
+              />
+            );
+          }}
+        />
+      )}
+    </QuestionCard>
   );
 };
 

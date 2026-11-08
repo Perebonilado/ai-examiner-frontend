@@ -19,8 +19,8 @@ import {
   setDocumentIdInView,
   setDocumentTitleInView,
 } from "@/features/documentChatSlice";
-import TestPageTitle from "@/@modules/questions/TestPageTitle";
 import { openNewTestForm } from "@/features/newTestSlice";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
 const FlashCards: NextPage = () => {
   const [id, setId] = useState("");
@@ -105,6 +105,10 @@ const FlashCards: NextPage = () => {
     );
   };
 
+  const documentTitle = data?.documentTitle
+    ? capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())
+    : "";
+
   return (
     <>
       <AppHead title="Flash Cards" />
@@ -112,6 +116,19 @@ const FlashCards: NextPage = () => {
         handleBack={() => {
           router.push(`/questions/view-questions/${data?.documentId}`);
         }}
+        crumbs={[
+          { label: "All documents", href: "/documents" },
+          ...(data
+            ? [
+                {
+                  label: documentTitle,
+                  href: `/questions/view-questions/${data.documentId}`,
+                },
+              ]
+            : []),
+          { label: "Flashcards" },
+        ]}
+        mobileTitle="Flashcards"
       >
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
@@ -121,19 +138,21 @@ const FlashCards: NextPage = () => {
         )}
 
         {data && (
-          <>
-            <TestPageTitle
-              handleBack={() => {
-                router.push(`/questions/view-questions/${data?.documentId}`);
-              }}
-              title={data.documentTitle.toLowerCase()}
-              handleCopyShareLink={handleCopyShareLink}
-            />
-          </>
-        )}
+          <div className="mx-auto w-full max-w-[680px]">
+            <header className="mb-5">
+              <h1 className="text-2xl leading-[1.25] font-bold tracking-[-0.015em] text-ink [text-wrap:balance] max-md:text-xl">
+                {documentTitle}
+              </h1>
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-subtle">
+                <span>Flashcards</span>
+                <span aria-hidden className="w-[3px] h-[3px] rounded-full bg-control" />
+                <span>
+                  {(data as GetQuestionByIdModel).data.length}{" "}
+                  {(data as GetQuestionByIdModel).data.length === 1 ? "card" : "cards"}
+                </span>
+              </p>
+            </header>
 
-        {data && (
-          <div className="mt-14">
             <FlashCardItemContainer
               data={(data as GetQuestionByIdModel).data.map((d) => {
                 return {

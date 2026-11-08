@@ -1,75 +1,54 @@
 import React, { FC } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import ProgressBar from "@ramonak/react-progress-bar";
+import { AnimatePresence } from "framer-motion";
 import Button from "@/@shared/ui/Button";
+import { FileTypeTileExt } from "@/@shared/components/FileTypeTile";
+import PreparingTestCard from "./PreparingTestCard";
 
 interface Props {
   handleViewSummary: () => void;
   percentageLoading: number;
   handleStartTest: () => void;
+  fileExt?: FileTypeTileExt;
 }
-
-const fadeVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1 },
-  exit: { opacity: 0 },
-};
 
 const QuestionLoading: FC<Props> = ({
   handleViewSummary,
   percentageLoading,
   handleStartTest,
+  fileExt,
 }) => {
+  const isReady = percentageLoading >= 100;
   return (
     <AnimatePresence>
-      <motion.div
-        className="fixed w-screen h-screen top-0 left-0 z-[1000] flex items-center justify-center"
-        style={{
-          backdropFilter: "blur(1.5px)",
-          background: "rgba(0, 0, 0, 0.384)",
-        }}
-        initial="hidden"
-        animate="visible"
-        exit="exit"
-        variants={fadeVariants}
-        transition={{ duration: 0.3 }}
-      >
-        <div className="md:max-w-[450px] max-w-[95vw] w-[90vw] flex flex-col items-center justify-center bg-white py-14 max-h-[90vh] rounded-xl">
-          <p className="text-center px-3 text-2xl font-semibold tracking-wide text-gray-800">
-            {percentageLoading < 100 ? "Preparing Test" : "Your test is ready!"}
-          </p>
-          <p className="text-sm text-center text-gray-500 leading-relaxed max-w-xs mt-1">
-            {percentageLoading < 100
-              ? `Review a quick summary while we generate your test!`
-              : "You may begin your test."}
-          </p>
-
-          <div className="px-8 mt-4 mb-8 w-full">
-            <ProgressBar
-              completed={percentageLoading}
-              height="6px"
-              customLabel=" "
-            />
-          </div>
-
-          <div className="mt-6">
+      <PreparingTestCard
+        percentage={percentageLoading}
+        fileExt={fileExt}
+        title={isReady ? "Your test is ready!" : "Preparing test"}
+        message={
+          isReady
+            ? "You may begin your test."
+            : "Review a quick summary while we generate your test!"
+        }
+        actions={
+          <>
             <Button
-              title="View Summary"
+              title="View summary"
               size="large"
               onClick={handleViewSummary}
               variant="outlined"
+              fullWidth
             />
             <Button
-              title="Start Test"
+              title="Start test"
               size="large"
-              className="mt-4"
+              className="max-md:order-first"
               disabled={percentageLoading < 100}
               onClick={handleStartTest}
               fullWidth
             />
-          </div>
-        </div>
-      </motion.div>
+          </>
+        }
+      />
     </AnimatePresence>
   );
 };

@@ -1,5 +1,7 @@
 import TextField from "@/@shared/ui/Input/TextField";
 import React, { FC } from "react";
+import { Lock } from "lucide-react";
+import AccountSection from "./AccountSection";
 
 interface Props {
   firstName: string;
@@ -7,42 +9,25 @@ interface Props {
   email: string;
 }
 
+const lock = <Lock size={14} strokeWidth={1.75} aria-hidden="true" />;
+
 const PersonalInformationContainer: FC<Props> = ({
   firstName,
   lastName,
   email,
 }) => {
   return (
-    <div className="w-full max-w-[800px]">
-      <h3 className="text-lg font-bold mb-10">Personal Information</h3>
-
-      <div className="flex flex-col gap-8">
-        <div className="flex items-center gap-9">
-          <div style={{ flex: 1 }}>
-            <label className="font-semibold">First Name</label>
-          </div>
-          <div style={{ flex: 2 }}>
-            <TextField value={firstName} disabled />
-          </div>
-        </div>
-        <div className="flex items-center gap-9">
-          <div style={{ flex: 1 }}>
-            <label>Last Name</label>
-          </div>
-          <div style={{ flex: 2 }}>
-            <TextField value={lastName} disabled />
-          </div>
-        </div>
-        <div className="flex items-center gap-9">
-          <div style={{ flex: 1 }}>
-            <label>Email</label>
-          </div>
-          <div style={{ flex: 2 }}>
-            <TextField value={email} disabled />
+    <AccountSection title="Personal information" id="acct-personal-information">
+      <div className="rounded-xl border border-edge bg-surface p-4 shadow-xs md:p-5">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-x-4 md:gap-y-[18px]">
+          <TextField label="First name" value={firstName} disabled readOnly endicon={lock} />
+          <TextField label="Last name" value={lastName} disabled readOnly endicon={lock} />
+          <div className="md:col-span-2">
+            <TextField label="Email" type="email" value={email} disabled readOnly endicon={lock} />
           </div>
         </div>
       </div>
-    </div>
+    </AccountSection>
   );
 };
 

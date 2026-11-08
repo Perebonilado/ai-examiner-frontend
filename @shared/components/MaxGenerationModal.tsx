@@ -4,6 +4,7 @@ import useClickOutside from "@/hooks/useClickOutside";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useRouter } from "next/router";
 import Dialog from "./Dialog";
+import { Gauge } from "lucide-react";
 
 interface Props {
   title?: string;
@@ -25,22 +26,28 @@ const MaxGenerationModal: FC<Props> = ({
   return (
     <Dialog ref={ref} handleClose={handleClose}>
       <div
-        className="w-full flex flex-col gap-1 justify-center bg-white"
+        className="-mt-8 w-full flex flex-col items-center text-center bg-surface"
         ref={ref}
       >
-        <h1 className="text-xl font-bold text-center">{title}</h1>
-        <div className="mb-6">
-          <p className="text-sm text-center">{body}</p>
-        </div>
+        <span className="grid place-items-center w-[52px] h-[52px] mb-4 rounded-full bg-warning-bg text-warning">
+          <Gauge size={22} strokeWidth={1.75} aria-hidden />
+        </span>
+        <h2 className="text-xl font-bold tracking-[-0.02em] text-ink [text-wrap:balance]">
+          {title}
+        </h2>
+        <p className="mt-1.5 text-[15px] leading-normal text-subtle [text-wrap:balance]">
+          {body}
+        </p>
 
-        <div className="mx-auto">
+        <div className="mt-[22px] w-full">
           <Button
-            title="Upgrade Plan"
+            title="Upgrade plan"
             onClick={() => {
               router.push("/pricing");
               handleClose && handleClose();
             }}
             size="large"
+            fullWidth
           />
         </div>
       </div>

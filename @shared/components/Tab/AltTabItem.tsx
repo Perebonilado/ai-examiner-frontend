@@ -8,9 +8,9 @@ export interface IAltTabItem {
 }
 
 const AltTabItem: FC<IAltTabItem> = ({ handleClick, isActive, title }) => {
-  const rootClassName = cn(`px-4 py-3 text-xs`, {
-    ["bg-[#9333EA] text-white"]: isActive,
-    ["bg-gray-200 text-[#000000]"]: !isActive,
+  const rootClassName = cn(`h-8 px-3.5 rounded-lg text-[13px] font-semibold whitespace-nowrap transition-colors`, {
+    ["bg-surface text-ink shadow-[0_1px_2px_rgba(16,12,40,.1),0_0_0_0.5px_rgba(16,12,40,.06)]"]: isActive,
+    ["text-subtle hover:text-ink"]: !isActive,
   });
   return (
     <button

@@ -1,7 +1,6 @@
-import Button from "@/@shared/ui/Button";
-import ChevronDown from "@/icons/ChevronDown";
 import React, { FC, useState } from "react";
-import cn from "classnames";
+import { ChevronDown, ChevronUp, FileSearch, Lightbulb } from "lucide-react";
+import { linkButtonClassName } from "./TestUI";
 
 interface Props {
   explanation: string;
@@ -9,6 +8,7 @@ interface Props {
   handleViewSource?: () => void;
 }
 
+/** After submit: a flat well with the explanation, toggled from the card footer. */
 const QuestionExplanation: FC<Props> = ({
   explanation,
   allowViewSource = false,
@@ -16,48 +16,47 @@ const QuestionExplanation: FC<Props> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const expClassName = cn(
-    "transition-max-h duration-500 ease-in-out overflow-hidden",
-    {
-      ["max-h-0"]: !isExpanded,
-      ["max-h-[1500px]"]: isExpanded,
-    }
-  );
-
   return (
     <>
-      <div className="flex flex-col items-center justify-center gap-3">
-        <div className="w-full max-w-[200px]">
-          <Button
-            title={!isExpanded ? "Show Explanation" : "Hide Explanation"}
-            variant="text"
-            fullWidth
-            className="!bg-transparent"
-            endicon={
-              !isExpanded ? (
-                <ChevronDown />
-              ) : (
-                <span className="rotate-180">
-                  <ChevronDown />
-                </span>
-              )
-            }
-            onClick={() => setIsExpanded(!isExpanded)}
-          />
+      {isExpanded && (
+        <div className="mt-3.5 rounded-xl bg-well px-4 py-3.5 max-md:px-3.5 max-md:py-3">
+          <p className="flex items-center gap-2 text-[13px] font-bold text-ink">
+            <Lightbulb size={16} strokeWidth={1.75} className="text-accent" />
+            Explanation
+          </p>
+          <p className="mt-1.5 text-sm leading-[1.65] text-body max-w-[68ch] whitespace-pre-line">
+            {explanation}
+          </p>
+          {allowViewSource && (
+            <div className="mt-2.5 flex justify-end">
+              <button
+                type="button"
+                className={`${linkButtonClassName} !ml-0`}
+                onClick={() => {
+                  if (handleViewSource) handleViewSource();
+                }}
+              >
+                <FileSearch size={16} strokeWidth={1.75} />
+                View source
+              </button>
+            </div>
+          )}
         </div>
-        <div className={expClassName}>
-          <p className="text-sm font-semibold ">{explanation}</p>
-          {allowViewSource && <div className="flex justify-end w-full mt-6">
-            <Button
-              title="View Source"
-              className="!bg-transparent"
-              variant="outlined"
-              onClick={()=>{
-                if(handleViewSource) handleViewSource()
-              }}
-            />
-          </div>}
-        </div>
+      )}
+      <div className="mt-3.5 pt-3 border-t border-dashed border-line flex items-center justify-between gap-2">
+        <button
+          type="button"
+          className={linkButtonClassName}
+          aria-expanded={isExpanded}
+          onClick={() => setIsExpanded(!isExpanded)}
+        >
+          {isExpanded ? (
+            <ChevronUp size={16} strokeWidth={1.75} />
+          ) : (
+            <ChevronDown size={16} strokeWidth={1.75} />
+          )}
+          {isExpanded ? "Hide explanation" : "Show explanation"}
+        </button>
       </div>
     </>
   );

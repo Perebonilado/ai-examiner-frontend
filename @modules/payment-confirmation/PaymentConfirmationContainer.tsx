@@ -1,10 +1,9 @@
-import Spinner from "@/@shared/components/Spinner";
 import Button from "@/@shared/ui/Button";
 import Container from "@/@shared/ui/Container";
 import { useGetSubscriptionDetailsQuery } from "@/api-services/subscription.service";
 import { useState, useEffect, useRef, FC } from "react";
 import Link from "next/link";
-import PatternsBg from "@/@shared/components/PatternsBg";
+import { CircleAlert, CircleCheck } from "lucide-react";
 
 const PaymentConfirmationContainer: FC = () => {
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(true);
@@ -68,27 +67,49 @@ const PaymentConfirmationContainer: FC = () => {
   };
 
   return (
-    <section className="bg-[#FAFAFA] min-h-[80vh] flex flex-col justify-between">
+    <section className="bg-canvas min-h-[80vh] flex flex-col justify-between">
       <Container>
         <div className="py-20">
           {isConfirmingPayment && (
             <>
-              <h2 className="text-lg font-medium text-center">
+              <h2 className="text-lg font-semibold text-center text-ink">
                 Hold on while we confirm your payment
               </h2>
               <div className="flex items-center justify-center mt-4">
-                <Spinner />
+                <svg
+                  className="animate-spin"
+                  width={36}
+                  height={36}
+                  viewBox="0 0 40 40"
+                  fill="none"
+                  role="status"
+                  aria-label="Confirming payment"
+                >
+                  <circle cx="20" cy="20" r="16" strokeWidth="4" stroke="var(--sunken)" />
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r="16"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeDasharray="30 100"
+                    stroke="var(--accent)"
+                  />
+                </svg>
               </div>
             </>
           )}
 
           {!isConfirmingPayment && paymentError && (
-            <div className="flex flex-col gap-4 items-center justify-center">
-              <h2 className="text-3xl font-medium text-center text-rose-700">
+            <div className="flex flex-col gap-3 items-center justify-center text-center">
+              <span className="grid place-items-center w-[52px] h-[52px] mb-1 rounded-full bg-danger-bg text-danger">
+                <CircleAlert size={22} strokeWidth={1.75} aria-hidden />
+              </span>
+              <h2 className="text-2xl font-bold tracking-[-0.02em] text-ink">
                 Your payment could not be processed
               </h2>
-              <p>{paymentConfirmationMessage}</p>
-              <div className="mt-10 bg-white p-10 rounded-xl border border-gray-500">
+              <p className="text-[15px] text-subtle">{paymentConfirmationMessage}</p>
+              <div className="mt-6">
                 <Link href={"/pricing"}>
                   <Button title="Retry payment" size="large" />
                 </Link>
@@ -97,15 +118,18 @@ const PaymentConfirmationContainer: FC = () => {
           )}
 
           {!isConfirmingPayment && !paymentError && (
-            <div className="flex flex-col gap-4 items-center justify-center">
-              <h2 className="text-3xl font-medium text-center text-[#36CE10]">
+            <div className="flex flex-col gap-3 items-center justify-center text-center">
+              <span className="grid place-items-center w-[52px] h-[52px] mb-1 rounded-full bg-success-bg text-success">
+                <CircleCheck size={22} strokeWidth={1.75} aria-hidden />
+              </span>
+              <h2 className="text-2xl font-bold tracking-[-0.02em] text-ink">
                 Your payment was successful!
               </h2>
-              <p>{paymentConfirmationMessage}</p>
+              <p className="text-[15px] text-subtle">{paymentConfirmationMessage}</p>
 
-              <div className="mt-10 bg-white p-10 rounded-xl border border-gray-500">
+              <div className="mt-6">
                 <Button
-                  title="Get Started"
+                  title="Get started"
                   size="large"
                   onClick={handleGetStarted}
                 />
@@ -114,7 +138,6 @@ const PaymentConfirmationContainer: FC = () => {
           )}
         </div>
       </Container>
-      <PatternsBg />
     </section>
   );
 };

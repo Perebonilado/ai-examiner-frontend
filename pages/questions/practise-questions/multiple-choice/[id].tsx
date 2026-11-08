@@ -152,47 +152,53 @@ const Practice: NextPage = () => {
     );
   };
 
+  const backToDocument = () => {
+    router.push(`/questions/view-questions/${data?.documentId}`);
+  };
+
   return (
     <>
       <AppHead title="Multiple Choice" />
 
       <AppLayout
-        handleBack={() => {
-          router.push(`/questions/view-questions/${data?.documentId}`);
-        }}
+        handleBack={backToDocument}
+        mobileTitle="Multiple choice"
+        crumbs={[
+          { label: "All documents", href: "/documents" },
+          ...(data
+            ? [
+                {
+                  label: capitalizeFirstLetterOfEachWord(
+                    data.documentTitle.toLowerCase()
+                  ),
+                  href: `/questions/view-questions/${data.documentId}`,
+                },
+              ]
+            : []),
+          { label: "Multiple choice" },
+        ]}
       >
-        {!data && error && (
-          <div className="flex flex-col gap-4 justify-center items-center py-8">
-            <ErrorMessage message="Something went wrong while trying to get questions" />
-            <Button title="Reload Questions" onClick={refetch} />
-          </div>
-        )}
-        <div ref={topOfContainerRef}></div>
-        {data && (
-          <>
+        <div className="mx-auto w-full max-w-[740px]">
+          {!data && error && (
+            <div className="flex flex-col gap-4 justify-center items-center py-8">
+              <ErrorMessage message="Something went wrong while trying to get questions" />
+              <Button title="Reload questions" onClick={refetch} />
+            </div>
+          )}
+          <div ref={topOfContainerRef}></div>
+          {data && (
             <TestPageTitle
-              handleBack={() => {
-                router.push(`/questions/view-questions/${data?.documentId}`);
-              }}
+              handleBack={backToDocument}
               title={data.documentTitle.toLowerCase()}
               handleCopyShareLink={handleCopyShareLink}
               questions={(data as GetQuestionByIdModel).data}
+              meta={[
+                "Multiple choice",
+                `${data.data.length} questions`,
+                isSubmitted && "Submitted",
+              ]}
             />
-
-            {isSubmitted && (
-              <div className="mx-auto w-full max-w-[300px]">
-                <Button
-                  title="Restart"
-                  variant="contained"
-                  size="large"
-                  fullWidth
-                  onClick={handleResetAnswers}
-                />
-              </div>
-            )}
-          </>
-        )}
-        <div>
+          )}
           {data && (
             <MCQContainer
               data={(data as GetQuestionByIdModel).data}
@@ -203,6 +209,7 @@ const Practice: NextPage = () => {
               handleSubmitted={(value) => {
                 setIsSubmitted(value);
               }}
+              handleRestart={handleResetAnswers}
               allowMoreQuestionGeneration={true}
               handleGenerateMoreQuestions={handleNewTest}
               documentId={data.documentId}

@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { reduxStore } from "@/config/redux-config";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import "@/styles/toast.css";
 import ModalProvider from "@/contexts/ModalContext";
 import "react-tooltip/dist/react-tooltip.css";
 import { Analytics } from "@vercel/analytics/react";
@@ -17,6 +18,14 @@ import DocumentChatContainer from "@/@modules/chat/DocumentChatContainer";
 import GenerateQuestionsProvider from "@/contexts/GenerateQuestionsContext";
 import ImageSearchContainer from "@/@shared/components/ImageSearch/ImageSearchContainer";
 import NewTestForm from "@/@modules/questions/NewTestForm";
+import { Plus_Jakarta_Sans } from "next/font/google";
+
+// The app's face, shared with EasiRead.
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
 
 declare global {
   interface Window {
@@ -43,6 +52,11 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
+      <style jsx global>{`
+        :root {
+          --font-sans: ${jakarta.style.fontFamily};
+        }
+      `}</style>
       <noscript>
         <iframe
           src="https://www.googletagmanager.com/ns.html?id=GTM-WXV3SGHG"

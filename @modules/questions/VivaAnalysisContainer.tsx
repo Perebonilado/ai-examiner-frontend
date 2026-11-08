@@ -1,11 +1,8 @@
-import Button from "@/@shared/ui/Button";
 import React, { FC, useEffect, useRef, useState } from "react";
 import VivaAnalysisItemAccordion from "./VivaAnalysisItemAccordion";
 import { VivaAnalysisModel } from "@/models/viva.model";
 import { useGetVivaRecordingQuery } from "@/api-services/questions.service";
-import PlayIcon from "@/icons/PlayIcon";
-import IconButton from "@/@shared/ui/IconButton";
-import PauseIcon from "@/icons/PauseIcon";
+import { Pause, Play } from "lucide-react";
 
 interface Props {
   data: VivaAnalysisModel[];
@@ -58,72 +55,81 @@ const VivaAnalysisContainer: FC<Props> = ({ data, callId }) => {
   };
 
   return (
-    <div className="w-full max-w-[900px] mx-auto">
-      <div className="mx-auto w-fit mb-10 min-w-[250px]">
-        {callRecording && (
-          <div className="flex flex-col items-center">
-            <div className="flex items-center gap-2">
-              <IconButton
-                icon={
-                  isPlaying ? (
-                    <PauseIcon fill="white" />
-                  ) : (
-                    <PlayIcon fill="white" />
-                  )
-                }
-                onClick={togglePlay}
+    <div className="mx-auto w-full max-w-[740px]">
+      {callRecording && (
+        <div className="mb-7 flex items-center gap-3.5 rounded-2xl border border-edge bg-surface px-4 py-3.5 shadow-xs max-md:mb-5">
+          <button
+            type="button"
+            onClick={togglePlay}
+            aria-label={isPlaying ? "Pause conversation" : "Play conversation"}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-brand text-white transition-colors hover:bg-brand-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-bright"
+          >
+            {isPlaying ? (
+              <Pause size={16} strokeWidth={2} fill="currentColor" aria-hidden />
+            ) : (
+              <Play
+                size={16}
+                strokeWidth={2}
+                fill="currentColor"
+                className="translate-x-px"
+                aria-hidden
               />
-              <p className="text-sm font-medium text-gray-400">
-                {isPlaying ? "Pause" : "Play"} Conversation
-              </p>
-            </div>
+            )}
+          </button>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-semibold text-ink">
+              {isPlaying ? "Pause" : "Play"} conversation
+            </p>
             {duration > 0 && (
-              <div className="mt-3 w-full max-w-[400px]">
+              <div className="mt-1.5 flex items-center gap-3">
                 <input
                   type="range"
                   min="0"
                   max={duration}
                   value={currentTime}
+                  aria-label="Conversation position"
                   onChange={(e) => {
                     if (audioRef.current) {
                       audioRef.current.currentTime = Number(e.target.value);
                       setCurrentTime(Number(e.target.value));
                     }
                   }}
-                  className="w-full appearance-none focus:outline-none 
-             [&::-webkit-slider-runnable-track]:bg-[#D9C4F2] 
-             [&::-webkit-slider-runnable-track]:h-2 
-             [&::-webkit-slider-runnable-track]:rounded-full 
-             [&::-webkit-slider-thumb]:appearance-none 
-             [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 
-             [&::-webkit-slider-thumb]:bg-[#9A67E2] 
-             [&::-webkit-slider-thumb]:rounded-full 
-             [&::-webkit-slider-thumb]:mt-[-6px] 
-             [&::-webkit-slider-thumb]:shadow-md 
-             [&::-webkit-slider-thumb]:hover:scale-110 
-             [&::-webkit-slider-thumb]:active:scale-90 
-             [&::-moz-range-track]:bg-[#D9C4F2] 
-             [&::-moz-range-track]:h-2 
-             [&::-moz-range-track]:rounded-full 
-             [&::-moz-range-thumb]:bg-[#9A67E2] 
-             [&::-moz-range-thumb]:h-5 [&::-moz-range-thumb]:w-5 
-             [&::-moz-range-thumb]:rounded-full 
-             [&::-moz-range-thumb]:shadow-md 
-             [&::-moz-range-thumb]:hover:scale-110 
-             [&::-moz-range-thumb]:active:scale-90"
+                  className="h-4 flex-1 cursor-pointer appearance-none bg-transparent focus:outline-none
+             [&::-webkit-slider-runnable-track]:h-1.5
+             [&::-webkit-slider-runnable-track]:rounded-full
+             [&::-webkit-slider-runnable-track]:bg-sunken
+             [&::-webkit-slider-thumb]:mt-[-5px]
+             [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:w-4
+             [&::-webkit-slider-thumb]:appearance-none
+             [&::-webkit-slider-thumb]:rounded-full
+             [&::-webkit-slider-thumb]:bg-accent
+             [&::-webkit-slider-thumb]:shadow-xs
+             focus-visible:[&::-webkit-slider-thumb]:outline
+             focus-visible:[&::-webkit-slider-thumb]:outline-2
+             focus-visible:[&::-webkit-slider-thumb]:outline-offset-2
+             focus-visible:[&::-webkit-slider-thumb]:outline-accent-bright
+             [&::-moz-range-track]:h-1.5
+             [&::-moz-range-track]:rounded-full
+             [&::-moz-range-track]:bg-sunken
+             [&::-moz-range-thumb]:h-4 [&::-moz-range-thumb]:w-4
+             [&::-moz-range-thumb]:rounded-full
+             [&::-moz-range-thumb]:border-0
+             [&::-moz-range-thumb]:bg-accent"
                 />
-                <p className="text-sm w-full justify-between flex mt-2 text-gray-400">
-                  <span>{formatTime(currentTime)}</span>
-                  <span>{formatTime(duration)}</span>
-                </p>
+                <span className="shrink-0 text-xs text-muted tabular-nums">
+                  {formatTime(currentTime)} / {formatTime(duration)}
+                </span>
               </div>
             )}
           </div>
-        )}
+        </div>
+      )}
+
+      <div className="flex flex-col gap-7 max-md:gap-5">
+        {data.map((item, idx) => (
+          <VivaAnalysisItemAccordion {...item} key={idx} />
+        ))}
       </div>
-      {data.map((item, idx) => (
-        <VivaAnalysisItemAccordion {...item} key={idx} />
-      ))}
     </div>
   );
 };

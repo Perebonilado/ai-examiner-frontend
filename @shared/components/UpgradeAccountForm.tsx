@@ -3,17 +3,14 @@ import { SignUpValidation } from "@/validation-schemas/SignUpValidation";
 import { Form, FormikProvider, useFormik } from "formik";
 import React, { FC, useEffect, useState } from "react";
 import Button from "../ui/Button";
-import CloseEyeIcon from "@/icons/CloseEyeIcon";
 import TextField from "../ui/Input/TextField";
-import MessageIcon from "@/icons/MessageIcon";
-import OpenEyeIcon from "@/icons/OpenEyeIcon";
+import { Eye, EyeOff, Mail, X } from "lucide-react";
 import Cookies from "js-cookie";
 import {
   guestAccessToken,
   hasUpgradedAccountInThePastToken,
 } from "@/constants";
 import { AppLoader } from "./AppLoader";
-import CloseIcon from "@/icons/CloseIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 
 const initialValues = {
@@ -67,18 +64,29 @@ const UpgradeAccountForm: FC<Props> = ({
       {isLoading && (
         <AppLoader loaderMessage="One moment... upgrading your account" />
       )}
-      <div className="w-full max-w-[450px] mx-auto p-4 bg-white rounded-lg relative">
+      <div
+        role="dialog"
+        aria-labelledby="upgrade-account-title"
+        className="relative w-[420px] max-w-[calc(100vw-32px)] max-h-[calc(100dvh-32px)] overflow-y-auto mx-auto rounded-2xl border border-edge bg-surface shadow-pop px-6 pt-6 pb-6"
+      >
         <button
-          className="absolute top-4 right-4"
+          type="button"
+          aria-label="Close"
+          className="absolute top-3 right-3 grid h-9 w-9 place-items-center rounded-lg text-muted transition-colors hover:bg-hover hover:text-ink"
           onClick={() => {
             setModalContent(null);
           }}
         >
-          <CloseIcon />
+          <X size={18} strokeWidth={1.75} />
         </button>
-        <div className="text-center mx-auto mb-10">
-          <h2 className="text-2xl font-bold">Upgrade Account</h2>
-          <p className="text-[#667185] mt-4">
+        <div className="mb-6 pr-8">
+          <h2
+            id="upgrade-account-title"
+            className="text-xl font-bold tracking-[-0.02em] text-ink"
+          >
+            Upgrade account
+          </h2>
+          <p className="mt-1.5 text-sm text-subtle">
             Enter your credentials to upgrade your account
           </p>
         </div>
@@ -87,7 +95,7 @@ const UpgradeAccountForm: FC<Props> = ({
           <Form>
             <div className="flex flex-col gap-4">
               <TextField
-                label="First Name"
+                label="First name"
                 placeholder="Enter your first name"
                 {...formik.getFieldProps("firstName")}
                 error={
@@ -96,7 +104,7 @@ const UpgradeAccountForm: FC<Props> = ({
               />
 
               <TextField
-                label="Last Name"
+                label="Last name"
                 placeholder="Enter your last name"
                 {...formik.getFieldProps("lastName")}
                 error={
@@ -110,7 +118,7 @@ const UpgradeAccountForm: FC<Props> = ({
                 placeholder="Enter your email address"
                 {...formik.getFieldProps("email")}
                 error={formik.touched.email ? formik.errors.email : undefined}
-                endicon={<MessageIcon />}
+                endicon={<Mail size={18} strokeWidth={1.75} aria-hidden />}
               />
 
               <TextField
@@ -118,11 +126,18 @@ const UpgradeAccountForm: FC<Props> = ({
                 placeholder="Enter your password"
                 type={hidePassword ? "password" : "text"}
                 endicon={
-                  hidePassword ? (
-                    <CloseEyeIcon handleClick={() => setHidePassword(false)} />
-                  ) : (
-                    <OpenEyeIcon handleClick={() => setHidePassword(true)} />
-                  )
+                  <button
+                    type="button"
+                    aria-label={hidePassword ? "Show password" : "Hide password"}
+                    className="grid place-items-center text-faint hover:text-ink"
+                    onClick={() => setHidePassword(!hidePassword)}
+                  >
+                    {hidePassword ? (
+                      <EyeOff size={18} strokeWidth={1.75} />
+                    ) : (
+                      <Eye size={18} strokeWidth={1.75} />
+                    )}
+                  </button>
                 }
                 {...formik.getFieldProps("password")}
                 error={
@@ -130,9 +145,9 @@ const UpgradeAccountForm: FC<Props> = ({
                 }
               />
 
-              <div className="!mt-8">
+              <div className="mt-2">
                 <Button
-                  title="Upgrade Account"
+                  title="Upgrade account"
                   size="large"
                   type="submit"
                   disabled={isLoading}

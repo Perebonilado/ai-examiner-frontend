@@ -6,16 +6,19 @@ interface Props {
   message: string;
 }
 
+// Ink tooltip: small, flat, soft neutral shadow.
 const ToolTip: FC<PropsWithChildren<Props>> = ({ id, message, children }) => {
   return (
     <div>
-      <div
-        data-tooltip-content={message}
-        data-tooltip-id={id}
-      >
-        {children || 'i'}
+      <div data-tooltip-content={message} data-tooltip-id={id}>
+        {children || "i"}
       </div>
-      <ReactToolTip id={id} />
+      <ReactToolTip
+        id={id}
+        noArrow
+        opacity={1}
+        className="!z-[1200] !rounded-[7px] !bg-ink !px-[9px] !py-1.5 !text-xs !font-medium !text-white !shadow-lift"
+      />
     </div>
   );
 };

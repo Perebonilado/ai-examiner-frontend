@@ -4,32 +4,39 @@ import cn from "classnames";
 interface Props {
   title: string;
   icon: React.ReactNode;
-  isActive: boolean;
-  activeColor: string;
+  tone: "start" | "end";
   handleClick: () => void;
+  disabled?: boolean;
 }
 
+/* The one call button: aubergine "Start call" before the call, red "End call" during it. */
 const CallActionButton: FC<Props> = ({
-  activeColor,
-  icon,
-  isActive,
   title,
+  icon,
+  tone,
   handleClick,
+  disabled,
 }) => {
   return (
-    <div className="flex flex-col gap-2 items-center justify-center">
-      <p className="text-xs font-semibold">{title}</p>
-      <button
-        className="w-[45px] h-[45px] border border-gray-400 rounded-full flex items-center justify-center"
-        onClick={handleClick}
-        style={{
-          borderColor: isActive ? activeColor : "#9ca3af",
-          cursor: isActive ? 'pointer' : 'not-allowed'
-        }}
+    <button
+      type="button"
+      onClick={handleClick}
+      disabled={disabled}
+      className="group flex flex-col items-center gap-2 text-[13px] font-semibold text-body focus-visible:outline-none disabled:cursor-default disabled:text-muted"
+    >
+      <span
+        className={cn(
+          "grid h-16 w-16 place-items-center rounded-full text-white shadow-lift transition-[background-color,transform] duration-150 group-active:scale-[0.97] group-focus-visible:outline group-focus-visible:outline-2 group-focus-visible:outline-offset-[3px] group-focus-visible:outline-accent-bright group-disabled:bg-sunken group-disabled:text-faint group-disabled:shadow-none",
+          {
+            "bg-brand group-hover:bg-brand-hover": tone === "start",
+            "bg-danger group-hover:bg-danger-strong": tone === "end",
+          }
+        )}
       >
         {icon}
-      </button>
-    </div>
+      </span>
+      {title}
+    </button>
   );
 };
 

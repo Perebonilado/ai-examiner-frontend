@@ -1,55 +1,42 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
+// Typing indicator: three quiet dots.
 export default function MessageLoader() {
-  const dotRefs = [useRef(null), useRef(null), useRef(null)];
-  
+  const dotRefs = [
+    useRef<HTMLSpanElement>(null),
+    useRef<HTMLSpanElement>(null),
+    useRef<HTMLSpanElement>(null),
+  ];
+
   useEffect(() => {
-    // Create animations for each dot
-    const animateDot = (dotRef: any, delay:any) => {
-      if (!dotRef.current) return;
-      
-      // Create and configure the animation
-      const animation = dotRef.current.animate(
-        [
-          { transform: 'scale(1)' },
-          { transform: 'scale(1.4)' },
-          { transform: 'scale(1)' }
-        ],
-        {
-          duration: 600,
-          delay,
-          iterations: Infinity,
-          easing: 'ease-in-out'
-        }
-      );
-      
-      return animation;
-    };
-    
-    // Start animations with staggered delays
-    const animations = [
-      animateDot(dotRefs[0], 0),
-      animateDot(dotRefs[1], 150),
-      animateDot(dotRefs[2], 300)
-    ];
-    
-    // Cleanup
+    if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
+
+    const animations = dotRefs.map((ref, i) =>
+      ref.current?.animate(
+        [{ opacity: 0.35 }, { opacity: 1 }, { opacity: 0.35 }],
+        { duration: 1000, delay: i * 160, iterations: Infinity, easing: "ease-in-out" }
+      )
+    );
+
     return () => {
-      animations.forEach(anim => anim?.cancel());
+      animations.forEach((anim) => anim?.cancel());
     };
   }, []);
-  
+
   return (
-    <div>
-      <div className="bg-gray-200 rounded-3xl w-[70px] py-2 flex flex-row items-center justify-center max-w-16">
-        {[0, 1, 2].map((i) => (
-          <div
-            key={i}
-            ref={dotRefs[i]}
-            className="w-[8px] h-[8px] bg-gray-400 rounded-full mx-1"
-          />
-        ))}
-      </div>
-    </div>
+    <span
+      role="status"
+      aria-label="Assistant is typing"
+      className="self-start inline-flex gap-[5px] py-1.5"
+    >
+      {[1, 0.6, 0.35].map((opacity, i) => (
+        <span
+          key={i}
+          ref={dotRefs[i]}
+          style={{ opacity }}
+          className="w-[7px] h-[7px] rounded-full bg-faint"
+        />
+      ))}
+    </span>
   );
 }

@@ -7,7 +7,6 @@ import { useGetQuestionSummariesQuery } from "@/api-services/questions.service";
 import {
   useGetAllUserDocumentsQuery,
   useGetDocumentSummaryQuery,
-  useGetRelatedYoutubeVideosQuery,
   DocumentService,
   useGetFileThumbnailDetailsQuery,
 } from "@/api-services/document.service";
@@ -18,7 +17,6 @@ import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
-import ChevronLeft from "@/icons/ChevronLeft";
 import { useRouter } from "next/router";
 import {
   useGetAllSavedDocumentTopicsQuery,
@@ -27,20 +25,16 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { reduxStore, RootState } from "@/config/redux-config";
 import { toast } from "react-toastify";
-import Tab from "@/@shared/components/Tab";
 import Spinner from "@/@shared/components/Spinner";
 import {
   setDocumentIdInView,
   setDocumentTitleInView,
 } from "@/features/documentChatSlice";
 import SummaryContainer from "@/@modules/documents/SummaryContainer";
-import RelatedVideosContainer from "@/@modules/documents/RelatedVideosContainer";
-import Modal from "@/@shared/components/Modal";
-import RelatedVideoPlayer from "@/@modules/documents/RelatedVideoPlayer";
 import dynamic from "next/dynamic";
 import ViewFileReaderThumbnail from "@/@modules/questions/ViewFileReaderThumbnail";
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
-import EasyReadIcon from "@/icons/EasyReadIcon";
+import { BookOpenText, Plus } from "lucide-react";
 import { DocumentContentModel } from "@/models/document.model";
 import NewTestForm from "@/@modules/questions/NewTestForm";
 import { openNewTestForm } from "@/features/newTestSlice";
@@ -130,7 +124,6 @@ const ViewQuestions: NextPage = () => {
     "Tests",
     "Topics",
     "Summary",
-    "Related Videos",
   ]);
 
   useEffect(() => {
@@ -162,19 +155,6 @@ const ViewQuestions: NextPage = () => {
     { skip: !documentId }
   );
 
-  const {
-    data: relatedVideos,
-    isLoading: relatedVideosLoading,
-    isError: relatedVideosError,
-    refetch: refetchRelatedVideos,
-  } = useGetRelatedYoutubeVideosQuery(
-    { documentId },
-    { skip: !documentId || activeTab !== "Related Videos" }
-  );
-
-  const [currentRelatedVideoId, setCurrentRelatedVideoId] = useState<
-    string | null
-  >(null);
 
   const { data: thumbnail } = useGetFileThumbnailDetailsQuery(
     { documentId },
@@ -183,117 +163,83 @@ const ViewQuestions: NextPage = () => {
 
   return (
     <>
-      {currentRelatedVideoId && (
-        <Modal>
-          <RelatedVideoPlayer
-            videoId={currentRelatedVideoId}
-            handleClose={() => {
-              setCurrentRelatedVideoId(null);
-            }}
-          />
-        </Modal>
-      )}
       <AppHead title="View Questions" />
       <AppLayout
         handleBack={() => {
           router.push(`/documents`);
         }}
       >
-        <div className="hidden max-md:block">
-          <Button
-            title="Back"
-            variant="text"
-            starticon={<ChevronLeft />}
-            className="!gap-1 mb-4 mt-7 max-sm:mt-0"
-            onClick={() => {
-              router.push(`/documents`);
-            }}
-          />
-        </div>
+        {/* Title on its own line; one toolbar row under it: view tabs left, actions right. */}
+        <h1 className="text-[26px] font-bold leading-tight tracking-[-0.02em] text-ink max-md:text-[22px]">
+          {document &&
+            capitalizeFirstLetterOfEachWord(
+              document.documents[0].title.toLowerCase()
+            )}
+        </h1>
 
-        <div className="flex items-center justify-between w-full pb-4 max-lg:flex-col max-lg:gap-12">
-          <h2 className="text-2xl font-bold max-lg:text-center max-w-[60%] lg:truncate max-lg:max-w-full">
-            {document &&
-              capitalizeFirstLetterOfEachWord(
-                document.documents[0].title.toLowerCase()
-              )}{" "}
-          </h2>
-          <div className="flex items-center gap-4">
-            {!thumbnail?.thumbnailUrl.length ? (
-              <></>
-            ) : (
+        <div className="mt-[18px] mb-6 flex items-center justify-between gap-3 border-b border-line pb-[18px] max-md:flex-col-reverse max-md:items-stretch max-md:mb-5 max-md:pb-4">
+          <div
+            role="tablist"
+            aria-label="Document views"
+            className="inline-flex w-fit gap-0.5 rounded-[10px] bg-sunken p-[3px] max-md:flex max-md:w-full"
+          >
+            {tabs.map((tab) => {
+              const isActive = tab === activeTab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => setActiveTab(tab)}
+                  className={
+                    "h-[34px] whitespace-nowrap rounded-lg px-4 text-sm font-semibold transition-colors max-md:flex-1 max-md:px-2 " +
+                    (isActive
+                      ? "bg-surface text-ink shadow-[0_1px_2px_rgba(16,12,40,.1),0_0_0_0.5px_rgba(16,12,40,.06)]"
+                      : "text-subtle hover:text-ink")
+                  }
+                >
+                  {tab}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex items-center gap-2.5 max-md:[&>*]:flex-1">
+            {thumbnail?.thumbnailUrl.length ? (
               <Button
                 title="Easy Read"
                 starticon={
-                  <span className="-translate-y-[2px] translate-x-[5px]">
-                    <EasyReadIcon width={20} height={20} />
-                  </span>
+                  <BookOpenText
+                    size={18}
+                    strokeWidth={1.75}
+                    className="text-accent"
+                    aria-hidden="true"
+                  />
                 }
                 variant="outlined"
                 size="medium"
-                className="!text-[#9333EA] !border-[#9333EA]"
-                onClick={async () => {
+                onClick={() => {
                   router.push(`/easy-read/${documentId}`);
                 }}
               />
-            )}
+            ) : null}
             {permissions && (
-              <Button title="New Test" onClick={handleNewTest} size="medium" />
+              <Button
+                title="New test"
+                starticon={<Plus size={18} strokeWidth={1.75} aria-hidden="true" />}
+                onClick={handleNewTest}
+                size="medium"
+              />
             )}
           </div>
         </div>
-
-        <Tab
-          tabs={tabs}
-          activeTab={activeTab}
-          handleClickTab={(tabTitle) => {
-            setActiveTab(tabTitle);
-          }}
-        />
 
         {activeTab === "Summary" && (
           <div className="min-h-[800px]">
             {summaryData ? (
               <SummaryContainer summary={summaryData?.summary || ""} />
             ) : null}
-          </div>
-        )}
-
-        {activeTab === "Related Videos" && (
-          <div className="min-h-[800px]">
-            {!relatedVideos && relatedVideosError && (
-              <div className="flex flex-col gap-4 justify-center items-center py-8">
-                <ErrorMessage message="Something went wrong while trying to load related videos" />
-                <Button
-                  title="Reload related videos"
-                  onClick={refetchRelatedVideos}
-                />
-              </div>
-            )}
-            {relatedVideosLoading && (
-              <div className="flex flex-col gap-4 justify-center items-center py-8">
-                <Spinner size="sm" />
-                <p className="text-center font-semibold">
-                  Loading related videos
-                </p>
-              </div>
-            )}
-            {relatedVideos && !relatedVideosLoading && (
-              <RelatedVideosContainer
-                data={relatedVideos ?? []}
-                handlePlay={(title) => {
-                  setCurrentRelatedVideoId(title);
-                }}
-              />
-            )}
-            {relatedVideos &&
-              !relatedVideos.length &&
-              !relatedVideosLoading &&
-              !relatedVideosError && (
-                <div className="flex flex-col gap-4 justify-center items-center py-8">
-                  <p className="text-center font-semibold">No related videos</p>
-                </div>
-              )}
           </div>
         )}
 

@@ -1,13 +1,10 @@
-import useClickOutside from "@/hooks/useClickOutside";
-import TransitionUp from "@/transitions/TransitionUp";
 import React, { FC, useState } from "react";
 import AdditionalSettingsBaseSetting from "./AdditionalSettingsBaseSetting";
 import cn from "classnames";
-import CloseIcon from "@/icons/CloseIcon";
 import DifficultyMenuContainer from "./DifficultyMenuContainer";
 import TopicSelectionContainer from "./TopicSelectionContainer";
-import ChevronLeft from "@/icons/ChevronLeft";
 import { TopicsV2Model } from "@/models/file-upload.model";
+import { DialogFrame } from "./DialogFrame";
 
 interface Props {
   handleClose: () => void;
@@ -40,81 +37,83 @@ const AdditionalSettingsContainer: FC<Props> = ({
   const [isDifficultyView, setIsDifficultyView] = useState(true);
 
   const className = cn(
-    `flex transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]`,
+    `flex items-start transition-transform duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none`,
     {
       ["-translate-x-[100%]"]: !isBaseView,
     }
   );
 
+  /* The off-screen panel collapses so the dialog takes the height of the visible one. */
+  const panel = (visible: boolean) =>
+    cn("min-w-full", { "h-0 overflow-hidden": !visible });
+
   return (
-    <TransitionUp className="w-full max-w-[450px] max-sm:max-w-[96vw] border rounded-3xl bg-white overflow-hidden">
-      <div className="flex items-center justify-between my-4 mr-6">
-        {isBaseView ? (
-          <span className="min-h-[50px]"></span>
-        ) : (
-          <button
-            className="min-h-[50px] ml-4 flex items-center gap-1 text-sm"
-            onClick={() => {
-              setIsBaseView(true);
-            }}
-          >
-            <ChevronLeft />
-            Back
-          </button>
-        )}
-        <button
-          onClick={() => {
-            handleClose();
-          }}
-        >
-          <CloseIcon />
-        </button>
-      </div>
-      <div className={className}>
-        <AdditionalSettingsBaseSetting
-          handleClose={handleClose}
-          isCaseStudies={isCaseStudy}
-          canUseDifficulty={canUseDifficulty}
-          difficulty={selectedDifficulty}
-          selectedTopics={selectedTopics}
-          canUseCaseStudies={canUseCaseStudy}
-          handleCaseStudies={handleCaseStudy}
-          handleSelectDifficulty={() => {
-            setIsDifficultyView(true);
-            setIsBaseView(false);
-          }}
-          handleSelectTopics={() => {
-            setIsDifficultyView(false);
-            setIsBaseView(false);
-          }}
-        />
-        {isDifficultyView ? (
-          <div className="p-6 min-w-full">
-            <DifficultyMenuContainer
-              handleSelect={(value) => {
-                handleSelectDifficulty(value);
-              }}
-              handleBack={() => {
-                setIsBaseView(true);
-              }}
-              selectedDifficulty={selectedDifficulty}
-            />
-          </div>
-        ) : (
-          <div className="p-6 min-w-full">
-            <TopicSelectionContainer
-              topics={allTopics}
-              topicsWithPages={topicsWithPages}
-              handleSave={(topics) => {
-                handleSelectTopics(topics);
-                setIsBaseView(true);
-              }}
+    <DialogFrame
+      widthClass="max-w-[480px]"
+      labelledBy={
+        isBaseView
+          ? "test-settings-title"
+          : isDifficultyView
+          ? "difficulty-title"
+          : "topics-title"
+      }
+    >
+      <div className="overflow-hidden">
+        <div className={className}>
+          <div className={panel(isBaseView)} aria-hidden={!isBaseView}>
+            <AdditionalSettingsBaseSetting
+              handleClose={handleClose}
+              onDismiss={handleClose}
+              isCaseStudies={isCaseStudy}
+              canUseDifficulty={canUseDifficulty}
+              difficulty={selectedDifficulty}
               selectedTopics={selectedTopics}
+              canUseCaseStudies={canUseCaseStudy}
+              handleCaseStudies={handleCaseStudy}
+              handleSelectDifficulty={() => {
+                setIsDifficultyView(true);
+                setIsBaseView(false);
+              }}
+              handleSelectTopics={() => {
+                setIsDifficultyView(false);
+                setIsBaseView(false);
+              }}
             />
           </div>
-        )}
+          <div className={panel(!isBaseView)} aria-hidden={isBaseView}>
+            {isDifficultyView ? (
+              <DifficultyMenuContainer
+                handleSelect={(value) => {
+                  handleSelectDifficulty(value);
+                }}
+                handleBack={() => {
+                  setIsBaseView(true);
+                }}
+                onBack={() => {
+                  setIsBaseView(true);
+                }}
+                onClose={handleClose}
+                selectedDifficulty={selectedDifficulty}
+              />
+            ) : (
+              <TopicSelectionContainer
+                topics={allTopics}
+                topicsWithPages={topicsWithPages}
+                handleSave={(topics) => {
+                  handleSelectTopics(topics);
+                  setIsBaseView(true);
+                }}
+                onBack={() => {
+                  setIsBaseView(true);
+                }}
+                onClose={handleClose}
+                selectedTopics={selectedTopics}
+              />
+            )}
+          </div>
+        </div>
       </div>
-    </TransitionUp>
+    </DialogFrame>
   );
 };
 

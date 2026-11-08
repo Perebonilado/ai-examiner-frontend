@@ -4,11 +4,8 @@ import {
 } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
 import CallProgressIndicator from "./CallProgressIndicator";
-import SoundWaveIcon from "@/icons/SoundWaveIcon";
 import CallActionButton from "./CallActionButton";
-import EndCallIcon from "@/icons/EndCallIcon";
-import StartCallIcon from "@/icons/StartCallIcon";
-import MicIcon from "@/icons/MicIcon";
+import { Phone, PhoneOff } from "lucide-react";
 import { reduxStore } from "@/config/redux-config";
 import { CallCreditsService } from "@/api-services/call-credits.service";
 import { useModalContext } from "@/contexts/ModalContext";
@@ -104,54 +101,54 @@ const InitiateVivaContainer: FC<Props> = ({
     handleCountDown();
   }, [timeLeft]);
 
+  // The orb follows whoever is talking: the examiner, or the student (the examiner listens).
+  const orbState = !callInProgress
+    ? "idle"
+    : systemSpeaking
+    ? "speaking"
+    : "listening";
+
   return (
-    <div>
+    <div className="flex flex-1 flex-col">
+      <div className="flex flex-1 flex-col justify-center">
+        <CallProgressIndicator state={orbState} />
+      </div>
+
       {data && (
-        <div className="mx-auto w-full max-w-[500px] flex justify-center gap-10 pb-6 border-b mt-10">
-          <CallActionButton
-            title="Start call"
-            icon={
-              <StartCallIcon fill={!callInProgress ? "#008650" : "#9ca3af"} />
-            }
-            isActive={!callInProgress}
-            activeColor="#008650"
-            handleClick={async () => {
-              if (!callInProgress) {
-                await handleStartCall();
-              }
-            }}
-          />
-          <CallActionButton
-            title="End call"
-            icon={<EndCallIcon fill={callInProgress ? "#EE6161" : "#9ca3af"} />}
-            isActive={callInProgress}
-            activeColor="#EE6161"
-            handleClick={() => {
-              if (callInProgress) {
-                handleEndCall();
-              }
-            }}
-          />
+        <div className="flex flex-col items-center gap-3.5 max-md:gap-3">
+          {callInProgress && (
+            <p className="text-[13px] text-muted">
+              Time left:{" "}
+              <span className="font-semibold text-ink tabular-nums">
+                {timeToDisplay}
+              </span>
+            </p>
+          )}
+          {callInProgress ? (
+            <CallActionButton
+              title="End call"
+              tone="end"
+              icon={<PhoneOff size={24} strokeWidth={2} aria-hidden />}
+              handleClick={() => {
+                if (callInProgress) {
+                  handleEndCall();
+                }
+              }}
+            />
+          ) : (
+            <CallActionButton
+              title="Start call"
+              tone="start"
+              icon={<Phone size={24} strokeWidth={2} aria-hidden />}
+              handleClick={async () => {
+                if (!callInProgress) {
+                  await handleStartCall();
+                }
+              }}
+            />
+          )}
         </div>
       )}
-
-      {data && callInProgress && (
-        <p className="mx-auto w-full max-w-[500px] text-[#00000080] mt-6 text-sm">
-          Time Left: {timeToDisplay}
-        </p>
-      )}
-      <div className="mt-10 flex flex-col gap-10">
-        <CallProgressIndicator
-          icon={<SoundWaveIcon fill={systemSpeaking ? "#9A67E2" : undefined} />}
-          speaker="Examiner"
-          isSpeaking={systemSpeaking}
-        />
-        <CallProgressIndicator
-          icon={<MicIcon fill={userSpeaking ? "#9A67E2" : undefined} />}
-          speaker="You"
-          isSpeaking={userSpeaking}
-        />
-      </div>
     </div>
   );
 };

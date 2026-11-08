@@ -22,6 +22,7 @@ import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import MultipleTrueFalseCardContainer from "@/@modules/questions/MultipleTrueFalseCardContainer";
 import { GetMultipleTrueFalseQuestionByIdModel } from "@/models/questions.model";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
+import TestPageTitle from "@/@modules/questions/TestPageTitle";
 
 const SharedMultipleTrueFalse: FC = () => {
   const [id, setId] = useState("");
@@ -65,66 +66,67 @@ const SharedMultipleTrueFalse: FC = () => {
     <LayoutToUse isLoggedIn={isUserLoggedIn}>
       <AppHead title="Multiple Choice" />
 
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get questions" />
-          <Button title="Reload Questions" onClick={refetch} />
-        </div>
-      )}
-      <div ref={topOfContainerRef}></div>
-      {data && (
-        <>
-          <h1 className="text-center text-xl font-semibold">
-            {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
-          </h1>
-          <p className="text-center text-sm text-gray-500 my-3">
-            Shared By:{" "}
-            {capitalizeFirstLetterOfEachWord(
-              `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
-            )}
-          </p>
-        </>
-      )}
-
-      <div className="min-h-[70vh]">
+      <div className="mx-auto w-full max-w-[740px]">
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get questions" />
+            <Button title="Reload questions" onClick={refetch} />
+          </div>
+        )}
+        <div ref={topOfContainerRef}></div>
         {data && (
-          <MultipleTrueFalseCardContainer
-            data={
-              (data as unknown as GetMultipleTrueFalseQuestionByIdModel).data
-            }
-            submitted={isSubmitted}
-            title={data.documentTitle}
-            handleSubmitted={() => {
-              setIsSubmitted(true);
-            }}
-            allowNotSure={false}
-            allowSaveProgress={false}
-            allowSaveScore={false}
-            documentId={""}
-            handleDone={() => {
-              if (isUserLoggedIn) {
-                router.push("/documents");
-              } else {
-                router.push("/auth/login");
-              }
-            }}
-            handleShowSubmissionModal={({ title, score }) => {
-              setModalContent(
-                <SubmissionModal
-                  title={title}
-                  scorePercentage={score}
-                  handleScrollToTop={() => {
-                    if (topOfContainerRef.current) {
-                      topOfContainerRef.current.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                />
-              );
-            }}
+          <TestPageTitle
+            title={data.documentTitle.toLowerCase()}
+            meta={[
+              "Multiple true-false",
+              `${data.data.length} questions`,
+              `Shared by ${capitalizeFirstLetterOfEachWord(
+                `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
+              )}`,
+            ]}
           />
         )}
+
+        <div className="min-h-[70vh]">
+          {data && (
+            <MultipleTrueFalseCardContainer
+              data={
+                (data as unknown as GetMultipleTrueFalseQuestionByIdModel).data
+              }
+              submitted={isSubmitted}
+              title={data.documentTitle}
+              handleSubmitted={() => {
+                setIsSubmitted(true);
+              }}
+              allowNotSure={false}
+              allowSaveProgress={false}
+              allowSaveScore={false}
+              documentId={""}
+              handleDone={() => {
+                if (isUserLoggedIn) {
+                  router.push("/documents");
+                } else {
+                  router.push("/auth/login");
+                }
+              }}
+              handleShowSubmissionModal={({ title, score }) => {
+                setModalContent(
+                  <SubmissionModal
+                    title={title}
+                    scorePercentage={score}
+                    handleScrollToTop={() => {
+                      if (topOfContainerRef.current) {
+                        topOfContainerRef.current.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                  />
+                );
+              }}
+            />
+          )}
+        </div>
       </div>
     </LayoutToUse>
   );

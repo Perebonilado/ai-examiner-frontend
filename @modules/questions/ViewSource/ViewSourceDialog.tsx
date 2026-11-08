@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useState } from "react";
 import { marked } from "marked";
 import DOMPurify from "dompurify";
-import CloseIcon from "@/icons/CloseIcon";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useQuestionSourceRequestMutation, useQuestionSourceRequestV2Mutation } from "@/api-services/questions.service";
 import Spinner from "@/@shared/components/Spinner";
 import Button from "@/@shared/ui/Button";
 import ErrorMessage from "@/@shared/ui/ErrorMessage/ErrorMessage";
+import { X } from "lucide-react";
 import s from './styles.module.css'
 
 interface Props {
@@ -58,40 +58,52 @@ const ViewSourceDialog: FC<Props> = ({
   const { setModalContent } = useModalContext();
 
   return (
-    <div className="w-full max-h-[90vh] relative max-w-[600px] max-md:max-w-[320px] max-sm:max-w-[95vw] rounded-xl shadow-lg p-4 py-10 pt-4 flex flex-col gap-10  bg-[#FAFAFA]">
-      <div className="flex items-center justify-between h-[15%]">
-        <h3 className="font-semibold text-[#9D6EC2]">Source Reference</h3>
+    <div
+      role="dialog"
+      aria-labelledby="source-reference-title"
+      className="w-full max-h-[90vh] relative max-w-[600px] max-md:max-w-[92vw] rounded-2xl shadow-pop border border-edge bg-surface flex flex-col overflow-hidden"
+    >
+      <div className="flex items-start gap-3 px-5 pt-5 pb-3 shrink-0">
+        <h3
+          id="source-reference-title"
+          className="flex-1 text-lg font-bold text-ink tracking-[-0.015em]"
+        >
+          Source reference
+        </h3>
         <button
-          className="cursor-pointer"
+          type="button"
+          aria-label="Close"
+          className="-mt-1.5 -mr-1.5 w-9 h-9 grid place-items-center rounded-lg text-subtle hover:bg-hover hover:text-ink transition-colors"
           onClick={() => {
             setModalContent(null);
           }}
         >
-          <CloseIcon />
+          <X size={18} strokeWidth={1.75} />
         </button>
       </div>
-      <div className="h-[85%] overflow-auto prose-base overflow-x-hidden">
+      <div className="min-h-0 flex-1 overflow-auto overflow-x-hidden px-5 pb-6 text-sm leading-[1.7] text-body prose prose-sm max-w-none prose-headings:text-ink">
         {cleanedSourceText && !isLoading && !error && (
           <div className={s.highlight} dangerouslySetInnerHTML={{ __html: cleanedSourceText }}></div>
         )}
         {isLoading && (
-          <div className="mx-auto my-4 flex flex-col items-center justify-center">
+          <div className="mx-auto my-6 flex flex-col items-center justify-center gap-3 not-prose">
             <Spinner />
-            <p className="text-center font-semibold">
+            <p className="text-center text-sm font-semibold text-subtle">
               Loading relevant references
             </p>
           </div>
         )}
 
         {!isLoading && error && (
-          <div className="mx-auto my-4 flex flex-col items-center text-center justify-center">
+          <div className="mx-auto my-6 flex flex-col items-center gap-3 text-center justify-center not-prose">
+            <ErrorMessage message="Oops! let's give that another try" />
             <Button
-              title="Reload References"
+              title="Reload references"
+              variant="outlined"
               onClick={() => {
                 getQuestionSource({ question, documentId });
               }}
             />
-            <ErrorMessage message="Oops! let's give that another try" />
           </div>
         )}
       </div>

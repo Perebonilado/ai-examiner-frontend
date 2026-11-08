@@ -24,8 +24,49 @@
 }
 
 :root {
+  /* Redesign tokens (EasiRead family). --font-sans is set to Plus Jakarta Sans in pages/_app.tsx. */
   --font-sans: 'Proxima Nova', sans-serif;
+  --ink: #0b0b0c;
+  --body: #33333b;
+  --subtle: #5c5c65;
+  --muted: #6b6b74;
+  --faint: #6e6e78;
+  --surface: #ffffff;
+  --canvas: #fbfbfc;
+  --rail: #f7f6fa;
+  --sunken: #f4f4f5;
+  --well: #f7f7f8;
+  --hover: #f1f0f5;
+  --line: #ececef;
+  --edge: #e3e3e6;
+  --control: #dcdce0;
+  --brand: #2f004f;
+  --brand-hover: #43106b;
+  --brand-press: #22003a;
+  --accent: #6d28d9;
+  --accent-bright: #7c3aed;
+  --accent-900: #4c1d95;
+  --accent-50: #f5f2ff;
+  --accent-100: #ede9fe;
+  --accent-200: #ddd6fe;
+  --accent-300: #c4b5fd;
+  --success: #13794a;
+  --success-strong: #0d5c38;
+  --success-bg: #ecfaf2;
+  --success-line: #a6e3c3;
+  --danger: #b42318;
+  --danger-strong: #8f1d14;
+  --danger-bg: #fef3f2;
+  --danger-line: #f7c4bf;
+  --warning: #9a5b00;
+  --warning-bg: #fff8e6;
+  --warning-line: #f5d78e;
+  --page-shadow: 0 1px 3px rgba(15, 10, 40, 0.16);
 }
+
+::selection { background: var(--accent-200); color: var(--ink); }
+:focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
+* { scrollbar-width: thin; scrollbar-color: #d4d3db transparent; }
 
 /* Hide the Google Translate toolbar */
 body .goog-te-banner-frame, table, .skiptranslate {
@@ -35,7 +76,11 @@ body .goog-te-banner-frame, table, .skiptranslate {
 /* Hide the white gap that appears when the toolbar is removed */
 body {
   top: 0px !important;
- font-family: 'Proxima Nova', sans-serif !important;
+  font-family: var(--font-sans) !important;
+  color: var(--body);
+  background: var(--surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Remove the Google Translate iframe */
@@ -130,13 +175,8 @@ iframe.goog-te-banner-frame {
   --background-end-rgb: 255, 255, 255;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
-}
+/* Light only for now: the old dark-mode block made parts of the login page unreadable. */
+:root { color-scheme: light; }
 
 @layer utilities {
   .text-balance {
@@ -178,4 +218,12 @@ video {
 .no-scrollbar {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
+}
+
+/* Floating chat button on phones: lift it above sticky bottom bars (and the test progress pill).
+   Pages mark their phone bottom bar with data-phone-bottom-bar and the pill with data-phone-pill. */
+:root { --chat-fab-bottom: 16px; }
+@media (max-width: 767px) {
+  body:has([data-phone-bottom-bar]) { --chat-fab-bottom: 88px; }
+  body:has([data-phone-bottom-bar]):has([data-phone-pill]) { --chat-fab-bottom: 142px; }
 }

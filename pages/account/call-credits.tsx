@@ -1,3 +1,4 @@
+import AccountHeader from "@/@modules/account/AccountHeader";
 import CallCreditsContainer from "@/@modules/account/CallCreditsContainer";
 import AppHead from "@/@shared/components/AppHead";
 import AppLayout from "@/layouts/AppLayout";
@@ -14,8 +15,12 @@ const CallCredits: NextPage = () => {
         handleBack={() => {
           router.back();
         }}
+        mobileTitle="Call credits"
       >
-        <CallCreditsContainer />
+        <div className="mx-auto w-full max-w-[1000px]">
+          <AccountHeader />
+          <CallCreditsContainer />
+        </div>
       </AppLayout>
     </>
   );

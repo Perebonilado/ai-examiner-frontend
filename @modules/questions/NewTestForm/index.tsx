@@ -1,4 +1,4 @@
-import TransitionUp from "@/transitions/TransitionUp";
+import { DialogFrame } from "@/@modules/home/DialogFrame";
 import React, { FC, useEffect } from "react";
 import CurrentStepIndicator from "./CurrentStepIndicator";
 import NavigationContainer from "./NavigationContainer";
@@ -26,6 +26,7 @@ const NewTestForm: FC = () => {
     totalQuestions,
     selectedTestFormat,
     selectedTopics,
+    selectedQuestionTopics,
   } = useSelector((state: RootState) => state.newTestSliceReducer);
   const { permissions } = useSelector(
     (state: RootState) => state.permissionsState
@@ -43,6 +44,10 @@ const NewTestForm: FC = () => {
         questionCount: totalQuestions,
         questionType: selectedTestFormat,
         selectedTopicIds: selectedTopics.map((t) => t.id),
+        // The API uses topic names only when no topic ids are sent.
+        ...(selectedTopics.length === 0 && selectedQuestionTopics.length
+          ? { selectedQuestionTopics }
+          : {}),
       },
     });
   };
@@ -77,31 +82,34 @@ const NewTestForm: FC = () => {
             <>
               {isLoading && <LoaderCard message="Preparing your test" />}
               {!isLoading && (
-                <TransitionUp className="w-full max-w-[420px] max-sm:max-w-[96vw]">
-                  <div className="bg-white px-6 py-3 rounded-2xl">
-                    <NavigationContainer />
-                    {isSummaryView ? (
-                      <TestSummaryView generateTest={handleTestGeneration} />
-                    ) : (
-                      <>
-                        <CurrentStepIndicator
-                          currentStep={currentStep}
-                          totalSteps={Steps.size}
-                        />
+                <DialogFrame
+                  widthClass="max-w-[440px]"
+                  labelledBy={
+                    isSummaryView ? "new-test-summary-title" : undefined
+                  }
+                >
+                  <NavigationContainer />
+                  {isSummaryView ? (
+                    <TestSummaryView generateTest={handleTestGeneration} />
+                  ) : (
+                    <>
+                      <CurrentStepIndicator
+                        currentStep={currentStep}
+                        totalSteps={Steps.size}
+                      />
 
-                        {currentStep === Steps.get("TEST_FORMAT") && (
-                          <TestFormat />
-                        )}
-                        {currentStep === Steps.get("TOTAL_QUESTIONS") && (
-                          <TotalQuestions />
-                        )}
-                        {currentStep === Steps.get("ADDITIONAL_SETTINGS") && (
-                          <AdditionalSettings />
-                        )}
-                      </>
-                    )}
-                  </div>
-                </TransitionUp>
+                      {currentStep === Steps.get("TEST_FORMAT") && (
+                        <TestFormat />
+                      )}
+                      {currentStep === Steps.get("TOTAL_QUESTIONS") && (
+                        <TotalQuestions />
+                      )}
+                      {currentStep === Steps.get("ADDITIONAL_SETTINGS") && (
+                        <AdditionalSettings />
+                      )}
+                    </>
+                  )}
+                </DialogFrame>
               )}
             </>
           )}

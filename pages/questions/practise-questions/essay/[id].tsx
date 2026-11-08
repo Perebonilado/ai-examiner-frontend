@@ -32,7 +32,6 @@ import {
   setDocumentTitleInView,
   setMessages,
 } from "@/features/documentChatSlice";
-import TestPageTitle from "@/@modules/questions/TestPageTitle";
 import { openNewTestForm } from "@/features/newTestSlice";
 
 const Essay: NextPage = () => {
@@ -122,6 +121,11 @@ const Essay: NextPage = () => {
     );
   };
 
+  const documentTitle = data?.documentTitle
+    ? capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())
+    : "";
+  const questionCount = data ? (data as GetQuestionByIdModel).data.length : 0;
+
   return (
     <>
       <AppHead title="Essay" />
@@ -130,6 +134,19 @@ const Essay: NextPage = () => {
         handleBack={() => {
           router.push(`/questions/view-questions/${data?.documentId}`);
         }}
+        crumbs={[
+          { label: "All documents", href: "/documents" },
+          ...(data
+            ? [
+                {
+                  label: documentTitle,
+                  href: `/questions/view-questions/${data.documentId}`,
+                },
+              ]
+            : []),
+          { label: "Essay" },
+        ]}
+        mobileTitle="Essay"
       >
         {!data && error && (
           <div className="flex flex-col gap-4 justify-center items-center py-8">
@@ -139,33 +156,40 @@ const Essay: NextPage = () => {
         )}
 
         {data && (
-          <>
-            <TestPageTitle
-              handleBack={() => {
-                router.push(`/questions/view-questions/${data?.documentId}`);
-              }}
-              title={data.documentTitle.toLowerCase()}
-            />
-          </>
-        )}
-        {data && !showAnalysis && (
-          <EssayItemContainer
-            data={(data as GetQuestionByIdModel).data}
-            documentId={documentId}
-            questionId={id}
-            submitTest={submitTest}
-            handleGenerateMoreQuestions={handleNewTest}
-          />
-        )}
+          <div className="mx-auto w-full max-w-[740px]">
+            <header className="mb-5">
+              <h1 className="text-2xl leading-[1.25] font-bold tracking-[-0.015em] text-ink [text-wrap:balance] max-md:text-xl">
+                {documentTitle}
+              </h1>
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-subtle">
+                <span>Essay</span>
+                <span aria-hidden className="w-[3px] h-[3px] rounded-full bg-control" />
+                <span>
+                  {questionCount} {questionCount === 1 ? "question" : "questions"}
+                </span>
+              </p>
+            </header>
 
-        {analysisData && analysisData.data && data && showAnalysis && (
-          <EssayAnalysisContainer
-            data={analysisData.data}
-            handleGenerateMoreQuestions={handleNewTest}
-            handleDone={() => {
-              router.push(`/questions/view-questions/${data?.documentId}`);
-            }}
-          />
+            {!showAnalysis && (
+              <EssayItemContainer
+                data={(data as GetQuestionByIdModel).data}
+                documentId={documentId}
+                questionId={id}
+                submitTest={submitTest}
+                handleGenerateMoreQuestions={handleNewTest}
+              />
+            )}
+
+            {analysisData && analysisData.data && showAnalysis && (
+              <EssayAnalysisContainer
+                data={analysisData.data}
+                handleGenerateMoreQuestions={handleNewTest}
+                handleDone={() => {
+                  router.push(`/questions/view-questions/${data?.documentId}`);
+                }}
+              />
+            )}
+          </div>
         )}
       </AppLayout>
     </>

@@ -2,9 +2,8 @@ import React, { FC } from "react";
 import TestFormatItem, {
   TestFormatItem as TestFormatItemProps,
 } from "./TestFormatItem";
-import CloseIcon from "@/icons/CloseIcon";
 import useClickOutside from "@/hooks/useClickOutside";
-import TransitionUp from "@/transitions/TransitionUp";
+import { DialogFrame, DialogHeader } from "./DialogFrame";
 
 interface Props {
   testFormats: TestFormatItemProps[];
@@ -25,32 +24,31 @@ const TestFormatItemContainer: FC<Props> = ({
     handleClose();
   });
   return (
-    <TransitionUp className="w-full max-w-[420px] max-sm:max-w-[96vw]">
-      <div className="bg-white p-6 rounded-2xl" ref={ref}>
-        <div className="flex items-center justify-between mb-6">
-          <h3 className="text-lg font-bold">{title}</h3>
-          <button
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            <CloseIcon />
-          </button>
-        </div>
-        <div className="mt-4 flex flex-col gap-6">
-          {testFormats.map((tf, idx) => {
-            return (
-              <TestFormatItem
-                {...tf}
-                key={idx}
-                handleSelect={handleSelected}
-                selected={tf.value === selected}
-              />
-            );
-          })}
-        </div>
+    <DialogFrame ref={ref} widthClass="max-w-[440px]" labelledBy="format-title">
+      <DialogHeader
+        title={title}
+        titleId="format-title"
+        onClose={() => {
+          handleClose();
+        }}
+      />
+      <div
+        role="radiogroup"
+        aria-labelledby="format-title"
+        className="flex flex-col gap-2 px-5 pt-4 pb-5 max-md:pb-[calc(20px+env(safe-area-inset-bottom))]"
+      >
+        {testFormats.map((tf, idx) => {
+          return (
+            <TestFormatItem
+              {...tf}
+              key={idx}
+              handleSelect={handleSelected}
+              selected={tf.value === selected}
+            />
+          );
+        })}
       </div>
-    </TransitionUp>
+    </DialogFrame>
   );
 };
 

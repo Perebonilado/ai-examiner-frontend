@@ -1,7 +1,6 @@
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
-import CloseIcon from "@/icons/CloseIcon";
-import CopyIcon from "@/icons/CopyIcon";
+import { Copy, Share2, X } from "lucide-react";
 import React, { FC } from "react";
 
 interface Props {
@@ -11,21 +10,39 @@ interface Props {
 const ShareQuestionDialog: FC<Props> = ({ handleCopy }) => {
   const { setModalContent } = useModalContext();
   return (
-    <div className="w-full relative max-w-[300px] max-md:max-w-[320px] rounded-xl shadow-lg p-4 py-6 flex flex-col gap-10 items-center justify-center bg-white">
-      <span
-        className="absolute top-3 right-3 cursor-pointer"
+    <div
+      role="dialog"
+      aria-labelledby="share-question-title"
+      className="w-full relative max-w-[340px] max-md:max-w-[92vw] rounded-2xl shadow-pop border border-edge bg-surface px-6 pt-7 pb-[22px] text-center"
+    >
+      <button
+        type="button"
+        aria-label="Close"
+        className="absolute top-2.5 right-2.5 w-9 h-9 grid place-items-center rounded-lg text-subtle hover:bg-hover hover:text-ink transition-colors"
         onClick={() => {
           setModalContent(null);
         }}
       >
-        <CloseIcon />
+        <X size={18} strokeWidth={1.75} />
+      </button>
+      <span className="w-[52px] h-[52px] mx-auto mt-1 mb-4 rounded-full grid place-items-center bg-accent-50 text-accent">
+        <Share2 size={22} strokeWidth={1.75} />
       </span>
-      <section className="pt-4">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <h3 className="text-lg font-bold">Share Question</h3>
-          <Button title="Copy Link" size="large" onClick={handleCopy} starticon={<CopyIcon width={20} height={20}/>}/>
-        </div>
-      </section>
+      <h3
+        id="share-question-title"
+        className="text-lg font-bold text-ink tracking-[-0.02em]"
+      >
+        Share question
+      </h3>
+      <div className="mt-[22px]">
+        <Button
+          title="Copy link"
+          size="large"
+          fullWidth
+          onClick={handleCopy}
+          starticon={<Copy size={16} strokeWidth={1.75} />}
+        />
+      </div>
     </div>
   );
 };

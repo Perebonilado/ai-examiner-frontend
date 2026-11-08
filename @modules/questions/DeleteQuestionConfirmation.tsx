@@ -39,14 +39,14 @@ const DeleteQuestionConfirmation: FC<Props> = ({ questionId }) => {
   useEffect(() => {
     if (isSuccess) {
       setModalContent(null);
-      toast.success("Question Successfully deleted");
+      toast.success("Question successfully deleted");
       setModalContent(null);
     }
   }, [isSuccess]);
 
   return (
     <ConfirmationDialog
-      title="Delete Questions ?"
+      title="Delete questions?"
       message="This can't be undone"
       confirmationText="Delete"
       onConfirm={() => {

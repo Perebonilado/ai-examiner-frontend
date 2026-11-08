@@ -97,6 +97,7 @@ const GenerateQuestionsProvider: React.FC<PropsWithChildren> = ({
           }}
           isComplete={isSuccess}
           showTopLevelLoader={showTopLevelLoader}
+          documentId={documentId}
         />
       )}
       {!isLoading && showSucessModal && (
@@ -119,6 +120,7 @@ const GenerateQuestionsProvider: React.FC<PropsWithChildren> = ({
             setDocumentId(null)
           }}
           percentageLoading={100}
+          documentId={documentId}
         />
       )}
       {children}

@@ -1,13 +1,18 @@
-import MoreDataAccordion from "@/@modules/performance-tracking/PerformanceTrackingTopicInformation";
 import PerformanceTrackingBarItemContainer from "@/@modules/performance-tracking/PerformanceTrackingBarItemContainer";
 import AppHead from "@/@shared/components/AppHead";
-import Pill from "@/@shared/components/Pill";
+import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import { useGetPerformanceTrackingForDocumentQuery } from "@/api-services/performance-tracking.service";
 import AppLayout from "@/layouts/AppLayout";
 import { PerformanceTrackingPeriodModel } from "@/models/performance-tracking.model";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+
+const PERIODS: { title: string; id: PerformanceTrackingPeriodModel }[] = [
+  { title: "Current", id: "this_week" },
+  { title: "Last week", id: "last_week" },
+];
 
 const DocumentPerformanceTracking: NextPage = () => {
   const [documentId, setDocumentId] = useState<string | null>(null);
@@ -25,58 +30,77 @@ const DocumentPerformanceTracking: NextPage = () => {
     }
   }, [params]);
 
+  const title = data?.documentTitle
+    ? capitalizeFirstLetterOfEachWord(data.documentTitle)
+    : "";
+
   return (
     <>
-      <AppLayout>
+      <AppLayout
+        mobileTitle="Weekly report"
+        crumbs={
+          title && documentId
+            ? [
+                { label: "All documents", href: "/documents" },
+                { label: title, href: `/questions/view-questions/${documentId}` },
+                { label: "Weekly report" },
+              ]
+            : undefined
+        }
+      >
         <AppHead title={"Performance Tracking"} />
-        <div>
-          <h1 className="px-3 text-center text-2xl font-bold">
-            Your weekly performance report
-          </h1>
-          <p className="px-3 text-center mt-2">Insights across all topics</p>
-        </div>
+        <div className="mx-auto w-full max-w-[1000px]">
+          <div className="mb-4 flex flex-col gap-4 md:mb-5 md:flex-row md:items-end md:justify-between">
+            <div>
+              <h1 className="text-2xl font-bold leading-[1.2] tracking-[-0.015em] text-ink md:text-[28px]">
+                Your weekly performance report
+              </h1>
+              <p className="mt-1.5 text-[15px] text-subtle">
+                Insights across all topics
+              </p>
+            </div>
 
-        <div className="w-full max-w-[500px] mx-auto pt-6 flex gap-3 flex-wrap justify-center">
-          <Pill
-            title="Current"
-            id="this_week"
-            isActive={period === "this_week"}
-            handleClick={(id) => {
-              setPeriod(id as PerformanceTrackingPeriodModel);
-            }}
-          />
-          <Pill
-            title="Last Week"
-            id="last_week"
-            isActive={period === "last_week"}
-            handleClick={(id) => {
-              setPeriod(id as PerformanceTrackingPeriodModel);
-            }}
-          />
-        </div>
-
-        {data && (
-          <div className="text-center mt-20 flex justify-center items-center flex-col gap-1">
-            <h3 className="font-bold text-xl">{data.documentTitle}</h3>
-            <p className="text-sm text-[#939393]">{data.period}</p>
+            <div className="shrink-0 [&>div]:ml-0">
+              <AltTabContainer
+                data={PERIODS.map((p) => ({
+                  title: p.title,
+                  isActive: period === p.id,
+                }))}
+                handleClick={(tab) => {
+                  const next = PERIODS.find((p) => p.title === tab);
+                  if (next) setPeriod(next.id);
+                }}
+              />
+            </div>
           </div>
-        )}
 
-        <div className="w-full mt-8">
-          {data && <PerformanceTrackingBarItemContainer
-            data={data.data.map((d)=>{
-              return {percentage: d['1'], title: d[0]}
-            })}
-          />}
+          {data && (
+            <section
+              aria-labelledby="weekly-title"
+              className="rounded-2xl border border-edge bg-surface"
+            >
+              <header className="border-b border-line p-4 md:px-6 md:py-5">
+                <h2
+                  id="weekly-title"
+                  className="text-balance text-lg font-bold leading-[1.35] tracking-[-0.02em] text-ink"
+                >
+                  {title}
+                </h2>
+                {data.period && (
+                  <p className="mt-1 text-[13px] text-subtle tabular-nums md:text-sm">
+                    {data.period}
+                  </p>
+                )}
+              </header>
+
+              <PerformanceTrackingBarItemContainer
+                data={(data.data || []).map((d) => {
+                  return { percentage: d[1], title: d[0] };
+                })}
+              />
+            </section>
+          )}
         </div>
-
-        {/* <div className="mt-6">
-          {data && <MoreDataAccordion
-            data={data.data.map((d)=>{
-              return {comment: d[2], score: d[1], title: d[0]}
-            })}
-          />}
-        </div> */}
       </AppLayout>
     </>
   );

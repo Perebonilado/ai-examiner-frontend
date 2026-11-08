@@ -1,7 +1,7 @@
 import AccountSettingInformationItemContainer from "@/@modules/account/AccountSettingInformationItemContainer";
 import AppHead from "@/@shared/components/AppHead";
 import { AppLoader } from "@/@shared/components/AppLoader";
-import UserManagementBar from "@/@shared/components/UserManagementBar";
+import AccountHeader from "@/@modules/account/AccountHeader";
 import Button from "@/@shared/ui/Button";
 import {
   useCancelSubscriptionMutation,
@@ -11,7 +11,6 @@ import {
   useUpdateCardInformationMutation,
 } from "@/api-services/subscription.service";
 import { useModalContext } from "@/contexts/ModalContext";
-import ExternalLinkIcon from "@/icons/ExternalLinkIcon";
 import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import Link from "next/link";
@@ -76,60 +75,38 @@ const Settings: NextPage = () => {
     }
   }, [error]);
 
+  const isRecurring = data?.paymentMode === "Recurring Payment";
+
   return (
     <>
       <AppHead title="Account Settings" />
-      <AppLayout>
-        {data && (
-          <>
-            {data && data.paymentMode === "Recurring Payment" && (
-              <div className="mt-8">
+      <AppLayout mobileTitle="Settings">
+        <div className="mx-auto w-full max-w-[1000px]">
+          <AccountHeader />
+
+          {data && (
+            <>
+              {isRecurring && (
                 <AccountSettingInformationItemContainer
                   data={data.billing}
                   title="Billing"
                 />
-              </div>
-            )}
-
-            {data && data.paymentMode === "Recurring Payment" && (
-              <div className="bg-gray-300 h-[1px] my-14"></div>
-            )}
-
-            <AccountSettingInformationItemContainer
-              title="Subscription"
-              data={data.subscription}
-            >
-              {data.status && data.paymentMode === "Recurring Payment" && (
-                <Button
-                  title="Update Card Information"
-                  onClick={() => {
-                    updateCardDetails({
-                      subscriptionCode: data.subscriptionCode,
-                    });
-                  }}
-                  className="mb-6"
-                />
               )}
 
-              <Link href={"/pricing"}>
-                <Button
-                  title="View Pricing Plans"
-                  variant="text"
-                  className="!mb-6"
-                  endicon={<ExternalLinkIcon />}
-                />
-              </Link>
-
-              {data.status &&
-                data.status !== "non-renewing" &&
-                data.paymentMode === "Recurring Payment" &&
-                !inactiveSubscriptionStatuses.includes(
-                  data.status.toLowerCase()
-                ) && (
-                  <div className="mt-3">
+              <AccountSettingInformationItemContainer
+                title="Subscription"
+                data={data.subscription}
+              >
+                {data.status &&
+                  data.status !== "non-renewing" &&
+                  isRecurring &&
+                  !inactiveSubscriptionStatuses.includes(
+                    data.status.toLowerCase()
+                  ) && (
                     <Button
                       variant="outlined"
-                      title="Cancel Subscription"
+                      title="Cancel subscription"
+                      className={dangerButton}
                       onClick={() => {
                         cancelSubscription({
                           emailToken: data.emailToken,
@@ -137,14 +114,13 @@ const Settings: NextPage = () => {
                         });
                       }}
                     />
-                  </div>
-                )}
+                  )}
 
-              {data.status && data.paymentMode === "One Time Payment" && (
-                <div className="mt-3">
+                {data.status && data.paymentMode === "One Time Payment" && (
                   <Button
-                    variant="contained"
-                    title="Cancel Plan"
+                    variant="outlined"
+                    title="Cancel plan"
+                    className={dangerButton}
                     onClick={() => {
                       setModalContent(
                         <ConfirmationDialog
@@ -161,51 +137,71 @@ const Settings: NextPage = () => {
                       );
                     }}
                   />
-                </div>
-              )}
-            </AccountSettingInformationItemContainer>
+                )}
 
-            {credits && (
-              <div className="mt-8">
+                <Link href={"/pricing"} className="max-md:w-full">
+                  <Button
+                    title="View pricing plans"
+                    variant="outlined"
+                    className="max-md:w-full"
+                  />
+                </Link>
+
+                {data.status && isRecurring && (
+                  <Button
+                    title="Update card information"
+                    onClick={() => {
+                      updateCardDetails({
+                        subscriptionCode: data.subscriptionCode,
+                      });
+                    }}
+                  />
+                )}
+              </AccountSettingInformationItemContainer>
+
+              {credits && (
                 <AccountSettingInformationItemContainer
-                  title="Call Credits"
+                  title="Call credits"
                   data={[
                     [
-                      "Total Time Remaining",
+                      "Total time remaining",
                       `${millisecondsToMinutesSeconds(
                         credits.remainingCreditsMs || 0
-                      )} Minutes`,
+                      )} minutes`,
                     ],
                     [
-                      "Purchased Time",
+                      "Purchased time",
                       `${millisecondsToMinutesSeconds(
                         credits.paid || 0
-                      )} Minutes`,
+                      )} minutes`,
                     ],
                     [
                       "Free time",
                       `${millisecondsToMinutesSeconds(
                         credits.free || 0
-                      )} Minutes`,
+                      )} minutes`,
                     ],
                   ]}
                 >
-                  <Link href={"/account/call-credits"}>
+                  <Link href={"/account/call-credits"} className="max-md:w-full">
                     <Button
                       title="Check credit options"
-                      variant="text"
-                      className="!mb-6"
-                      endicon={<ExternalLinkIcon />}
+                      variant="outlined"
+                      className="max-md:w-full"
                     />
                   </Link>
                 </AccountSettingInformationItemContainer>
-              </div>
-            )}
-          </>
-        )}
+              )}
+            </>
+          )}
+        </div>
       </AppLayout>
     </>
   );
 };
+
+// Destructive action: white with a red hairline, first in the footer row (last on phones)
+const dangerButton =
+  "!border-danger-line !text-danger hover:!bg-danger-bg md:mr-auto";
 
 export default Settings;

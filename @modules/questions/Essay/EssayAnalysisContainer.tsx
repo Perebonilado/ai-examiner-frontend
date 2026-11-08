@@ -15,21 +15,23 @@ const EssayAnalysisContainer: FC<Props> = ({
   handleGenerateMoreQuestions,
 }) => {
   return (
-    <div className="w-full max-w-[900px] mx-auto mt-10">
-      {data.map((analysis, idx) => {
-        return (
-          <EssayAnalysisItemAccordion
-            key={idx}
-            {...analysis}
-            questionNumber={idx + 1}
-            totalQuestions={data.length}
-          />
-        );
-      })}
+    <div className="w-full">
+      <div className="flex flex-col gap-7 max-md:gap-5">
+        {data.map((analysis, idx) => {
+          return (
+            <EssayAnalysisItemAccordion
+              key={idx}
+              {...analysis}
+              questionNumber={idx + 1}
+              totalQuestions={data.length}
+            />
+          );
+        })}
+      </div>
 
-      <div className="flex max-sm:justify-center max-sm:items-center max-sm:flex-col-reverse gap-4 justify-end mt-20">
+      <div data-phone-bottom-bar="" className="flex justify-end gap-2.5 mt-8 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:mt-6 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:border-t max-md:border-line max-md:bg-[rgba(255,255,255,0.94)] max-md:backdrop-blur-md">
         <Button
-          title="New Test"
+          title="New test"
           onClick={() => {
             if (handleGenerateMoreQuestions) {
               handleGenerateMoreQuestions();
@@ -37,13 +39,13 @@ const EssayAnalysisContainer: FC<Props> = ({
           }}
           size="large"
           variant="outlined"
-          className="max-sm:w-full"
+          className="max-md:flex-1"
         />
         <Button
           title="Done"
           size="large"
           onClick={handleDone}
-          className="max-sm:w-full"
+          className="min-w-[160px] max-md:min-w-0 max-md:flex-1"
         />
       </div>
     </div>

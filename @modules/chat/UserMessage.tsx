@@ -1,35 +1,24 @@
-import ScaleAndUp from "@/transitions/ScaleAndUp";
 import React, { FC } from "react";
-import cn from "classnames";
 
 interface Props {
   message: string;
   image?: string;
 }
 
+// Your message: a soft bubble on the right.
 const UserMessage: FC<Props> = ({ message, image }) => {
   return (
-    <div className="w-full">
-      <ScaleAndUp>
-        <div className="flex justify-end py-3">
-          <div className="p-3 prose prose-sm bg-[#F2E1FF] rounded-xl w-fit max-w-[85%]">
-            {image && (
-              <img
-                src={image}
-                alt="image attachment"
-                className="object-contain w-full h-auto rounded-lg border m-0"
-              />
-            )}
-            <p
-              className={cn(``, {
-                ["!mt-2"]: image,
-              })}
-            >
-              {message}
-            </p>
-          </div>
-        </div>
-      </ScaleAndUp>
+    <div className="flex justify-end">
+      <div className="max-w-[82%] px-3.5 py-[9px] rounded-[18px] bg-hover text-sm leading-normal text-ink break-words">
+        {image && (
+          <img
+            src={image}
+            alt="image attachment"
+            className="w-full h-auto object-contain rounded-xl border border-line mb-2"
+          />
+        )}
+        <p className="whitespace-pre-wrap">{message}</p>
+      </div>
     </div>
   );
 };

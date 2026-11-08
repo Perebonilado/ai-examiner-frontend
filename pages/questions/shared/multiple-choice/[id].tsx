@@ -15,6 +15,7 @@ import { accessToken } from "@/constants";
 import Cookies from "js-cookie";
 import WebLayout from "@/layouts/WebLayout";
 import SubmissionModal from "@/@modules/questions/SubmissionModal";
+import TestPageTitle from "@/@modules/questions/TestPageTitle";
 
 const MultipleChoiceShared: NextPage = () => {
   const [id, setId] = useState("");
@@ -58,67 +59,68 @@ const MultipleChoiceShared: NextPage = () => {
     <LayoutToUse>
       <AppHead title="Multiple Choice" />
 
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get questions" />
-          <Button title="Reload Questions" onClick={refetch} />
-        </div>
-      )}
-      <div ref={topOfContainerRef}></div>
-      {data && (
-        <>
-          <h1 className="text-center text-xl font-semibold">
-            {capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())}{" "}
-          </h1>
-          <p className="text-center text-sm text-gray-500 my-3">
-            Shared By:{" "}
-            {capitalizeFirstLetterOfEachWord(
-              `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
-            )}
-          </p>
-        </>
-      )}
-
-      <div className="min-h-[70vh]">
+      <div className="mx-auto w-full max-w-[740px]">
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get questions" />
+            <Button title="Reload questions" onClick={refetch} />
+          </div>
+        )}
+        <div ref={topOfContainerRef}></div>
         {data && (
-          <MCQContainer
-            data={data.data}
-            handleDone={() => {
-              if (isUserLoggedIn) {
-                router.push("/documents");
-              } else {
-                router.push("/auth/login");
-              }
-            }}
-            isSubmitted={isSubmitted}
-            handleSubmitted={(value) => {
-              setIsSubmitted(value);
-            }}
-            allowNotSure={false}
-            allowSaveProgress={false}
-            allowSaveScore={false}
-            allowViewSource={false}
-            documentId={""}
-            title={capitalizeFirstLetterOfEachWord(
-              data.documentTitle.toLowerCase()
-            )}
-            handleShowSubmissionModal={({ title, score }) => {
-              setModalContent(
-                <SubmissionModal
-                  title={title}
-                  scorePercentage={score}
-                  handleScrollToTop={() => {
-                    if (topOfContainerRef.current) {
-                      topOfContainerRef.current.scrollIntoView({
-                        behavior: "smooth",
-                      });
-                    }
-                  }}
-                />
-              );
-            }}
+          <TestPageTitle
+            title={data.documentTitle.toLowerCase()}
+            meta={[
+              "Multiple choice",
+              `${data.data.length} questions`,
+              `Shared by ${capitalizeFirstLetterOfEachWord(
+                `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
+              )}`,
+            ]}
           />
         )}
+
+        <div className="min-h-[70vh]">
+          {data && (
+            <MCQContainer
+              data={data.data}
+              handleDone={() => {
+                if (isUserLoggedIn) {
+                  router.push("/documents");
+                } else {
+                  router.push("/auth/login");
+                }
+              }}
+              isSubmitted={isSubmitted}
+              handleSubmitted={(value) => {
+                setIsSubmitted(value);
+              }}
+              allowNotSure={false}
+              allowSaveProgress={false}
+              allowSaveScore={false}
+              allowViewSource={false}
+              documentId={""}
+              title={capitalizeFirstLetterOfEachWord(
+                data.documentTitle.toLowerCase()
+              )}
+              handleShowSubmissionModal={({ title, score }) => {
+                setModalContent(
+                  <SubmissionModal
+                    title={title}
+                    scorePercentage={score}
+                    handleScrollToTop={() => {
+                      if (topOfContainerRef.current) {
+                        topOfContainerRef.current.scrollIntoView({
+                          behavior: "smooth",
+                        });
+                      }
+                    }}
+                  />
+                );
+              }}
+            />
+          )}
+        </div>
       </div>
     </LayoutToUse>
   );

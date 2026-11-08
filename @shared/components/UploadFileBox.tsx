@@ -14,11 +14,11 @@ import ChooseFileTypeBox from "./ChooseFileTypeBox";
 import useClickOutside from "@/hooks/useClickOutside";
 import StagedImageItemContainer from "./StagedImageItemContainer";
 import { StagedImage } from "./StagedImageItem";
-import PowerPointIcon from "@/icons/PowerPointIcon";
-import MsWordIcon from "@/icons/MsWordIcon";
-import PDFIconAlt from "@/icons/PDFIconAlt";
-import JPGIcon from "@/icons/JPGIcon";
 import FileUploadSpinner from "./FileUploadSpinner";
+import FileTypeTile, { getFileTypeTileExt } from "./FileTypeTile";
+import { ArrowUp, ChevronDown, Upload } from "lucide-react";
+import { motion } from "framer-motion";
+import cn from "classnames";
 import ProcessedWritingContainer from "./HandWritten/ProcessedWritingContainer";
 import { useExteactWrittenTextMutation } from "@/api-services/file-upload.service";
 import ProcessingHandWrittenImagesLoader from "./HandWritten/ProcessingHandWrittenImagesLoader";
@@ -137,14 +137,14 @@ const UploadFileBox: FC<Props> = ({
     }
   }, [stagedImages]);
 
-  const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const stageImages = (files: FileList | File[]) => {
     try {
-      if (e.target.files?.length) {
+      if (files.length) {
         const stagedFiles: { id: number; file: File }[] = [];
-        for (let i = 0; i < e.target.files.length; i++) {
+        for (let i = 0; i < files.length; i++) {
           stagedFiles.push({
             id: i,
-            file: e.target.files[i],
+            file: files[i],
           });
         }
         setStagedImages(stagedFiles);
@@ -154,10 +154,17 @@ const UploadFileBox: FC<Props> = ({
     }
   };
 
+  const handleImagesChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files?.length) stageImages(e.target.files);
+  };
+
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    await attachFile(e.target.files?.[0]);
+  };
+
+  const attachFile = async (file?: File | null) => {
     try {
-      if (e.target.files) {
-        const file = e.target.files[0];
+      if (file) {
         if (file && validateFileSize(file.size)) {
           if (file.type.includes("pdf")) {
             const fileUrl = URL.createObjectURL(file);
@@ -195,7 +202,7 @@ const UploadFileBox: FC<Props> = ({
               />
             );
           } else {
-            handleSelectFile(e.target.files[0]);
+            handleSelectFile(file);
           }
           return;
         } else {
@@ -228,6 +235,38 @@ const UploadFileBox: FC<Props> = ({
   const [pdfExtractedImages, setPdfExtractedImages] = useState<string[]>([]);
   const [extractedWrittenTextTitle, setExtractedWrittenTextTitle] =
     useState<string>("Untitled");
+
+  const imageExtensions = ["png", "jpg", "jpeg", "heic"];
+  const [isDragOver, setIsDragOver] = useState(false);
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (attachedFile || uploadLoading) return;
+    if (disableUpload) {
+      toast.error("Please wait until your test is ready");
+      return;
+    }
+    const dropped = Array.from(e.dataTransfer.files || []);
+    if (!dropped.length) return;
+    const extOf = (f: File) =>
+      (f.name.split(".").pop() || "").toLowerCase();
+    const images = dropped.filter((f) => imageExtensions.includes(extOf(f)));
+    if (images.length === dropped.length) {
+      stageImages(images);
+      return;
+    }
+    const file = dropped.find((f) => allowedTypes.includes(extOf(f)));
+    if (!file) {
+      toast.error(
+        `Please upload one of: ${[...allowedTypes, "png", "jpg"].join(", ")}`
+      );
+      return;
+    }
+    await attachFile(file);
+  };
+
+  const isEmpty = !attachedFile && !uploadLoading && !pdfProcessing;
 
   return isClient ? (
     <>
@@ -279,82 +318,177 @@ const UploadFileBox: FC<Props> = ({
         accept=".png, .jpeg, .jpg, .heic"
         multiple
       />
-      <div>
-        <div className="w-full p-6 h-[250px] max-sm:h-[230px] shadow-md bg-white border border-[#9E69E3] border-dashed rounded-3xl">
-          {!attachedFile && !uploadLoading && !pdfProcessing && (
-            <div className="flex flex-col items-center justify-between gap-4 h-full">
-              <div className="flex flex-col items-center justify-center text-center">
-                <div className="flex items-center justify-center gap-3 mb-2">
-                  <PowerPointIcon />
-                  <MsWordIcon />
-                  <PDFIconAlt />
-                  <JPGIcon />
-                </div>
-                <p className="text-xl font-semibold">
-                  Upload your material here
-                </p>
-                <p className="text-[#00000080] text-xs mt-1">
-                  Max size: {maxFileSizeMB}mb pdf, docx, pptx, ppt, png, jpg,
-                  txt
-                </p>
-              </div>
+      <div
+        className={cn(
+          "group relative isolate flex flex-col items-center justify-center text-center rounded-[22px] max-md:rounded-[18px] transition-[background-color,box-shadow] duration-200",
+          "min-h-[300px] max-md:min-h-[270px] px-6 max-md:px-[18px]",
+          {
+            "pt-12 pb-[30px] max-md:pt-8 max-md:pb-[26px] bg-canvas hover:shadow-[0_16px_36px_-26px_rgba(16,12,40,0.28)]":
+              isEmpty,
+            "py-[30px] max-md:py-[26px] bg-surface": !isEmpty,
+            "!bg-surface": isDragOver,
+            // lift above the fields below while the Browse files menu is open
+            "z-10": isChooseFileTypePopUp,
+          }
+        )}
+        onDragOver={(e) => {
+          if (!isEmpty) return;
+          e.preventDefault();
+          if (!isDragOver) setIsDragOver(true);
+        }}
+        onDragLeave={(e) => {
+          if (e.currentTarget.contains(e.relatedTarget as Node)) return;
+          setIsDragOver(false);
+        }}
+        onDrop={handleDrop}
+      >
+        {/* dashed border (an SVG so the dashes are rounded and evenly spaced) */}
+        <svg
+          aria-hidden="true"
+          className="absolute inset-0 w-full h-full overflow-visible pointer-events-none"
+        >
+          <rect
+            width="100%"
+            height="100%"
+            rx="22"
+            ry="22"
+            fill="none"
+            stroke={isDragOver ? "var(--accent)" : "var(--accent-300)"}
+            strokeWidth={isDragOver ? 2 : 1.6}
+            strokeDasharray="6 7"
+            strokeLinecap="round"
+          />
+        </svg>
 
-              <div className="relative" ref={uploadButtonContainerRef}>
-                {isChooseFileTypePopUp && (
-                  <ChooseFileTypeBox
-                    handleSelectFiles={() => {
-                      filesRef.current?.click();
-                      setIsChooseFileTypePopUp(false);
-                    }}
-                    handleSelectImages={() => {
-                      imagesRef?.current?.click();
-                    }}
-                  />
-                )}
-                <button
-                  onClick={() => {
-                    if (disableUpload) {
-                      toast.error("Please wait until your test is ready");
-                      return;
-                    }
-                    setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
-                  }}
-                  type="button"
-                  className="border border-[#9333EA] px-6 py-2 text-[#2F004F] rounded-full font-medium text-sm"
+        {isEmpty && (
+          <>
+            <div
+              aria-hidden="true"
+              className="relative flex items-end justify-center h-[78px] max-md:h-14 mt-3.5 mb-5 max-md:mt-2 max-md:mb-3.5"
+            >
+              {(["PPTX", "DOCX", "PDF", "JPG"] as const).map((ext, i) => (
+                <span
+                  key={ext}
+                  className={cn(
+                    "relative -mx-[3px] [filter:drop-shadow(0_1px_0_rgba(16,12,40,0.06))_drop-shadow(0_8px_14px_rgba(16,12,40,0.12))] transition-transform duration-[350ms] ease-out-expo motion-reduce:transition-none",
+                    [
+                      "z-0 rotate-[-13deg] translate-x-1 translate-y-[9px] group-hover:rotate-[-17deg] group-hover:-translate-x-1 group-hover:translate-y-1.5",
+                      "z-[1] rotate-[-4.5deg] translate-y-px group-hover:rotate-[-6deg] group-hover:-translate-y-1",
+                      "z-[2] rotate-[4.5deg] translate-y-px group-hover:rotate-[6deg] group-hover:-translate-y-1",
+                      "z-[1] rotate-[13deg] -translate-x-1 translate-y-[9px] group-hover:rotate-[17deg] group-hover:translate-x-1 group-hover:translate-y-1.5",
+                    ][i]
+                  )}
                 >
-                  Browse files
-                </button>
-              </div>
+                  <FileTypeTile ext={ext} size="fan" />
+                </span>
+              ))}
+              <span className="absolute left-1/2 -top-[22px] -translate-x-1/2 z-[5] w-[34px] h-[34px] rounded-full grid place-items-center bg-accent text-white shadow-[0_0_0_4px_var(--surface),0_4px_10px_-4px_rgba(16,12,40,0.25)]">
+                <ArrowUp size={17} strokeWidth={2.4} />
+              </span>
             </div>
-          )}
+            <p className="text-lg font-bold text-ink tracking-[-0.015em]">
+              Upload your material here
+            </p>
+            <p className="mt-1.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[13px] text-muted">
+              <span className="tabular-nums">Max size: {maxFileSizeMB}mb</span>
+              <span className="w-[3px] h-[3px] rounded-full bg-[#c4c3cb]" />
+              <span>pdf, docx, pptx, ppt, png, jpg, txt</span>
+            </p>
 
-          <div className="flex flex-col items-center justify-center gap-4 h-full">
-            {attachedFile && uploadLoading && <FileUploadSpinner />}
-            {pdfProcessing && (
-              <FileUploadSpinner
-                title={`Processing File ${ocrProgress && ocrProgress}`}
-              />
-            )}
-
-            {attachedFile && !uploadLoading && !pdfProcessing && (
-              <TransitionUp>
-                <AttachedFileInfo
-                  handleDelete={() => {
-                    handleDeleteFile();
-                    if (filesRef.current && filesRef.current.value) {
-                      filesRef.current.value = "";
-                    }
-
-                    if (imagesRef.current && imagesRef.current.value) {
-                      imagesRef.current.value = "";
-                    }
-                  }}
-                  fileName={attachedFile.name}
+            <div className="relative mt-[22px]" ref={uploadButtonContainerRef}>
+              <button
+                onClick={() => {
+                  if (disableUpload) {
+                    toast.error("Please wait until your test is ready");
+                    return;
+                  }
+                  setIsChooseFileTypePopUp(!isChooseFileTypePopUp);
+                }}
+                type="button"
+                aria-haspopup="menu"
+                aria-expanded={isChooseFileTypePopUp}
+                className="inline-flex items-center gap-2 h-[42px] pl-4 pr-3.5 rounded-full bg-brand hover:bg-brand-hover text-white text-sm font-semibold whitespace-nowrap shadow-xs transition-colors active:translate-y-[0.5px]"
+              >
+                <Upload size={16} strokeWidth={1.75} aria-hidden />
+                Browse files
+                <ChevronDown
+                  size={16}
+                  strokeWidth={1.75}
+                  className={cn("text-white/80 transition-transform", {
+                    "rotate-180": isChooseFileTypePopUp,
+                  })}
+                  aria-hidden
                 />
-              </TransitionUp>
-            )}
+              </button>
+              {isChooseFileTypePopUp && (
+                <ChooseFileTypeBox
+                  handleSelectFiles={() => {
+                    filesRef.current?.click();
+                    setIsChooseFileTypePopUp(false);
+                  }}
+                  handleSelectImages={() => {
+                    imagesRef?.current?.click();
+                  }}
+                />
+              )}
+            </div>
+            <p className="mt-2.5 text-[13px] text-muted">
+              or drag and drop it here
+            </p>
+          </>
+        )}
+
+        {attachedFile && uploadLoading && (
+          <div className="flex flex-col items-center w-full" role="status">
+            <FileTypeTile
+              ext={getFileTypeTileExt(attachedFile.name, attachedFile.type)}
+              size="lg"
+            />
+            <p className="mt-3.5 text-lg font-bold text-ink tracking-[-0.015em]">
+              File upload in progress
+            </p>
+            <p className="mt-1.5 max-w-[280px] text-[13px] text-muted truncate">
+              {attachedFile.name}
+            </p>
+            <div className="relative mt-4 w-full max-w-[260px] h-1.5 rounded-full bg-sunken overflow-hidden">
+              <motion.span
+                className="absolute inset-y-0 left-0 w-2/5 rounded-full bg-accent"
+                initial={{ x: "-100%" }}
+                animate={{ x: "250%" }}
+                transition={{
+                  duration: 1.3,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                }}
+              />
+            </div>
           </div>
-        </div>
+        )}
+
+        {pdfProcessing && (
+          <FileUploadSpinner
+            title={`Processing File ${ocrProgress && ocrProgress}`}
+          />
+        )}
+
+        {attachedFile && !uploadLoading && !pdfProcessing && (
+          <TransitionUp className="w-full">
+            <AttachedFileInfo
+              handleDelete={() => {
+                handleDeleteFile();
+                if (filesRef.current && filesRef.current.value) {
+                  filesRef.current.value = "";
+                }
+
+                if (imagesRef.current && imagesRef.current.value) {
+                  imagesRef.current.value = "";
+                }
+              }}
+              fileName={attachedFile.name}
+              fileType={attachedFile.type}
+            />
+          </TransitionUp>
+        )}
       </div>
     </>
   ) : (

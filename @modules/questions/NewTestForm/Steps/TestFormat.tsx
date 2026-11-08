@@ -1,6 +1,7 @@
 import { testFormats } from "@/@modules/home/GenerateQuestionsForm";
 import TestFormatItem from "@/@modules/home/TestFormatItem";
 import Button from "@/@shared/ui/Button";
+import { DialogFooter } from "@/@modules/home/DialogFrame";
 import { RootState } from "@/config/redux-config";
 import {
   patchAdditionalSettings,
@@ -18,10 +19,17 @@ const TestFormat: FC = () => {
   );
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="text-base font-bold">Select test format</h3>
-      </div>
-      <div className="mt-4 flex flex-col gap-6 max-h-[320px] overflow-y-auto">
+      <h2
+        id="new-test-format-title"
+        className="px-5 pt-5 text-lg leading-[1.3] font-bold tracking-[-0.015em] text-ink"
+      >
+        Select test format
+      </h2>
+      <div
+        role="radiogroup"
+        aria-labelledby="new-test-format-title"
+        className="flex flex-col gap-2 px-5 pt-4 pb-5"
+      >
         {testFormats.map((tf, idx) => {
           return (
             <TestFormatItem
@@ -52,13 +60,15 @@ const TestFormat: FC = () => {
         })}
       </div>
 
-      <Button
-        title="Continue"
-        className="mt-8 mx-auto"
-        onClick={() => {
-          dispatch(setCurrentStep("TOTAL_QUESTIONS"));
-        }}
-      />
+      <DialogFooter>
+        <Button
+          title="Continue"
+          size="medium"
+          onClick={() => {
+            dispatch(setCurrentStep("TOTAL_QUESTIONS"));
+          }}
+        />
+      </DialogFooter>
     </div>
   );
 };

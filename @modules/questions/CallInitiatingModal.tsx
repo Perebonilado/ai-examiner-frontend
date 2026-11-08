@@ -38,9 +38,15 @@ const CallInitiatingModal: FC = () => {
   }, [audioRef, isPlaying]);
 
   return (
-    <div className="w-full max-w-[350px] h-[160px] rounded-t-3xl rounded-b-lg bg-white flex flex-col items-center justify-center">
-      <h2 className="text-center text-xl font-bold">Connecting your call...</h2>
-      <p className="text-sm text-center mt-3">This may take a few minutes</p>
+    <div
+      role="status"
+      aria-live="polite"
+      className="w-[min(360px,calc(100vw-40px))] rounded-2xl border border-edge bg-surface px-6 py-8 text-center shadow-pop"
+    >
+      <h2 className="text-lg font-bold tracking-[-0.015em] text-ink">
+        Connecting your call...
+      </h2>
+      <p className="mt-1.5 text-sm text-subtle">This may take a few minutes</p>
 
       {!isPlaying && (
         <button

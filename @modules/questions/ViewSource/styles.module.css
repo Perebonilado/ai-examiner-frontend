@@ -1,3 +1,4 @@
 .highlight strong {
-    color: #9D6EC2;
+    color: var(--accent-900);
+    font-weight: 700;
 }

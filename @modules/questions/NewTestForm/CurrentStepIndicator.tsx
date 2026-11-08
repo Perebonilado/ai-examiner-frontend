@@ -8,20 +8,21 @@ interface Props {
 
 const CurrentStepIndicator: FC<Props> = ({ currentStep, totalSteps }) => {
   return (
-    <div className="py-4">
-      <p className="text-[#9333EA] font-semibold mb-2">
+    <div className="px-5 pt-1.5">
+      <p className="text-[13px] font-semibold text-accent tabular-nums">
         Step {currentStep} of {totalSteps}
       </p>
-      <div className="flex items-center justify-between gap-1">
+      <div className="flex items-center gap-1 mt-2" aria-hidden>
         {new Array(totalSteps).fill("").map((_, idx) => {
           const step = idx + 1;
           return (
-            <div
-              className={cn("h-[2px] flex-1 rounded-full", {
-                ["bg-[#D9D9D9]"]: step > currentStep,
-                ["bg-[#2F004F]"]: step <= currentStep,
+            <span
+              key={step}
+              className={cn("h-1 flex-1 rounded-full transition-colors", {
+                ["bg-sunken"]: step > currentStep,
+                ["bg-accent"]: step <= currentStep,
               })}
-            ></div>
+            />
           );
         })}
       </div>

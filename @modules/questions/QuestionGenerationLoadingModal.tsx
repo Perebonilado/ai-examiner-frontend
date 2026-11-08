@@ -3,13 +3,15 @@ import QuestionLoading from "./QuestionLoading";
 import ViewDocumentSummary from "./ViewDocumentSummary";
 import { useRouter } from "next/router";
 import TopLevelGenerateQuestionsLoader from "./TopLevelGenerateQuestionsLoader";
-import QuestionGenerationSuccessModal from "./QuestionGenerationSuccessModal";
+import { useDocumentFileExt } from "./PreparingTestCard";
 
 interface Props {
   isComplete: boolean;
   handleStartTest: () => void;
   handleViewSummary: () => void;
   showTopLevelLoader: boolean;
+  /** The document being turned into a test; used for the file-type tile. */
+  documentId?: string | null;
 }
 
 const QuestionGenerationLoadingModal: FC<Props> = ({
@@ -17,7 +19,9 @@ const QuestionGenerationLoadingModal: FC<Props> = ({
   handleStartTest,
   handleViewSummary,
   showTopLevelLoader,
+  documentId,
 }) => {
+  const fileExt = useDocumentFileExt(documentId);
   const [progress, setProgress] = useState(0);
   let interval: NodeJS.Timeout;
   useEffect(() => {
@@ -52,6 +56,7 @@ const QuestionGenerationLoadingModal: FC<Props> = ({
       {!showTopLevelLoader  && (
         <QuestionLoading
           percentageLoading={progress}
+          fileExt={fileExt}
           handleViewSummary={handleViewSummary}
           handleStartTest={() => {
             handleStartTest();

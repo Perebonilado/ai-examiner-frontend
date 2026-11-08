@@ -8,29 +8,34 @@ interface Props {
   handleSelect: (topic: TopicsV2Model) => void;
 }
 
+/* One calm row: title left, page range right. Selected = violet border + tint; no checkbox. */
 const TopicMenuItem: FC<Props> = ({ handleSelect, selected, topic }) => {
-  const rootClassname = cn(
-    `border border-[#CECECE] rounded-lg p-4 cursor-pointer hover:border-[#9E69E3]`,
-    {
-      ["bg-[#F7F4FF] !border-[#9E69E3]"]: selected,
-    }
-  );
   return (
-    <div
-      className={rootClassname}
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={selected}
+      className={cn(
+        "flex shrink-0 items-baseline gap-4 w-full min-h-[44px] max-md:min-h-[48px] px-3 py-3 max-md:py-[13px] rounded-[10px] border-[1.5px] text-left transition-colors",
+        selected
+          ? "border-accent bg-accent-50"
+          : "border-transparent hover:bg-hover"
+      )}
       onClick={() => {
         handleSelect(topic);
       }}
     >
-      <p className="text-sm w-full text-center">{topic.title}</p>
-      {topic.startPage && topic.endPage && (
-        <p className="text-xs mt-1 text-gray-400 text-center">
+      <span className="flex-1 min-w-0 text-sm font-medium leading-[1.45] text-ink first-letter:uppercase">
+        {topic.title}
+      </span>
+      {topic.startPage && topic.endPage ? (
+        <span className="flex-shrink-0 text-[13px] text-muted whitespace-nowrap tabular-nums">
           {topic.startPage == topic.endPage
             ? `Page ${topic.startPage}`
             : `Pages ${topic.startPage} - ${topic.endPage}`}
-        </p>
-      )}
-    </div>
+        </span>
+      ) : null}
+    </button>
   );
 };
 

@@ -1,11 +1,9 @@
 import AppHead from "@/@shared/components/AppHead";
-import Button from "@/@shared/ui/Button";
 import {
   useGetQuestionsByIdQuery,
   useStartVivaCallMutation,
 } from "@/api-services/questions.service";
 import { useModalContext } from "@/contexts/ModalContext";
-import ChevronLeft from "@/icons/ChevronLeft";
 import AppLayout from "@/layouts/AppLayout";
 import {
   capitalizeFirstLetterOfEachWord,
@@ -37,6 +35,7 @@ import {
 } from "@/features/documentChatSlice";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
 import UpgradeAccountForm from "@/@shared/components/UpgradeAccountForm";
+import cn from "classnames";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
@@ -350,12 +349,30 @@ const VivaQuestion: NextPage = () => {
     }
   }, [isPlaying]);
 
+  const documentTitle = data?.documentTitle
+    ? capitalizeFirstLetterOfEachWord(data.documentTitle.toLowerCase())
+    : "";
+
   return (
     <div translate={data && !data.analysis ? "no" : "yes"}>
       <AppLayout
         handleBack={() => {
           router.push(`/questions/view-questions/${data?.documentId}`);
         }}
+        crumbs={[
+          { label: "All documents", href: "/documents" },
+          ...(data
+            ? [
+                {
+                  label: documentTitle,
+                  href: `/questions/view-questions/${data.documentId}`,
+                },
+              ]
+            : []),
+          { label: "Oral (viva)" },
+        ]}
+        mobileTitle="Oral (viva)"
+        noPadding
       >
         <AppHead title="Viva" />
         {!isPlaying && (
@@ -367,69 +384,69 @@ const VivaQuestion: NextPage = () => {
             Play Sound
           </button>
         )}
-        {data && credits && (
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <div className="md:hidden">
-                <Button
-                  title="Back"
-                  variant="text"
-                  starticon={<ChevronLeft />}
-                  className="!gap-1 mb-6 mt-7"
-                  onClick={() => {
-                    router.push(
-                      `/questions/view-questions/${data?.documentId}`
-                    );
-                  }}
+
+        {data && (
+          <div
+            className={cn(
+              "flex w-full flex-col px-7 pt-6 pb-14 max-md:px-4 max-md:pt-4 max-md:pb-[calc(28px+env(safe-area-inset-bottom))]",
+              {
+                "min-h-[calc(100dvh-60px)] max-md:min-h-[calc(100dvh-56px)]":
+                  !data.analysis,
+              }
+            )}
+          >
+            <header
+              className={cn(
+                "grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-x-6 max-md:block",
+                { "mx-auto max-w-[740px]": data.analysis }
+              )}
+            >
+              <h1 className="col-start-1 row-start-1 text-base font-semibold leading-[1.4] tracking-[-0.01em] text-ink max-md:text-[15px]">
+                Oral (Viva) Q&A - {documentTitle}
+              </h1>
+              <div className="contents max-md:mt-1 max-md:flex max-md:flex-wrap max-md:items-center max-md:justify-between max-md:gap-x-3 max-md:gap-y-0.5">
+                {credits && !data.analysis && (
+                  <p className="col-start-1 row-start-2 mt-0.5 flex min-h-6 items-center gap-2 whitespace-nowrap text-[13px] text-muted max-md:mt-0">
+                    {callInProgress && <PulseCallIndicator />}
+                    {callInProgress
+                      ? "Test in progress..."
+                      : "Just start the call when you are all set!"}
+                  </p>
+                )}
+                {credits && (
+                  <GetMoreCreditsCard
+                    className="col-start-2 row-start-1"
+                    minuteLeft={millisecondsToMinutesSeconds(
+                      credits?.remainingCreditsMs ?? 0
+                    )}
+                  />
+                )}
+              </div>
+            </header>
+
+            {data.analysis && (
+              <div className="mt-8 max-md:mt-6">
+                <VivaAnalysisContainer
+                  data={data.analysis.analysisData}
+                  callId={data.analysis.callId}
                 />
               </div>
-            </div>
-            <GetMoreCreditsCard
-              minuteLeft={millisecondsToMinutesSeconds(
-                credits?.remainingCreditsMs ?? 0
-              )}
-            />
-          </div>
-        )}
+            )}
 
-        {data && credits && (
-          <div className="pb-6">
-            <h1 className="text-center text-xl font-semibold">
-              Oral (Viva) Q&A -{" "}
-              {capitalizeFirstLetterOfEachWord(
-                data.documentTitle.toLowerCase()
-              )}{" "}
-            </h1>
-            {data && !data.analysis && (
-              <p className="text-center text-gray-500 my-3 flex items-center justify-center gap-2">
-                {callInProgress && <PulseCallIndicator />}
-                {callInProgress
-                  ? "Test in progress..."
-                  : "Just start the call when you are all set!"}
-              </p>
+            {credits && !data.analysis && (
+              <InitiateVivaContainer
+                callInProgress={callInProgress}
+                data={data}
+                handleEndCall={handleEndCall}
+                handleStartCall={handleStartCallConfirmation}
+                systemSpeaking={systemSpeaking}
+                userSpeaking={userSpeaking}
+                maxCallDurationInSeconds={
+                  credits ? credits.remainingCreditsMs / 1000 : 0
+                }
+              />
             )}
           </div>
-        )}
-
-        {data && data.analysis && (
-          <VivaAnalysisContainer
-            data={data.analysis.analysisData}
-            callId={data.analysis.callId}
-          />
-        )}
-
-        {data && credits && !data.analysis && (
-          <InitiateVivaContainer
-            callInProgress={callInProgress}
-            data={data}
-            handleEndCall={handleEndCall}
-            handleStartCall={handleStartCallConfirmation}
-            systemSpeaking={systemSpeaking}
-            userSpeaking={userSpeaking}
-            maxCallDurationInSeconds={
-              credits ? credits.remainingCreditsMs / 1000 : 0
-            }
-          />
         )}
       </AppLayout>
     </div>

@@ -6,7 +6,7 @@ export interface NavigationSlice {
 }
 
 const initialState: NavigationSlice = {
-  navOpen: false
+  navOpen: true
 };
 
 export const navigationSlice = createSlice({

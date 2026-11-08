@@ -1,18 +1,17 @@
-import PerformanceTrackingTopicInformation from "@/@modules/performance-tracking/PerformanceTrackingTopicInformation";
 import TopicInfoCard from "@/@modules/performance-tracking/TopicInfoCard";
-import TopicPerformancePieChart from "@/@modules/performance-tracking/TopicPerformancePieChart";
-import GenerateQuestionsForm from "@/@modules/questions/GenerateQuestionsForm";
 import AppHead from "@/@shared/components/AppHead";
-import Button from "@/@shared/ui/Button";
+import { useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
 import { useGetPerformanceTrackingForQuestionQuery } from "@/api-services/performance-tracking.service";
-import { useModalContext } from "@/contexts/ModalContext";
-import ChevronLeft from "@/icons/ChevronLeft";
+import { openNewTestForm, resetNewTestForm } from "@/features/newTestSlice";
 import AppLayout from "@/layouts/AppLayout";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+
+const normaliseTopic = (topic: string) => topic.trim().toLowerCase();
 
 const PerformanceReviewPerQuestion: NextPage = () => {
   const [questionId, setQuestionId] = useState<string | null>(null);
@@ -20,6 +19,12 @@ const PerformanceReviewPerQuestion: NextPage = () => {
   const { data } = useGetPerformanceTrackingForQuestionQuery(
     { questionId: questionId || "" },
     { skip: !questionId, refetchOnMountOrArgChange: true }
+  );
+
+  // The document's saved topics: the New test form selects topics by id
+  const { data: documentTopics } = useGetAllSavedDocumentTopicsV2Query(
+    { documentId: data?.documentId || "" },
+    { skip: !data?.documentId }
   );
 
   const params = useParams();
@@ -30,10 +35,39 @@ const PerformanceReviewPerQuestion: NextPage = () => {
     }
   }, [params]);
 
-  const { setModalContent } = useModalContext();
+  const dispatch = useDispatch();
 
   const router = useRouter();
   const { type } = router.query;
+
+  const handleGenerateQuestions = (selectedTopics: string[]) => {
+    if (!data) return;
+
+    // Open the multistep New test form, preselected with the checked topics. Topics saved on the
+    // document go by id (page-range retrieval); if any checked topic is only a tag from this test,
+    // all checked topics go by name instead, since the API ignores names when ids are sent.
+    const byTitle = new Map(
+      (documentTopics || []).map((t) => [normaliseTopic(t.title), t])
+    );
+    const matched = selectedTopics
+      .map((t) => byTitle.get(normaliseTopic(t)))
+      .filter((t): t is NonNullable<typeof t> => Boolean(t));
+    const allSaved = matched.length === selectedTopics.length;
+
+    dispatch(resetNewTestForm());
+    dispatch(
+      openNewTestForm({
+        documentId: data.documentId,
+        topics: documentTopics || [],
+        selectedTopics: allSaved ? matched : [],
+        selectedQuestionTopics: allSaved ? [] : selectedTopics,
+      })
+    );
+  };
+
+  const title = data?.documentTitle
+    ? capitalizeFirstLetterOfEachWord(data.documentTitle)
+    : "";
 
   return (
     <>
@@ -41,75 +75,42 @@ const PerformanceReviewPerQuestion: NextPage = () => {
         handleBack={() => {
           router.push(`/questions/practise-questions/${type}/${questionId}`);
         }}
+        mobileTitle={title || "Performance overview"}
+        crumbs={
+          data
+            ? [
+                { label: "All documents", href: "/documents" },
+                {
+                  label: title,
+                  href: `/questions/view-questions/${data.documentId}`,
+                },
+                { label: "Performance overview" },
+              ]
+            : undefined
+        }
       >
         <AppHead title="Performance Tracking" />
-        <div className="md:hidden">
-          <Button
-            title="Back"
-            variant="text"
-            starticon={<ChevronLeft />}
-            className="!gap-1 mb-6 mt-7"
-            onClick={() => {
-              router.push(
-                `/questions/practise-questions/${type}/${questionId}`
-              );
-            }}
-          />
-        </div>
 
-        <h2 className="text-center font-bold text-2xl px-4">
-          Performance Overview
-        </h2>
-        {data && (
-          <>
-            <p className="text-center mt-3 px-4">
-              Insights from your{" "}
-              {capitalizeFirstLetterOfEachWord(data.documentTitle)} test
-            </p>
-            <p className="text-center text-sm text-gray-400 mt-2 px-4">
-              Score - {data.score}%
-            </p>
-          </>
-        )}
+        <div className="mx-auto w-full max-w-[1000px]">
+          <div className="mb-4 md:mb-5">
+            <h1 className="text-2xl font-bold leading-[1.2] tracking-[-0.015em] text-ink md:text-[28px]">
+              Performance overview
+            </h1>
+            {data && (
+              <p className="mt-1.5 text-[15px] text-subtle">
+                Insights from your {title} test
+              </p>
+            )}
+          </div>
 
-        <div className="mt-14">
           {data && (
-            <TopicPerformancePieChart
-              percentageFailed={Number(
-                data.percentageAnsweredWrongly.toFixed(2)
-              )}
-              percentagePassed={Number(
-                data.percentageAnsweredCorrectly.toFixed(2)
-              )}
+            <TopicInfoCard
+              score={data.score}
+              groupedQuestions={data.groupedQuestions}
+              handleGenerateQuestions={handleGenerateQuestions}
             />
           )}
         </div>
-
-        {data && (
-          <div className="mt-16">
-            <div className="w-full mx-auto">
-              <TopicInfoCard
-                status="fail"
-                groupedQuestions={data.groupedQuestions}
-                handleGenerateQuestions={(selectedTopics) => {
-                  setModalContent(
-                    <GenerateQuestionsForm
-                      topics={selectedTopics.map((t) => ({
-                        label: t,
-                        value: t,
-                      }))}
-                      fileId={""}
-                      documentIdProp={data.documentId}
-                      allowTopicSelection={!selectedTopics.length}
-                      preSelectedTopics={selectedTopics}
-                      saveSelectedTopics={false}
-                    />
-                  );
-                }}
-              />
-            </div>
-          </div>
-        )}
       </AppLayout>
     </>
   );

@@ -1,4 +1,3 @@
-import Container from "@/@shared/ui/Container";
 import { EssayQuestionPayload, QuestionsModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
 import EssayItem from "./EssayItem";
@@ -41,69 +40,65 @@ const EssayItemContainer: FC<Props> = ({
 
   return (
     <div>
-      <Container className="pb-10">
-        <div className="flex flex-col gap-[80px]">
-          {data.map((d, idx) => {
-            return (
-              <EssayItem
-                {...d}
-                questionNumber={idx + 1}
-                totalQuestionsCount={data.length}
-                documentId={documentId}
-                speak={speak}
-                handleSetAnswer={({ answer, id }) => {
-                  const mapped = questionAnswer.map((qa) => {
-                    if (qa.specificQuestionId === id) {
-                      return { ...qa, answer: answer };
-                    }
-
-                    return qa;
-                  });
-
-                  setQuestionAnswer(mapped);
-                }}
-                key={idx}
-              />
-            );
-          })}
-          <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
-            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
-              <Button
-                title="New Test"
-                onClick={() => {
-                  if (handleGenerateMoreQuestions) {
-                    handleGenerateMoreQuestions();
+      <div className="flex flex-col gap-7">
+        {data.map((d, idx) => {
+          return (
+            <EssayItem
+              {...d}
+              questionNumber={idx + 1}
+              totalQuestionsCount={data.length}
+              documentId={documentId}
+              speak={speak}
+              handleSetAnswer={({ answer, id }) => {
+                const mapped = questionAnswer.map((qa) => {
+                  if (qa.specificQuestionId === id) {
+                    return { ...qa, answer: answer };
                   }
-                }}
-                size="large"
-                variant="outlined"
-                className="max-sm:w-full"
-              />
-              <Button
-                title="Submit"
-                size="large"
-                className="max-sm:w-full"
-                onClick={() => {
-                  const data = questionAnswer.map((qa) => {
-                    {
-                      return {
-                        question: qa.question,
-                        answer: qa.answer,
-                      };
-                    }
-                  });
 
-                  const payload = {
-                    questionId,
-                    data,
-                  };
-                  submitTest(payload);
-                }}
-              />
-            </div>
-          </div>
-        </div>
-      </Container>
+                  return qa;
+                });
+
+                setQuestionAnswer(mapped);
+              }}
+              key={idx}
+            />
+          );
+        })}
+      </div>
+      <div data-phone-bottom-bar="" className="flex justify-end gap-2.5 mt-8 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:mt-6 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:border-t max-md:border-line max-md:bg-[rgba(255,255,255,0.94)] max-md:backdrop-blur-md">
+        <Button
+          title="New test"
+          onClick={() => {
+            if (handleGenerateMoreQuestions) {
+              handleGenerateMoreQuestions();
+            }
+          }}
+          size="large"
+          variant="outlined"
+          className="max-md:flex-1"
+        />
+        <Button
+          title="Submit"
+          size="large"
+          className="min-w-[160px] max-md:min-w-0 max-md:flex-1"
+          onClick={() => {
+            const data = questionAnswer.map((qa) => {
+              {
+                return {
+                  question: qa.question,
+                  answer: qa.answer,
+                };
+              }
+            });
+
+            const payload = {
+              questionId,
+              data,
+            };
+            submitTest(payload);
+          }}
+        />
+      </div>
     </div>
   );
 };

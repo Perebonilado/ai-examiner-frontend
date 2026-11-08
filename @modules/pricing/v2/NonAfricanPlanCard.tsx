@@ -72,7 +72,9 @@ const NonAfricanPlanCard: FC<Props> = ({
         {[
           type.toLowerCase() === "free" ? "1 practice test per month" :"Unlimited practice tests",
           "Unlimited file uploads",
-          "Easy Read features",
+          type.toLowerCase() === "free"
+            ? "10 minutes of Easy Read a month"
+            : "Unlimited Easy Read",
           "Ai Discussions",
         ].map((desc) => {
           return (

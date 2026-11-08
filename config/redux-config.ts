@@ -26,6 +26,7 @@ import { imageSearchReducer } from "@/features/imageSearchSlice";
 import { navigationSliceReducer } from "@/features/navigationSlice";
 import { newTestSliceReducer } from "@/features/newTestSlice";
 import { ReadingProgressService } from "@/api-services/reading-progress.service";
+import { EasyReadService } from "@/api-services/easy-read.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -49,6 +50,7 @@ export const reduxStore = configureStore({
     [PerformanceTrackingService.reducerPath]:
       PerformanceTrackingService.reducer,
     [PreferredLanguageService.reducerPath]: PreferredLanguageService.reducer,
+    [EasyReadService.reducerPath]: EasyReadService.reducer,
     [ReadingProgressService.reducerPath]: ReadingProgressService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
@@ -79,6 +81,7 @@ export const reduxStore = configureStore({
       PerformanceTrackingService.middleware,
       PreferredLanguageService.middleware,
       ReadingProgressService.middleware,
+      EasyReadService.middleware,
     ]),
 });
 

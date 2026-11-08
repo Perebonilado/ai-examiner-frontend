@@ -1,6 +1,8 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { useGetEasyReadAllowanceQuery } from "@/api-services/easy-read.service";
+import { EasyReadLimitDialog } from "@/@modules/questions/EasyRead/EasyReadAllowance";
 import React, { FC, useState } from "react";
 import { Form, useFormik, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
@@ -108,6 +110,12 @@ const GenerateQuestionsForm: FC = () => {
   const permissions = useSelector(
     (state: RootState) => state.permissionsState.permissions
   );
+  const { data: easyReadAllowance } = useGetEasyReadAllowanceQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const easyReadOutOfTime =
+    !!easyReadAllowance?.limited &&
+    (easyReadAllowance.remainingSeconds ?? 0) <= 0;
 
   const {
     data,
@@ -262,13 +270,15 @@ const GenerateQuestionsForm: FC = () => {
 
   const handleStartStudying = async () => {
     const [summary, easyRead] = studyModeFormats.map((f) => f.value);
-    if (
-      !!permissions &&
-      permissions.maxGenerationReached &&
-      selectedStudyTool === easyRead
-    ) {
+    // Free plan: 10 minutes of Easy Read a month. When they're used up, offer the upgrade
+    // before uploading anything.
+    if (selectedStudyTool === easyRead && easyReadOutOfTime) {
       setModalContent(
-        <MaxGenerationModal body="An upgrade is required to use Easy Read" />
+        <EasyReadLimitDialog
+          resetsOn={easyReadAllowance?.resetsOn}
+          secondaryLabel="Not now"
+          onSecondary={() => setModalContent(null)}
+        />
       );
       return;
     }

@@ -24,6 +24,8 @@ export const baseQueryWithLogoutOnTokenExpiration = (
     extraOptions: {
       loadingMessage?: string;
       triggerLoading?: boolean;
+      /** Don't show a toast for errors: the caller handles them (background checks, polling). */
+      silentErrors?: boolean;
     } = { loadingMessage: "", triggerLoading: true }
   ): Promise<any> => {
     if (extraOptions.loadingMessage) {
@@ -49,6 +51,8 @@ export const baseQueryWithLogoutOnTokenExpiration = (
             window.location.pathname = "/auth/login";
           }
         });
+      } else if (extraOptions.silentErrors) {
+        // The caller shows its own message (or none).
       } else if ("status" in result.error) {
         const { message } = result.error.data as { message: string };
         toast.error(message);

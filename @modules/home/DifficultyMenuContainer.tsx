@@ -2,29 +2,46 @@ import { difficultyOptions } from "@/constants";
 import React, { FC } from "react";
 import DifficultyMenuItem from "./DifficultyMenuItem";
 import Button from "@/@shared/ui/Button";
+import { DialogFooter, DialogHeader } from "./DialogFrame";
 
 interface Props {
   handleSelect: (value: string) => void;
   selectedDifficulty: string;
   handleBack: () => void;
+  /** Close button in the title row (standalone dialog). */
+  onClose?: () => void;
+  /** Back button in the title row (standalone dialog). */
+  onBack?: () => void;
 }
 
 const DifficultyMenuContainer: FC<Props> = ({
   handleSelect,
   selectedDifficulty,
-  handleBack
+  handleBack,
+  onClose,
+  onBack,
 }) => {
   return (
-    <div className="bg-white pt-0 rounded-2xl min-w-full">
-      <h3 className="text-lg font-bold mb-6">Choose your difficulty level</h3>
+    <div className="min-w-full flex flex-col">
+      <DialogHeader
+        title="Choose your difficulty level"
+        titleId="difficulty-title"
+        onClose={onClose}
+        onBack={onBack}
+      />
 
-      <div className="mt-4 flex flex-col gap-5">
+      <div
+        role="radiogroup"
+        aria-labelledby="difficulty-title"
+        className="grid grid-cols-3 gap-2.5 px-5 pt-4 pb-5"
+      >
         {difficultyOptions.map((opt, idx) => {
           return (
             <DifficultyMenuItem
               key={idx}
               label={opt.label}
               value={opt.value}
+              level={idx + 1}
               handleSelect={(value) => {
                 handleSelect(value);
               }}
@@ -32,9 +49,11 @@ const DifficultyMenuContainer: FC<Props> = ({
             />
           );
         })}
-
-        <Button title="Save" size="large" onClick={handleBack} className="block mx-auto mt-2"/>
       </div>
+
+      <DialogFooter className="mt-auto">
+        <Button title="Save" size="medium" onClick={handleBack} />
+      </DialogFooter>
     </div>
   );
 };

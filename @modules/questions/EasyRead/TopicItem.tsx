@@ -1,8 +1,7 @@
-import ArrowStubRightIcon from "@/icons/ArrowStubRightIcon";
-import React, { FC, useState } from "react";
+import React, { FC, useId, useState } from "react";
 import cn from "classnames";
-import CheckboxAlt from "@/@shared/ui/Input/Checkbox/CheckboxAlt";
-import { capitalizeFirstLetterOfEachWord } from "@/utils";
+import { Check } from "lucide-react";
+import TopicCheckbox from "./TopicCheckbox";
 
 interface Props {
   startPage: number;
@@ -15,6 +14,10 @@ interface Props {
   isChecked: boolean;
 }
 
+const sentenceCase = (text: string) =>
+  text ? text.charAt(0).toUpperCase() + text.slice(1) : text;
+
+/** One topic row: checkbox, page range, title; clicking the row shows its description. */
 const TopicItem: FC<Props> = ({
   endPage,
   shortDescription,
@@ -26,69 +29,71 @@ const TopicItem: FC<Props> = ({
   id,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const descriptionId = useId();
+  const pages =
+    startPage === endPage ? `Page ${startPage}` : `Pages ${startPage} – ${endPage}`;
 
   return (
-    <div
-      className={cn("border-b border-b-gray-200 flex flex-col", {
-        ["bg-gray-100"]: isRead,
-      })}
+    <li
+      className={cn(
+        "flex gap-3 border-b border-line px-5 py-3.5 transition-colors",
+        isOpen ? "bg-accent-50" : "hover:bg-canvas"
+      )}
     >
-      {/* Header Row */}
-      <div className={cn("p-4 pb-4 flex items-center justify-between gap-4")}>
-        {/* Expand Button */}
-        <button
-          className="flex items-start gap-2 flex-1 min-w-0" // min-w-0 allows truncate to work
-          onClick={() => setIsOpen(!isOpen)}
+      <TopicCheckbox
+        className="mt-0.5"
+        checked={isChecked}
+        onChange={() => handleCheck(id)}
+        label={`Select ${title}`}
+      />
+
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        aria-expanded={shortDescription ? isOpen : undefined}
+        aria-controls={shortDescription ? descriptionId : undefined}
+        className="min-w-0 flex-1 text-left"
+      >
+        <span
+          className={cn(
+            "flex items-center text-xs font-bold tabular-nums",
+            isRead ? "text-faint" : "text-ink"
+          )}
         >
-          {/* Arrow vertically aligned with title */}
+          {pages}
+          {isRead && (
+            <span className="ml-1.5 inline-flex items-center gap-1 text-[11px] font-semibold text-success">
+              <Check size={12} strokeWidth={2.5} aria-hidden="true" />
+              Read
+            </span>
+          )}
+        </span>
+        <span
+          className={cn(
+            "mt-0.5 block text-[13.5px] leading-[1.4]",
+            isRead ? "text-faint" : "text-body"
+          )}
+        >
+          {sentenceCase(title)}
+        </span>
+
+        {shortDescription && (
           <span
+            id={descriptionId}
             className={cn(
-              "transition-transform duration-300 mt-[4px]",
-              isOpen && "rotate-90"
+              "grid transition-[grid-template-rows,opacity] duration-300 ease-out-expo",
+              isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
             )}
           >
-            <ArrowStubRightIcon />
+            <span className="overflow-hidden">
+              <span className="block pt-2 text-[13px] leading-[1.55] text-subtle">
+                {shortDescription}
+              </span>
+            </span>
           </span>
-          {/* Text container with ellipsis */}
-          <div className="flex flex-col">
-            <p
-              className={cn("font-bold m-0 leading-tight text-left truncate ", {
-                ["text-[#8B8B8B]"]: isRead,
-              })}
-            >
-              {startPage === endPage
-                ? `Page ${startPage}`
-                : `Pages ${startPage} - ${endPage}`}
-            </p>
-            <p className="text-[#8B8B8B] text-sm m-0 mt-2 leading-snug truncate text-left">
-              {capitalizeFirstLetterOfEachWord(title)}
-            </p>
-          </div>
-        </button>
-
-        {/* Checkbox */}
-        <CheckboxAlt
-          handleCheck={() => {
-            handleCheck(id);
-          }}
-          isChecked={isChecked}
-        />
-      </div>
-
-      {/* Expandable Content */}
-      <div
-        className={cn(
-          "grid transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)]",
-          isOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0 "
         )}
-      >
-        <div className="overflow-hidden">
-          <div className="m-0 px-4 py-2 pl-8 ">
-            <p className="text-sm w-full">{shortDescription}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+      </button>
+    </li>
   );
 };
 

@@ -2,29 +2,40 @@ import React, { FC, useEffect, useState } from "react";
 import TopicItem from "./TopicItem";
 import { useParams } from "next/navigation";
 import { useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
-import Button from "@/@shared/ui/Button";
 import { DocumentTopicv2DTO } from "@/dto/document-topic.dto";
 import { useDispatch } from "react-redux";
 import { openNewTestForm } from "@/features/newTestSlice";
-import CheckboxAlt from "@/@shared/ui/Input/Checkbox/CheckboxAlt";
-import ReadingProgressBar from "./ReadingProgressBar";
 import {
   useCreateReadingProgressMutation,
   useDeleteReadingProgressMutation,
 } from "@/api-services/reading-progress.service";
 import cn from "classnames";
+import { PanelRightOpen } from "lucide-react";
 import TopicsHeader, { TopicHeaderProps } from "./TopicsHeader";
 
 interface Props {
   easyReadView?: boolean;
   topicsScrollContainerMaxHeightPx?: number | null;
   customHeader?: (props: TopicHeaderProps) => React.ReactNode;
+  /** Easy Read only: classes for the panel (width, border, visibility). */
+  className?: string;
+  /** Easy Read only: adds a close button to the header (phone topics sheet). */
+  onClose?: () => void;
+  /** Easy Read desktop: "Hide" in the header folds the panel to a slim TOPICS tab. */
+  collapsed?: boolean;
+  onHide?: () => void;
+  onShow?: () => void;
 }
 
 const TopicsContainer: FC<Props> = ({
   easyReadView = true,
   topicsScrollContainerMaxHeightPx = null,
   customHeader,
+  className,
+  onClose,
+  collapsed = false,
+  onHide,
+  onShow,
 }) => {
   const params = useParams();
   const [documentId, setDocumentId] = useState("");
@@ -49,11 +60,9 @@ const TopicsContainer: FC<Props> = ({
 
   const handleMarkAsRead = async () => {
     if (markedTopics.size > 0) {
-      const unreadTopicIds = markedTopics
-        .values()
+      const unreadTopicIds = Array.from(markedTopics.values())
         .filter((v) => v.isRead === false)
-        .map((v) => v.id)
-        .toArray();
+        .map((v) => v.id);
       await createReadingProgress({
         documentId: documentId!,
         topicIds: unreadTopicIds,
@@ -68,11 +77,9 @@ const TopicsContainer: FC<Props> = ({
 
   const handleMarkAsUnread = async () => {
     if (markedTopics.size > 0) {
-      const readTopicIds = markedTopics
-        .values()
+      const readTopicIds = Array.from(markedTopics.values())
         .filter((v) => v.isRead)
-        .map((v) => v.id)
-        .toArray();
+        .map((v) => v.id);
       await deleteReadingProgress({
         topicIds: readTopicIds,
       });
@@ -130,86 +137,91 @@ const TopicsContainer: FC<Props> = ({
       openNewTestForm({
         documentId,
         topics: topics || [],
-        selectedTopics: markedTopics.values().toArray(),
+        selectedTopics: Array.from(markedTopics.values()),
       })
     );
+    // The phone topics sheet gives way to the New test form.
+    if (onClose) onClose();
   };
 
-  return !showTopicsContainer ? null : (
-    <div
-      className={cn("", {
-        ["h-[calc(100vh-52px)] w-[500px] bg-gray-200 p-4 max-md:hidden"]:
-          easyReadView,
-      })}
-    >
-      <div
-        className={cn("", {
-          ["bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden h-full"]:
-            easyReadView,
-        })}
-      >
-        {/* Header */}
-        {easyReadView && (
-          <TopicsHeader
-            markedTopics={markedTopics}
-            readingProgress={readingProgress}
-            topics={topics || []}
-            handleNewTest={handleNewTest}
-            handleMarkAsRead={handleMarkAsRead}
-            handleMarkAsUnread={handleMarkAsUnread}
-            handleMarkAll={handleMarkAll}
-          />
-        )}
+  const headerProps: TopicHeaderProps = {
+    markedTopics,
+    readingProgress,
+    topics: topics || [],
+    handleMarkAll,
+    handleMarkAsRead,
+    handleMarkAsUnread,
+    handleNewTest,
+  };
 
-        {!easyReadView &&
-          customHeader &&
-          customHeader({
-            markedTopics,
-            readingProgress,
-            topics: topics || [],
-            handleMarkAll,
-            handleMarkAsRead,
-            handleMarkAsUnread,
-            handleNewTest,
-          })}
+  if (!showTopicsContainer) return null;
 
-        {/* Scrollable List */}
-        {topics && (
-          <div className="relative w-full h-full">
-            <div
-              className="w-full overflow-y-auto no-scrollbar h-full pb-20"
-              style={{
-                maxHeight:
-                  topicsScrollContainerMaxHeightPx === null
-                    ? "unset"
-                    : `${topicsScrollContainerMaxHeightPx}px`,
-              }}
-            >
-              {topics.map((topic, idx) => (
-                <TopicItem
-                  {...topic}
-                  key={idx}
-                  isChecked={!!markedTopics.get(topic.id)}
-                  handleCheck={(id) => {
-                    setMarkedTopics((prev) => {
-                      const newMap = new Map(prev);
-                      if (newMap.get(id)) {
-                        newMap.delete(id);
-                      } else {
-                        newMap.set(id, topic);
-                      }
-                      return newMap;
-                    });
-                  }}
-                />
-              ))}
-            </div>
-
-            {/* Fade overlay */}
-            <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-white to-transparent" />
-          </div>
-        )}
+  // Folded: a slim vertical tab on the right edge, like the PAGES rail on the left.
+  if (easyReadView && collapsed) {
+    return (
+      <div className="hidden w-[30px] shrink-0 justify-center border-l border-line bg-surface pt-4 md:flex">
+        <button
+          type="button"
+          onClick={onShow}
+          title="Show topics"
+          aria-label="Show topics"
+          className="inline-flex items-center gap-2 self-start py-1.5 text-[11px] font-semibold tracking-[.16em] text-muted transition-colors [writing-mode:vertical-rl] hover:text-ink"
+        >
+          <PanelRightOpen size={14} strokeWidth={1.75} aria-hidden="true" />
+          TOPICS
+        </button>
       </div>
+    );
+  }
+
+  return (
+    <div
+      className={cn(
+        "flex min-h-0 flex-col bg-surface",
+        easyReadView
+          ? className
+          : "overflow-hidden rounded-xl border border-line"
+      )}
+    >
+      {/* Header */}
+      {easyReadView && <TopicsHeader {...headerProps} onClose={onClose} onHide={onHide} />}
+
+      {!easyReadView && customHeader && customHeader(headerProps)}
+
+      {/* Scrollable list */}
+      {topics && (
+        <ul
+          aria-label="Topics"
+          className={cn("min-h-0 overflow-y-auto overscroll-contain", {
+            "flex-1 pb-16": easyReadView,
+          })}
+          style={{
+            maxHeight:
+              topicsScrollContainerMaxHeightPx === null
+                ? undefined
+                : `${topicsScrollContainerMaxHeightPx}px`,
+          }}
+        >
+          {topics.map((topic, idx) => (
+            <TopicItem
+              {...topic}
+              key={idx}
+              isChecked={!!markedTopics.get(topic.id)}
+              handleCheck={(id) => {
+                setMarkedTopics((prev) => {
+                  const newMap = new Map(prev);
+                  if (newMap.get(id)) {
+                    newMap.delete(id);
+                  } else {
+                    newMap.set(id, topic);
+                  }
+                  return newMap;
+                });
+              }}
+            />
+          ))}
+        </ul>
+      )}
     </div>
   );
 };

@@ -45,23 +45,37 @@ import QuestionGenerationLoadingModal from "../questions/QuestionGenerationLoadi
 import { clearMessages } from "@/features/documentChatSlice";
 import { useGenerateQuestionsContext } from "@/contexts/GenerateQuestionsContext";
 import { TestFormatItem } from "./TestFormatItem";
-import MultipleChoiceIcon from "@/icons/MultipleChoiceIcon";
-import FlashcardIcon from "@/icons/FlashcardIcon";
-import MultipleTrueFalseIcon from "@/icons/MultipleTrueFalseIcon";
 import TestFormatItemContainer from "./TestFormatItemContainer";
 import Dialog from "@/@shared/components/Dialog";
-import EssayIcon from "@/icons/EssayIcon";
-import VivaIcon from "@/icons/VivaIcon";
 import TotalQuestionsContainer from "./TotalQuestionsContainer";
-import AdditionalSettingsIcon from "@/icons/AdditionalSettingsIcon";
 import AdditionalSettingsContainer from "./AdditionalSettingsContainer";
-import AltTabContainer from "@/@shared/components/Tab/AltTabContainer";
 import { IAltTabItem } from "@/@shared/components/Tab/AltTabItem";
-import EasyReadIcon from "@/icons/EasyReadIcon";
-import SummarizeIcon from "@/icons/SummarizeIcon";
 import { TopicsV2Model } from "@/models/file-upload.model";
-import Container from "@/@shared/ui/Container";
 import { useGetUserProfileQuery } from "@/api-services/user.service";
+import PickerField from "./PickerField";
+import cn from "classnames";
+import {
+  BookOpen,
+  BookOpenText,
+  ChevronRight,
+  ClipboardCheck,
+  Hash,
+  Layers,
+  ListChecks,
+  ListTodo,
+  Mic,
+  PenLine,
+  ScrollText,
+  SlidersHorizontal,
+} from "lucide-react";
+
+/** "Multiple True-False" -> "Multiple true-false"; keeps words in brackets as they are. */
+export const toSentenceCase = (text?: string) =>
+  text ? text.charAt(0).toUpperCase() + text.slice(1).toLowerCase() : "";
+
+/* Phones: the primary action sticks to the bottom of the screen. */
+const submitBarClass =
+  "mt-7 max-md:mt-auto max-md:sticky max-md:bottom-0 max-md:z-[4] max-md:-mx-4 max-md:-mb-12 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:bg-white/95 max-md:backdrop-blur-sm max-md:border-t max-md:border-line";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),
@@ -279,18 +293,25 @@ const GenerateQuestionsForm: FC = () => {
     } else if (selectedStudyTool === easyRead) {
       router.push(`/easy-read/${documentId}`);
     } else {
-      router.push(
-        `/questions/view-questions/${documentId}?tab=${encodeURIComponent(
-          "Related Videos"
-        )}`
-      );
+      router.push(`/questions/view-questions/${documentId}`);
     }
   };
 
   const { data: userProfile } = useGetUserProfileQuery("");
 
+  const modeTabs: {
+    title: string;
+    label: string;
+    icon: typeof ClipboardCheck;
+  }[] = [
+    { title: "Test Mode", label: "Test mode", icon: ClipboardCheck },
+    { title: "Study Mode", label: "Study mode", icon: BookOpenText },
+  ];
+
+  const selectedTestFormatLabel = toSentenceCase(selectedQuestionType);
+
   return !permissions ? null : (
-    <section className="min-h-[900px]">
+    <section className="mx-auto w-full max-w-[1040px] md:pt-9 max-md:flex max-md:flex-col max-md:min-h-[calc(100dvh-76px)]">
       {isAdditionalSettings && (
         <Modal>
           <AdditionalSettingsContainer
@@ -361,91 +382,116 @@ const GenerateQuestionsForm: FC = () => {
               setIsStudyModeModal(false);
             }}
             selected={selectedStudyTool}
-            title="Select Study Tool"
+            title="Select study tool"
           />
         </Modal>
       )}
-      <Container>
-        <div className="mt-3 mb-4 flex items-center justify-between max-md:flex-col">
-          <p className="text-2xl font-semibold max-md:hidden">
-            Welcome back
-            {userProfile ? (
-              <>
-                ,{" "}
-                <span className="text-gray-500">
-                  {capitalizeFirstLetterOfEachWord(userProfile.firstName)}
-                </span>
-              </>
-            ) : null}
-          </p>
-          <div className="flex flex-col justify-center items-center gap-2">
-            <AltTabContainer
-              data={tabs}
-              handleClick={(tab) => {
-                const mutatedTabs = tabs.map((t) => {
-                  if (t.title === tab) {
-                    return { ...t, isActive: true };
-                  }
-                  return { ...t, isActive: false };
-                });
-                setTabs(mutatedTabs);
-              }}
-            />
-            <p className="text-xs text-gray-500 max-md:hidden">
-              {activeTab === "Study Mode"
-                ? "Read with ease and absorb key summaries"
-                : "Simulate real test conditions"}
-            </p>
-          </div>
-        </div>
-      </Container>
-      <FormikProvider value={formik}>
-        <Form>
-          <div className="flex flex-col gap-[28px] mx-auto w-full max-w-[500px] pt-2 pb-10">
-            <UploadFileBox
-              allowedTypes={allowedMimeTypes}
-              attachedFile={file}
-              disableUpload={isLoading}
-              handleSelectFile={(file, pages, start, end) => {
-                setFile(file);
-                handleFileUpload(file, pages, start, end);
-              }}
-              uploadLoading={uploadFileLoading}
-              handleDeleteFile={() => {
-                setFile(null);
-                setDocumentId(null);
-                if (fileId) {
-                  setFileId(null);
-                }
-              }}
-              maxFileSizeMB={permissions.maxFileSizeAllowed}
-            />
 
-            {activeTab === "Study Mode" && (
-              <div className="w-full flex flex-col gap-6">
+      <div className="flex items-start justify-between gap-6 mb-[30px] max-md:mb-[18px]">
+        <h1 className="max-md:hidden pt-1 text-[28px] leading-[1.2] font-bold tracking-[-0.025em] text-ink">
+          Welcome back
+          {userProfile
+            ? `, ${capitalizeFirstLetterOfEachWord(userProfile.firstName)}`
+            : null}
+        </h1>
+        <div className="flex flex-col items-end max-md:items-stretch max-md:w-full">
+          <div
+            role="group"
+            aria-label="Mode"
+            className="inline-flex gap-0.5 p-1 rounded-xl bg-sunken max-md:w-full"
+          >
+            {modeTabs.map(({ title, label, icon: Icon }) => {
+              const isActive = activeTab === title;
+              return (
+                <button
+                  key={title}
+                  type="button"
+                  aria-pressed={isActive}
+                  onClick={() => {
+                    const mutatedTabs = tabs.map((t) => {
+                      if (t.title === title) {
+                        return { ...t, isActive: true };
+                      }
+                      return { ...t, isActive: false };
+                    });
+                    setTabs(mutatedTabs);
+                  }}
+                  className={cn(
+                    "inline-flex items-center justify-center gap-2 h-9 max-md:h-[38px] max-md:flex-1 px-4 rounded-[9px] text-sm font-semibold whitespace-nowrap transition-colors",
+                    isActive
+                      ? "bg-surface text-ink shadow-[0_1px_2px_rgba(16,12,40,0.1),0_0_0_0.5px_rgba(16,12,40,0.06)]"
+                      : "text-subtle hover:text-ink"
+                  )}
+                >
+                  <Icon
+                    size={16}
+                    strokeWidth={1.75}
+                    className={isActive ? "text-accent" : "text-faint"}
+                    aria-hidden
+                  />
+                  {label}
+                </button>
+              );
+            })}
+          </div>
+          <p className="mt-2.5 max-md:mt-2 text-[13px] text-muted max-md:text-center">
+            {activeTab === "Study Mode"
+              ? "Read with ease and absorb key summaries"
+              : "Simulate real test conditions"}
+          </p>
+        </div>
+      </div>
+
+      <FormikProvider value={formik}>
+        <Form className="mx-auto w-full max-w-[560px] flex flex-col max-md:flex-1">
+          <UploadFileBox
+            allowedTypes={allowedMimeTypes}
+            attachedFile={file}
+            disableUpload={isLoading}
+            handleSelectFile={(file, pages, start, end) => {
+              setFile(file);
+              handleFileUpload(file, pages, start, end);
+            }}
+            uploadLoading={uploadFileLoading}
+            handleDeleteFile={() => {
+              setFile(null);
+              setDocumentId(null);
+              if (fileId) {
+                setFileId(null);
+              }
+            }}
+            maxFileSizeMB={permissions.maxFileSizeAllowed}
+          />
+
+          {activeTab === "Study Mode" && (
+            <>
+              <div className="flex flex-col gap-[18px] max-md:gap-4 mt-7 max-md:mt-6 max-md:mb-6">
                 <TextField
-                  label="Document Title"
+                  label="Document title"
                   placeholder="Enter a title for your document"
                   {...formik.getFieldProps("title")}
                   error={formik.touched.title ? formik.errors.title : undefined}
                 />
 
-                <TextField
-                  label="Study Tool"
-                  cursorPointer={true}
-                  readOnly={true}
+                <PickerField
+                  id="study-tool"
+                  label="Study tool"
+                  icon={BookOpen}
                   value={
                     studyModeFormats.filter(
                       (m) => m.value === selectedStudyTool
                     )[0]?.title || ""
                   }
-                  placeholder="Select Study Tool"
-                  handleClick={() => {
+                  placeholder="Select study tool"
+                  isOpen={isStudyModeModal}
+                  onClick={() => {
                     setIsStudyModeModal(true);
                   }}
                 />
+              </div>
+              <div className={submitBarClass}>
                 <Button
-                  title="Start Studying"
+                  title="Start studying"
                   size="large"
                   fullWidth
                   type="button"
@@ -461,66 +507,68 @@ const GenerateQuestionsForm: FC = () => {
                   }}
                 />
               </div>
-            )}
+            </>
+          )}
 
-            {activeTab === "Test Mode" && (
-              <>
+          {activeTab === "Test Mode" && (
+            <>
+              <div className="flex flex-col gap-[18px] max-md:gap-4 mt-7 max-md:mt-6 max-md:mb-6">
                 <TextField
-                  label="Document Title"
+                  label="Document title"
                   placeholder="Enter a title for your document"
                   {...formik.getFieldProps("title")}
                   error={formik.touched.title ? formik.errors.title : undefined}
                 />
 
-                <div>
-                  <label className="text-sm font-semibold flex items-center gap-4">
-                    Test Format{" "}
-                  </label>
-                  <div className="mt-2 cursor-pointer">
-                    <TextField
-                      label=""
-                      cursorPointer={true}
-                      readOnly={true}
-                      value={selectedQuestionType}
-                      handleClick={() => {
-                        setIsTestFormatModal(true);
+                <div
+                  className={cn("grid gap-3.5 max-md:grid-cols-1 max-md:gap-4", {
+                    "grid-cols-2": formik.values.questionType !== "6",
+                  })}
+                >
+                  <PickerField
+                    id="test-format"
+                    label="Test format"
+                    icon={ListChecks}
+                    value={selectedTestFormatLabel}
+                    isOpen={isTestFormatModal}
+                    onClick={() => {
+                      setIsTestFormatModal(true);
+                    }}
+                  />
+
+                  {formik.values.questionType !== "6" && (
+                    <PickerField
+                      id="total-questions"
+                      label="Total questions"
+                      icon={Hash}
+                      value={formik.values.questionCount || "5"}
+                      isOpen={isTotalQuestionsForm}
+                      onClick={() => {
+                        setIsTotalQuestionsForm(true);
                       }}
                     />
-                  </div>
+                  )}
                 </div>
-
-                {formik.values.questionType !== "6" && (
-                  <div>
-                    <label className="text-sm font-semibold flex items-center gap-4">
-                      Total questions{" "}
-                    </label>
-                    <div className="mt-2 cursor-pointer">
-                      <TextField
-                        label=""
-                        readOnly={true}
-                        cursorPointer={true}
-                        value={formik.values.questionCount || "5"}
-                        handleClick={() => {
-                          setIsTotalQuestionsForm(true);
-                        }}
-                      />
-                    </div>
-                  </div>
-                )}
 
                 <button
                   type="button"
+                  aria-haspopup="dialog"
                   onClick={() => {
                     setIsAdditionalSettings(true);
                   }}
-                  className="flex items-center gap-2 text-sm text-[#9333EA] font-medium"
+                  className="self-start inline-flex items-center gap-2 h-9 max-md:h-10 px-2.5 -mt-1 -ml-2.5 rounded-lg text-sm font-semibold text-accent hover:bg-hover transition-colors"
                 >
-                  <AdditionalSettingsIcon /> Additional Settings
+                  <SlidersHorizontal size={16} strokeWidth={1.75} aria-hidden />
+                  Additional settings
+                  <ChevronRight size={14} strokeWidth={1.75} aria-hidden />
                 </button>
+              </div>
 
+              <div className={submitBarClass}>
                 <Button
-                  title="Generate Test"
+                  title="Generate test"
                   size="large"
+                  fullWidth
                   disabled={
                     !formik.isValid ||
                     !fileId ||
@@ -530,9 +578,9 @@ const GenerateQuestionsForm: FC = () => {
                     isLoading
                   }
                 />
-              </>
-            )}
-          </div>
+              </div>
+            </>
+          )}
         </Form>
       </FormikProvider>
     </section>
@@ -546,14 +594,14 @@ const studyModeFormats: TestFormatItem[] = [
     title: "Summarize",
     value: 1,
     description: "Get a brief summary of key points from your material",
-    icon: <SummarizeIcon />,
+    icon: <ScrollText size={19} strokeWidth={1.75} />,
   },
   {
     title: "Easy read",
     value: 2,
     description:
       "Simplifies each page of your material into easier-to-understand language",
-    icon: <EasyReadIcon />,
+    icon: <BookOpenText size={19} strokeWidth={1.75} />,
     isBeta: true,
   },
   // {
@@ -569,31 +617,31 @@ export const testFormats: TestFormatItem[] = [
     title: "Multiple Choice",
     value: 3,
     description: "Sharpen recall, solidify facts",
-    icon: <MultipleChoiceIcon />,
+    icon: <ListChecks size={19} strokeWidth={1.75} />,
   },
   {
     title: "Flash Cards",
     value: 4,
     description: "Master concepts in bite-sized bursts",
-    icon: <FlashcardIcon />,
+    icon: <Layers size={19} strokeWidth={1.75} />,
   },
   {
     title: "Multiple True-False",
     value: 5,
     description: "Tackle complexity with precision",
-    icon: <MultipleTrueFalseIcon />,
+    icon: <ListTodo size={19} strokeWidth={1.75} />,
   },
   {
     title: "Oral (viva)",
     value: 6,
     description: "Think fast, speak with clarity",
-    icon: <VivaIcon />,
+    icon: <Mic size={19} strokeWidth={1.75} />,
     isBeta: true,
   },
   {
     title: "Essay",
     value: 7,
     description: "Think deeply. Write clearly.",
-    icon: <EssayIcon />,
+    icon: <PenLine size={19} strokeWidth={1.75} />,
   },
 ];

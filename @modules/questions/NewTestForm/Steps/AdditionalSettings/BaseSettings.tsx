@@ -1,17 +1,14 @@
-import AdditionalSettingsItem from "@/@modules/home/AdditionalSettingsItem";
-import Switch from "@/@shared/components/Switch";
-import Button from "@/@shared/ui/Button";
+import AdditionalSettingsBaseSetting from "@/@modules/home/AdditionalSettingsBaseSetting";
 import { RootState } from "@/config/redux-config";
 import {
   patchAdditionalSettings,
   setSummaryView,
 } from "@/features/newTestSlice";
-import ChevronRight from "@/icons/ChevronRight";
 import React, { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 const BaseSettings: FC = () => {
-  const { additionalSettings } = useSelector(
+  const { additionalSettings, selectedTopics } = useSelector(
     (state: RootState) => state.newTestSliceReducer
   );
   const dispatch = useDispatch();
@@ -40,61 +37,21 @@ const BaseSettings: FC = () => {
       })
     );
   };
+
   return (
-    <div className="min-w-full">
-      <h3 className="text-base font-bold mb-6">Test settings</h3>
-      <div className="mt-4 flex flex-col gap-12">
-        {additionalSettings.permissions.canUseDifficulty && (
-          <AdditionalSettingsItem
-            title="Difficulty level"
-            description="Control how challenging your questions will be"
-            handleClick={handleSelectDifficulty}
-          >
-            <div className="w-full max-w-[120px] flex items-center justify-end">
-              <button onClick={handleSelectDifficulty}>
-                <ChevronRight />
-              </button>
-            </div>
-          </AdditionalSettingsItem>
-        )}
-
-        <AdditionalSettingsItem
-          title="Select topics"
-          description="Automatically suggests key topics from your uploaded material"
-          handleClick={handleSelectTopics}
-        >
-          <div className="w-full max-w-[120px] flex items-center justify-end">
-            <button onClick={handleSelectTopics}>
-              <ChevronRight />
-            </button>
-          </div>
-        </AdditionalSettingsItem>
-
-        {additionalSettings.permissions.canUseCaseStudies && (
-          <AdditionalSettingsItem
-            title="Case studies"
-            description="Turn on to unlock real-world case scenarios tailored to your learning."
-            handleClick={handleCaseStudies}
-          >
-            <Switch
-              isChecked={additionalSettings.isCaseStudies}
-              handleChecked={handleCaseStudies}
-              disabled={false}
-            />
-          </AdditionalSettingsItem>
-        )}
-
-        <div className="w-fit mx-auto">
-          <Button
-            title="Save"
-            size="large"
-            onClick={() => {
-              dispatch(setSummaryView(true));
-            }}
-          />
-        </div>
-      </div>
-    </div>
+    <AdditionalSettingsBaseSetting
+      canUseDifficulty={additionalSettings.permissions.canUseDifficulty}
+      canUseCaseStudies={additionalSettings.permissions.canUseCaseStudies}
+      difficulty={additionalSettings.difficulty}
+      selectedTopics={selectedTopics}
+      isCaseStudies={additionalSettings.isCaseStudies}
+      handleCaseStudies={handleCaseStudies}
+      handleSelectDifficulty={handleSelectDifficulty}
+      handleSelectTopics={handleSelectTopics}
+      handleClose={() => {
+        dispatch(setSummaryView(true));
+      }}
+    />
   );
 };
 

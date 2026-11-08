@@ -1,37 +1,35 @@
-import Button from "@/@shared/ui/Button";
-import { useRouter } from "next/router";
+import { Clock3 } from "lucide-react";
+import Link from "next/link";
 import React, { FC } from "react";
+import cn from "classnames";
 
 interface Props {
   minuteLeft?: string;
+  className?: string;
 }
 
-const GetMoreCreditsCard: FC<Props> = ({ minuteLeft = "--" }) => {
-  const router = useRouter();
+/* Quiet call-minutes line: "25:30 mins left · Get more". */
+const GetMoreCreditsCard: FC<Props> = ({ minuteLeft = "--", className }) => {
   return (
-    <div className="w-fit py-2 border border-[#CECECE] rounded-lg bg-[#F2E1FF] flex items-center">
-      <div
-        style={{ flex: 1 }}
-        className="border-r border-r-gray-400 px-3 min-h-[30px] flex items-center justify-center"
+    <p
+      className={cn(
+        "flex h-6 shrink-0 items-center gap-1.5 whitespace-nowrap text-[13px] text-muted",
+        className
+      )}
+    >
+      <Clock3 size={14} strokeWidth={1.75} className="text-faint" aria-hidden />
+      <span>
+        <b className="font-semibold text-body tabular-nums">{minuteLeft}</b>{" "}
+        mins left
+      </span>
+      <span aria-hidden className="mx-1 h-[3px] w-[3px] rounded-full bg-control" />
+      <Link
+        href="/account/call-credits"
+        className="font-semibold text-accent underline-offset-[3px] hover:underline focus-visible:underline max-md:-my-2.5 max-md:py-2.5"
       >
-        <p className="text-xs">
-          {minuteLeft} <span className="text-[#00000080]">mins left</span>
-        </p>
-      </div>
-      <div
-        style={{ flex: 1 }}
-        className="px-3 flex justify-center items-center"
-      >
-        <Button
-          size="small"
-          title="Get more"
-          className="min-w-[100px]"
-          onClick={() => {
-            router.push("/account/call-credits");
-          }}
-        />
-      </div>
-    </div>
+        Get more
+      </Link>
+    </p>
   );
 };
 

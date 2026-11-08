@@ -1,0 +1,153 @@
+/* react-toastify, restyled for the redesign: a calm white card with a hairline and a soft neutral
+   shadow, ink text, and only the icon carries the state colour. No gradients.
+   Import after "react-toastify/dist/ReactToastify.css" in pages/_app.tsx. */
+
+:root {
+  --toastify-font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+  --toastify-toast-width: 360px;
+  --toastify-toast-min-height: 52px;
+  --toastify-toast-bd-radius: 12px;
+  --toastify-toast-offset: 16px;
+  --toastify-z-index: 9999;
+
+  --toastify-color-light: var(--surface);
+  --toastify-text-color-light: var(--ink);
+
+  --toastify-color-info: var(--accent);
+  --toastify-color-success: var(--success);
+  --toastify-color-warning: var(--warning);
+  --toastify-color-error: var(--danger);
+  --toastify-icon-color-info: var(--accent);
+  --toastify-icon-color-success: var(--success);
+  --toastify-icon-color-warning: var(--warning);
+  --toastify-icon-color-error: var(--danger);
+
+  /* The default light progress bar is a rainbow gradient: make it a flat hairline. */
+  --toastify-color-progress-light: var(--control);
+  --toastify-color-progress-info: var(--control);
+  --toastify-color-progress-success: var(--control);
+  --toastify-color-progress-warning: var(--control);
+  --toastify-color-progress-error: var(--control);
+  --toastify-color-progress-bgo: 0;
+}
+
+.Toastify__toast-container {
+  padding: 0;
+}
+
+.Toastify__toast {
+  min-height: var(--toastify-toast-min-height);
+  margin-bottom: 10px;
+  padding: 10px 10px 10px 14px;
+  border: 1px solid var(--edge);
+  border-radius: var(--toastify-toast-bd-radius);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 10px 28px -14px rgba(16, 12, 40, 0.22), 0 2px 6px -2px rgba(16, 12, 40, 0.06);
+  font-family: var(--toastify-font-family);
+  align-items: center;
+}
+
+.Toastify__toast-theme--light,
+.Toastify__toast-theme--colored.Toastify__toast--default {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+/* "colored" theme, if a call ever asks for it: keep the same calm card. */
+.Toastify__toast-theme--colored.Toastify__toast--info,
+.Toastify__toast-theme--colored.Toastify__toast--success,
+.Toastify__toast-theme--colored.Toastify__toast--warning,
+.Toastify__toast-theme--colored.Toastify__toast--error {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.Toastify__toast-body {
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+}
+
+.Toastify__toast-icon {
+  width: 18px;
+  height: 18px;
+  margin-inline-end: 0;
+}
+.Toastify__toast-icon svg {
+  width: 18px;
+  height: 18px;
+}
+.Toastify__toast--success .Toastify__toast-icon svg { fill: var(--success); }
+.Toastify__toast--error .Toastify__toast-icon svg { fill: var(--danger); }
+.Toastify__toast--warning .Toastify__toast-icon svg { fill: var(--warning); }
+.Toastify__toast--info .Toastify__toast-icon svg { fill: var(--accent); }
+
+.Toastify__close-button,
+.Toastify__close-button--light,
+.Toastify__close-button--colored {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-left: 6px;
+  border-radius: 7px;
+  color: var(--muted);
+  opacity: 1;
+  transition: background-color 0.15s, color 0.15s;
+}
+.Toastify__close-button:hover,
+.Toastify__close-button:focus-visible {
+  background: var(--hover);
+  color: var(--ink);
+}
+.Toastify__close-button > svg {
+  width: 12px;
+  height: 14px;
+}
+
+.Toastify__progress-bar--wrp {
+  height: 2px;
+  border-bottom-left-radius: var(--toastify-toast-bd-radius);
+}
+.Toastify__progress-bar,
+.Toastify__progress-bar-theme--light,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--info,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--success,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--warning,
+.Toastify__progress-bar-theme--colored.Toastify__progress-bar--error,
+.Toastify__progress-bar--info,
+.Toastify__progress-bar--success,
+.Toastify__progress-bar--warning,
+.Toastify__progress-bar--error {
+  background: var(--control);
+  opacity: 1;
+}
+
+/* Phones: inset cards rather than an edge-to-edge strip. */
+@media only screen and (max-width: 480px) {
+  .Toastify__toast-container {
+    width: calc(100vw - 24px);
+    left: 12px;
+    right: 12px;
+  }
+  .Toastify__toast-container--top-left,
+  .Toastify__toast-container--top-center,
+  .Toastify__toast-container--top-right {
+    top: max(12px, env(safe-area-inset-top));
+  }
+  .Toastify__toast-container--bottom-left,
+  .Toastify__toast-container--bottom-center,
+  .Toastify__toast-container--bottom-right {
+    bottom: max(12px, env(safe-area-inset-bottom));
+  }
+  .Toastify__toast {
+    margin-bottom: 8px;
+    border-radius: var(--toastify-toast-bd-radius);
+  }
+}

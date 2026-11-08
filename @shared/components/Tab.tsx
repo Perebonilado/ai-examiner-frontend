@@ -40,11 +40,9 @@ const Tab: FC<Props> = ({ tabs, activeTab, handleClickTab }) => {
 
   return (
     <div className="relative">
-      <div className="absolute left-0 top-0 h-full w-8 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
-      <div className="absolute right-0 top-0 h-full w-8 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
       <div
-        className="flex overflow-x-auto no-scrollbar border-b border-b-gray-400 mb-4 relative"
+        className="flex overflow-x-auto no-scrollbar border-b border-b-line mb-5 relative"
         ref={containerRef}
       >
         {tabs.map((tabTitle, idx) => (

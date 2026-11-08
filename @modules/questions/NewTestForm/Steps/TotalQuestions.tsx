@@ -1,6 +1,8 @@
 import { testFormats } from "@/@modules/home/GenerateQuestionsForm";
 import Button from "@/@shared/ui/Button";
-import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
+import { DialogFooter } from "@/@modules/home/DialogFrame";
+import QuestionCountGrid, { CountNote } from "@/@modules/home/QuestionCountGrid";
+import { Info, Mic } from "lucide-react";
 import { RootState } from "@/config/redux-config";
 import { setCurrentStep, setTotalQuestion } from "@/features/newTestSlice";
 import React, { FC } from "react";
@@ -8,7 +10,6 @@ import { useDispatch, useSelector } from "react-redux";
 
 const TotalQuestions: FC = () => {
   const options = [5, 10, 15, 20, 25, 30, 35, 40];
-  const midIndex = Math.ceil(options.length / 2);
   const { maxQA: maxCount } = useSelector(
     (state: RootState) => state.permissionsState.permissions
   );
@@ -32,58 +33,55 @@ const TotalQuestions: FC = () => {
     return maxCount;
   };
 
+  const showPlanNote = maxCount < 40;
+  const showVivaNote = isSelectedQuestionOralViva();
+
   return (
     <div>
-      <h3 className="text-lg font-bold mb-6">Total questions</h3>
-      <div className="mt-4 grid grid-cols-2">
-        {[options.slice(0, midIndex), options.slice(midIndex)].map(
-          (column, colIndex) => (
-            <div key={colIndex} className="flex flex-col gap-5 text-gray-400">
-              {column.map((value) => (
-                <Checkbox
-                  key={value}
-                  label={value.toString()}
-                  value={value}
-                  boldLabel={true}
-                  customLabelColor={value > getMaxCount() ? "#9ca3af" : "black"}
-                  disabled={value > getMaxCount()}
-                  checked={totalQuestions === value}
-                  onChange={() => {
-                    dispatch(setTotalQuestion(value));
-                  }}
-                />
-              ))}
-            </div>
-          )
-        )}
-      </div>
-      <div className="flex flex-col gap-2 mt-14">
-        {maxCount < 40 && (
-          <p className="text-center text-xs">
-            Your current plan is limited to{" "}
-            <span className="font-semibold">{maxCount}</span> questions per test
-          </p>
-        )}
-        {isSelectedQuestionOralViva() && (
-          <p className="text-center text-xs">
-            Oral Viva test is limited to{" "}
-            <span className="font-semibold">{getMaxCount()}</span> questions per
-            test
-          </p>
-        )}
-      </div>
-      <div
-        className="mx-auto w-fit"
-        style={{ marginTop: maxCount < 40 ? "24px" : "48px" }}
+      <h2
+        id="new-test-total-title"
+        className="px-5 pt-5 text-lg leading-[1.3] font-bold tracking-[-0.015em] text-ink"
       >
+        Total questions
+      </h2>
+      <div className="px-5 pt-4 pb-5">
+        <QuestionCountGrid
+          options={options}
+          selected={totalQuestions}
+          maxCount={getMaxCount()}
+          onSelect={(value) => {
+            dispatch(setTotalQuestion(value));
+          }}
+          labelledBy="new-test-total-title"
+        />
+        {(showPlanNote || showVivaNote) && (
+          <div className="flex flex-col gap-1.5 mt-3.5">
+            {showPlanNote && (
+              <CountNote icon={<Info />}>
+                Your current plan is limited to{" "}
+                <span className="font-semibold text-ink">{maxCount}</span>{" "}
+                questions per test
+              </CountNote>
+            )}
+            {showVivaNote && (
+              <CountNote icon={<Mic />}>
+                Oral Viva test is limited to{" "}
+                <span className="font-semibold text-ink">{getMaxCount()}</span>{" "}
+                questions per test
+              </CountNote>
+            )}
+          </div>
+        )}
+      </div>
+      <DialogFooter>
         <Button
           title="Continue"
-          size="large"
+          size="medium"
           onClick={() => {
             dispatch(setCurrentStep("ADDITIONAL_SETTINGS"));
           }}
         />
-      </div>
+      </DialogFooter>
     </div>
   );
 };

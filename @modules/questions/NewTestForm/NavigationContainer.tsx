@@ -6,8 +6,7 @@ import {
   setSummaryView,
   Steps,
 } from "@/features/newTestSlice";
-import ChevronLeft from "@/icons/ChevronLeft";
-import CloseIcon from "@/icons/CloseIcon";
+import { DialogIconButton } from "@/@modules/home/DialogFrame";
 import React, { FC } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -39,9 +38,10 @@ const NavigationContainer: FC = () => {
     }
   };
   return (
-    <div className="flex items-center justify-between">
-      <button
-        className="min-h-[50px] min-w-[50px] -ml-2"
+    <div className="flex items-center justify-between px-3 pt-3 max-md:pt-1">
+      <DialogIconButton
+        label="Back"
+        icon="back"
         onClick={() => {
           if (isSummaryView) {
             dispatch(setSummaryView(false));
@@ -49,18 +49,16 @@ const NavigationContainer: FC = () => {
             handleStepNavigation();
           }
         }}
-      >
-        <ChevronLeft />
-      </button>
+      />
 
-      <button
+      <DialogIconButton
+        label="Close"
+        icon="close"
         onClick={() => {
           dispatch(resetNewTestForm());
           // dispatch(setNewTestFormOpen(false));
         }}
-      >
-        <CloseIcon />
-      </button>
+      />
     </div>
   );
 };

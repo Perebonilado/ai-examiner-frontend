@@ -11,10 +11,10 @@ const CheckboxAlt: FC<Props> = ({ isChecked, handleCheck }) => {
     <button
       onClick={() => handleCheck()}
       className={cn(
-        "w-5 h-5 flex-shrink-0 flex items-center justify-center rounded border border-gray-300 transition-colors duration-200",
+        "w-[18px] h-[18px] flex-shrink-0 flex items-center justify-center rounded-[5px] border-[1.5px] border-[#c9c8d0] transition-colors duration-150",
         isChecked
-          ? "bg-[#9333EA] border-[#9333EA]"
-          : "bg-white hover:border-[#9333EA]"
+          ? "bg-accent !border-accent"
+          : "bg-surface hover:border-accent-300"
       )}
     >
       {isChecked && (

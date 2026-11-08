@@ -100,27 +100,39 @@ const StagedImageItemContainer: FC<Props> = ({
   );
 
   return (
-    <div className="w-full flex flex-col relative max-h-[80vh] min-h-[400px] max-w-[410px] max-md:max-w-[320px] rounded-xl shadow-lg p-4 py-5 bg-white">
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="staged-images-title"
+      className="w-full flex flex-col relative max-h-[86vh] min-h-[400px] max-w-[420px] max-md:max-w-[92vw] rounded-2xl bg-surface overflow-hidden shadow-[0_30px_80px_-30px_rgba(15,10,40,0.5),0_0_0_1px_rgba(16,12,40,0.06)]"
+    >
       {/* Header */}
-      <div className="flex flex-col gap-2 mb-4 w-full">
+      <div className="px-5 pt-5 pb-3">
+        <h3
+          id="staged-images-title"
+          className="text-lg font-bold tracking-[-0.015em] text-ink"
+        >
+          Choose images
+        </h3>
         {currentFileSize > allowedFileSize && (
-          <p className="text-sm text-rose-500 italic text-center">
+          <p className="mt-1 text-[13px] text-danger" role="alert">
             File size ({currentFileSize}mb) exceeds {allowedFileSize}mb
           </p>
         )}
-        <h3 className="max-sm:text-center mb-1 font-semibold">Choose Images</h3>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col flex-1 overflow-hidden">
+      <div className="flex flex-col flex-1 min-h-0 overflow-hidden">
         <BlobProvider document={myDoc}>
           {({ blob }) => (
             <>
               {/* Images Scroll Area */}
-              <div className="flex-1 overflow-y-auto pr-2">
-                <div className="flex flex-col items-center gap-4">
+              <div className="flex-1 min-h-0 overflow-y-auto px-5 py-2 border-y border-line bg-canvas">
+                <div className="flex flex-col items-center gap-3 py-2">
                   {isConvertingHeic ? (
-                    <FileUploadSpinner title={`Optimizing images`} />
+                    <div className="py-10">
+                      <FileUploadSpinner title={`Optimizing images`} />
+                    </div>
                   ) : (
                     convertedData.map((img, idx) => (
                       <StagedImageItem
@@ -134,37 +146,40 @@ const StagedImageItemContainer: FC<Props> = ({
               </div>
 
               {/* Actions */}
-              <div className="pt-6">
+              <div className="px-5 pt-4">
                 <div
-                  className="flex items-center gap-2 mb-4 cursor-pointer"
+                  className="flex items-center gap-2.5 cursor-pointer"
                   onClick={() => setIsHandWritten(!isHandWritten)}
                 >
                   <Checkbox checked={isHandWritten} />
-                  <p className="text-sm">
-                    Please <span className="font-bold">SELECT</span> if the file
-                    is handwritten
+                  <p className="text-sm text-body">
+                    Please select if the file is handwritten
                   </p>
                 </div>
+              </div>
 
-                <div className="flex items-center justify-end gap-4 w-full">
-                  <Button
-                    title="Continue"
-                    onClick={() => {
-                      if (blob) {
-                        const convertedImages = convertedData.map((img) =>
-                          URL.createObjectURL(img.file)
-                        );
-                        handleUploadFiles(blob, isHandWritten, convertedImages);
-                      }
-                    }}
-                    disabled={currentFileSize > allowedFileSize || isConvertingHeic}
-                  />
-                  <Button
-                    title="Cancel"
-                    variant="outlined"
-                    onClick={handleCancel}
-                  />
-                </div>
+              <div className="flex items-center justify-end gap-2.5 px-5 py-3.5 mt-4 border-t border-line bg-canvas">
+                <Button
+                  title="Cancel"
+                  variant="outlined"
+                  size="medium"
+                  onClick={handleCancel}
+                  className="max-md:flex-1"
+                />
+                <Button
+                  title="Continue"
+                  size="medium"
+                  className="min-w-[120px] max-md:flex-1"
+                  onClick={() => {
+                    if (blob) {
+                      const convertedImages = convertedData.map((img) =>
+                        URL.createObjectURL(img.file)
+                      );
+                      handleUploadFiles(blob, isHandWritten, convertedImages);
+                    }
+                  }}
+                  disabled={currentFileSize > allowedFileSize || isConvertingHeic}
+                />
               </div>
             </>
           )}

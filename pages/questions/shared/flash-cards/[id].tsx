@@ -62,24 +62,30 @@ const FlashcardsShared: NextPage = () => {
         )}
 
         {data && (
-          <>
-            <h1 className="text-center mb-3 text-xl font-semibold">
-              {capitalizeFirstLetterOfEachWord(
-                data.documentTitle.toLowerCase()
-              )}{" "}
-              Questions
-            </h1>
-            <p className="text-center text-sm text-gray-500 my-3">
-              Shared By:{" "}
-              {capitalizeFirstLetterOfEachWord(
-                `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
-              )}
-            </p>
-          </>
-        )}
+          <div className="mx-auto w-full max-w-[680px] pt-2 pb-14">
+            <header className="mb-5">
+              <h1 className="text-2xl leading-[1.25] font-bold tracking-[-0.015em] text-ink [text-wrap:balance] max-md:text-xl">
+                {capitalizeFirstLetterOfEachWord(
+                  data.documentTitle.toLowerCase()
+                )}{" "}
+                Questions
+              </h1>
+              <p className="mt-2 flex flex-wrap items-center gap-2 text-[13px] text-subtle">
+                <span>Flashcards</span>
+                <span aria-hidden className="w-[3px] h-[3px] rounded-full bg-control" />
+                <span>
+                  {data.data.length} {data.data.length === 1 ? "card" : "cards"}
+                </span>
+                <span aria-hidden className="w-[3px] h-[3px] rounded-full bg-control" />
+                <span>
+                  Shared by{" "}
+                  {capitalizeFirstLetterOfEachWord(
+                    `${data.sharedBy.lastName} ${data.sharedBy.firstname}`
+                  )}
+                </span>
+              </p>
+            </header>
 
-        <div className="mt-14 mb-14 min-h-[75vh]">
-          {data && (
             <FlashCardItemContainer
               data={data.data.map((d) => {
                 const answer = d.options.find(
@@ -99,8 +105,8 @@ const FlashcardsShared: NextPage = () => {
                 }
               }}
             />
-          )}
-        </div>
+          </div>
+        )}
       </Container>
     </LayoutToUse>
   );

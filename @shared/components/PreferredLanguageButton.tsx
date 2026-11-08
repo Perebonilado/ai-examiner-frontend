@@ -1,10 +1,10 @@
-import Image from "next/image";
 import React, { FC, useEffect, useState } from "react";
 import { accessToken, getSupportedLanguages } from "@/constants";
 import Cookies from "js-cookie";
 import { useGetPreferredLanguageQuery } from "@/api-services/preferred-language.service";
 import { useModalContext } from "@/contexts/ModalContext";
 import PreferredLanguageModal from "./PreferredLanguageModal";
+import { LanguageFlag } from "./LanguageDialog";
 
 const PreferredLanguageButton: FC = () => {
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
@@ -36,18 +36,16 @@ const PreferredLanguageButton: FC = () => {
 
   return !data ? null : (
     <button
-      className="w-[30px] h-[30px] relative"
+      type="button"
+      aria-haspopup="dialog"
+      aria-label={`Preferred language: ${data.language}`}
+      title="Choose your preferred language"
+      className="grid h-10 w-10 place-items-center rounded-lg transition-colors hover:bg-hover"
       onClick={() => {
         setModalContent(<PreferredLanguageModal />);
       }}
     >
-      <Image
-        layout="fill"
-        objectFit="contain"
-        objectPosition="100% 50%"
-        src={`https://flagcdn.com/w40/${code.toLowerCase()}.png`}
-        alt={data.language}
-      />
+      <LanguageFlag code={code} alt={data.language} />
     </button>
   );
 };

@@ -1,39 +1,50 @@
-import UploadIconBox from "@/icons/UploadIconBox";
 import React, { FC } from "react";
+import { Upload } from "lucide-react";
 
 interface Props {
   title?: string;
   showIcon?: boolean;
 }
 
+/* Calm loading indicator: a violet arc on a neutral track, with the message below. */
 const FileUploadSpinner: FC<Props> = ({
   title = "File upload in progress",
   showIcon = true,
 }) => {
   return (
-    <div className="flex flex-col items-center">
-      <p className="text-center font-semibold text-sm">{title}</p>
-      <div className="relative w-[90px] h-[90px]">
-        <div className="absolute top-0 left-0 w-full h-full animate-spin">
-          <svg viewBox="0 0 100 100" className="w-full h-full">
-            <path
-              d="M20,50 A30,30 0 0 1 80,50"
-              fill="none"
-              stroke="#9E69E3"
-              strokeWidth="6"
-              width={70}
-              height={70}
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-
+    <div className="flex flex-col items-center gap-3.5" role="status">
+      <div className="relative w-14 h-14">
+        <svg
+          viewBox="0 0 56 56"
+          className="absolute inset-0 w-full h-full animate-spin [animation-duration:1.1s]"
+          aria-hidden="true"
+        >
+          <circle
+            cx="28"
+            cy="28"
+            r="24"
+            fill="none"
+            stroke="var(--sunken)"
+            strokeWidth="4"
+          />
+          <circle
+            cx="28"
+            cy="28"
+            r="24"
+            fill="none"
+            stroke="var(--accent)"
+            strokeWidth="4"
+            strokeLinecap="round"
+            strokeDasharray="40 151"
+          />
+        </svg>
         {showIcon && (
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-            <UploadIconBox />
-          </div>
+          <span className="absolute inset-0 grid place-items-center text-muted">
+            <Upload size={18} strokeWidth={1.75} aria-hidden />
+          </span>
         )}
       </div>
+      <p className="text-center font-semibold text-sm text-ink">{title}</p>
     </div>
   );
 };

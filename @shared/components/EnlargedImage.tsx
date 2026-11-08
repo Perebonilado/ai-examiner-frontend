@@ -1,7 +1,7 @@
-import React, { ElementRef, FC, useRef } from "react";
+import React, { ElementRef, FC } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import CloseIcon from "@/icons/CloseIcon";
+import { X } from "lucide-react";
 import useClickOutside from "@/hooks/useClickOutside";
 
 interface Props {
@@ -15,18 +15,20 @@ const EnlargedImage: FC<Props> = ({ imageUrl, close }) => {
   });
   return (
     <motion.div
-      initial={{ translateY: -100 }}
-      whileInView={{ translateY: 0, transition: { duration: 0.3 } }}
+      initial={{ opacity: 0, translateY: 12 }}
+      whileInView={{ opacity: 1, translateY: 0, transition: { duration: 0.25 } }}
       viewport={{ once: true }}
       ref={ref}
-      className="relative w-[80%] h-[85%] rounded-lg overflow-hidden  backdrop-blur-sm bg-black"
+      className="relative w-[80%] h-[85%] max-md:w-[calc(100vw-16px)] max-md:h-[80dvh] rounded-2xl overflow-hidden bg-ink shadow-pop"
     >
-      <span
+      <button
+        type="button"
+        aria-label="Close"
         onClick={() => close()}
-        className="absolute top-5 right-10 z-30 cursor-pointer bg-[#FFFFFF] rounded-full p-1"
+        className="absolute top-3 right-3 z-30 grid place-items-center w-9 h-9 rounded-full bg-surface text-ink shadow-xs hover:bg-well transition-colors"
       >
-        <CloseIcon fill="red"/>
-      </span>
+        <X size={18} strokeWidth={1.75} />
+      </button>
       <Image
         layout="fill"
         objectFit="contain"

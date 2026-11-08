@@ -25,11 +25,12 @@ const Checkbox: FC<Props> = ({
   );
   const checkIconStyles = cn(
     `absolute top-1/2 -translate-y-1/2 left-1/2 z-[30] -translate-x-1/2`,
-    s["check-icon"]
+    s["check-icon"],
+    { [s.square]: shape === "square" }
   );
 
   const pseudoContaineStyles = cn(
-    `w-[25px] h-[25px] bg-white  border border-[#2F004F]`,
+    `w-[20px] h-[20px] bg-surface border-[1.5px] border-[#c9c8d0]`,
     {
       ["rounded-full"]: shape === "round",
       ["rounded-md"]: shape === "square",
@@ -45,13 +46,13 @@ const Checkbox: FC<Props> = ({
         ></div>
         <input {...props} type="checkbox" className={checkInputStyles} />
         <span className={checkIconStyles}>
-          {shape === "square" && <CheckIcon />}
+          {shape === "square" && <CheckIcon fill="#ffffff" />}
           {shape === "round" && (
-            <div className="w-[10px] h-[10px] rounded-full bg-[#2F004F]"></div>
+            <div className="w-[10px] h-[10px] rounded-full bg-accent"></div>
           )}
         </span>
       </div>
-      <label className="text-black text-sm" style={{ color: customLabelColor, fontWeight: boldLabel ? 600 : 'unset' }}>
+      <label className="text-ink text-sm" style={{ color: customLabelColor, fontWeight: boldLabel ? 600 : 'unset' }}>
         {label}
       </label>
     </div>

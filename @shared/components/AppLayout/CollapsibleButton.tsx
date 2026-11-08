@@ -1,69 +1,55 @@
-import { RootState } from "@/config/redux-config";
 import React, { FC } from "react";
-import { useSelector } from "react-redux";
-import cn from "classnames";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import ToolTip from "../ToolTip";
+import cn from "classnames";
 
 interface Props {
   title: string;
   isActive: boolean;
   link: string;
   icon: React.ReactNode;
+  /** Force the label on (mobile drawer) regardless of the collapsed state. */
   showTextByDefault?: boolean | null;
+  collapsed?: boolean;
   callBackOnClick?: () => void;
 }
 
+/** Sidebar navigation row: grey icon + label; the current page sits on a white chip with a violet icon. */
 const CollapsibleButton: FC<Props> = ({
   title,
   isActive,
   link,
   icon,
   callBackOnClick,
-  showTextByDefault = null
+  showTextByDefault = null,
+  collapsed = false,
 }) => {
-  const { navOpen: isOpen } = useSelector(
-    (state: RootState) => state.navigationSliceReducer
-  );
-  const router = useRouter();
-  return (
-    <button
-      id={title}
-      className={cn(
-        "relative flex items-center px-2 w-full transition-all duration-300 h-[40px]",
-        {
-          ["bg-[#F2E1FF] !text-[#2F004F] rounded-md"]: isActive,
-          ["!text-white"]: !isActive,
-        }
-      )}
-      onClick={() => {
-        router.push(link);
-        if (!!callBackOnClick) callBackOnClick();
-      }}
-    >
-      {/* Icon wrapper with fixed width */}
-      <span className="w-4 flex justify-center items-center">
-        {!isOpen ? (
-          <ToolTip id={title} message={title}>
-            {icon}
-          </ToolTip>
-        ) : (
-          icon
-        )}
-      </span>
+  const showLabel = showTextByDefault ?? !collapsed;
 
-      {/* Text transition wrapper */}
+  return (
+    <Link
+      href={link}
+      title={showLabel ? undefined : title}
+      aria-label={showLabel ? undefined : title}
+      aria-current={isActive ? "page" : undefined}
+      onClick={() => callBackOnClick?.()}
+      className={cn(
+        "group flex h-[38px] items-center gap-[11px] whitespace-nowrap rounded-lg text-sm transition-colors",
+        showLabel ? "w-full px-2.5" : "w-11 justify-center",
+        isActive
+          ? "bg-surface font-semibold text-ink shadow-[0_1px_2px_rgba(16,12,40,0.06),0_0_0_1px_var(--line)]"
+          : "font-medium text-body hover:bg-hover hover:text-ink"
+      )}
+    >
       <span
-        className={cn("ml-4 origin-left transition-all duration-300 text-sm ", {
-          "opacity-100 scale-x-100": showTextByDefault ?? isOpen,
-          "opacity-0 scale-x-0": showTextByDefault ?? !isOpen,
-        })}
-        style={{ transitionProperty: "opacity, transform" }}
+        className={cn(
+          "grid shrink-0 place-items-center [&>svg]:h-[18px] [&>svg]:w-[18px]",
+          isActive ? "text-accent" : "text-muted group-hover:text-ink"
+        )}
       >
-        {title}
+        {icon}
       </span>
-    </button>
+      {showLabel && <span className="truncate">{title}</span>}
+    </Link>
   );
 };
 

@@ -1,8 +1,8 @@
 import Button from "@/@shared/ui/Button";
-import Checkbox from "@/@shared/ui/Input/Checkbox/Checkbox";
-import CloseIcon from "@/icons/CloseIcon";
-import TransitionUp from "@/transitions/TransitionUp";
 import React, { FC } from "react";
+import { Info } from "lucide-react";
+import { DialogFooter, DialogFrame, DialogHeader } from "./DialogFrame";
+import QuestionCountGrid, { CountNote } from "./QuestionCountGrid";
 
 interface Props {
   handleClose: () => void;
@@ -18,56 +18,40 @@ const TotalQuestionsContainer: FC<Props> = ({
   maxCount,
 }) => {
   const options = [5, 10, 15, 20, 25, 30, 35, 40];
-  const midIndex = Math.ceil(options.length / 2);
   return (
-    <TransitionUp className="w-full max-w-[420px] max-sm:max-w-[96vw]">
-      <div className="bg-white p-6 rounded-2xl">
-        <div className="flex items-center justify-end mb-4">
-          <button
-            onClick={() => {
-              handleClose();
-            }}
-          >
-            <CloseIcon />
-          </button>
-        </div>
+    <DialogFrame widthClass="max-w-[420px]" labelledBy="total-questions-title">
+      <DialogHeader
+        title="Total questions"
+        titleId="total-questions-title"
+        onClose={() => {
+          handleClose();
+        }}
+      />
 
-        <h3 className="text-lg font-bold mb-6">Total questions</h3>
-
-        <div className="mt-4 grid grid-cols-2">
-          {[options.slice(0, midIndex), options.slice(midIndex)].map(
-            (column, colIndex) => (
-              <div key={colIndex} className="flex flex-col gap-5 text-gray-400">
-                {column.map((value) => (
-                  <Checkbox
-                    key={value}
-                    label={value.toString()}
-                    value={value}
-                    boldLabel={true}
-                    customLabelColor={value > maxCount ? "#9ca3af" : "black"}
-                    disabled={value > maxCount}
-                    checked={selected === value}
-                    onChange={() => {
-                      handleSelected(value);
-                    }}
-                  />
-                ))}
-              </div>
-            )
-          )}
-        </div>
+      <div className="px-5 pt-4 pb-5">
+        <QuestionCountGrid
+          options={options}
+          selected={selected}
+          maxCount={maxCount}
+          onSelect={handleSelected}
+          labelledBy="total-questions-title"
+        />
 
         {maxCount < 40 && (
-          <p className="text-center text-xs mt-14">
-            Your current plan is limited to{" "}
-            <span className="font-semibold">{maxCount}</span> questions per test
-          </p>
+          <div className="mt-3.5">
+            <CountNote icon={<Info />}>
+              Your current plan is limited to{" "}
+              <span className="font-semibold text-ink">{maxCount}</span>{" "}
+              questions per test
+            </CountNote>
+          </div>
         )}
-        <div className="mx-auto w-fit" style={{marginTop: maxCount < 40 ? '24px' : '48px'}}>
-          <Button title="Continue" size="large" onClick={handleClose} />
-        </div>
       </div>
-    </TransitionUp>
+
+      <DialogFooter>
+        <Button title="Continue" size="medium" onClick={handleClose} />
+      </DialogFooter>
+    </DialogFrame>
   );
 };
 

@@ -10,25 +10,24 @@ interface Props {
 
 const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
   const sliderClass = cn(
-    `absolute w-[20px] h-[20px] rounded-full cursor-pointer top-1/2 -translate-y-1/2 transition-all`,
+    `absolute left-[2px] w-[16px] h-[16px] rounded-full cursor-pointer top-1/2 -translate-y-1/2 bg-white transition-transform duration-200`,
     {
-      ["bg-white"]: !isChecked,
-      ["bg-[#2F004F] translate-x-full"]: isChecked,
-      ["!bg-gray-200 !cursor-auto"]: disabled,
+      ["translate-x-[16px]"]: isChecked,
+      ["!cursor-auto"]: disabled,
     }
   );
 
   const sliderContainerClass = cn(
-    `w-[40px] h-[14px] cursor-pointer rounded-full relative transition-all`,
+    `w-[36px] h-[20px] flex-shrink-0 cursor-pointer rounded-full relative transition-colors`,
     {
-      ["bg-[#B39BC4]"]: isChecked,
-      ["bg-gray-400"]: !isChecked,
-      ["!bg-gray-300"]: disabled,
+      ["bg-accent"]: isChecked,
+      ["bg-[#d9d8df]"]: !isChecked,
+      ["opacity-50"]: disabled,
     }
   );
 
-  const labelStyling = cn(`text-xs font-semibold`, {
-    ["text-[#858585]"]: disabled,
+  const labelStyling = cn(`text-sm font-semibold text-ink`, {
+    ["text-faint"]: disabled,
   });
 
   return (
@@ -41,10 +40,7 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
         }}
       >
         <div
-          style={{
-            boxShadow:
-              "#00000033 0px 2px 1px -1px, #00000024 0px 1px 1px 0px, #0000001F 0px 1px 3px 0px",
-          }}
+          style={{ boxShadow: "0 1px 2px rgba(0,0,0,.2)" }}
           className={sliderClass}
         ></div>
       </div>

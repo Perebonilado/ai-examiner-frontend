@@ -1,15 +1,19 @@
 import React, { FC } from "react";
+import { Timer } from "lucide-react";
 
 const GetMinutesInfoCard: FC = () => {
   return (
-    <div className="p-4 pt-6 bg-[#F4F4F4] min-h-[230px] rounded-lgy">
-      <h2 className="text-2xl font-bold">Get more minutes</h2>
-      <p className="mt-4 text-sm leading-relaxed">
+    <>
+      <p className="mt-2 max-w-[46ch] text-sm leading-[1.65] text-subtle">
         To participate in viva calls and connect with the AI over voice calls,
-        you'll need credits. It's important to manage these credits carefully
-        as they are consumed based on the duration of your calls.
+        you&apos;ll need credits. It&apos;s important to manage these credits
+        carefully as they are consumed based on the duration of your calls.
       </p>
-    </div>
+      <p className="mt-3.5 flex items-center gap-2.5 text-[13px] text-subtle md:mt-5">
+        <Timer size={16} strokeWidth={1.75} className="shrink-0 text-accent" aria-hidden="true" />
+        Each viva call lasts a maximum of 2 minutes.
+      </p>
+    </>
   );
 };
 

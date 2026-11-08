@@ -5,9 +5,9 @@ import Button from "@/@shared/ui/Button";
 import MCQItemsPDF from "./MCQItemsPDF";
 import PDFIcon from "@/icons/PDFIcon";
 import MCQAnswersPDF from "./MCQAnswersPDF";
-import ShareIcon from "@/icons/ShareIcon";
 import ShareQuestionDialog from "./ShareQuestionDialog";
 import { useModalContext } from "@/contexts/ModalContext";
+import { Download, Share2 } from "lucide-react";
 
 const PDFDownloadLink = dynamic(
   () => import("@react-pdf/renderer").then((mod) => mod.PDFDownloadLink),
@@ -21,9 +21,14 @@ interface Props {
   data: QuestionsModel[];
   title: string;
   handleCopyShareLink: ()=>void;
+  /** Called after Share / Download Q&A is chosen (closes the test header menu). */
+  onAction?: () => void;
 }
 
-const MCQItemContainerPDF: FC<Props> = ({ data, title, handleCopyShareLink }) => {
+const menuItemClassName =
+  "flex items-center gap-2.5 w-full h-9 px-2.5 rounded-[7px] text-sm font-medium text-body text-left hover:bg-hover hover:text-ink transition-colors [&>svg]:text-muted hover:[&>svg]:text-ink";
+
+const MCQItemContainerPDF: FC<Props> = ({ data, title, handleCopyShareLink, onAction }) => {
   const downloadQuestionsRef = useRef<ElementRef<"button">>(null);
   const downloadAnswersRef = useRef<ElementRef<"button">>(null);
 
@@ -38,24 +43,34 @@ const MCQItemContainerPDF: FC<Props> = ({ data, title, handleCopyShareLink }) =>
 
   return (
     <div>
-      <div className="flex flex-col justify-center items-center gap-5">
-        <Button
-          title="Share"
-          variant="contained"
-          starticon={<ShareIcon fill="#FFFFFF" />}
-          fullWidth
+      <div className="flex flex-col">
+        <button
+          type="button"
+          role="menuitem"
+          className={menuItemClassName}
           onClick={() => {
             setModalContent(
               <ShareQuestionDialog handleCopy={handleCopyShareLink} />
             );
+            onAction && onAction();
           }}
-        />
-        <Button
-          title="Download Q&A"
-          variant="outlined"
-          starticon={<PDFIcon />}
-          onClick={handleDownloadQandA}
-        />
+        >
+          <Share2 size={16} strokeWidth={1.75} />
+          Share
+        </button>
+        <button
+          type="button"
+          role="menuitem"
+          className={menuItemClassName}
+          onClick={() => {
+            handleDownloadQandA();
+            // let the hidden download links finish their click before the menu unmounts
+            if (onAction) setTimeout(onAction, 0);
+          }}
+        >
+          <Download size={16} strokeWidth={1.75} />
+          Download Q&amp;A
+        </button>
 
         <span className="scale-[-1] hidden">
           <PDFDownloadLink

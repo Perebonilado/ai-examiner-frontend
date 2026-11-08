@@ -14,6 +14,7 @@ import {
 import { QuestionProgressModel } from "@/models/question-progress.model";
 import QuestionSettingsDialog from "./QuestionSettingsDialog";
 import CountdownTimer from "./CountDownTimer";
+import { ActionBar, actionButtonClassName, ResultRow } from "./TestUI";
 
 interface Props {
   data: MultipleTrueFalseQuestionModel[];
@@ -34,6 +35,8 @@ interface Props {
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
   documentId: string;
+  /** Restart (clear progress); shown in the result row after submitting. */
+  handleRestart?: () => void;
 }
 
 interface QuestionAnswerMap {
@@ -57,6 +60,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   documentId,
   handleGenerateMoreQuestions,
   allowMoreQuestionGeneration = false,
+  handleRestart,
 }) => {
   const [questionAnswerMap, setQuestionAnswerMap] =
     useState<QuestionAnswerMap | null>(null);
@@ -314,42 +318,55 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
     }
   }, [progress]);
 
+  // Statement counts for the progress pill and result row (deduplicated by statement id).
+  const statementResults = new Map<string, boolean>();
+  if (questionAnswerMap) {
+    Object.values(questionAnswerMap).forEach((answers) => {
+      Object.keys(answers).forEach((optionId) => {
+        statementResults.set(optionId, answers[optionId].isCorrect);
+      });
+    });
+  }
+  const totalStatements = data.reduce((sum, q) => sum + q.options.length, 0);
+  const answeredStatements = statementResults.size;
+  const correctStatements = Array.from(statementResults.values()).filter(
+    Boolean
+  ).length;
+
+  const handleNewTest = () => {
+    if (handleGenerateMoreQuestions) {
+      handleGenerateMoreQuestions();
+    }
+  };
+
   return (
     <>
-      {timeLeftSeconds && totalDuration ? (
+      {!submitted && (
         <CountdownTimer
-          timeLeft={timeLeftSeconds}
+          timeLeft={timeLeftSeconds && totalDuration ? timeLeftSeconds : null}
           totalDuration={totalDuration}
+          answered={answeredStatements}
+          total={totalStatements}
         />
-      ) : null}
-      <div className="mt-3 mb-12 mx-auto w-full max-w-[300px] flex flex-col gap-3 items-center justify-center">
-        {submitted && allowMoreQuestionGeneration && (
-          <Button
-            title="New Test"
-            onClick={() => {
-              if (handleGenerateMoreQuestions) {
-                handleGenerateMoreQuestions();
-              }
-            }}
-            size="large"
-            variant="outlined"
-            fullWidth
-          />
-        )}
-        {submitted && (
-          <Button
-            title="View Score"
-            variant="text"
-            onClick={() => {
-              handleShowSubmissionModal({
-                title,
-                score: calculateScorePercentage(),
-              });
-            }}
-          />
-        )}
-      </div>
-      <section className="flex flex-col gap-12">
+      )}
+
+      {submitted && (
+        <ResultRow
+          percentage={calculateScorePercentage()}
+          correct={correctStatements}
+          total={totalStatements}
+          handleRestart={handleRestart}
+          handleNewTest={allowMoreQuestionGeneration ? handleNewTest : undefined}
+          handleViewScore={() => {
+            handleShowSubmissionModal({
+              title,
+              score: calculateScorePercentage(),
+            });
+          }}
+        />
+      )}
+
+      <section className="flex flex-col gap-7">
         {data.map((d, idx) => {
           const questionProgress =
             progress?.data?.filter((p) => p.selectedQuestionId === d.id) ||
@@ -357,6 +374,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
           return (
             <MultipleTrueFalseCard
               {...d}
+              key={d.id}
               questionNumber={idx + 1}
               questionId={questionId}
               totalQuestionsCount={data.length}
@@ -385,60 +403,48 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
             />
           );
         })}
-
-        <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
-          {!submitted ? (
-            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
-              {allowMoreQuestionGeneration &&
-                !timeLeftSeconds &&
-                !totalDuration && (
-                  <Button
-                    title="New Test"
-                    onClick={() => {
-                      if (handleGenerateMoreQuestions) {
-                        handleGenerateMoreQuestions();
-                      }
-                    }}
-                    size="large"
-                    variant="outlined"
-                    className="max-sm:w-full"
-                  />
-                )}
-              <Button
-                title="Submit"
-                size="large"
-                className="max-sm:w-full"
-                onClick={() => {
-                  resetTimer();
-                  submitTest();
-                }}
-              />
-            </div>
-          ) : (
-            <div className="flex max-sm:flex-col-reverse max-sm:w-full max-sm:justify-center items-center gap-3">
-              {allowMoreQuestionGeneration && (
-                <Button
-                  title="New Test"
-                  onClick={() => {
-                    if (handleGenerateMoreQuestions) {
-                      handleGenerateMoreQuestions();
-                    }
-                  }}
-                  size="large"
-                  variant="outlined"
-                  className="max-sm:w-full"
-                />
-              )}
-              <Button
-                className="max-sm:w-full"
-                title="Done"
-                onClick={handleDone}
-                size="large"
-              />
-            </div>
-          )}
-        </div>
       </section>
+
+      <ActionBar>
+        {!submitted ? (
+          <>
+            {allowMoreQuestionGeneration && !timeLeftSeconds && !totalDuration && (
+              <Button
+                title="New test"
+                onClick={handleNewTest}
+                size="large"
+                variant="outlined"
+              />
+            )}
+            <Button
+              title="Submit"
+              size="large"
+              className={actionButtonClassName}
+              onClick={() => {
+                resetTimer();
+                submitTest();
+              }}
+            />
+          </>
+        ) : (
+          <>
+            {allowMoreQuestionGeneration && (
+              <Button
+                title="New test"
+                onClick={handleNewTest}
+                size="large"
+                variant="outlined"
+              />
+            )}
+            <Button
+              className={actionButtonClassName}
+              title="Done"
+              onClick={handleDone}
+              size="large"
+            />
+          </>
+        )}
+      </ActionBar>
     </>
   );
 };

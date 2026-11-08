@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef, ElementRef } from "react";
-import SpeakerIcon from "@/icons/SpeakerIcon";
 import cn from "classnames";
-import StopIcon from "@/icons/StopIcon";
+import { Loader2, Play, Square, Volume2 } from "lucide-react";
 import { useConvertTextToSpeechMutation } from "@/api-services/speech.service";
-import Spinner from "./Spinner";
-import PlayIcon from "@/icons/PlayIcon";
 import { useGoogleTranslationContext } from "@/contexts/GoogleTransalationContext";
 
 interface SpeechButtonWithProgressProps {
@@ -20,10 +17,6 @@ export const SpeechButtonWithProgress: React.FC<
 
   const [convertTextToSpeech, { data, isLoading }] =
     useConvertTextToSpeechMutation();
-
-  const classNames = cn("bg-[#E5E5E5]", {
-    ["animate-pulse"]: isSpeaking,
-  });
 
   const { selectedLanguageName } = useGoogleTranslationContext();
 
@@ -89,50 +82,50 @@ export const SpeechButtonWithProgress: React.FC<
     };
   }, [data]);
 
+  const label = isLoading
+    ? "Preparing audio"
+    : isSpeaking
+    ? "Stop reading"
+    : audioUrl
+    ? "Play again"
+    : "Read aloud";
+
+  /* A 36px ghost icon button: grey speaker, violet while it reads. */
   return (
-    <div className="relative min-h-[65px] flex items-center justify-center">
+    <span className="relative inline-flex">
       {audioUrl && (
         <audio
-          className="absolute hidden"
-          ref={audioRef} // Attach ref to audio element
-          onEnded={() => setIsSpeaking(false)} // Stop speaking when audio ends
+          className="hidden"
+          ref={audioRef}
+          onEnded={() => setIsSpeaking(false)}
         >
           <source src={audioUrl} type="audio/mpeg" />
-          Your browser does not support the audio element.
         </audio>
       )}
-      {!isLoading && (
-        <div style={{ position: "relative", width: "60px", height: "60px" }}>
-          <button
-            onClick={handleClick}
-            className={classNames}
-            style={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "35px",
-              height: "35px",
-              borderRadius: "50%",
-              border: "none",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              cursor: "pointer",
-            }}
-            disabled={isLoading}
-          >
-            {isSpeaking ? (
-              <StopIcon />
-            ) : audioUrl ? (
-              <PlayIcon />
-            ) : (
-              <SpeakerIcon />
-            )}
-          </button>
-        </div>
-      )}
-      {isLoading && <Spinner size="sm" />}
-    </div>
+      <button
+        type="button"
+        onClick={handleClick}
+        disabled={isLoading}
+        aria-label={label}
+        aria-pressed={isSpeaking}
+        title={label}
+        className={cn(
+          "grid h-9 w-9 place-items-center rounded-lg transition-colors disabled:cursor-wait",
+          isSpeaking
+            ? "bg-accent-50 text-accent"
+            : "text-subtle hover:bg-hover hover:text-ink"
+        )}
+      >
+        {isLoading ? (
+          <Loader2 size={16} strokeWidth={1.75} aria-hidden="true" className="animate-spin" />
+        ) : isSpeaking ? (
+          <Square size={14} strokeWidth={1.75} aria-hidden="true" className="fill-current" />
+        ) : audioUrl ? (
+          <Play size={16} strokeWidth={1.75} aria-hidden="true" />
+        ) : (
+          <Volume2 size={16} strokeWidth={1.75} aria-hidden="true" />
+        )}
+      </button>
+    </span>
   );
 };

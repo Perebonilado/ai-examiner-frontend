@@ -1,48 +1,57 @@
-import EditIcon from "@/icons/EditIcon";
-import PerformanceTrackingIcon from "@/icons/PerformanceTrackingIcon";
-import { TrashIcon } from "@/icons/TrashIcon";
 import React, { FC } from "react";
+import { Pencil, Trash2 } from "lucide-react";
+import cn from "classnames";
 
 interface Props {
   handleView: (title: "edit" | "delete") => void;
   handleViewPerformanceReport: () => void;
+  className?: string;
 }
 
-const MoreActionsDefaultView: FC<Props> = ({
-  handleView,
-  handleViewPerformanceReport,
-}) => {
+const itemClass =
+  "flex items-center gap-2.5 w-full h-9 px-2.5 rounded-[7px] text-sm font-medium text-left transition-colors";
+
+const MoreActionsDefaultView: FC<Props> = ({ handleView, className }) => {
   return (
-    <div className="absolute top-1/2 -translate-y-1/2 right-1 overflow-hidden w-[250px] rounded-xl shadow-lg flex flex-col justify-center bg-white">
-      <div className="my-3">
-        <button
-          className="flex items-center gap-5 p-4 w-full"
-          onClick={() => {
-            handleView("edit");
-          }}
-        >
-          <EditIcon width={18} height={18} fill="#939393" />
-          <p className="text-sm">Edit Title</p>
-        </button>
-        {/* <button
-          className="flex items-center gap-5 p-4 w-full"
-          onClick={() => {
-            handleViewPerformanceReport();
-          }}
-        >
-          <PerformanceTrackingIcon />
-          <p className="text-sm">View Performance Report</p>
-        </button> */}
-        <button
-          className="flex items-center gap-5 p-4 w-full"
-          onClick={() => {
-            handleView("delete");
-          }}
-        >
-          <TrashIcon fill="#939393" width="18" height="18" />
-          <p className="text-sm">Delete Document</p>
-        </button>
-      </div>
+    <div
+      role="menu"
+      className={cn(
+        "min-w-[220px] p-1.5 rounded-xl bg-surface border border-edge shadow-pop",
+        className
+      )}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        type="button"
+        role="menuitem"
+        className={cn(
+          itemClass,
+          "group text-body hover:bg-hover hover:text-ink focus-visible:bg-hover"
+        )}
+        onClick={() => {
+          handleView("edit");
+        }}
+      >
+        <Pencil
+          size={16}
+          strokeWidth={1.75}
+          className="text-muted group-hover:text-ink"
+          aria-hidden
+        />
+        Edit title
+      </button>
+      <div className="h-px bg-line my-1.5 -mx-1.5" role="separator" />
+      <button
+        type="button"
+        role="menuitem"
+        className={cn(itemClass, "text-danger hover:bg-danger-bg focus-visible:bg-danger-bg")}
+        onClick={() => {
+          handleView("delete");
+        }}
+      >
+        <Trash2 size={16} strokeWidth={1.75} aria-hidden />
+        Delete document
+      </button>
     </div>
   );
 };

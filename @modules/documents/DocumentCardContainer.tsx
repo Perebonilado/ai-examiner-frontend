@@ -7,13 +7,12 @@ interface Props {
 }
 
 const DocumentCardContainer: FC<Props> = ({ data }) => {
+  if (!data || !data.length) return null;
   return (
-    <section className="flex items-center flex-wrap max-lg:justify-evenly gap-y-12 gap-10 mb-6">
-      {data && data.length
-        ? data?.map((doc, idx) => {
-            return <DocumentCard {...doc} key={idx} />;
-          })
-        : null}
+    <section className="grid grid-cols-[repeat(auto-fill,minmax(200px,1fr))] gap-x-4 gap-y-[18px] max-md:grid-cols-2 max-md:gap-x-3 max-md:gap-y-4">
+      {data.map((doc) => {
+        return <DocumentCard {...doc} key={doc.id} />;
+      })}
     </section>
   );
 };

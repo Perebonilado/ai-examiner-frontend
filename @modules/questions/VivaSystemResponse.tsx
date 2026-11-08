@@ -1,4 +1,4 @@
-import GoggleIcon from "@/icons/GoggleIcon";
+import { ClipboardCheck } from "lucide-react";
 import React, { FC } from "react";
 
 interface Props {
@@ -7,24 +7,23 @@ interface Props {
 
 const VivaSystemResponse: FC<Props> = ({ systemResponse }) => {
   return (
-    <div className="my-6 relative rounded-2xl" style={{ 
-      background: "linear-gradient(to right, #9A67E2, #F89AEE)",
-      padding: "2px" // Border thickness
-    }}>
-      <div className="p-4 rounded-2xl bg-[#F2E1FF] h-full w-full">
-        <div className="flex">
-          <div className="pr-4">
-            <GoggleIcon />
-          </div>
-          <div style={{ flex: 1 }}>
-            <p className="flex items-center gap-2">
-              <span className="font-semibold">Evaluation</span>
-            </p>
-            <p className="font-light text-sm mt-4">{systemResponse}</p>
-          </div>
-        </div>
-      </div>
-    </div>
+    <section
+      aria-label="Evaluation"
+      className="rounded-xl bg-well px-4 pt-3.5 pb-4 max-md:px-3.5 max-md:pt-3 max-md:pb-3.5"
+    >
+      <h4 className="flex items-center gap-2 text-[13px] font-bold text-ink">
+        <ClipboardCheck
+          size={16}
+          strokeWidth={1.75}
+          className="text-accent"
+          aria-hidden
+        />
+        Evaluation
+      </h4>
+      <p className="mt-2 text-sm leading-[1.65] text-body max-w-[68ch]">
+        {systemResponse}
+      </p>
+    </section>
   );
 };
 

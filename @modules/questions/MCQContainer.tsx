@@ -22,6 +22,7 @@ interface Props {
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
   allowViewSource?: boolean;
+  handleRestart?: () => void;
 }
 
 const MCQContainer: FC<Props> = ({
@@ -38,6 +39,7 @@ const MCQContainer: FC<Props> = ({
   allowSaveScore = true,
   allowViewSource = true,
   allowMoreQuestionGeneration = false,
+  handleRestart,
 }) => {
   return (
     <section>
@@ -55,6 +57,7 @@ const MCQContainer: FC<Props> = ({
         allowNotSure={allowNotSure}
         allowSaveScore={allowSaveScore}
         allowViewSource={allowViewSource}
+        handleRestart={handleRestart}
       />
     </section>
   );

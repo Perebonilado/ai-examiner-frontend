@@ -24,7 +24,7 @@ const DropDownItem: FC<Props> = ({
     <div
       role="option"
       onClick={() => onSelect({ value, label, defaultSelected })}
-      className="py-3 border-b text-sm border-b-gray-300 text-black w-full bg-white last:border-none"
+      className="flex items-center h-9 px-2.5 rounded-lg text-sm text-body w-full hover:bg-hover hover:text-ink"
     >
       <p>{label}</p>
     </div>

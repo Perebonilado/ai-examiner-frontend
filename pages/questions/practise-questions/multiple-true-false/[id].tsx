@@ -23,6 +23,7 @@ import {
 } from "@/features/documentChatSlice";
 import TestPageTitle from "@/@modules/questions/TestPageTitle";
 import { openNewTestForm } from "@/features/newTestSlice";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
 const MultipleTrueFalse: NextPage = () => {
   const [id, setId] = useState("");
@@ -151,81 +152,91 @@ const MultipleTrueFalse: NextPage = () => {
     );
   };
 
+  const backToDocument = () => {
+    router.push(`/questions/view-questions/${data?.documentId}`);
+  };
+
   return (
     <AppLayout
-      handleBack={() => {
-        router.push(`/questions/view-questions/${data?.documentId}`);
-      }}
+      handleBack={backToDocument}
+      mobileTitle="Multiple true-false"
+      crumbs={[
+        { label: "All documents", href: "/documents" },
+        ...(data
+          ? [
+              {
+                label: capitalizeFirstLetterOfEachWord(
+                  data.documentTitle.toLowerCase()
+                ),
+                href: `/questions/view-questions/${data.documentId}`,
+              },
+            ]
+          : []),
+        { label: "Multiple true-false" },
+      ]}
     >
       <AppHead title="Multiple True False" />
 
-      {!data && error && (
-        <div className="flex flex-col gap-4 justify-center items-center py-8">
-          <ErrorMessage message="Something went wrong while trying to get questions" />
-          <Button title="Reload Questions" onClick={refetch} />
-        </div>
-      )}
-      <div ref={topOfContainerRef}></div>
-      {data && (
-        <div>
+      <div className="mx-auto w-full max-w-[740px]">
+        {!data && error && (
+          <div className="flex flex-col gap-4 justify-center items-center py-8">
+            <ErrorMessage message="Something went wrong while trying to get questions" />
+            <Button title="Reload questions" onClick={refetch} />
+          </div>
+        )}
+        <div ref={topOfContainerRef}></div>
+        {data && (
           <TestPageTitle
-            handleBack={() => {
-              router.push(`/questions/view-questions/${data?.documentId}`);
-            }}
+            handleBack={backToDocument}
             title={data.documentTitle.toLowerCase()}
+            meta={[
+              "Multiple true-false",
+              `${data.data.length} questions`,
+              isSubmitted && "Submitted",
+            ]}
           />
-          {isSubmitted && (
-            <div className="mx-auto w-full max-w-[300px]">
-              <Button
-                title="Restart"
-                variant="contained"
-                size="large"
-                fullWidth
-                onClick={handleResetAnswers}
-              />
-            </div>
-          )}
-        </div>
-      )}
-      {data && (
-        <MultipleTrueFalseCardContainer
-          data={(data as GetMultipleTrueFalseQuestionByIdModel).data}
-          submitted={isSubmitted}
-          title={data.documentTitle}
-          handleSubmitted={() => {
-            setIsSubmitted(true);
-          }}
-          documentId={data.documentId}
-          handleDone={() => {
-            router.push(`/questions/view-questions/${data.documentId}`);
-          }}
-          allowMoreQuestionGeneration={true}
-          handleGenerateMoreQuestions={handleNewTest}
-          handleShowSubmissionModal={({ score, title }) => {
-            setModalContent(
-              <SubmissionModal
-                title={title}
-                scorePercentage={score}
-                handleScrollToTop={() => {
-                  if (topOfContainerRef.current) {
-                    topOfContainerRef.current.scrollIntoView({
-                      behavior: "smooth",
-                    });
-                  }
-                }}
-                allowPerformanceOverview={data.data.every((q) => {
-                  return q["topic"] !== undefined;
-                })}
-                handlePerformanceOverview={() => {
-                  router.push(
-                    `/performance-tracking/question/${id}?type=multiple-true-false`
-                  );
-                }}
-              />
-            );
-          }}
-        />
-      )}
+        )}
+        {data && (
+          <MultipleTrueFalseCardContainer
+            data={(data as GetMultipleTrueFalseQuestionByIdModel).data}
+            submitted={isSubmitted}
+            title={data.documentTitle}
+            handleSubmitted={() => {
+              setIsSubmitted(true);
+            }}
+            handleRestart={handleResetAnswers}
+            documentId={data.documentId}
+            handleDone={() => {
+              router.push(`/questions/view-questions/${data.documentId}`);
+            }}
+            allowMoreQuestionGeneration={true}
+            handleGenerateMoreQuestions={handleNewTest}
+            handleShowSubmissionModal={({ score, title }) => {
+              setModalContent(
+                <SubmissionModal
+                  title={title}
+                  scorePercentage={score}
+                  handleScrollToTop={() => {
+                    if (topOfContainerRef.current) {
+                      topOfContainerRef.current.scrollIntoView({
+                        behavior: "smooth",
+                      });
+                    }
+                  }}
+                  allowPerformanceOverview={data.data.every((q) => {
+                    return q["topic"] !== undefined;
+                  })}
+                  handlePerformanceOverview={() => {
+                    router.push(
+                      `/performance-tracking/question/${id}?type=multiple-true-false`
+                    );
+                  }}
+                />
+              );
+            }}
+          />
+        )}
+      </div>
     </AppLayout>
   );
 };

@@ -1,7 +1,23 @@
 .check-input:checked~.check-icon {
-  display: block;
+  display: grid;
 }
 
 .check-input~.check-icon {
   display: none;
+}
+
+/* Square checkbox, checked: a filled violet box with a white tick (redesign) */
+.check-icon.square {
+  width: 20px;
+  height: 20px;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--accent);
+}
+.check-icon.square svg {
+  width: 12px;
+  height: 9px;
+}
+.check-icon.square svg path {
+  stroke-width: 10px;
 }

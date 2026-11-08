@@ -2,7 +2,7 @@ import Switch from "@/@shared/components/Switch";
 import Button from "@/@shared/ui/Button";
 import DropDown from "@/@shared/ui/Input/DropDown";
 import { useModalContext } from "@/contexts/ModalContext";
-import CloseIcon from "@/icons/CloseIcon";
+import { Timer, X } from "lucide-react";
 import React, { FC, useState } from "react";
 
 interface Props {
@@ -66,26 +66,41 @@ const QuestionSettingsDialog: FC<Props> = ({
   const [isNegativeMarking, setIsNegativeMarking] = useState(false);
 
   return (
-    <div className="w-full relative max-w-[420px] max-md:max-w-[370px] max-sm:max-w-[95vw] rounded-xl shadow-lg p-8 py-14 flex flex-col gap-10 bg-white">
-      <button
-        className="absolute top-5 right-5 cursor-pointer"
-        onClick={() => {
-          setModalContent(null);
-        }}
-      >
-        <CloseIcon />
-      </button>
-      <div>
-        <h3 className="font-semibold text-3xl">Options</h3>
+    <div
+      role="dialog"
+      aria-labelledby="test-options-title"
+      className="w-full relative max-w-[400px] max-md:max-w-[92vw] rounded-2xl shadow-pop border border-edge bg-surface"
+    >
+      <div className="flex items-start gap-3 px-5 pt-5">
+        <h2
+          id="test-options-title"
+          className="flex-1 text-lg font-bold text-ink tracking-[-0.015em]"
+        >
+          Options
+        </h2>
+        <button
+          type="button"
+          aria-label="Close"
+          className="-mt-1.5 -mr-1.5 w-9 h-9 grid place-items-center rounded-lg text-subtle hover:bg-hover hover:text-ink transition-colors"
+          onClick={() => {
+            setModalContent(null);
+          }}
+        >
+          <X size={18} strokeWidth={1.75} />
+        </button>
+      </div>
 
-        <div className="mt-12 flex flex-col gap-8 text-[#939393]">
-          <div className="flex items-start justify-between">
-            <div>
-              <h5 className="font-semibold">Negative marking</h5>
-              <p className="mt-2 text-sm w-full max-w-[250px] max-sm:max-w-[200px]">
-                Turning this on will deduct marks for wrong answers.
-              </p>
-            </div>
+      <div className="px-5 pt-[18px] pb-5">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h5 id="negative-marking-label" className="text-sm font-semibold text-ink">
+              Negative marking
+            </h5>
+            <p className="mt-1 text-[13px] leading-[1.45] text-muted max-w-[34ch]">
+              Turning this on will deduct marks for wrong answers.
+            </p>
+          </div>
+          <div className="shrink-0">
             <Switch
               handleChecked={() => {
                 setIsNegativeMarking(!isNegativeMarking);
@@ -94,32 +109,36 @@ const QuestionSettingsDialog: FC<Props> = ({
               disabled={false}
             />
           </div>
+        </div>
 
-          <div className="flex items-center justify-between">
-            <div>
-              <h5 className="font-semibold">Timer</h5>
-            </div>
-            <div className="w-full max-w-[100px]">
-              <DropDown
-                options={[...calculateRecommendedTimes()]}
-                openFromTop={true}
-                onChange={(e) => {
-                  setSelectedTime(Number(e.target.value));
-                }}
-              />
-            </div>
+        <hr className="my-4 h-px border-0 bg-line" />
+
+        <div className="flex items-center justify-between gap-4">
+          <h5 className="flex items-center gap-2 text-sm font-semibold text-ink">
+            <Timer size={16} strokeWidth={1.75} className="text-muted" />
+            Timer
+          </h5>
+          <div className="w-[120px] -mt-1.5 tabular-nums">
+            <DropDown
+              options={[...calculateRecommendedTimes()]}
+              openFromTop={true}
+              onChange={(e) => {
+                setSelectedTime(Number(e.target.value));
+              }}
+            />
           </div>
         </div>
+      </div>
 
-        <div className="mt-12 flex justify-center">
-          <Button
-            title="Begin test"
-            size="large"
-            onClick={() => {
-              handleBeginTest(selectedTime, isNegativeMarking);
-            }}
-          />
-        </div>
+      <div className="px-5 py-3.5 border-t border-line bg-canvas rounded-b-2xl">
+        <Button
+          title="Begin test"
+          size="medium"
+          fullWidth
+          onClick={() => {
+            handleBeginTest(selectedTime, isNegativeMarking);
+          }}
+        />
       </div>
     </div>
   );

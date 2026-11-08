@@ -1,34 +1,47 @@
-import ProgressBar from "@ramonak/react-progress-bar";
 import React, { FC } from "react";
 import { motion } from "framer-motion";
+import cn from "classnames";
 
 interface Props {
   percentageLoading: number;
 }
 
+/* Compact floating progress card shown while the user reads the summary during generation. */
 const TopLevelGenerateQuestionsLoader: FC<Props> = ({ percentageLoading }) => {
+  const isReady = percentageLoading >= 100;
+  const pct = Math.max(0, Math.min(100, Math.round(percentageLoading)));
   return (
     <motion.div
-      initial={{ y: -100, opacity: 0, x: '-50%' }}
-      animate={{ y: 0, opacity: 1, x: '-50%' }}
+      initial={{ y: -100, opacity: 0, x: "-50%" }}
+      animate={{ y: 0, opacity: 1, x: "-50%" }}
       transition={{
         duration: 0.5,
-        ease: [0.4, 0, 0.2, 1], // MUI's standard easing
+        ease: [0.16, 1, 0.3, 1],
       }}
-      className="fixed bg-white p-3 border rounded-lg w-full max-w-[600px] max-md:max-w-[85vw] z-[5000] top-5 max-md:top-28 left-1/2 -translate-x-1/2 shadow-md"
+      role="status"
+      className="fixed z-[5000] top-[72px] max-md:top-[68px] left-1/2 -translate-x-1/2 w-full max-w-[420px] max-md:max-w-[calc(100vw-32px)] px-4 py-3 rounded-xl bg-surface border border-edge shadow-lift"
     >
-      <p className="text-xs font-bold mb-2">
-        {percentageLoading < 100 ? "Preparing Test" : "Your test is ready!"}
-      </p>
-      <div className="flex items-center gap-2">
-        <div style={{ flex: 1 }}>
-          <ProgressBar
-            completed={percentageLoading}
-            height="6px"
-            customLabel=" "
-          />
-        </div>
-        <p className="text-xs">{percentageLoading}%</p>
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-[13px] font-semibold text-ink">
+          {isReady ? "Your test is ready!" : "Preparing test"}
+        </p>
+        <p className="text-[13px] font-bold text-ink tabular-nums">{pct}%</p>
+      </div>
+      <div
+        role="progressbar"
+        aria-valuenow={pct}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={isReady ? "Test generated" : "Generating test"}
+        className="mt-2 h-1.5 rounded-full bg-sunken overflow-hidden"
+      >
+        <span
+          className={cn(
+            "block h-full rounded-full transition-[width] duration-500 ease-out",
+            isReady ? "bg-success" : "bg-accent"
+          )}
+          style={{ width: `${pct}%` }}
+        />
       </div>
     </motion.div>
   );

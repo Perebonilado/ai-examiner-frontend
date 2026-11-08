@@ -1,10 +1,12 @@
 import React, { FC } from "react";
-import AdditionalSettingsItem from "./AdditionalSettingsItem";
-import TextField from "@/@shared/ui/Input/TextField";
+import AdditionalSettingsItem, {
+  SettingsSeparator,
+} from "./AdditionalSettingsItem";
 import Switch from "@/@shared/components/Switch";
 import Button from "@/@shared/ui/Button";
-import ChevronRight from "@/icons/ChevronRight";
 import { TopicsV2Model } from "@/models/file-upload.model";
+import { DialogFooter, DialogHeader } from "./DialogFrame";
+import { capitalizeFirstLetterOfEachWord } from "@/utils";
 
 interface Props {
   handleSelectDifficulty: () => void;
@@ -16,8 +18,14 @@ interface Props {
   difficulty: string;
   selectedTopics: TopicsV2Model[];
   handleClose: () => void;
+  /** Shows the close button in the title row (standalone dialog). */
+  onDismiss?: () => void;
+  /** Hide the "Test settings" title row (when a parent dialog already shows a title). */
+  hideTitle?: boolean;
+  saveTitle?: string;
 }
 
+/* "Test settings": Difficulty level / Select topics / Case studies, then Save. */
 const AdditionalSettingsBaseSetting: FC<Props> = ({
   handleSelectDifficulty,
   handleSelectTopics,
@@ -25,59 +33,66 @@ const AdditionalSettingsBaseSetting: FC<Props> = ({
   handleCaseStudies,
   canUseCaseStudies,
   difficulty,
-  selectedTopics,
   canUseDifficulty,
   handleClose,
+  onDismiss,
+  hideTitle = false,
+  saveTitle = "Save",
 }) => {
+  const rows = [
+    canUseDifficulty && (
+      <AdditionalSettingsItem
+        key="difficulty"
+        title="Difficulty level"
+        description="Control how challenging your questions will be"
+        value={difficulty ? capitalizeFirstLetterOfEachWord(difficulty) : ""}
+        handleClick={handleSelectDifficulty}
+      />
+    ),
+    <AdditionalSettingsItem
+      key="topics"
+      title="Select topics"
+      description="Automatically suggests key topics from your uploaded material"
+      handleClick={handleSelectTopics}
+    />,
+    canUseCaseStudies && (
+      <AdditionalSettingsItem
+        key="case-studies"
+        variant="switch"
+        title="Case studies"
+        description="Turn on to unlock real-world case scenarios tailored to your learning."
+        checked={isCaseStudies}
+        handleClick={handleCaseStudies}
+      >
+        <Switch
+          isChecked={isCaseStudies}
+          handleChecked={handleCaseStudies}
+          disabled={false}
+        />
+      </AdditionalSettingsItem>
+    ),
+  ].filter(Boolean);
+
   return (
-    <div className="bg-white p-6 pt-0 rounded-2xl min-w-full">
-      <h3 className="text-lg font-bold mb-6">Test settings</h3>
-
-      <div className="mt-4 flex flex-col gap-12">
-        {canUseDifficulty && (
-          <AdditionalSettingsItem
-            title="Difficulty level"
-            description="Control how challenging your questions will be"
-            handleClick={handleSelectDifficulty}
-          >
-            <div className="w-full max-w-[120px] flex items-center justify-end">
-              <button onClick={handleSelectDifficulty}>
-                <ChevronRight />
-              </button>
-            </div>
-          </AdditionalSettingsItem>
-        )}
-
-        <AdditionalSettingsItem
-          title="Select topics"
-          description="Automatically suggests key topics from your uploaded material"
-          handleClick={handleSelectTopics}
-        >
-          <div className="w-full max-w-[120px] flex items-center justify-end">
-            <button onClick={handleSelectTopics}>
-              <ChevronRight />
-            </button>
-          </div>
-        </AdditionalSettingsItem>
-
-        {canUseCaseStudies && (
-          <AdditionalSettingsItem
-            title="Case studies"
-            description="Turn on to unlock real-world case scenarios tailored to your learning."
-            handleClick={handleCaseStudies}
-          >
-            <Switch
-              isChecked={isCaseStudies}
-              handleChecked={handleCaseStudies}
-              disabled={false}
-            />
-          </AdditionalSettingsItem>
-        )}
-
-        <div className="w-fit mx-auto">
-          <Button title="Save" size="large" onClick={handleClose} />
-        </div>
+    <div className="min-w-full flex flex-col">
+      {!hideTitle && (
+        <DialogHeader
+          title="Test settings"
+          titleId="test-settings-title"
+          onClose={onDismiss}
+        />
+      )}
+      <div className="px-1 pt-2.5 pb-3">
+        {rows.map((row, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <SettingsSeparator />}
+            {row}
+          </React.Fragment>
+        ))}
       </div>
+      <DialogFooter className="mt-auto">
+        <Button title={saveTitle} size="medium" onClick={handleClose} />
+      </DialogFooter>
     </div>
   );
 };

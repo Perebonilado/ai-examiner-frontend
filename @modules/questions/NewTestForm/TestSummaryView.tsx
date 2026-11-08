@@ -5,56 +5,81 @@ import TestSummaryItem from "./TestSummaryItem";
 import { testFormats } from "@/@modules/home/GenerateQuestionsForm";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import Button from "@/@shared/ui/Button";
+import { DialogFooter } from "@/@modules/home/DialogFrame";
+import { Gauge, Hash, ListChecks, Stethoscope, Tags } from "lucide-react";
+import cn from "classnames";
 
 interface Props {
   generateTest: () => void;
 }
 
+const sentenceCase = (text: string) =>
+  text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
+
 const TestSummaryView: FC<Props> = ({ generateTest }) => {
   const {
     selectedTestFormat,
     selectedTopics,
+    selectedQuestionTopics,
     totalQuestions,
     additionalSettings,
   } = useSelector((state: RootState) => state.newTestSliceReducer);
 
   return (
     <div>
-      <h3 className="text-lg font-bold text-center">Ready to Generate ?</h3>
-      <div className="py-6 flex flex-col gap-6">
+      <h2
+        id="new-test-summary-title"
+        className="px-5 pt-2 text-lg leading-[1.3] font-bold tracking-[-0.015em] text-ink"
+      >
+        Ready to generate?
+      </h2>
+      <dl className="px-5 pt-3 pb-3.5">
         <TestSummaryItem
-          title="Test Format"
-          value={testFormats.find((f) => f.value === selectedTestFormat)!.title}
+          icon={<ListChecks strokeWidth={1.75} />}
+          title="Test format"
+          value={sentenceCase(
+            testFormats.find((f) => f.value === selectedTestFormat)!.title
+          )}
         />
 
         <TestSummaryItem
+          icon={<Hash strokeWidth={1.75} />}
           title="Total questions"
           value={totalQuestions.toString()}
         />
 
         <TestSummaryItem
+          icon={<Gauge strokeWidth={1.75} />}
           title="Difficulty"
           value={capitalizeFirstLetterOfEachWord(additionalSettings.difficulty)}
         />
 
         <TestSummaryItem
+          icon={<Tags strokeWidth={1.75} />}
           title="Select topics"
-          value={`${selectedTopics.length} topic(s) selected`}
+          value={`${selectedTopics.length || selectedQuestionTopics.length} topic(s) selected`}
         />
 
         <TestSummaryItem
+          icon={<Stethoscope strokeWidth={1.75} />}
           title="Case studies"
-          value={additionalSettings.isCaseStudies ? "Turned on" : "Turned off"}
+          value={
+            <span
+              className={cn(
+                "inline-flex items-center h-[22px] px-2 rounded-full text-[11.5px] font-semibold",
+                additionalSettings.isCaseStudies
+                  ? "bg-success-bg text-success-strong"
+                  : "bg-sunken text-subtle"
+              )}
+            >
+              {additionalSettings.isCaseStudies ? "Turned on" : "Turned off"}
+            </span>
+          }
         />
-      </div>
-      <div className="py-4">
-        <Button
-          title="Generate"
-          className="mx-auto"
-          size="large"
-          onClick={generateTest}
-        />
-      </div>
+      </dl>
+      <DialogFooter>
+        <Button title="Generate" size="medium" onClick={generateTest} />
+      </DialogFooter>
     </div>
   );
 };

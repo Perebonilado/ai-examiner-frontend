@@ -46,7 +46,7 @@ const DropDown: FC<Props> = ({
   const mainInputRef = useRef<ElementRef<"input">>(null);
 
   const inputStyleBasedOnVariant = cn(
-    `cursor-pointer text-sm w-full text-black flex m-0 placeholder:text-gray-400 placeholder:text-sm px-4 py-2  rounded-md outline-none bg-white border border-gray-300 focus:border-[#2F004F] transition-all`
+    `cursor-pointer h-11 text-sm w-full text-ink flex m-0 placeholder:text-faint placeholder:text-sm pl-3.5 pr-10 rounded-[10px] outline-none bg-surface border border-control shadow-xs hover:border-[#c9c8d0] focus:border-accent-bright focus:ring-4 focus:ring-[rgba(124,58,237,0.14)] transition-[border-color,box-shadow]`
   );
 
   const onSelect = (val: {
@@ -86,7 +86,7 @@ const DropDown: FC<Props> = ({
   }, [JSON.stringify(options)]);
 
   const dropDownStyles = cn(
-    `w-full !text-sm absolute left-0 px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto`,
+    `w-full !text-sm absolute left-0 p-1.5 bg-surface rounded-xl border border-edge cursor-pointer shadow-pop z-[300] max-h-[240px] overflow-y-auto`,
     {
       ["bottom-[calc(100%+5px)]"]: openFromTop,
       ["top-[calc(100%+5px)]"]: !openFromTop,
@@ -104,12 +104,12 @@ const DropDown: FC<Props> = ({
   return (
     <div>
       {label && (
-        <label className="text-sm font-semibold">
+        <label className="text-[13px] font-semibold text-ink">
           {label} {isRequired && <span className="text-rose-600">*</span>}
         </label>
       )}
       <div
-        className={`w-full relative mt-2`}
+        className={`w-full relative mt-1.5`}
         ref={dropDownRef}
         onClick={() => {
          handleClick && handleClick();
@@ -128,7 +128,7 @@ const DropDown: FC<Props> = ({
         />
         <input className="hidden" ref={mainInputRef} {...props} />
 
-        <ChevronDown className="absolute right-2 top-1/2 -translate-y-1/2" />
+        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
 
         {isOptionsOpen && (
           <div className={dropDownStyles}>

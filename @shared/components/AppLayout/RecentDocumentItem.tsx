@@ -1,42 +1,47 @@
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import Link from "next/link";
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC } from "react";
+import { FileText } from "lucide-react";
+import cn from "classnames";
 
 export interface IRecentDocumentItem {
   link: string;
   title: string;
+  isActive?: boolean;
   callbackOnClick?: () => void;
 }
 
-const RecentDocumentItem: FC<IRecentDocumentItem> = ({ title, callbackOnClick, link }) => {
-  const textRef = useRef<HTMLSpanElement>(null);
-  const [isOverflowing, setIsOverflowing] = useState(false);
-
-  useEffect(() => {
-    const el = textRef.current;
-    if (el && el.scrollWidth > el.clientWidth) {
-      setIsOverflowing(true);
-    } else {
-      setIsOverflowing(false);
-    }
-  }, [title]);
+const RecentDocumentItem: FC<IRecentDocumentItem> = ({
+  title,
+  callbackOnClick,
+  link,
+  isActive = false,
+}) => {
+  const label = capitalizeFirstLetterOfEachWord(title.toLowerCase());
 
   return (
-    <Link href={link}>
-      <button
-        onClick={() => {
-          if (callbackOnClick) callbackOnClick();
-        }}
-        className="relative text-xs max-w-[170px] overflow-hidden whitespace-nowrap"
-      >
-        <span ref={textRef} className="block pr-6 text-white">
-          {capitalizeFirstLetterOfEachWord(title.toLowerCase())}
-        </span>
-
-        {isOverflowing && (
-          <span className="pointer-events-none absolute right-0 top-0 h-full w-7 bg-gradient-to-l from-[#360B58] to-[#FFFFFF00]" />
+    <Link
+      href={link}
+      title={label}
+      aria-current={isActive ? "page" : undefined}
+      onClick={() => callbackOnClick?.()}
+      className={cn(
+        "group flex h-[34px] items-center gap-2.5 rounded-lg pl-2.5 pr-1.5 text-[13px] transition-colors",
+        isActive
+          ? "bg-hover font-medium text-ink"
+          : "text-body hover:bg-hover hover:text-ink"
+      )}
+    >
+      <FileText
+        size={15}
+        strokeWidth={1.6}
+        aria-hidden="true"
+        className={cn(
+          "shrink-0",
+          isActive ? "text-ink" : "text-faint group-hover:text-ink"
         )}
-      </button>
+      />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
     </Link>
   );
 };

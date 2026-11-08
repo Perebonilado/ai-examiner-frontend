@@ -1,25 +1,37 @@
 import React, { FC } from "react";
+import VoiceOrb, { VoiceOrbState } from "./VoiceOrb";
 
 interface Props {
-  icon: React.ReactNode;
-  speaker: string;
-  isSpeaking: boolean;
+  state: VoiceOrbState;
+  level?: number;
 }
 
-const CallProgressIndicator: FC<Props> = ({ icon, isSpeaking, speaker }) => {
+const STATUS: Record<VoiceOrbState, string> = {
+  speaking: "Examiner is speaking",
+  listening: "Listening…",
+  idle: "Ready when you are",
+};
+
+/* The voice orb with its one status line. */
+const CallProgressIndicator: FC<Props> = ({ state, level }) => {
   return (
-    <div className="relative w-full max-w-[350px] h-[200px] mx-auto">
-      {/* Gradient Border Layer */}
-      {isSpeaking && <div className="absolute inset-0 bg-gradient-to-r from-[#9A67E2] to-[#F89AEE] rounded-3xl"></div>}
-      
-      {/* Inner content with slightly smaller dimensions to show the border */}
-      <div className="absolute inset-[3px] flex items-center justify-center bg-[#F4F4F4] rounded-3xl shadow-md">
-        {icon}
-        <p className="absolute bottom-2 left-4 bg-[#00000080] text-white text-xs min-w-[80px] rounded-full text-center px-2 py-1">
-          {speaker}
-        </p>
-      </div>
-    </div>
+    <section
+      aria-label="Call with the examiner"
+      className="flex flex-col items-center justify-center gap-[67px] py-10 max-md:gap-[57px] max-md:py-6"
+    >
+      <VoiceOrb
+        state={state}
+        level={level}
+        className="h-[216px] w-[216px] max-md:h-[184px] max-md:w-[184px]"
+      />
+      <p
+        role="status"
+        aria-live="polite"
+        className="min-h-[22px] text-center text-[15px] font-medium text-subtle"
+      >
+        {STATUS[state]}
+      </p>
+    </section>
   );
 };
 

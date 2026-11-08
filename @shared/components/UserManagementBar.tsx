@@ -7,11 +7,13 @@ interface Props {
 
 const UserManagementBar: FC<Props> = ({ pageTitle }) => {
   return (
-    <section className="flex items-center mt-7">
-      <div style={{ flex: 1 }}>
-        <h2 className="text-2xl font-bold">{pageTitle}</h2>
+    <section className="flex items-center gap-4 mt-7">
+      <div className="flex-1 min-w-0">
+        <h2 className="text-2xl font-bold tracking-[-0.02em] text-ink truncate">
+          {pageTitle}
+        </h2>
       </div>
-      <div style={{ flex: 1 }} className="flex justify-end items-center">
+      <div className="flex justify-end items-center">
         <UserManagementBox />
       </div>
     </section>

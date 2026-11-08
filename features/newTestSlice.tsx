@@ -27,7 +27,9 @@ export const testFormatsMap = new Map<
 interface OpenNewTestPayload {
   documentId: string;
   topics: TopicsV2Model[];
-  selectedTopics?: TopicsV2Model[]
+  selectedTopics?: TopicsV2Model[];
+  /** Topics by name, for topics that are not saved on the document (e.g. from a performance overview). */
+  selectedQuestionTopics?: string[];
 }
 
 export interface NewTestSlice {
@@ -37,6 +39,7 @@ export interface NewTestSlice {
   topics: TopicsV2Model[];
   documentId: string | null;
   selectedTopics: TopicsV2Model[];
+  selectedQuestionTopics: string[];
   isSummaryView: boolean;
   isNewTestFormOpen: boolean;
 
@@ -60,6 +63,7 @@ const initialState: NewTestSlice = {
   isNewTestFormOpen: false,
   topics: [],
   selectedTopics: [],
+  selectedQuestionTopics: [],
   isSummaryView: false,
   additionalSettings: {
     difficulty: "medium",
@@ -91,6 +95,8 @@ export const newTestSlice = createSlice({
     },
     setSelectedTopics(state, action: PayloadAction<TopicsV2Model[]>) {
       state.selectedTopics = action.payload;
+      // Picking saved topics replaces any topics carried over by name.
+      state.selectedQuestionTopics = [];
     },
     setSummaryView(state, action: PayloadAction<boolean>) {
       state.isSummaryView = action.payload;
@@ -104,6 +110,7 @@ export const newTestSlice = createSlice({
       if (action.payload.selectedTopics?.length) {
         state.selectedTopics = action.payload.selectedTopics
       }
+      state.selectedQuestionTopics = action.payload.selectedQuestionTopics ?? [];
       state.isNewTestFormOpen = true;
     },
     patchAdditionalSettings(

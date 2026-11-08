@@ -1,4 +1,3 @@
-import Container from "@/@shared/ui/Container";
 import { QuestionOption, QuestionsModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
 import MCQItem from "./MCQItem";
@@ -16,6 +15,7 @@ import {
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import QuestionSettingsDialog from "./QuestionSettingsDialog";
 import CountdownTimer from "./CountDownTimer";
+import { ActionBar, actionButtonClassName, ResultRow } from "./TestUI";
 
 interface Props {
   data: QuestionsModel[];
@@ -37,6 +37,8 @@ interface Props {
   allowSaveScore?: boolean;
   allowNotSure?: boolean;
   allowViewSource?: boolean;
+  /** Restart (clear progress); shown in the result row after submitting. */
+  handleRestart?: () => void;
 }
 
 const MCQItemContainer: FC<Props> = ({
@@ -53,6 +55,7 @@ const MCQItemContainer: FC<Props> = ({
   allowNotSure = true,
   allowSaveScore = true,
   allowViewSource = true,
+  handleRestart,
 }) => {
   const [questionAnswerMap, setQuestionAnswerMap] = useState<Record<
     string,
@@ -275,133 +278,124 @@ const MCQItemContainer: FC<Props> = ({
 
   const { speak } = useSpeechToText();
 
+  const answeredCount = questionAnswerMap
+    ? Object.keys(questionAnswerMap).length
+    : 0;
+  const correctCount = questionAnswerMap
+    ? Object.values(questionAnswerMap).filter((ans) => ans).length
+    : 0;
+
+  const handleNewTest = () => {
+    if (handleGenerateMoreQuestions) {
+      handleGenerateMoreQuestions();
+    }
+  };
+
   return (
     <section>
-      {timeLeftSeconds && totalDuration ? (
+      {!isSubmitted && (
         <CountdownTimer
-          timeLeft={timeLeftSeconds}
+          timeLeft={timeLeftSeconds && totalDuration ? timeLeftSeconds : null}
           totalDuration={totalDuration}
+          answered={answeredCount}
+          total={data.length}
         />
-      ) : null}
-      <div className="mt-3 mb-12 flex flex-col gap-3 mx-auto w-full max-w-[300px] items-center justify-center">
-        {isSubmitted && allowMoreQuestionGeneration && (
-          <Button
-            title="New Test"
-            onClick={() => {
-              if (handleGenerateMoreQuestions) {
-                handleGenerateMoreQuestions();
-              }
-            }}
-            fullWidth
-            size="large"
-            variant="outlined"
-          />
-        )}
-        {isSubmitted && (
-          <Button
-            title="View Score"
-            variant="text"
-            onClick={() => {
-              handleShowSubmissionModal({
-                title,
-                score: calculateScorePercentage(),
-              });
-            }}
-          />
-        )}
-      </div>
-      <Container className="pb-10">
-        <div className="flex flex-col gap-[80px]">
-          {data.map((question, idx) => {
-            const selectedInProgress =
-              progress?.data?.find(
-                (p) => p.selectedQuestionId === question.id
-              ) ?? null;
-            const selectedAnswer: QuestionOption | null = selectedInProgress
-              ? {
-                  id:
-                    question.options.find(
-                      (opt) => opt.id === selectedInProgress.selectedOptionId
-                    )?.id || "",
-                  value:
-                    question.options.find(
-                      (opt) => opt.id === selectedInProgress.selectedOptionId
-                    )?.value || "",
-                }
-              : null;
-            return (
-              <MCQItem
-                {...question}
-                key={question.id}
-                questionNumber={idx + 1}
-                totalQuestionsCount={data.length}
-                selectedOptionFromProgress={selectedAnswer ?? null}
-                handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
-                submitted={isSubmitted}
-                isResetSelection={resetAllSelectionsTrigger}
-                documentId={documentId}
-                speak={speak}
-                allowSaveProgress={allowSaveProgress}
-                allowNotSure={allowNotSure}
-                allowViewSource={allowViewSource}
-              />
-            );
-          })}
-        </div>
+      )}
 
-        <div className="flex justify-end gap-4 w-full max-w-[800px] mx-auto py-8">
-          {!isSubmitted ? (
-            <div className="flex max-sm:w-full items-center justify-center gap-4 max-sm:flex-col-reverse">
-              {allowMoreQuestionGeneration &&
-                !timeLeftSeconds &&
-                !totalDuration && (
-                  <Button
-                    title="New Test"
-                    onClick={() => {
-                      if (handleGenerateMoreQuestions) {
-                        handleGenerateMoreQuestions();
-                      }
-                    }}
-                    size="large"
-                    variant="outlined"
-                    className="max-sm:w-full"
-                  />
-                )}
+      {isSubmitted && (
+        <ResultRow
+          percentage={calculateScorePercentage()}
+          correct={correctCount}
+          total={data.length}
+          handleRestart={handleRestart}
+          handleNewTest={allowMoreQuestionGeneration ? handleNewTest : undefined}
+          handleViewScore={() => {
+            handleShowSubmissionModal({
+              title,
+              score: calculateScorePercentage(),
+            });
+          }}
+        />
+      )}
+
+      <div className="flex flex-col gap-7">
+        {data.map((question, idx) => {
+          const selectedInProgress =
+            progress?.data?.find(
+              (p) => p.selectedQuestionId === question.id
+            ) ?? null;
+          const selectedAnswer: QuestionOption | null = selectedInProgress
+            ? {
+                id:
+                  question.options.find(
+                    (opt) => opt.id === selectedInProgress.selectedOptionId
+                  )?.id || "",
+                value:
+                  question.options.find(
+                    (opt) => opt.id === selectedInProgress.selectedOptionId
+                  )?.value || "",
+              }
+            : null;
+          return (
+            <MCQItem
+              {...question}
+              key={question.id}
+              questionNumber={idx + 1}
+              totalQuestionsCount={data.length}
+              selectedOptionFromProgress={selectedAnswer ?? null}
+              handleSetQuestionAnswer={handleSetQuestionAnswerMapItem}
+              submitted={isSubmitted}
+              isResetSelection={resetAllSelectionsTrigger}
+              documentId={documentId}
+              speak={speak}
+              allowSaveProgress={allowSaveProgress}
+              allowNotSure={allowNotSure}
+              allowViewSource={allowViewSource}
+            />
+          );
+        })}
+      </div>
+
+      <ActionBar>
+        {!isSubmitted ? (
+          <>
+            {allowMoreQuestionGeneration && !timeLeftSeconds && !totalDuration && (
               <Button
-                title="Submit"
+                title="New test"
+                onClick={handleNewTest}
                 size="large"
-                className="max-sm:w-full"
-                onClick={() => {
-                  resetTimer();
-                  submitTest();
-                }}
+                variant="outlined"
               />
-            </div>
-          ) : (
-            <div className="flex max-sm:flex-col-reverse max-sm:w-full max-sm:justify-center items-center gap-3">
-              {allowMoreQuestionGeneration && (
-                <Button
-                  title="New Test"
-                  onClick={() => {
-                    if (handleGenerateMoreQuestions) {
-                      handleGenerateMoreQuestions();
-                    }
-                  }}
-                  size="large"
-                  variant="outlined"
-                  className="max-sm:w-full"
-                />
-              )}
+            )}
+            <Button
+              title="Submit"
+              size="large"
+              className={actionButtonClassName}
+              onClick={() => {
+                resetTimer();
+                submitTest();
+              }}
+            />
+          </>
+        ) : (
+          <>
+            {allowMoreQuestionGeneration && (
               <Button
-                className="max-sm:w-full"
-                title="Done"
-                onClick={handleDone}
+                title="New test"
+                onClick={handleNewTest}
                 size="large"
+                variant="outlined"
               />
-            </div>
-          )}
-        </div>
-      </Container>
+            )}
+            <Button
+              className={actionButtonClassName}
+              title="Done"
+              onClick={handleDone}
+              size="large"
+            />
+          </>
+        )}
+      </ActionBar>
     </section>
   );
 };

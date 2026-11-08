@@ -8,7 +8,7 @@ interface Props {
 
 const AltTabContainer: FC<Props> = ({ data, handleClick }) => {
   return (
-    <div className="mx-auto w-fit rounded-md flex overflow-hidden">
+    <div className="mx-auto w-fit rounded-[10px] flex gap-0.5 p-[3px] bg-sunken">
       {data.map((d, idx) => {
         return (
           <AltTabItem

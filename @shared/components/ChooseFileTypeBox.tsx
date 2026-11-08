@@ -1,38 +1,51 @@
 import React, { FC } from "react";
-import Button from "../ui/Button";
+import { FileUp, Images } from "lucide-react";
 
 interface Props {
   handleSelectImages: () => void;
   handleSelectFiles: () => void;
 }
 
+const itemClass =
+  "group flex items-center gap-2.5 w-full h-9 max-md:h-11 px-2.5 rounded-[7px] text-sm font-medium text-body text-left hover:bg-hover hover:text-ink focus-visible:bg-hover transition-colors";
+
 const ChooseFileTypeBox: FC<Props> = ({
   handleSelectFiles,
   handleSelectImages,
 }) => {
   return (
-    <div className="bg-white rounded-xl border border-grey-200 absolute bottom-full right-1/2 translate-x-1/2 w-full max-w-[180px] flex flex-col px-2">
-      <div className="border-b border-b-gray-300 py-4">
-        <Button
-          title="Select Images"
-          variant="text"
-          type="button"
-          size="small"
-          className="!text-left"
-          fullWidth
-          onClick={handleSelectImages}
+    <div
+      role="menu"
+      className="absolute top-[calc(100%+8px)] left-1/2 -translate-x-1/2 z-20 min-w-[200px] p-1.5 rounded-xl bg-surface border border-edge shadow-pop text-left"
+    >
+      <button
+        type="button"
+        role="menuitem"
+        className={itemClass}
+        onClick={handleSelectImages}
+      >
+        <Images
+          size={16}
+          strokeWidth={1.75}
+          className="text-muted group-hover:text-ink"
+          aria-hidden
         />
-      </div>
-      <div className="py-4">
-        <Button
-          title="Select File"
-          variant="text"
-          size="small"
-          type="button"
-          fullWidth
-          onClick={handleSelectFiles}
+        Select images
+      </button>
+      <button
+        type="button"
+        role="menuitem"
+        className={itemClass}
+        onClick={handleSelectFiles}
+      >
+        <FileUp
+          size={16}
+          strokeWidth={1.75}
+          className="text-muted group-hover:text-ink"
+          aria-hidden
         />
-      </div>
+        Select file
+      </button>
     </div>
   );
 };

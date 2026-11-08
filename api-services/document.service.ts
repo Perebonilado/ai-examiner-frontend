@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import { SimplifiedPagesModel } from "@/models/simplified-pages.model";
 import { API_BASE_URL, accessToken } from "../constants";
 import Cookies from "js-cookie";
 import {
@@ -192,7 +193,9 @@ export const DocumentService = createApi({
     getOriginalDocumentFile: build.query<DocumentFileModel, DocumentFileQuery>({
       query: ({ documentId }) => ({
         url: `/original-document-file/${documentId}`,
-        responseHandler: (response) => response.blob(),
+        // The PDF on success; the JSON error body otherwise (e.g. EASY_READ_LIMIT_REACHED).
+        responseHandler: (response) =>
+          response.ok ? response.blob() : response.json().catch(() => ({})),
       }),
       transformResponse: (blob: Blob) => {
         if (!blob) return {} as DocumentFileModel;
@@ -201,8 +204,10 @@ export const DocumentService = createApi({
           modifiedFile: URL.createObjectURL(blob),
         };
       },
+      // Easy Read shows its own error and its own "out of free minutes" prompt.
       extraOptions: {
         triggerLoading: false,
+        silentErrors: true,
       },
     }),
     getFileThumbnailDetails: build.query<
@@ -232,11 +237,29 @@ export const DocumentService = createApi({
         query: ({ documentId }) => ({
           url: `/modified-content/${documentId}`,
         }),
+        // Easy Read's fallback for backends without /simplified-pages; it shows its own errors.
         extraOptions: {
           triggerLoading: false,
+          silentErrors: true,
         },
       }
     ),
+    /** Easy Read: simplified pages as they're ready (asked again every couple of seconds). */
+    getSimplifiedPages: build.query<
+      SimplifiedPagesModel,
+      { documentId: string; priority: number; have: string }
+    >({
+      query: ({ documentId, priority, have }) => ({
+        url: `/simplified-pages/${documentId}`,
+        params: { priority, ...(have ? { have } : {}) },
+      }),
+      keepUnusedDataFor: 0,
+      // Asked every 2s: Easy Read handles errors itself (retries, then a message).
+      extraOptions: {
+        triggerLoading: false,
+        silentErrors: true,
+      },
+    }),
     getWebImageSearch: build.query<
       DocumentImageSearchModel[],
       DocumentImageSearchQuery
@@ -264,6 +287,8 @@ export const {
   useGetOriginalDocumentFileQuery,
   useGetFileThumbnailDetailsQuery,
   useGetModifiedContentQuery,
+  useLazyGetModifiedContentQuery,
+  useLazyGetSimplifiedPagesQuery,
   useGetWebImageSearchQuery,
   useGetSprintReadDocumentFileQuery
 } = DocumentService;

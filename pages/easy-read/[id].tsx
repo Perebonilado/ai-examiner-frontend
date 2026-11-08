@@ -1,12 +1,11 @@
 import { NextPage } from "next";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import AppLayoutV2 from "@/layouts/AppLayoutV2";
 import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import AppHead from "@/@shared/components/AppHead";
 import {
   useGetAllUserDocumentsQuery,
-  useGetModifiedContentQuery,
   useGetOriginalDocumentFileQuery,
 } from "@/api-services/document.service";
 import { useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
@@ -27,6 +26,7 @@ import TopicsSheet from "@/@modules/questions/EasyRead/TopicsSheet";
 import ReadingSettingsSheet from "@/@modules/questions/EasyRead/ReadingSettingsSheet";
 import useReadingSettings from "@/@modules/questions/EasyRead/useReadingSettings";
 import useEasyReadTimer from "@/@modules/questions/EasyRead/useEasyReadTimer";
+import useSimplifiedPages from "@/@modules/questions/EasyRead/useSimplifiedPages";
 import {
   EasyReadAllowanceBanner,
   EasyReadLimitDialog,
@@ -59,10 +59,11 @@ const EasyRead: NextPage = () => {
   // If the allowance can't be read, let the reader load: the server still blocks when time is up.
   const { data: allowance, isError: allowanceError } =
     useGetEasyReadAllowanceQuery(undefined, { refetchOnMountOrArgChange: true });
-  const allowanceKnown = !!allowance || allowanceError;
   const noTimeAtOpen =
     !!allowance?.limited && (allowance.remainingSeconds ?? 0) <= 0;
-  const skipContent = !documentId || !allowanceKnown || noTimeAtOpen;
+  // The original loads at once (alongside the allowance check): the server answers 403 when a
+  // free user has no time left, so nothing is downloaded or simplified for them.
+  const skipContent = !documentId || noTimeAtOpen;
 
   const {
     data: originalFileUrl,
@@ -71,13 +72,12 @@ const EasyRead: NextPage = () => {
     error: urlError,
     refetch: refetchUrl,
   } = useGetOriginalDocumentFileQuery({ documentId }, { skip: skipContent });
-  const {
-    data: modifiedContent,
-    isFetching: modifiedContentFetching,
-    isError: modifiedContentError,
-    error: modifiedContentErrorBody,
-    refetch: refetchModifiedContent,
-  } = useGetModifiedContentQuery({ documentId }, { skip: skipContent });
+  // Simplified pages arrive one by one while the original is already on screen.
+  // The page being read is simplified first.
+  const readingPageRef = useRef(1);
+  const handlePageChange = useCallback((page: number) => {
+    readingPageRef.current = page;
+  }, []);
 
   // Document title for the back link and the simplified pages' running folio.
   const titleInView = useSelector(
@@ -147,15 +147,26 @@ const EasyRead: NextPage = () => {
   const [originalScale, setOriginalScale] = useState(1);
 
   const backHref = `/questions/view-questions/${documentId}`;
-  const isLoading = !allowanceKnown || urlFetching || modifiedContentFetching;
-  const contentReady =
-    !isLoading && !!originalFileUrl?.modifiedFile && !!modifiedContent?.content;
+  const isLoading = urlFetching;
+  const contentReady = !isLoading && !!originalFileUrl?.modifiedFile;
 
   // Counts down while the reader shows a document; the server's figure wins on every report.
   const easyReadTimer = useEasyReadTimer({ allowance, running: contentReady });
-  const blockedByServer =
-    isEasyReadLimitError(urlError) || isEasyReadLimitError(modifiedContentErrorBody);
+  const [simplifiedBlocked, setSimplifiedBlocked] = useState(false);
+  const blockedByServer = isEasyReadLimitError(urlError) || simplifiedBlocked;
   const outOfTime = noTimeAtOpen || easyReadTimer.outOfTime || blockedByServer;
+  const {
+    simplified,
+    limitReached: simplifiedLimitReached,
+    retry: retrySimplified,
+  } = useSimplifiedPages({
+    documentId,
+    enabled: !skipContent && !outOfTime,
+    priorityRef: readingPageRef,
+  });
+  useEffect(() => {
+    if (simplifiedLimitReached) setSimplifiedBlocked(true);
+  }, [simplifiedLimitReached]);
   const [isAllowanceBannerOpen, setIsAllowanceBannerOpen] = useState(true);
   const showBanner =
     easyReadTimer.limited && !outOfTime && isAllowanceBannerOpen && easyReadTimer.remaining !== null;
@@ -164,8 +175,7 @@ const EasyRead: NextPage = () => {
       <EasyReadTimePill remaining={easyReadTimer.remaining} />
     ) : null;
 
-  const hasError =
-    !isLoading && !outOfTime && (urlFetchError || modifiedContentError);
+  const hasError = !isLoading && !outOfTime && urlFetchError;
 
   return (
     <>
@@ -217,7 +227,7 @@ const EasyRead: NextPage = () => {
             </div>
           )}
 
-          {contentReady && originalFileUrl && modifiedContent && (
+          {contentReady && originalFileUrl && (
             // Time up mid-read: the page stays behind the upgrade prompt, blurred and inert.
             <div
               className={cn("flex min-h-0 flex-1 flex-col", {
@@ -227,7 +237,9 @@ const EasyRead: NextPage = () => {
             >
               <PDFReader
                 originalFileUrl={originalFileUrl.modifiedFile}
-                modifiedContent={modifiedContent}
+                simplified={simplified}
+                onRetrySimplified={retrySimplified}
+                onPageChange={handlePageChange}
                 mode={viewMode}
                 scrollMode={readingSettings.scrollMode}
                 textSize={readingSettings.textSize}
@@ -255,13 +267,7 @@ const EasyRead: NextPage = () => {
                 title="Retry"
                 size="small"
                 onClick={() => {
-                  if (urlFetchError) {
-                    refetchUrl();
-                  }
-
-                  if (modifiedContentError) {
-                    refetchModifiedContent();
-                  }
+                  refetchUrl();
                 }}
               />
             </div>

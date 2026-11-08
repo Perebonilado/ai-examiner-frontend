@@ -27,9 +27,15 @@ export const EasyReadService = createApi({
       query: () => ({ url: "/allowance" }),
       providesTags: ["allowance"],
       keepUnusedDataFor: 0,
+      // A background check: no full-screen loader, no error toast. If it fails, Easy Read still
+      // opens and the server enforces the limit.
+      extraOptions: { triggerLoading: false, silentErrors: true },
     }),
     recordEasyReadUsage: build.mutation<EasyReadAllowanceModel, { seconds: number }>({
       query: (body) => ({ url: "/usage", method: "POST", body }),
+      // Sent every 15s while reading: never show the loader (it would also close open dialogs)
+      // or an error toast.
+      extraOptions: { triggerLoading: false, silentErrors: true },
       // The response is the updated allowance: write it straight into the cached query.
       async onQueryStarted(_, { dispatch, queryFulfilled }) {
         try {

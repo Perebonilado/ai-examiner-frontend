@@ -14,7 +14,7 @@ import cn from "classnames";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
-import { DocumentContentModel } from "@/models/document.model";
+import { SimplifiedState } from "./useSimplifiedPages";
 import { HighlightableText } from "@/@shared/components/HighlightableText";
 import TopicsContainer from "./TopicsContainer";
 import PageThumbnails, { PageThumbnailsTab } from "./PageThumbnails";
@@ -29,7 +29,12 @@ pdfjs.GlobalWorkerOptions.workerSrc = "/pdf.worker.min.mjs";
 
 interface Props {
   originalFileUrl: string;
-  modifiedContent: DocumentContentModel;
+  /** Simplified pages as they arrive (placeholders until each page is done). */
+  simplified: SimplifiedState;
+  /** Ask for the simplified pages again after an error. */
+  onRetrySimplified?: () => void;
+  /** Reports the page being read, so it's simplified first. */
+  onPageChange?: (page: number) => void;
   /** Effective view (side by side only arrives on wide screens). */
   mode: ReaderMode;
   /** Scroll through every page, or show one page at a time. */
@@ -61,10 +66,39 @@ const PAGE_GAP = 20;
 
 type Pane = "original" | "simple";
 
-const PaneHead: FC<{ title: string; meta: string }> = ({ title, meta }) => (
+/** Simplified pane before the page list is known (or when it couldn't be loaded). */
+const SimplifiedStatusCard: FC<{
+  status: SimplifiedState["status"];
+  onRetry?: () => void;
+}> = ({ status, onRetry }) => (
+  <div className="mx-auto mt-2 w-full max-w-[calc(70ch+104px)] rounded-[3px] bg-surface px-6 py-16 text-center shadow-page">
+    {status === "error" ? (
+      <>
+        <p className="text-sm text-subtle">
+          The simplified pages couldn&apos;t be loaded.
+        </p>
+        {onRetry && (
+          <button
+            type="button"
+            onClick={onRetry}
+            className="mt-3 text-sm font-semibold text-accent hover:text-accent-900"
+          >
+            Try again
+          </button>
+        )}
+      </>
+    ) : (
+      <p className="text-sm text-subtle motion-safe:animate-pulse">
+        Getting the simplified pages ready…
+      </p>
+    )}
+  </div>
+);
+
+const PaneHead: FC<{ title: string; meta?: string }> = ({ title, meta }) => (
   <div className="sticky top-0 z-[4] -mx-[18px] flex h-10 items-center justify-between border-b border-line bg-sunken px-[18px] text-[12.5px] text-muted">
     <b className="font-semibold text-ink">{title}</b>
-    <span className="truncate pl-3 tabular-nums">{meta}</span>
+    {meta && <span className="truncate pl-3 tabular-nums">{meta}</span>}
   </div>
 );
 
@@ -86,7 +120,9 @@ const pageIndexAt = (
 
 const PDFReader: FC<Props> = ({
   originalFileUrl,
-  modifiedContent,
+  simplified,
+  onRetrySimplified,
+  onPageChange,
   mode,
   scrollMode,
   textSize,
@@ -127,7 +163,7 @@ const PDFReader: FC<Props> = ({
     simple: null,
   });
 
-  const simplePages = modifiedContent.content;
+  const simplePages = simplified.pages;
   const pageCount = primary === "simple" ? simplePages.length : totalPages;
 
   /* ---------- document ---------- */
@@ -241,6 +277,10 @@ const PDFReader: FC<Props> = ({
     originalScrollRef.current?.scrollTo({ top: 0 });
     simpleScrollRef.current?.scrollTo({ top: 0 });
   };
+
+  useEffect(() => {
+    onPageChange?.(pageNumber);
+  }, [pageNumber, onPageChange]);
 
   // One page layout: every turned page starts at its top.
   useLayoutEffect(() => {
@@ -520,18 +560,17 @@ const PDFReader: FC<Props> = ({
           )}
         >
           {isSplit && (
-            <PaneHead
-              title="Simplified"
-              meta={
-                single
-                  ? `Page ${pageNumber}`
-                  : `Page ${pageNumber} · scrolls with the original`
-              }
+            <PaneHead title="Simplified" />
+          )}
+          {!simplePages.length && (
+            <SimplifiedStatusCard
+              status={simplified.status}
+              onRetry={onRetrySimplified}
             />
           )}
           <HighlightableText>
             <div className={cn({ "pt-4": isSplit })}>
-              {simplePages.map((html, idx) =>
+              {simplePages.map((page, idx) =>
                 single &&
                 idx !== Math.min(pageNumber, simplePages.length) - 1 ? null : (
                   <SimplifiedPage
@@ -540,7 +579,8 @@ const PDFReader: FC<Props> = ({
                       simplePageRefs.current[idx] = el;
                     }}
                     pageNumber={idx + 1}
-                    html={html}
+                    html={page.html}
+                    status={page.status}
                     compact={isSplit}
                     turner={
                       single && !isSplit

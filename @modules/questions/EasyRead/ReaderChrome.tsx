@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import LanguageChangeBar from "@/@shared/components/AppLayout/LanguageChangeBar";
@@ -16,6 +16,8 @@ interface Props {
     update: (patch: Partial<ReadingSettings>) => void;
     originalScale?: number;
   };
+  /** Free plan: Easy Read time left this month. */
+  timePill?: ReactNode;
 }
 
 /** Desktop reader bar: back to the document, the view switch, reading settings and the language picker. */
@@ -25,6 +27,7 @@ const ReaderChrome: FC<Props> = ({
   mode,
   onModeChange,
   settings,
+  timePill,
 }) => {
   const backLabel = documentTitle ? `Back to ${documentTitle}` : "Back to the document";
 
@@ -52,6 +55,7 @@ const ReaderChrome: FC<Props> = ({
       />
 
       <div className="flex items-center justify-end gap-2">
+        {timePill}
         <ReadingSettingsButton {...settings} />
         <LanguageChangeBar />
       </div>

@@ -111,6 +111,10 @@ const AfricanPlanCard: FC<Props> = ({
                 <p>
                   Max file size <span className="font-bold">300mb</span>
                 </p>
+                <p>
+                  <span className="font-bold">10 minutes</span> of Easy Read a
+                  month
+                </p>
               </>
             )}
 

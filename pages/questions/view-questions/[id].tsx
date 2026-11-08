@@ -35,6 +35,9 @@ import dynamic from "next/dynamic";
 import ViewFileReaderThumbnail from "@/@modules/questions/ViewFileReaderThumbnail";
 import LoadingReader from "@/@modules/questions/EasyRead/LoadingReader";
 import { BookOpenText, Plus } from "lucide-react";
+import { useGetEasyReadAllowanceQuery } from "@/api-services/easy-read.service";
+import { EasyReadLimitDialog } from "@/@modules/questions/EasyRead/EasyReadAllowance";
+import { formatMinutesLeft } from "@/@modules/questions/EasyRead/useEasyReadTimer";
 import { DocumentContentModel } from "@/models/document.model";
 import NewTestForm from "@/@modules/questions/NewTestForm";
 import { openNewTestForm } from "@/features/newTestSlice";
@@ -156,6 +159,14 @@ const ViewQuestions: NextPage = () => {
   );
 
 
+  // Free plan: 10 minutes of Easy Read a month; the button shows what's left.
+  const { data: easyReadAllowance } = useGetEasyReadAllowanceQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+  });
+  const easyReadOutOfTime =
+    !!easyReadAllowance?.limited &&
+    (easyReadAllowance.remainingSeconds ?? 0) <= 0;
+
   const { data: thumbnail } = useGetFileThumbnailDetailsQuery(
     { documentId },
     { skip: !documentId }
@@ -209,6 +220,22 @@ const ViewQuestions: NextPage = () => {
             {thumbnail?.thumbnailUrl.length ? (
               <Button
                 title="Easy Read"
+                endicon={
+                  easyReadAllowance?.limited ? (
+                    <span className="text-[12.5px] font-medium text-muted">
+                      {easyReadOutOfTime
+                        ? "Upgrade"
+                        : `${formatMinutesLeft(easyReadAllowance.remainingSeconds ?? 0)} free`}
+                    </span>
+                  ) : undefined
+                }
+                aria-label={
+                  easyReadAllowance?.limited
+                    ? `Easy Read, ${formatMinutesLeft(
+                        easyReadAllowance.remainingSeconds ?? 0
+                      )} of free reading left this month`
+                    : undefined
+                }
                 starticon={
                   <BookOpenText
                     size={18}
@@ -220,6 +247,16 @@ const ViewQuestions: NextPage = () => {
                 variant="outlined"
                 size="medium"
                 onClick={() => {
+                  if (easyReadOutOfTime) {
+                    setModalContent(
+                      <EasyReadLimitDialog
+                        resetsOn={easyReadAllowance?.resetsOn}
+                        secondaryLabel="Not now"
+                        onSecondary={() => setModalContent(null)}
+                      />
+                    );
+                    return;
+                  }
                   router.push(`/easy-read/${documentId}`);
                 }}
               />

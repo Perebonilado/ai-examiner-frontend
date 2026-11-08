@@ -26,6 +26,15 @@ import ReaderDock from "@/@modules/questions/EasyRead/ReaderDock";
 import TopicsSheet from "@/@modules/questions/EasyRead/TopicsSheet";
 import ReadingSettingsSheet from "@/@modules/questions/EasyRead/ReadingSettingsSheet";
 import useReadingSettings from "@/@modules/questions/EasyRead/useReadingSettings";
+import useEasyReadTimer from "@/@modules/questions/EasyRead/useEasyReadTimer";
+import {
+  EasyReadAllowanceBanner,
+  EasyReadLimitDialog,
+  EasyReadTimePill,
+} from "@/@modules/questions/EasyRead/EasyReadAllowance";
+import { useGetEasyReadAllowanceQuery } from "@/api-services/easy-read.service";
+import { isEasyReadLimitError } from "@/models/easy-read.model";
+import cn from "classnames";
 import useMediaQuery from "@/@modules/questions/EasyRead/useMediaQuery";
 import { ReaderMode } from "@/@modules/questions/EasyRead/types";
 import { hasSeenEasyReadHowToUseModal } from "@/constants";
@@ -46,28 +55,29 @@ const EasyRead: NextPage = () => {
       setdocumentId(params.id as string);
     }
   }, [params]);
-  const permissions = useSelector(
-    (state: RootState) => state.permissionsState.permissions
-  );
-
-  useEffect(()=>{
-    if (!!permissions && permissions.maxGenerationReached && documentId) {
-      router.push(`/questions/view-questions/${documentId}?maxEasyRead=true`)
-    }
-  },[permissions.maxGenerationReached, documentId])
+  // Free plan: 10 minutes of Easy Read a month (the server counts and enforces it).
+  // If the allowance can't be read, let the reader load: the server still blocks when time is up.
+  const { data: allowance, isError: allowanceError } =
+    useGetEasyReadAllowanceQuery(undefined, { refetchOnMountOrArgChange: true });
+  const allowanceKnown = !!allowance || allowanceError;
+  const noTimeAtOpen =
+    !!allowance?.limited && (allowance.remainingSeconds ?? 0) <= 0;
+  const skipContent = !documentId || !allowanceKnown || noTimeAtOpen;
 
   const {
     data: originalFileUrl,
     isFetching: urlFetching,
     isError: urlFetchError,
+    error: urlError,
     refetch: refetchUrl,
-  } = useGetOriginalDocumentFileQuery({ documentId }, { skip: !documentId });
+  } = useGetOriginalDocumentFileQuery({ documentId }, { skip: skipContent });
   const {
     data: modifiedContent,
     isFetching: modifiedContentFetching,
     isError: modifiedContentError,
+    error: modifiedContentErrorBody,
     refetch: refetchModifiedContent,
-  } = useGetModifiedContentQuery({ documentId }, { skip: !documentId });
+  } = useGetModifiedContentQuery({ documentId }, { skip: skipContent });
 
   // Document title for the back link and the simplified pages' running folio.
   const titleInView = useSelector(
@@ -137,12 +147,38 @@ const EasyRead: NextPage = () => {
   const [originalScale, setOriginalScale] = useState(1);
 
   const backHref = `/questions/view-questions/${documentId}`;
-  const isLoading = urlFetching || modifiedContentFetching;
-  const hasError = !isLoading && (urlFetchError || modifiedContentError);
+  const isLoading = !allowanceKnown || urlFetching || modifiedContentFetching;
+  const contentReady =
+    !isLoading && !!originalFileUrl?.modifiedFile && !!modifiedContent?.content;
+
+  // Counts down while the reader shows a document; the server's figure wins on every report.
+  const easyReadTimer = useEasyReadTimer({ allowance, running: contentReady });
+  const blockedByServer =
+    isEasyReadLimitError(urlError) || isEasyReadLimitError(modifiedContentErrorBody);
+  const outOfTime = noTimeAtOpen || easyReadTimer.outOfTime || blockedByServer;
+  const [isAllowanceBannerOpen, setIsAllowanceBannerOpen] = useState(true);
+  const showBanner =
+    easyReadTimer.limited && !outOfTime && isAllowanceBannerOpen && easyReadTimer.remaining !== null;
+  const timePill =
+    easyReadTimer.limited && !outOfTime && easyReadTimer.remaining !== null ? (
+      <EasyReadTimePill remaining={easyReadTimer.remaining} />
+    ) : null;
+
+  const hasError =
+    !isLoading && !outOfTime && (urlFetchError || modifiedContentError);
 
   return (
     <>
-      {isEasyReadHighlightModal && (
+      {outOfTime && (
+        <Modal>
+          <EasyReadLimitDialog
+            resetsOn={allowance?.resetsOn}
+            secondaryLabel="Back to document"
+            onSecondary={() => router.push(backHref)}
+          />
+        </Modal>
+      )}
+      {isEasyReadHighlightModal && !outOfTime && (
         <Modal>
           <EasyReadHighlightModal
             handleClose={() => {
@@ -164,11 +200,31 @@ const EasyRead: NextPage = () => {
             mode={viewMode}
             onModeChange={setMode}
             settings={{ ...readingSettings, originalScale }}
+            timePill={timePill}
           />
 
-          {!isLoading &&
-            originalFileUrl?.modifiedFile &&
-            modifiedContent?.content && (
+          {showBanner && (
+            <EasyReadAllowanceBanner
+              remaining={easyReadTimer.remaining ?? 0}
+              onDismiss={() => setIsAllowanceBannerOpen(false)}
+            />
+          )}
+
+          {/* Phones have no reader bar: the time left floats at the top once the banner is closed. */}
+          {timePill && !showBanner && (
+            <div className="pointer-events-none fixed right-3 top-3 z-30 md:hidden">
+              {timePill}
+            </div>
+          )}
+
+          {contentReady && originalFileUrl && modifiedContent && (
+            // Time up mid-read: the page stays behind the upgrade prompt, blurred and inert.
+            <div
+              className={cn("flex min-h-0 flex-1 flex-col", {
+                "pointer-events-none select-none blur-[6px]": outOfTime,
+              })}
+              aria-hidden={outOfTime || undefined}
+            >
               <PDFReader
                 originalFileUrl={originalFileUrl.modifiedFile}
                 modifiedContent={modifiedContent}
@@ -183,9 +239,10 @@ const EasyRead: NextPage = () => {
                   readingSettings.update({ topicsOpen: open })
                 }
               />
-            )}
+            </div>
+          )}
 
-          {isLoading ? (
+          {isLoading && !outOfTime ? (
             <div className="flex flex-1 items-center justify-center px-4 pb-24">
               <LoadingReader />
             </div>

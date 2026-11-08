@@ -7,6 +7,9 @@ import React, {
   useState,
 } from "react";
 import { pdfjs, Document } from "react-pdf";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/config/redux-config";
+import { addPageReader, removePageReader } from "@/features/documentChatSlice";
 // react-pdf ships its own pdfjs-dist; use its document type.
 import type { DocumentCallback as PDFDocumentProxy } from "react-pdf/dist/esm/shared/types.js";
 import cn from "classnames";
@@ -272,6 +275,26 @@ const PDFReader: FC<Props> = ({
     // One page layout: the page swaps in and the effect below returns to its top.
     if (!single) scrollToPage(primary, n, "smooth");
   };
+
+  // Page citations in the chat ("p. 12") turn this reader to that page.
+  const dispatch = useDispatch();
+  const requestedPage = useSelector(
+    (state: RootState) => state.documentChatReducer.requestedPage
+  );
+  // A request made before this reader opened isn't for it.
+  const handledRequestRef = useRef(requestedPage?.at);
+  useEffect(() => {
+    dispatch(addPageReader());
+    return () => {
+      dispatch(removePageReader());
+    };
+  }, [dispatch]);
+  useEffect(() => {
+    if (!requestedPage || requestedPage.at === handledRequestRef.current) return;
+    handledRequestRef.current = requestedPage.at;
+    if (pageCount > 0) goToPage(Math.min(Math.max(1, requestedPage.page), pageCount));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [requestedPage]);
 
   const scrollPanesToTop = () => {
     originalScrollRef.current?.scrollTo({ top: 0 });

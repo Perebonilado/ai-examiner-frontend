@@ -1,12 +1,11 @@
-import React, { FC, useEffect, useRef, useState } from "react";
-import { ArrowUp, Maximize2, Minimize2, X } from "lucide-react";
+import React, { FC, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { ArrowUp, Maximize2, Minimize2, Square, X } from "lucide-react";
 import UserMessage from "./UserMessage";
 import SystemMessage from "./SystemMessage";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/config/redux-config";
 import cn from "classnames";
 import { setIsChatOpen } from "@/features/documentChatSlice";
-import MessageLoader from "./MessageLoader";
 import NoMessageInfo from "./NoMessageInfo";
 import RetrySendingMessageButton from "./RetrySendingMessageButton";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
@@ -15,19 +14,25 @@ import { HighlightableText } from "@/@shared/components/HighlightableText";
 interface Props {
   handleFetchOlderMessages: () => void;
   sendMessage: (message: string) => void;
-  isAwaitingSystemResponse: boolean;
-  isSendingMessageError: boolean;
-  handleRetrySendingMessage: () => void;
+  /** A reply is being written (Send turns into Stop). */
+  isReplying: boolean;
+  onStop: () => void;
+  onRetry: (replyId: string) => void;
+  onPageClick: (page: number) => void;
 }
+
+/** Within this distance of the bottom, the list follows a reply as it's written. */
+const STICK_DISTANCE = 80;
 
 const headerButton =
   "grid place-items-center w-[34px] h-[34px] max-md:w-10 max-md:h-10 shrink-0 rounded-lg text-muted hover:bg-hover hover:text-ink transition-colors";
 
 const DocumentChatMessagesContainer: FC<Props> = ({
   handleFetchOlderMessages,
-  handleRetrySendingMessage,
-  isAwaitingSystemResponse,
-  isSendingMessageError,
+  isReplying,
+  onStop,
+  onRetry,
+  onPageClick,
   sendMessage,
 }) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -40,9 +45,10 @@ const DocumentChatMessagesContainer: FC<Props> = ({
     }
   };
 
-  const { isChatOpen, messages, documentTitleInView } = useSelector(
+  const { isChatOpen, messages, documentTitleInView, pageReaders } = useSelector(
     (state: RootState) => state.documentChatReducer
   );
+  const canJumpToPage = pageReaders > 0;
   const [isExpanded, setIsExpanded] = useState(false);
   const documentTitle = capitalizeFirstLetterOfEachWord(documentTitleInView);
 
@@ -69,58 +75,79 @@ const DocumentChatMessagesContainer: FC<Props> = ({
   const [message, setMessage] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  /** Follow the newest message (off once the student scrolls up to read). */
+  const stickRef = useRef(true);
+  const previousRef = useRef({ firstId: "", lastId: "", count: 0, height: 0 });
+  const contentRef = useRef<HTMLDivElement>(null);
 
+  const scrollToBottom = () => {
+    const el = messagesContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
+  };
+
+  // Opening the chat shows the newest messages.
   useEffect(() => {
-    if (isChatOpen)
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [isChatOpen, JSON.stringify(messages)]);
+    if (!isChatOpen) return;
+    stickRef.current = true;
+    scrollToBottom();
+  }, [isChatOpen]);
 
-  const [showLoader, setShowLoader] = useState(false);
-
-  let timer: NodeJS.Timeout;
-
-  useEffect(() => {
-    if (isAwaitingSystemResponse) {
-      timer = setTimeout(() => setShowLoader(true), 550);
-    } else {
-      clearTimeout(timer);
-      setShowLoader(false);
+  useLayoutEffect(() => {
+    const el = messagesContainerRef.current;
+    if (!el) return;
+    const previous = previousRef.current;
+    const firstId = messages[0]?.id ?? "";
+    const last = messages[messages.length - 1];
+    // A new question (typed, highlighted or "Not sure?") brings the conversation back into view.
+    // It arrives together with its reply, so look at everything added since last time.
+    const seen = messages.findIndex((m) => m.id === previous.lastId);
+    if (seen !== -1 && messages.slice(seen + 1).some((m) => m.sender === "user")) {
+      stickRef.current = true;
     }
+    const olderAdded =
+      previous.count > 0 && firstId !== previous.firstId && messages.length > previous.count;
+    if (olderAdded && !stickRef.current) {
+      // Older messages came in above: keep the reader where they were.
+      el.scrollTop += el.scrollHeight - previous.height;
+    } else if (stickRef.current) {
+      scrollToBottom();
+    }
+    previousRef.current = {
+      firstId,
+      lastId: last?.id ?? "",
+      count: messages.length,
+      height: el.scrollHeight,
+    };
+  }, [messages]);
 
-    return () => clearTimeout(timer);
-  }, [isAwaitingSystemResponse]);
+  // Replies change height after they render (folding, a panel resize): stay at the bottom.
+  const hasMessages = messages.length > 0;
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(() => {
+      if (stickRef.current) scrollToBottom();
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasMessages]);
 
   const handleSend = (text: string) => {
+    stickRef.current = true;
     sendMessage(text);
     setMessage("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
-
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 650);
   };
-
-  const getFooterElement = () => {
-    if (showLoader) {
-      return <MessageLoader />;
-    }
-
-    if (isSendingMessageError && !isAwaitingSystemResponse) {
-      return (
-        <RetrySendingMessageButton handleRetry={handleRetrySendingMessage} />
-      );
-    }
-
-    return null;
-  };
-
-  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = messagesContainerRef.current;
     if (!container) return;
 
     const handleScroll = () => {
+      stickRef.current =
+        container.scrollHeight - container.scrollTop - container.clientHeight <
+        STICK_DISTANCE;
       if (container.scrollTop <= 0) {
         handleFetchOlderMessages();
       }
@@ -132,7 +159,13 @@ const DocumentChatMessagesContainer: FC<Props> = ({
     };
   }, [handleFetchOlderMessages]);
 
-  const canSend = message.trim().length > 0 && !isAwaitingSystemResponse;
+  const handlePageClick = (page: number) => {
+    // The expanded panel covers the reader.
+    setIsExpanded(false);
+    onPageClick(page);
+  };
+
+  const canSend = message.trim().length > 0 && !isReplying;
 
   return (
     <>
@@ -191,35 +224,45 @@ const DocumentChatMessagesContainer: FC<Props> = ({
         >
           {messages.length ? (
             <div
+              ref={contentRef}
               className={cn("w-full px-[18px] pt-2 pb-4", {
                 "max-w-[760px] mx-auto": isExpanded,
               })}
             >
               <HighlightableText>
                 <div className="flex flex-col gap-5">
-                  {[...messages].map((message, idx) => {
+                  {messages.map((message) => {
                     if (message.sender === "user") {
                       return (
                         <UserMessage
                           message={message.message}
                           image={message.image}
-                          key={idx}
+                          key={message.id}
+                        />
+                      );
+                    }
+                    // A reply that failed before writing anything: the error sits under the question.
+                    if (message.status === "error" && !message.message.trim()) {
+                      return (
+                        <RetrySendingMessageButton
+                          key={message.id}
+                          handleRetry={() => onRetry(message.id)}
                         />
                       );
                     }
                     return (
                       <SystemMessage
+                        key={message.id}
                         message={message.message}
-                        key={idx}
-                        scrollToBottom={() => {
-                          messagesEndRef.current?.scrollIntoView({
-                            behavior: "smooth",
-                          });
-                        }}
+                        status={message.status}
+                        phase={message.phase}
+                        pages={message.pages}
+                        canJumpToPage={canJumpToPage}
+                        onPageClick={handlePageClick}
+                        onRetry={() => onRetry(message.id)}
                       />
                     );
                   })}
-                  {getFooterElement()}
                 </div>
               </HighlightableText>
             </div>
@@ -251,20 +294,33 @@ const DocumentChatMessagesContainer: FC<Props> = ({
               rows={1}
               placeholder="Ask anything ..."
             />
-            <button
-              aria-label="Send"
-              disabled={!canSend}
-              onClick={() => handleSend(message)}
-              className={cn(
-                "grid place-items-center w-9 h-9 shrink-0 rounded-full text-white transition-colors",
-                {
-                  "bg-brand hover:bg-brand-hover": canSend,
-                  "bg-control cursor-not-allowed": !canSend,
-                }
-              )}
-            >
-              <ArrowUp size={18} strokeWidth={2.25} />
-            </button>
+            {isReplying ? (
+              <button
+                type="button"
+                aria-label="Stop the reply"
+                title="Stop"
+                onClick={onStop}
+                className="grid place-items-center w-9 h-9 shrink-0 rounded-full bg-ink text-white hover:opacity-90 transition-opacity"
+              >
+                <Square size={12} strokeWidth={0} fill="currentColor" aria-hidden />
+              </button>
+            ) : (
+              <button
+                type="button"
+                aria-label="Send"
+                disabled={!canSend}
+                onClick={() => handleSend(message)}
+                className={cn(
+                  "grid place-items-center w-9 h-9 shrink-0 rounded-full text-white transition-colors",
+                  {
+                    "bg-brand hover:bg-brand-hover": canSend,
+                    "bg-control cursor-not-allowed": !canSend,
+                  }
+                )}
+              >
+                <ArrowUp size={18} strokeWidth={2.25} />
+              </button>
+            )}
           </div>
         </div>
       </section>

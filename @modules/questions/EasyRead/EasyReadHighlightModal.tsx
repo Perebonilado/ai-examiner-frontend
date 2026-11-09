@@ -45,7 +45,7 @@ const EasyReadHighlightModal: FC<Props> = ({ handleClose }) => {
             </span>{" "}
             while it contracts.
           </p>
-          <div className="mt-2.5 flex w-full gap-0.5 rounded-[10px] bg-ink p-1 sm:inline-flex sm:w-auto">
+          <div className="mt-2.5 flex w-full gap-0.5 rounded-[10px] bg-inverse p-1 sm:inline-flex sm:w-auto">
             {BAR_ACTIONS.map(({ label, Icon }, i) => (
               <span
                 key={label}

@@ -37,8 +37,8 @@ const PickerField: FC<Props> = ({
         onClick={onClick}
         className={cn(
           "flex items-center gap-2.5 w-full h-11 pl-[13px] pr-3 rounded-[10px] border bg-surface shadow-xs text-sm text-left transition-[border-color,box-shadow]",
-          "hover:border-[#c9c8d0] focus-visible:outline-none focus-visible:border-accent-bright focus-visible:ring-4 focus-visible:ring-[rgba(124,58,237,0.14)]",
-          isOpen ? "border-accent-bright ring-4 ring-[rgba(124,58,237,0.14)]" : "border-control"
+          "hover:border-control-strong focus-visible:outline-none focus-visible:border-accent-bright focus-visible:ring-4 focus-visible:ring-[rgba(124,58,237,0.14)]",
+          isOpen ? "border-accent-bright ring-4 ring-[rgba(124,58,237,0.14)]" : "border-control-strong"
         )}
       >
         <Icon

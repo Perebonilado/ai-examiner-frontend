@@ -46,9 +46,9 @@ const MCQOption: FC<Props> = ({
     {
       ["bg-sunken text-subtle group-hover:bg-accent-100 group-hover:text-accent-900"]:
         !submitted && !isChecked,
-      ["bg-accent text-white"]: isSelected,
-      ["bg-success text-white"]: isRight,
-      ["bg-danger text-white"]: isWrong,
+      ["bg-accent text-on-accent"]: isSelected,
+      ["bg-success text-on-success"]: isRight,
+      ["bg-danger text-on-danger"]: isWrong,
       ["bg-sunken text-subtle"]: isDim,
     }
   );

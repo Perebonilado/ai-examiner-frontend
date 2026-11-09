@@ -77,7 +77,7 @@ export const toSentenceCase = (text?: string) =>
 
 /* Phones: the primary action sticks to the bottom of the screen. */
 const submitBarClass =
-  "mt-7 max-md:mt-auto max-md:sticky max-md:bottom-0 max-md:z-[4] max-md:-mx-4 max-md:-mb-12 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:bg-white/95 max-md:backdrop-blur-sm max-md:border-t max-md:border-line";
+  "mt-7 max-md:mt-auto max-md:sticky max-md:bottom-0 max-md:z-[4] max-md:-mx-4 max-md:-mb-12 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:bg-surface-glass max-md:backdrop-blur-sm max-md:border-t max-md:border-line";
 
 const UploadFileBox = dynamic(
   () => import("@/@shared/components/UploadFileBox"),

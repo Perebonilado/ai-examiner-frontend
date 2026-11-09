@@ -29,7 +29,13 @@ const UserLogoutBox: FC<Props> = ({ collapsed = false }) => {
   };
 
   return (
-    <div className="relative mt-auto w-full pt-3" ref={popUpContainer}>
+    <div
+      className="relative mt-auto w-full pt-3"
+      ref={popUpContainer}
+      onKeyDown={(e) => {
+        if (e.key === "Escape") setIsPopUp(false);
+      }}
+    >
       <UserManagementPopUp
         {...data}
         isOpen={isPopUp}
@@ -50,7 +56,7 @@ const UserLogoutBox: FC<Props> = ({ collapsed = false }) => {
       >
         <button
           type="button"
-          aria-haspopup="menu"
+          aria-haspopup="dialog"
           aria-expanded={isPopUp}
           title="Account"
           onClick={() => setIsPopUp(!isPopUp)}

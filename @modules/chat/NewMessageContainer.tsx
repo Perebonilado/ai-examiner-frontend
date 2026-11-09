@@ -62,7 +62,7 @@ const NewMessageContainer: FC<Props> = ({
   const isOff = isDisabled || chatDisabled;
 
   return (
-    <div className="flex items-end gap-2 p-1.5 pl-4 rounded-[24px] border border-control bg-surface shadow-[0_1px_2px_rgba(16,12,40,0.05),0_8px_20px_-10px_rgba(16,12,40,0.18)] focus-within:border-[#c4c3cb] transition-colors">
+    <div className="flex items-end gap-2 p-1.5 pl-4 rounded-[24px] border border-control-strong bg-surface shadow-[0_1px_2px_rgba(16,12,40,0.05),0_8px_20px_-10px_rgba(16,12,40,0.18)] focus-within:border-[#c4c3cb] transition-colors">
       <textarea
         ref={textareaRef}
         value={value}

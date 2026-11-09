@@ -1,4 +1,5 @@
 import Container from "@/@shared/ui/Container";
+import AppHead from "@/@shared/components/AppHead";
 import WebLayout from "@/layouts/WebLayout";
 import { NextPage } from "next";
 import React from "react";
@@ -6,6 +7,7 @@ import React from "react";
 const PrivacyPolicy: NextPage = () => {
   return (
     <WebLayout>
+      <AppHead title="Privacy policy" />
       <Container className="pb-16 pt-8">
         <div
           dangerouslySetInnerHTML={{
@@ -41,6 +43,7 @@ font-family: Arial !important;
         }
 [data-custom-class='link'], [data-custom-class='link'] * {
           color: #3030F1 !important;
+          text-decoration: underline !important;
 font-size: 14px !important;
 font-family: Arial !important;
 word-break: break-word !important;

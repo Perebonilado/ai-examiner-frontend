@@ -21,7 +21,7 @@ const primary =
 const secondary =
   "aix-glass-button inline-flex h-9 items-center justify-center rounded-full px-4 text-[13px] font-semibold text-ink transition-colors";
 const quiet =
-  "inline-flex h-8 items-center rounded-full px-2.5 text-[12.5px] font-semibold text-subtle transition-colors hover:bg-white/60 hover:text-ink";
+  "inline-flex h-8 items-center rounded-full px-2.5 text-[12.5px] font-semibold text-subtle transition-colors hover:bg-white/60 hover:text-ink dark:hover:bg-white/10";
 const focus =
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
@@ -97,7 +97,7 @@ const TopicsSelectionBar: FC<Props> = ({
             {label}
           </span>
           {listButtons}
-          <span aria-hidden="true" className="mx-1.5 h-5 w-px bg-ink/10" />
+          <span aria-hidden="true" className="mx-1.5 h-5 w-px bg-line" />
           <button type="button" onClick={onNewTest} className={cn(primary, focus)}>
             New test
           </button>

@@ -37,7 +37,7 @@ const ViewQuestionCard: FC<Props> = ({
   const [isNew, setIsNew] = useState(false);
 
   const rootClassName = cn(
-    `w-full cursor-pointer flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-white rounded-xl drop-shadow-sm border border-gray-300 px-4`,
+    `w-full cursor-pointer flex flex-col py-4 gap-4 max-w-[380px] min-h-[180px] bg-surface rounded-xl drop-shadow-sm border border-edge px-4`,
     {
       [`${styles["animate-border"]} animate-bounce`]: isNew,
     }
@@ -138,7 +138,7 @@ const ViewQuestionCard: FC<Props> = ({
             : `${totalAnswered} Questions`}
         </p>
         <div className="flex items-center gap-3 mt-4 min-h-[30px]">
-          <p className="text-xs text-[#8E8E8E]">
+          <p className="text-xs text-muted">
             {moment.utc(createdAt).local().format("dddd, MMMM D, YYYY h:mma")}
           </p>
           {topics.length ? (
@@ -154,7 +154,7 @@ const ViewQuestionCard: FC<Props> = ({
           ) : null}
         </div>
       </div>
-      <div className="border-t pt-4 h-full border-t-gray-300 flex flex-col justify-center">
+      <div className="border-t pt-4 h-full border-t-line flex flex-col justify-center">
         <div>
           <TopicPillContainer data={topics} isOpen={topicsExpanded} />
         </div>
@@ -178,6 +178,10 @@ const ViewQuestionCard: FC<Props> = ({
 
           <div className="flex items-center gap-4">
             <button
+              type="button"
+              aria-label={`Share ${type} test`}
+              title="Share"
+              className="grid h-8 w-8 place-items-center rounded-lg text-faint transition-colors hover:bg-hover hover:text-ink"
               onClick={(e) => {
                 e.stopPropagation();
                 setModalContent(
@@ -185,15 +189,19 @@ const ViewQuestionCard: FC<Props> = ({
                 );
               }}
             >
-              <ShareIcon fill="#d1d5db" />
+              <ShareIcon fill="currentColor" />
             </button>
             <button
+              type="button"
+              aria-label={`Delete ${type} test`}
+              title="Delete"
+              className="grid h-8 w-8 place-items-center rounded-lg text-faint transition-colors hover:bg-hover hover:text-danger"
               onClick={(e) => {
                 e.stopPropagation();
                 setModalContent(<DeleteQuestionConfirmation questionId={id} />);
               }}
             >
-              <TrashIcon fill="#d1d5db" />
+              <TrashIcon fill="currentColor" />
             </button>
           </div>
         </div>

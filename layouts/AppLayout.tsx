@@ -24,7 +24,7 @@ const AppLayout: FC<PropsWithChildren<Props>> = ({
 
   return (
     <>
-      <div className="flex md:h-screen md:max-h-screen md:overflow-hidden bg-white relative">
+      <div className="flex md:h-screen md:max-h-screen md:overflow-hidden bg-surface relative">
         <MobileAppNav
           isSideNav={isSideNav}
           handleClick={() => {
@@ -46,7 +46,7 @@ const AppLayout: FC<PropsWithChildren<Props>> = ({
               <div className="flex justify-between items-center pb-4">
                 {data && data.firstName && showWelcomeMessage ? (
                   <p className="text-xl font-bold">
-                    <span className="text-[#939393]">Welcome, </span>
+                    <span className="text-muted">Welcome, </span>
                     {capitalizeFirstLetterOfEachWord(
                       data.firstName.toLowerCase()
                     )}

@@ -185,7 +185,7 @@ const TextSelectionPopupV2 = forwardRef<HTMLDivElement, TextSelectionPopupProps>
         aria-label="Selected text"
         aria-hidden={!shown}
         className={cn(
-          "z-[3000] flex rounded-xl bg-ink shadow-[0_16px_40px_-14px_rgba(0,0,0,.5)] transition-opacity duration-150",
+          "z-[3000] flex rounded-xl bg-inverse shadow-[0_16px_40px_-14px_rgba(0,0,0,.5)] transition-opacity duration-150",
           docked
             ? "fixed inset-x-4 bottom-[calc(126px+env(safe-area-inset-bottom))] justify-between gap-0.5 p-1"
             : "absolute gap-0.5 p-1",
@@ -220,7 +220,7 @@ const TextSelectionPopupV2 = forwardRef<HTMLDivElement, TextSelectionPopupProps>
               }, 500);
             }}
             className={cn(
-              "inline-flex items-center rounded-lg font-semibold text-white transition-colors hover:bg-white/[.12] focus-visible:bg-white/[.12] focus-visible:outline-none",
+              "inline-flex items-center rounded-lg font-semibold text-on-inverse transition-colors hover:bg-white/[.12] focus-visible:bg-white/[.12] focus-visible:outline-none",
               docked
                 ? "h-[52px] min-w-0 flex-1 flex-col justify-center gap-[3px] px-1 text-[11.5px]"
                 : "h-[34px] gap-1.5 px-[11px] text-[13px]"
@@ -240,7 +240,7 @@ const TextSelectionPopupV2 = forwardRef<HTMLDivElement, TextSelectionPopupProps>
           <span
             aria-hidden="true"
             className={cn(
-              "absolute h-2.5 w-2.5 rotate-45 rounded-[2px] bg-ink",
+              "absolute h-2.5 w-2.5 rotate-45 rounded-[2px] bg-inverse",
               placement.below ? "-top-[5px]" : "-bottom-[5px]"
             )}
             style={{ left: placement.arrow }}

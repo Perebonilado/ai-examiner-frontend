@@ -32,7 +32,7 @@ const VivaUserResponse: FC<Props> = ({ grade, userResponse, score }) => {
           )}
         >
           {score}
-          <small className="text-sm font-bold tracking-normal opacity-70">
+          <small className="text-sm font-semibold tracking-normal">
             /10
           </small>
         </span>

@@ -55,7 +55,7 @@ const NonAfricanPlanCard: FC<Props> = ({
 
       <p className="text-4xl mt-10 font-bold text-[#9333EA]">
         {interval === "annually" && (
-          <span className="text-2xl text-[#8B8B8B] line-through">$119.88</span>
+          <span className="text-2xl text-[#6B6B74] line-through">$119.88</span>
         )}{" "}
         ${costPerMonth?.toLocaleString()}
         <span className="font-normal text-2xl">
@@ -78,7 +78,7 @@ const NonAfricanPlanCard: FC<Props> = ({
           "Ai Discussions",
         ].map((desc) => {
           return (
-            <li className="text-sm my-2 flex items-center gap-2">
+            <li key={desc} className="text-sm my-2 flex items-center gap-2">
               <CheckMark />
               {desc}
             </li>

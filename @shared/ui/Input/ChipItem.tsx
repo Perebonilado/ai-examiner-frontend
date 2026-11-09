@@ -9,7 +9,7 @@ interface Props {
 
 const ChipItem: FC<Props> = ({ label, value, handleRemove }) => {
   return (
-    <div className="px-3 chip py-1 rounded-full bg-gray-200 w-fit flex items-center gap-2">
+    <div className="px-3 chip py-1 rounded-full bg-sunken text-ink w-fit flex items-center gap-2">
       <p className="text-xs">{label}</p>
 
       <span

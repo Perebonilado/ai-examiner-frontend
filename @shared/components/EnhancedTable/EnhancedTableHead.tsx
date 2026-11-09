@@ -8,7 +8,7 @@ interface Props {
 const EnhancedTableHead: FC<Props> = ({ TableHeadComponent, bgColor }) => {
   return (
     <div
-      className={`px-3 py-5 rounded-t-xl bg-slate-200 border-b border-b-gray-200`}
+      className={`px-3 py-5 rounded-t-xl bg-sunken border-b border-b-line`}
     >
       {TableHeadComponent}
     </div>

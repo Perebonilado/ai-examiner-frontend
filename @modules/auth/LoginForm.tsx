@@ -61,7 +61,7 @@ const LoginForm: FC = () => {
 
       <div className="text-center mx-auto mb-10">
         <h2 className="text-2xl font-bold">Log In</h2>
-        <p className="text-[#667185] mt-4">
+        <p className="text-subtle mt-4">
           Enter your credentials to access your account
         </p>
       </div>
@@ -100,9 +100,9 @@ const LoginForm: FC = () => {
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="w-full h-[2px] bg-[#F0F2F5]"></span>
-              <p className="text-[#667185]">Or</p>
-              <span className="w-full h-[2px] bg-[#F0F2F5]"></span>
+              <span className="w-full h-[2px] bg-line"></span>
+              <p className="text-subtle">Or</p>
+              <span className="w-full h-[2px] bg-line"></span>
             </div>
 
             <div className="flex flex-col gap-5">
@@ -113,12 +113,12 @@ const LoginForm: FC = () => {
                 starticon={<GoogleIcon />}
                 type="button"
                 onClick={googleLogin}
-                className="!border-[#D0D5DD] !text-[#344054]"
+                className="!border-control !text-body"
               />
             </div>
 
             <div className="flex gap-1 items-center justify-center">
-              <p className="text-[#667185]"> Are you new here?</p>{" "}
+              <p className="text-subtle"> Are you new here?</p>{" "}
               <Button
                 type="button"
                 title="Create Account"
@@ -137,7 +137,7 @@ const LoginForm: FC = () => {
               />
             </div>
             <div className="flex max-sm:flex-col gap-1 items-center justify-center pb-10">
-              <p className="text-[#667185]"> Can't remember your password?</p>{" "}
+              <p className="text-subtle"> Can&rsquo;t remember your password?</p>{" "}
               <Button
                 type="button"
                 title="Reset Password"

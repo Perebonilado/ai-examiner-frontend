@@ -67,7 +67,7 @@ const ResetPasswordForm: FC = () => {
 
       <div className="text-center mx-auto mb-10">
         <h2 className="text-2xl font-bold">Reset Password</h2>
-        <p className="text-[#667185] mt-4">Enter a new password</p>
+        <p className="text-subtle mt-4">Enter a new password</p>
       </div>
 
       <FormikProvider value={formik}>
@@ -119,7 +119,7 @@ const ResetPasswordForm: FC = () => {
             </div>
 
             <div className="flex gap-1 items-center justify-center pb-10">
-              <p className="text-[#667185]">Remember your password?</p>{" "}
+              <p className="text-subtle">Remember your password?</p>{" "}
               <Button
                 type="button"
                 title="Login"

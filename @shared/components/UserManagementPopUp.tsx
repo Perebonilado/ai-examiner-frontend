@@ -6,6 +6,7 @@ import { logout } from "@/utils";
 import cn from "classnames";
 import { useModalContext } from "@/contexts/ModalContext";
 import UpgradeAccountForm from "./UpgradeAccountForm";
+import ThemeSwitcher from "./ThemeSwitcher";
 
 interface Props {
   firstName: string;
@@ -48,7 +49,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
     const initial = firstName?.trim().charAt(0).toUpperCase() || "U";
 
     return (
-      <div className={baseStyles} ref={ref} role="menu">
+      <div className={baseStyles} ref={ref} role="dialog" aria-label="Account">
         <div className="flex items-center gap-2.5 px-2 pt-2 pb-2.5">
           <span
             aria-hidden="true"
@@ -80,24 +81,30 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
           </div>
         )}
         {!isGuest && (
-          <Link href={"/account/profile"} className={itemClass} role="menuitem">
+          <Link href={"/account/profile"} className={itemClass}>
             <UserRound size={16} strokeWidth={1.75} className={iconClass} />
             View profile
           </Link>
         )}
         {!isGuest && (
-          <Link href={"/account/settings"} className={itemClass} role="menuitem">
+          <Link href={"/account/settings"} className={itemClass}>
             <CreditCard size={16} strokeWidth={1.75} className={iconClass} />
             Manage your subscription
           </Link>
         )}
+
+        <div className="h-px bg-line -mx-1.5 my-1.5" />
+        <div className="px-1 pb-1 pt-0.5">
+          <p className="px-1.5 pb-1.5 text-xs font-semibold text-muted">Appearance</p>
+          <ThemeSwitcher size="small" />
+        </div>
 
         {showSignOut && (
           <>
             <div className="h-px bg-line -mx-1.5 my-1.5" />
             <button
               type="button"
-              role="menuitem"
+             
               className={itemClass}
               onClick={() => {
                 logout(() => {
@@ -114,5 +121,7 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
+
+UserManagementPopUp.displayName = "UserManagementPopUp";
 
 export default UserManagementPopUp;

@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import { ChevronLeft, Menu } from "lucide-react";
 import AppMark from "./AppLayout/AppMark";
+import ThemeToggleButton from "@/@shared/components/ThemeToggleButton";
 import LanguageChangeBar from "./AppLayout/LanguageChangeBar";
 import UserManagementBox from "./UserManagementBox";
 
@@ -25,7 +26,7 @@ const MobileAppNav: FC<Props> = ({
     "grid h-10 w-10 shrink-0 place-items-center rounded-lg text-subtle transition-colors hover:bg-hover hover:text-ink";
 
   return (
-    <nav className="sticky top-0 z-40 flex h-14 w-full items-center gap-2 border-b border-line bg-white/[0.92] pl-1.5 pr-2.5 backdrop-blur-[10px] md:hidden">
+    <nav className="sticky top-0 z-40 flex h-14 w-full items-center gap-2 border-b border-line bg-surface-glass pl-1.5 pr-2.5 backdrop-blur-[10px] md:hidden">
       {handleBack ? (
         <button type="button" aria-label="Back" onClick={handleBack} className={iconBtn}>
           <ChevronLeft size={20} strokeWidth={1.75} aria-hidden="true" />
@@ -49,6 +50,7 @@ const MobileAppNav: FC<Props> = ({
       )}
 
       <div className="ml-auto flex shrink-0 items-center gap-1">
+        <ThemeToggleButton variant="ghost" />
         <LanguageChangeBar compact />
         {isLoggedIn && !handleBack && <UserManagementBox />}
       </div>

@@ -37,7 +37,7 @@ const Thumb: FC<ThumbProps> = ({ pdf, pageNumber, aspect, isActive, scrollRoot, 
             "block overflow-hidden rounded-md bg-white transition-[border-color,box-shadow]",
             isActive
               ? "border-2 border-accent-bright shadow-[0_0_0_3px_rgba(124,58,237,.22)]"
-              : "border border-[#e9e9ec] group-hover:border-control"
+              : "border border-edge group-hover:border-control"
           )}
           style={{ aspectRatio: `1 / ${aspect}` }}
         >

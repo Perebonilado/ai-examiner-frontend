@@ -10,6 +10,7 @@ import "react-tooltip/dist/react-tooltip.css";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import PermissionProvider from "@/contexts/PermissionContext";
+import ThemeProvider from "@/contexts/ThemeContext";
 import LoaderProvider from "@/contexts/LoaderContext";
 import { useEffect } from "react";
 import Script from "next/script";
@@ -80,6 +81,7 @@ export default function App({ Component, pageProps }: AppProps) {
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
       />
       <Provider store={reduxStore}>
+        <ThemeProvider>
         <PermissionProvider>
           <GoogleTranslationProvider>
             <ModalProvider>
@@ -96,6 +98,7 @@ export default function App({ Component, pageProps }: AppProps) {
             </ModalProvider>
           </GoogleTranslationProvider>
         </PermissionProvider>
+        </ThemeProvider>
         <ToastContainer />
         <Analytics />
         <SpeedInsights />

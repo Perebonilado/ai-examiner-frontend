@@ -151,7 +151,7 @@ const StagedImageItemContainer: FC<Props> = ({
                   className="flex items-center gap-2.5 cursor-pointer"
                   onClick={() => setIsHandWritten(!isHandWritten)}
                 >
-                  <Checkbox checked={isHandWritten} />
+                  <Checkbox checked={isHandWritten} readOnly aria-label="The file is handwritten" />
                   <p className="text-sm text-body">
                     Please select if the file is handwritten
                   </p>

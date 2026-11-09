@@ -29,7 +29,7 @@ const EssayAnalysisContainer: FC<Props> = ({
         })}
       </div>
 
-      <div data-phone-bottom-bar="" className="flex justify-end gap-2.5 mt-8 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:mt-6 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:border-t max-md:border-line max-md:bg-[rgba(255,255,255,0.94)] max-md:backdrop-blur-md">
+      <div data-phone-bottom-bar="" className="flex justify-end gap-2.5 mt-8 max-md:sticky max-md:bottom-0 max-md:z-10 max-md:-mx-4 max-md:mt-6 max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))] max-md:border-t max-md:border-line max-md:bg-surface-glass max-md:backdrop-blur-md">
         <Button
           title="New test"
           onClick={() => {

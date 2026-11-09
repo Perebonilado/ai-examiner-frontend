@@ -24,7 +24,7 @@ const PaymentMethodSelection: FC<Props> = ({ handleContinue }) => {
           }}
           className="!cursor-pointer w-fit flex items-center text-sm"
         >
-          <Checkbox shape="round" checked={selectionOption === "card"} />
+          <Checkbox shape="round" checked={selectionOption === "card"} readOnly aria-label="Pay by card" />
           <p>Card</p>
         </div>
 
@@ -34,7 +34,7 @@ const PaymentMethodSelection: FC<Props> = ({ handleContinue }) => {
             setSelectionOption("transfer");
           }}
         >
-          <Checkbox shape="round" checked={selectionOption === "transfer"} />
+          <Checkbox shape="round" checked={selectionOption === "transfer"} readOnly aria-label="Pay by bank transfer" />
           <div>
             <p>Transfer</p>
           </div>

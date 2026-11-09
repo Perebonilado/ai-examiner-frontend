@@ -72,7 +72,7 @@ const CreateDocumentForm: FC = () => {
       {isLoading && (
         <AppLoader loaderMessage="Just a moment while we add your document" />
       )}
-      <div className="w-full max-w-[600px] max-sm:max-w-[90vw] rounded-xl bg-white p-4 shadow-lg">
+      <div className="w-full max-w-[600px] max-sm:max-w-[90vw] rounded-xl bg-surface p-4 shadow-pop">
         <h2 className="text-lg font-semibold text-center mb-6">Add Document</h2>
 
         <FormikProvider value={formik}>

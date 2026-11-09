@@ -15,7 +15,7 @@
 .contained {
   @apply text-white rounded-lg border border-transparent;
   background: var(--brand);
-  box-shadow: 0 1px 2px rgba(16, 12, 40, 0.18);
+  box-shadow: var(--shadow-xs);
 }
 .contained:hover:not(:disabled) {
   background: var(--brand-hover);
@@ -26,11 +26,11 @@
   background: var(--surface);
   color: var(--ink);
   border-color: var(--control);
-  box-shadow: 0 1px 2px rgba(16, 12, 40, 0.06);
+  box-shadow: var(--shadow-xs);
 }
 .outlined:hover:not(:disabled) {
   background: var(--well);
-  border-color: #cfcfd5;
+  border-color: var(--control-strong);
 }
 
 .text {

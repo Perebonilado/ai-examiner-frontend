@@ -503,6 +503,8 @@ const PDFReader: FC<Props> = ({
       >
         <div
           ref={originalScrollRef}
+          tabIndex={0}
+          aria-label="Original document"
           onScroll={() => onPaneScroll("original")}
           className={cn(
             "h-full overflow-auto overscroll-contain",
@@ -575,6 +577,8 @@ const PDFReader: FC<Props> = ({
       >
         <div
           ref={simpleScrollRef}
+          tabIndex={0}
+          aria-label="Simplified document"
           onScroll={() => onPaneScroll("simple")}
           className={cn(
             // Simplified pages never scroll sideways (wide tables scroll inside themselves).

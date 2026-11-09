@@ -62,11 +62,83 @@
   --warning-bg: #fff8e6;
   --warning-line: #f5d78e;
   --page-shadow: 0 1px 3px rgba(15, 10, 40, 0.16);
+  /* Text and icons drawn on an accent / success fill (checkboxes, read ticks). */
+  --on-accent: #ffffff;
+  --on-success: #ffffff;
+  --on-danger: #ffffff;
+  /* Floating dark chrome (selection toolbar, tooltips, reader page controls): dark in both themes. */
+  --inverse: #0b0b0c;
+  --on-inverse: #ffffff;
+  /* Translucent bars over scrolling content (top bar, phone nav, sticky footers). */
+  --surface-glass: rgba(255, 255, 255, 0.88);
+  /* Borders of checkboxes and switches: 3:1 against the page (WCAG 1.4.11). */
+  --control-strong: #8c8c97;
+  --shadow-xs: 0 1px 2px rgba(16, 12, 40, 0.06);
+  --shadow-soft: 0 1px 3px rgba(16, 12, 40, 0.08), 0 1px 2px rgba(16, 12, 40, 0.04);
+  --shadow-lift: 0 10px 28px -14px rgba(16, 12, 40, 0.22), 0 2px 6px -2px rgba(16, 12, 40, 0.06);
+  --shadow-pop: 0 18px 40px -18px rgba(15, 10, 40, 0.38), 0 4px 10px -4px rgba(15, 10, 40, 0.08);
+  --scrollbar: #d4d3db;
+  color-scheme: light;
+}
+
+/* Dark theme: set by data-theme="dark" on <html> (see ThemeContext and the script in _document).
+   Same names, so everything built on the tokens follows. Text levels all keep 4.5:1 or more on
+   --surface and --canvas. */
+:root[data-theme="dark"] {
+  --ink: #f3f3f5;
+  --body: #d4d4da;
+  --subtle: #b4b4bd;
+  --muted: #a3a3ad;
+  --faint: #9696a1;
+  --surface: #17171b;
+  --canvas: #0f0f12;
+  --rail: #131316;
+  --sunken: #212126;
+  --well: #1c1c21;
+  --hover: #26252c;
+  --line: #2b2b32;
+  --edge: #37373f;
+  --control: #4a4a54;
+  --brand: #6d28d9;
+  --brand-hover: #7c3aed;
+  --brand-press: #5b21b6;
+  --accent: #b09afb;
+  --accent-bright: #a78bfa;
+  --accent-900: #e6dfff;
+  --accent-50: #211a33;
+  --accent-100: #2b2143;
+  --accent-200: #433369;
+  --accent-300: #c9bbfd;
+  --success: #57d394;
+  --success-strong: #8ae3b4;
+  --success-bg: #10291c;
+  --success-line: #2c6b4b;
+  --danger: #ff8a80;
+  --danger-strong: #ffb3ac;
+  --danger-bg: #2e1513;
+  --danger-line: #73302a;
+  --warning: #f6c454;
+  --warning-bg: #2a2210;
+  --warning-line: #6e5622;
+  --page-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  --on-accent: #17171b;
+  --on-success: #0f0f12;
+  --on-danger: #17171b;
+  --inverse: #33333c;
+  --on-inverse: #ffffff;
+  --surface-glass: rgba(23, 23, 27, 0.86);
+  --control-strong: #71717c;
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.5), 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-lift: 0 12px 30px -14px rgba(0, 0, 0, 0.7), 0 2px 6px -2px rgba(0, 0, 0, 0.4);
+  --shadow-pop: 0 20px 44px -18px rgba(0, 0, 0, 0.8), 0 4px 12px -4px rgba(0, 0, 0, 0.5);
+  --scrollbar: #4a4a54;
+  color-scheme: dark;
 }
 
 ::selection { background: var(--accent-200); color: var(--ink); }
 :focus-visible { outline: 2px solid var(--accent-bright); outline-offset: 2px; }
-* { scrollbar-width: thin; scrollbar-color: #d4d3db transparent; }
+* { scrollbar-width: thin; scrollbar-color: var(--scrollbar) transparent; }
 
 /* Hide the Google Translate toolbar */
 body .goog-te-banner-frame, table, .skiptranslate {
@@ -98,7 +170,7 @@ iframe.goog-te-banner-frame {
 .markdown-content {
   font-family: Arial, sans-serif;
   line-height: 1.6;
-  color: #333;
+  color: var(--body);
   max-width: 800px;
   margin: 0 auto;
   padding: 20px;
@@ -125,7 +197,7 @@ iframe.goog-te-banner-frame {
 }
 
 .markdown-content a {
-  color: #0366d6;
+  color: var(--accent);
   text-decoration: none;
 }
 
@@ -134,7 +206,7 @@ iframe.goog-te-banner-frame {
 }
 
 .markdown-content pre {
-  background-color: #f6f8fa;
+  background-color: var(--well);
   border-radius: 3px;
   padding: 16px;
   overflow: auto;
@@ -176,7 +248,7 @@ iframe.goog-te-banner-frame {
 }
 
 /* Light only for now: the old dark-mode block made parts of the login page unreadable. */
-:root { color-scheme: light; }
+
 
 @layer utilities {
   .text-balance {
@@ -291,12 +363,32 @@ video {
 .aix-glass-button:hover {
   background: rgba(255, 255, 255, 0.9);
 }
+:root[data-theme="dark"] .aix-glass {
+  background: rgba(30, 30, 36, 0.62);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.1),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 24px 48px -24px rgba(0, 0, 0, 0.8),
+    0 4px 12px -6px rgba(0, 0, 0, 0.5);
+}
+:root[data-theme="dark"] .aix-glass-button {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.16);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+:root[data-theme="dark"] .aix-glass-button:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
   .aix-glass {
     background: rgba(255, 255, 255, 0.97);
   }
 }
 @media (prefers-reduced-transparency: reduce) {
+  :root[data-theme="dark"] .aix-glass {
+    background: #1e1e24;
+  }
   .aix-glass {
     background: #ffffff;
     -webkit-backdrop-filter: none;

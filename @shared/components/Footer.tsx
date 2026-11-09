@@ -32,6 +32,7 @@ const Footer: FC = () => {
               href="https://www.instagram.com/aiexaminerapp/"
               target="_blank"
               rel="noopener noreferrer"
+              aria-label="AI Examiner on Instagram"
             >
               <InstagramIcon />
             </a>

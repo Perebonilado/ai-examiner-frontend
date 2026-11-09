@@ -33,10 +33,10 @@ const TopicCheckbox: FC<Props> = ({
       className={cn(
         "grid h-4 w-4 shrink-0 place-items-center rounded-[4px] border-[1.5px] transition-colors",
         checked
-          ? "border-accent bg-accent text-white"
+          ? "border-accent bg-accent text-on-accent"
           : indeterminate
           ? "border-accent bg-surface text-accent"
-          : "border-[#c9c8d0] bg-surface hover:border-accent-300",
+          : "border-control-strong bg-surface hover:border-accent",
         className
       )}
     >

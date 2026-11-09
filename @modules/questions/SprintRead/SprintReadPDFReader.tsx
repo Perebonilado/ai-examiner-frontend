@@ -110,12 +110,12 @@ const SprintReadPDFReader: FC<Props> = ({ fileContent, totalPages }) => {
       </div>
 
       {/* modified */}
-      <div className="overflow-y-auto flex flex-col py-7 gap-5 no-scrollbar md:px-6 bg-gray-200  mx-auto rounded-lg">
+      <div className="overflow-y-auto flex flex-col py-7 gap-5 no-scrollbar md:px-6 bg-sunken  mx-auto rounded-lg">
         {fileContent.map((content, idx) => {
           return (
             <div className="mx-auto" key={idx}>
               <div
-                className="w-full border-b border-b-gray-300 mb-4 mx-auto bg-white max-w-[800px] p-6 no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
+                className="w-full border-b border-b-line mb-4 mx-auto bg-surface max-w-[800px] p-6 no-scrollbar overflow-y-auto min-h-fit py-4 overflow-x-hidden"
                 dangerouslySetInnerHTML={{ __html: content }}
               ></div>
             </div>

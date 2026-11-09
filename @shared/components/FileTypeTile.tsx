@@ -9,10 +9,10 @@ import { FileText, LucideIcon, Presentation, Type } from "lucide-react";
 export type FileTypeTileExt = "PDF" | "DOCX" | "PPTX" | "JPG" | "TXT";
 
 const BRAND: Record<FileTypeTileExt, { color: string; icon?: LucideIcon }> = {
-  PDF: { color: "#e0412b", icon: FileText },
+  PDF: { color: "#c8371f", icon: FileText },
   DOCX: { color: "#2b62c9", icon: Type },
-  PPTX: { color: "#d9541e", icon: Presentation },
-  JPG: { color: "#2f8f5b" },
+  PPTX: { color: "#b5441a", icon: Presentation },
+  JPG: { color: "#24774a" },
   TXT: { color: "#5c5c65", icon: FileText },
 };
 
@@ -104,7 +104,7 @@ const FileTypeTile: FC<Props> = ({ ext, size = "sm", className }) => {
     <span
       aria-hidden="true"
       className={cn(
-        "relative grid place-items-center flex-shrink-0 bg-surface shadow-[inset_0_0_0_1px_rgba(16,12,40,0.08)]",
+        "relative grid place-items-center flex-shrink-0 bg-white shadow-[inset_0_0_0_1px_rgba(16,12,40,0.08)]",
         s.box,
         className
       )}

@@ -16,27 +16,27 @@ const PageControls: FC<Props> = ({
 }) => {
   return (
     <div className="flex items-center justify-center gap-2">
-      <p className="text-sm text-[#9333EA] font-medium">Page</p>
+      <p className="text-sm text-accent font-medium">Page</p>
       <div className="flex items-center gap-1">
         <button
           onClick={handlePreviousPage}
-          className="w-[28px] h-[28px] bg-[#F4F4F4] flex items-center justify-center"
+          className="w-[28px] h-[28px] bg-sunken flex items-center justify-center"
           type="button"
         >
           <ChevronLeft />
         </button>
-        <p className="w-[47px] text-sm font-bold p-1 h-[28px] bg-[#F4F4F4] flex items-center justify-center">
+        <p className="w-[47px] text-sm font-bold p-1 h-[28px] bg-sunken flex items-center justify-center">
           {currentPage}
         </p>
         <button
           onClick={handleNextPage}
-          className="w-[28px] h-[28px] rotate-180 bg-[#F4F4F4] flex items-center justify-center"
+          className="w-[28px] h-[28px] rotate-180 bg-sunken flex items-center justify-center"
           type="button"
         >
           <ChevronLeft />
         </button>
       </div>
-      <p className="text-sm text-[#00000080]">of {totalCount}</p>
+      <p className="text-sm text-muted">of {totalCount}</p>
     </div>
   );
 };

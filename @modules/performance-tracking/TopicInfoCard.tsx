@@ -220,7 +220,7 @@ const TopicInfoCard: FC<Props> = ({
       </section>
 
       {/* Phone: a full-width action bar pinned to the bottom of the page */}
-      <div data-phone-bottom-bar="" className="sticky bottom-0 z-[15] -mx-4 -mb-12 mt-5 flex items-center gap-3 border-t border-line bg-[rgba(255,255,255,0.94)] px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 backdrop-blur-[8px] md:hidden">
+      <div data-phone-bottom-bar="" className="sticky bottom-0 z-[15] -mx-4 -mb-12 mt-5 flex items-center gap-3 border-t border-line bg-surface-glass px-4 pb-[calc(12px+env(safe-area-inset-bottom))] pt-3 backdrop-blur-[8px] md:hidden">
         {selectedLine}
         <Button
           title="Generate test"

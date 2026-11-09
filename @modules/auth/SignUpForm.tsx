@@ -58,7 +58,7 @@ const SignUpForm: FC = () => {
 
       <div className="text-center mx-auto mb-10">
         <h2 className="text-2xl font-bold">Create Account</h2>
-        <p className="text-[#667185] mt-4">
+        <p className="text-subtle mt-4">
           Enter your credentials to create your account
         </p>
       </div>
@@ -119,7 +119,7 @@ const SignUpForm: FC = () => {
               />
             </div>
             <div className="flex gap-1 items-center justify-center">
-              <p className="text-[#667185]"> Already have an account?</p>{" "}
+              <p className="text-subtle"> Already have an account?</p>{" "}
               <Button
                 title="Login"
                 variant="text"

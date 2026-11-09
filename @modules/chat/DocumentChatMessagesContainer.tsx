@@ -280,7 +280,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
             "w-full max-w-[784px] mx-auto": isExpanded,
           })}
         >
-          <div className="flex items-end gap-2 p-1.5 pl-4 rounded-[24px] border border-control bg-surface shadow-[0_1px_2px_rgba(16,12,40,0.05),0_8px_20px_-10px_rgba(16,12,40,0.18)] focus-within:border-[#c4c3cb] transition-colors">
+          <div className="flex items-end gap-2 p-1.5 pl-4 rounded-[24px] border border-control-strong bg-surface shadow-[0_1px_2px_rgba(16,12,40,0.05),0_8px_20px_-10px_rgba(16,12,40,0.18)] focus-within:border-[#c4c3cb] transition-colors">
             <textarea
               ref={textareaRef}
               onInput={handleInput}
@@ -300,7 +300,7 @@ const DocumentChatMessagesContainer: FC<Props> = ({
                 aria-label="Stop the reply"
                 title="Stop"
                 onClick={onStop}
-                className="grid place-items-center w-9 h-9 shrink-0 rounded-full bg-ink text-white hover:opacity-90 transition-opacity"
+                className="grid place-items-center w-9 h-9 shrink-0 rounded-full bg-ink text-surface hover:opacity-90 transition-opacity"
               >
                 <Square size={12} strokeWidth={0} fill="currentColor" aria-hidden />
               </button>

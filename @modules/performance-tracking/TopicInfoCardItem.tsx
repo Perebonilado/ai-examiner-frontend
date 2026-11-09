@@ -60,8 +60,8 @@ const TopicInfoCardItem: FC<Props> = ({
             "grid h-[18px] w-[18px] place-items-center rounded-[5px] border-[1.5px] transition-colors",
             "peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-accent-bright",
             isSelected
-              ? "border-accent bg-accent text-white"
-              : "border-[#c9c8d0] bg-surface"
+              ? "border-accent bg-accent text-on-accent"
+              : "border-control-strong bg-surface"
           )}
         >
           {isSelected && <Check size={12} strokeWidth={3} aria-hidden="true" />}

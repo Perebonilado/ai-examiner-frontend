@@ -19,7 +19,7 @@ const ViewImageContainer: FC<Props> = ({
 }) => {
   return (
     <div className="flex flex-col">
-      <div className="w-full h-[300px] relative border border-[#9E69E3] mb-3 rounded-2xl p-4">
+      <div className="w-full h-[300px] relative border border-accent-300 mb-3 rounded-2xl p-4">
         <button
           className="absolute top-2 right-2 z-[200]"
           onClick={() => {

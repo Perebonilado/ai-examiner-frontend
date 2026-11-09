@@ -10,7 +10,7 @@ interface Props {
 
 const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
   const sliderClass = cn(
-    `absolute left-[2px] w-[16px] h-[16px] rounded-full cursor-pointer top-1/2 -translate-y-1/2 bg-white transition-transform duration-200`,
+    `absolute left-[2px] w-[16px] h-[16px] rounded-full cursor-pointer top-1/2 -translate-y-1/2 bg-surface transition-transform duration-200`,
     {
       ["translate-x-[16px]"]: isChecked,
       ["!cursor-auto"]: disabled,
@@ -21,7 +21,7 @@ const Switch: FC<Props> = ({ disabled, handleChecked, isChecked, label }) => {
     `w-[36px] h-[20px] flex-shrink-0 cursor-pointer rounded-full relative transition-colors`,
     {
       ["bg-accent"]: isChecked,
-      ["bg-[#d9d8df]"]: !isChecked,
+      ["bg-control-strong"]: !isChecked,
       ["opacity-50"]: disabled,
     }
   );

@@ -45,7 +45,7 @@ const LanguageChangeBar: FC<Props> = ({ compact = false, className }) => {
       aria-haspopup="dialog"
       aria-label={`Language: ${selectedLanguageName}. Change language`}
       className={cn(
-        "notranslate inline-flex h-[34px] items-center gap-2 rounded-lg border border-control bg-surface px-2.5 text-[13px] font-semibold text-ink transition-colors hover:border-[#cfcfd5] hover:bg-well",
+        "notranslate inline-flex h-[34px] items-center gap-2 rounded-lg border border-control bg-surface px-2.5 text-[13px] font-semibold text-ink transition-colors hover:border-control-strong hover:bg-well",
         className
       )}
     >

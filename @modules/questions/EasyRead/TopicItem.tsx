@@ -32,7 +32,7 @@ const NODE_CENTER = 22;
 const Node: FC<{ status: TopicStatus }> = ({ status }) => {
   if (status === "read") {
     return (
-      <span className="grid h-[18px] w-[18px] place-items-center rounded-full bg-success text-white">
+      <span className="grid h-[18px] w-[18px] place-items-center rounded-full bg-success text-on-success">
         <Check size={11} strokeWidth={3.5} />
       </span>
     );

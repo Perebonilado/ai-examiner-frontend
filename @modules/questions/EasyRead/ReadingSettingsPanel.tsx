@@ -59,7 +59,7 @@ const Segmented = <T extends string>({
           className={cn(
             "h-8 flex-1 rounded-lg text-[13px] font-semibold transition-colors",
             on
-              ? "bg-surface text-ink shadow-[0_1px_2px_rgba(16,12,40,.1),0_0_0_0.5px_rgba(16,12,40,.06)]"
+              ? "bg-surface text-ink shadow-xs ring-1 ring-control-strong"
               : "text-subtle hover:text-ink"
           )}
         >

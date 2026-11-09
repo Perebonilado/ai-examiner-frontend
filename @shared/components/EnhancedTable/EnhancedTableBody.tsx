@@ -21,7 +21,7 @@ const EnhancedTableBody: FC<Props> = ({
   headCellData,
 }) => {
   return (
-    <div className="w-full bg-[#FFFFFF] rounded-b-xl">
+    <div className="w-full bg-surface rounded-b-xl">
       {rowData &&
         rowData.map((item, idx) => {
           return rowComponent(item, idx);

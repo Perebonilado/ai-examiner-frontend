@@ -57,7 +57,7 @@
   
       &.selected {
         background-color: var(--ink);
-        color: white;
+        color: var(--surface);
       }
   
       .arrow {
@@ -69,8 +69,8 @@
           display: inline-block;
           width: 0.4em;
           height: 0.4em;
-          border-right: 0.12em solid rgba(0, 0, 0, 0.87);
-          border-top: 0.12em solid rgba(0, 0, 0, 0.87);
+          border-right: 0.12em solid var(--ink);
+          border-top: 0.12em solid var(--ink);
         }
   
         &.left {
@@ -86,8 +86,8 @@
         pointer-events: none;
   
         .arrow::before {
-          border-right: 0.12em solid rgba(0, 0, 0, 0.43);
-          border-top: 0.12em solid rgba(0, 0, 0, 0.43);
+          border-right: 0.12em solid var(--faint);
+          border-top: 0.12em solid var(--faint);
         }
   
         &:hover {

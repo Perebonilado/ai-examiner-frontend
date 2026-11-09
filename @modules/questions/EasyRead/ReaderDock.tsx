@@ -26,7 +26,7 @@ const ReaderDock: FC<Props> = ({
   return (
     <nav
       aria-label="Reader"
-      className="fixed inset-x-2.5 bottom-[calc(10px+env(safe-area-inset-bottom))] z-40 flex h-14 items-center gap-1.5 rounded-[18px] border border-line bg-white/95 px-1.5 shadow-lift backdrop-blur-md md:hidden"
+      className="fixed inset-x-2.5 bottom-[calc(10px+env(safe-area-inset-bottom))] z-40 flex h-14 items-center gap-1.5 rounded-[18px] border border-line bg-surface-glass px-1.5 shadow-lift backdrop-blur-md md:hidden"
     >
       <Link
         href={backHref}

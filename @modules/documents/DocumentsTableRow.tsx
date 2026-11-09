@@ -13,10 +13,10 @@ const TopicsTableRow: FC<Props> = ({
   questionSetCount,
 }) => {
   return (
-    <div className="flex items-center text-sm  text-gray-700 w-full gap-6 border-b border-b-gray-200 px-3 py-4">
+    <div className="flex items-center text-sm  text-body w-full gap-6 border-b border-b-line px-3 py-4">
       <div style={{ flex: 1 }}>
         <Link href={`/questions/view-questions/${id}`}>
-          <p className="text-[#007bff] underline">{title}</p>
+          <p className="text-accent underline">{title}</p>
         </Link>
       </div>
       <div style={{ flex: 1 }}>{questionSetCount}</div>

@@ -96,6 +96,7 @@ const FeatureSelectionItemContainer: FC = () => {
                 behavior: "smooth",
               })
             }
+            aria-label="Scroll features right"
             className="absolute right-2 top-1/2 transform -translate-y-1/2 z-20 bg-white rounded-full shadow-md p-2"
           >
             <ChevronRightAlt />

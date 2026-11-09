@@ -118,7 +118,7 @@ const PlanContainerV2: FC = () => {
                   />
                   <p
                     className={cn("text-sm italic", {
-                      ["text-[#8B8B8B]"]:
+                      ["text-[#6B6B74]"]:
                         nonAfricanPlanDivisions
                           .find((d) => d.isActive)
                           ?.title.toLowerCase() === "monthly",

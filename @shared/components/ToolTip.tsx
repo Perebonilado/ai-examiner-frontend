@@ -17,7 +17,7 @@ const ToolTip: FC<PropsWithChildren<Props>> = ({ id, message, children }) => {
         id={id}
         noArrow
         opacity={1}
-        className="!z-[1200] !rounded-[7px] !bg-ink !px-[9px] !py-1.5 !text-xs !font-medium !text-white !shadow-lift"
+        className="!z-[1200] !rounded-[7px] !bg-inverse !px-[9px] !py-1.5 !text-xs !font-medium !text-on-inverse !shadow-lift"
       />
     </div>
   );

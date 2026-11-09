@@ -24,7 +24,7 @@ const TestCardsSkeleton: FC<Props> = ({ count = 4 }) => {
         <div
           key={i}
           aria-hidden="true"
-          className="w-full max-w-[380px] min-h-[180px] flex flex-col gap-4 py-4 px-4 rounded-xl border border-gray-300 bg-white drop-shadow-sm animate-pulse motion-reduce:animate-none"
+          className="w-full max-w-[380px] min-h-[180px] flex flex-col gap-4 py-4 px-4 rounded-xl border border-edge bg-surface drop-shadow-sm animate-pulse motion-reduce:animate-none"
           style={{ animationDelay: `${i * 140}ms` }}
         >
           <div className="flex flex-col">
@@ -37,7 +37,7 @@ const TestCardsSkeleton: FC<Props> = ({ count = 4 }) => {
               <Bar className="h-3 w-[58%]" />
             </div>
           </div>
-          <div className="border-t pt-4 border-t-gray-300 flex items-center justify-between min-h-[46px]">
+          <div className="border-t pt-4 border-t-line flex items-center justify-between min-h-[46px]">
             <Bar className="h-3.5 w-[64px]" />
             <div className="flex items-center gap-4">
               <Bar className="h-4 w-4" />

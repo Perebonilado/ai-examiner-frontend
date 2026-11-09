@@ -6,7 +6,7 @@ interface Props extends HTMLAttributes<HTMLParagraphElement> {
 }
 
 const ErrorMessage: FC<Props> = ({ message, ...props }) => {
-  const rootClassName = cn(`text-rose-500 text-xs`, props.className);
+  const rootClassName = cn(`text-danger text-xs`, props.className);
   return <p className={rootClassName}>{message}</p>;
 };
 

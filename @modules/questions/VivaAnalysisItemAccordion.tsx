@@ -72,7 +72,7 @@ const VivaAnalysisItemAccordion: FC<Props> = ({
               )}
             >
               {score}
-              <small className="text-[11.5px] font-semibold opacity-75">
+              <small className="text-[11.5px] font-medium">
                 /10
               </small>
             </span>

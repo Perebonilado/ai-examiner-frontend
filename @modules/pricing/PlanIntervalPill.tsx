@@ -14,7 +14,7 @@ const PlanIntervalPill: FC<Props> = ({ isActive, title, handleClick }) => {
     `px-5 py-2 text-sm font-semibold rounded-full`,
     {
       ["bg-[#2F004F] text-white"]: isActive,
-      ["text-[#939393] bg-transparent"]: !isActive,
+      ["text-[#6B6B74] bg-transparent"]: !isActive,
     }
   );
   return (

@@ -6,6 +6,7 @@ import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
 import { useModalContext } from "@/contexts/ModalContext";
 import UpgradeAccountForm from "../UpgradeAccountForm";
 import Button from "@/@shared/ui/Button";
+import ThemeToggleButton from "@/@shared/components/ThemeToggleButton";
 import LanguageChangeBar from "./LanguageChangeBar";
 
 export interface Crumb {
@@ -26,7 +27,7 @@ const TopNav: FC<Props> = ({ crumbs, handleBack }) => {
   const isGuest = data?.role?.toLowerCase() === "guest";
 
   return (
-    <header className="sticky top-0 z-30 flex h-[60px] shrink-0 items-center gap-3 border-b border-line bg-white/[0.86] px-7 backdrop-blur-[10px] backdrop-saturate-[1.4] max-md:hidden">
+    <header className="sticky top-0 z-30 flex h-[60px] shrink-0 items-center gap-3 border-b border-line bg-surface-glass px-7 backdrop-blur-[10px] backdrop-saturate-[1.4] max-md:hidden">
       {handleBack && (
         <button
           type="button"
@@ -58,7 +59,7 @@ const TopNav: FC<Props> = ({ crumbs, handleBack }) => {
                 ) : (
                   <span className="max-w-[260px] shrink-0 truncate">{c.label}</span>
                 )}
-                <ChevronRight size={14} strokeWidth={1.75} aria-hidden="true" className="shrink-0 text-[#c4c3cb]" />
+                <ChevronRight size={14} strokeWidth={1.75} aria-hidden="true" className="shrink-0 text-control" />
               </React.Fragment>
             );
           })}
@@ -74,6 +75,7 @@ const TopNav: FC<Props> = ({ crumbs, handleBack }) => {
             onClick={() => setModalContent(<UpgradeAccountForm />)}
           />
         )}
+        <ThemeToggleButton />
         <LanguageChangeBar />
       </div>
     </header>

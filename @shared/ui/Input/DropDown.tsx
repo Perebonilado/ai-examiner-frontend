@@ -1,4 +1,4 @@
-import React, { ElementRef, FC, useRef, useState, useEffect } from "react";
+import React, { ElementRef, FC, useRef, useState, useEffect, useId } from "react";
 import DropDownItem from "./DropDownItem";
 import useClickOutside from "@/hooks/useClickOutside";
 import cn from "classnames";
@@ -39,6 +39,13 @@ const DropDown: FC<Props> = ({
   ...props
 }) => {
   const [isOptionsOpen, setOptionsOpen] = useState(false);
+  // Keyboard: the option highlighted while the list is open, and the one last chosen.
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const autoId = useId();
+  const inputId = props.id ? `${props.id}-control` : `${autoId}-control`;
+  const listId = `${autoId}-list`;
+  const optionId = (i: number) => `${autoId}-opt-${i}`;
   const dropDownRef = useClickOutside<ElementRef<"div">>(() => {
     setOptionsOpen(false);
   });
@@ -46,7 +53,7 @@ const DropDown: FC<Props> = ({
   const mainInputRef = useRef<ElementRef<"input">>(null);
 
   const inputStyleBasedOnVariant = cn(
-    `cursor-pointer h-11 text-sm w-full text-ink flex m-0 placeholder:text-faint placeholder:text-sm pl-3.5 pr-10 rounded-[10px] outline-none bg-surface border border-control shadow-xs hover:border-[#c9c8d0] focus:border-accent-bright focus:ring-4 focus:ring-[rgba(124,58,237,0.14)] transition-[border-color,box-shadow]`
+    `cursor-pointer h-11 text-sm max-md:text-base w-full text-ink flex m-0 placeholder:text-faint placeholder:text-sm pl-3.5 pr-10 rounded-[10px] outline-none bg-surface border border-control-strong shadow-xs hover:border-muted focus:border-accent-bright focus:ring-4 focus:ring-[rgba(124,58,237,0.14)] transition-[border-color,box-shadow]`
   );
 
   const onSelect = (val: {
@@ -56,6 +63,7 @@ const DropDown: FC<Props> = ({
   }) => {
     handleSelect && handleSelect(val);
     setOptionsOpen(false);
+    setSelectedIndex(options.findIndex((o) => o.value === val.value));
     if (mirrorInputRef.current) {
       mirrorInputRef.current.value = val.label;
     }
@@ -93,6 +101,51 @@ const DropDown: FC<Props> = ({
     }
   );
 
+  const openList = () => {
+    if (disableOpen || !options.length) return;
+    setActiveIndex(selectedIndex >= 0 ? selectedIndex : 0);
+    setOptionsOpen(true);
+  };
+
+  const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    const last = options.length - 1;
+    if (!isOptionsOpen) {
+      if (["Enter", " ", "ArrowDown", "ArrowUp"].includes(event.key)) {
+        event.preventDefault();
+        openList();
+      }
+      return;
+    }
+    if (event.key === "ArrowDown") {
+      event.preventDefault();
+      setActiveIndex((i) => Math.min(last, i + 1));
+    } else if (event.key === "ArrowUp") {
+      event.preventDefault();
+      setActiveIndex((i) => Math.max(0, i - 1));
+    } else if (event.key === "Home") {
+      event.preventDefault();
+      setActiveIndex(0);
+    } else if (event.key === "End") {
+      event.preventDefault();
+      setActiveIndex(last);
+    } else if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      if (options[activeIndex]) onSelect(options[activeIndex]);
+    } else if (event.key === "Escape") {
+      event.preventDefault();
+      setOptionsOpen(false);
+    } else if (event.key === "Tab") {
+      setOptionsOpen(false);
+    }
+  };
+
+  // Keep the highlighted option in view while arrowing through a long list.
+  useEffect(() => {
+    if (isOptionsOpen && activeIndex >= 0) {
+      document.getElementById(`${autoId}-opt-${activeIndex}`)?.scrollIntoView({ block: "nearest" });
+    }
+  }, [isOptionsOpen, activeIndex, autoId]);
+
   useEffect(() => {
     if (!props.value && !options.some((o) => o.defaultSelected)) {
       if (mirrorInputRef.current) {
@@ -104,8 +157,8 @@ const DropDown: FC<Props> = ({
   return (
     <div>
       {label && (
-        <label className="text-[13px] font-semibold text-ink">
-          {label} {isRequired && <span className="text-rose-600">*</span>}
+        <label htmlFor={inputId} className="text-[13px] font-semibold text-ink">
+          {label} {isRequired && <span className="text-danger">*</span>}
         </label>
       )}
       <div
@@ -117,23 +170,39 @@ const DropDown: FC<Props> = ({
       >
         <input
           ref={mirrorInputRef}
+          id={inputId}
+          role="combobox"
+          aria-haspopup="listbox"
+          aria-expanded={isOptionsOpen}
+          aria-controls={listId}
+          aria-activedescendant={
+            isOptionsOpen && activeIndex >= 0 ? optionId(activeIndex) : undefined
+          }
+          aria-label={label ? undefined : props["aria-label"] || placeholder || undefined}
           className={inputStyleBasedOnVariant}
           onClick={() => {
-            if (!disableOpen) {
-              setOptionsOpen(true);
-            }
+            if (isOptionsOpen) setOptionsOpen(false);
+            else openList();
           }}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           readOnly
         />
-        <input className="hidden" ref={mainInputRef} {...props} />
+        <input className="hidden" ref={mainInputRef} {...props} aria-label={undefined} />
 
-        <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
+        <ChevronDown aria-hidden="true" className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60" />
 
         {isOptionsOpen && (
-          <div className={dropDownStyles}>
+          <div className={dropDownStyles} id={listId} role="listbox" aria-labelledby={label ? inputId : undefined}>
             {options.map((opt, idx) => (
-              <DropDownItem {...opt} onSelect={(e) => onSelect(e)} key={idx} />
+              <DropDownItem
+                {...opt}
+                id={optionId(idx)}
+                active={idx === activeIndex}
+                selected={idx === selectedIndex}
+                onSelect={(e) => onSelect(e)}
+                key={idx}
+              />
             ))}
           </div>
         )}

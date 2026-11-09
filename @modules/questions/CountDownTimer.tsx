@@ -94,7 +94,7 @@ const CountdownTimer: React.FC<CountdownProps> = ({
       role="status"
       aria-label={statusLabel}
       className={cn(
-        "fixed z-[25] inline-flex items-center rounded-full border border-line bg-white/95 backdrop-blur-md shadow-soft",
+        "fixed z-[25] inline-flex items-center rounded-full border border-line bg-surface-glass backdrop-blur-md shadow-soft",
         "text-[13px] text-subtle tabular-nums",
         "right-3 bottom-[calc(92px+env(safe-area-inset-bottom))] h-[38px]",
         "md:right-6 md:top-[74px] md:bottom-auto md:h-10",

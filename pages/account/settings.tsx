@@ -18,6 +18,8 @@ import React, { useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import ConfirmationDialog from "@/@shared/components/ConfirmationDialog";
+import AccountSection from "@/@modules/account/AccountSection";
+import ThemeSwitcher from "@/@shared/components/ThemeSwitcher";
 import { useGetCallCreditsQuery } from "@/api-services/call-credits.service";
 import { millisecondsToMinutesSeconds } from "@/utils";
 
@@ -83,6 +85,17 @@ const Settings: NextPage = () => {
       <AppLayout mobileTitle="Settings">
         <div className="mx-auto w-full max-w-[1000px]">
           <AccountHeader />
+          <AccountSection
+            title="Appearance"
+            id="acct-appearance"
+            description={
+              <p className="mt-1.5 text-sm leading-[1.5] text-subtle">
+                System follows your device&rsquo;s light or dark setting.
+              </p>
+            }
+          >
+            <ThemeSwitcher />
+          </AccountSection>
 
           {data && (
             <>

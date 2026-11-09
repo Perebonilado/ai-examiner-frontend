@@ -1,6 +1,10 @@
 import React, { FC } from "react";
 
 interface Props {
+  id?: string;
+  /** Highlighted by the keyboard. */
+  active?: boolean;
+  selected?: boolean;
   value: string;
   label: string;
   defaultSelected?: boolean;
@@ -15,6 +19,9 @@ interface Props {
 }
 
 const DropDownItem: FC<Props> = ({
+  id,
+  active = false,
+  selected = false,
   value,
   label,
   defaultSelected,
@@ -22,9 +29,15 @@ const DropDownItem: FC<Props> = ({
 }) => {
   return (
     <div
+      id={id}
       role="option"
+      aria-selected={selected}
+      // Keep focus on the field, so the keyboard keeps working after a click.
+      onMouseDown={(e) => e.preventDefault()}
       onClick={() => onSelect({ value, label, defaultSelected })}
-      className="flex items-center h-9 px-2.5 rounded-lg text-sm text-body w-full hover:bg-hover hover:text-ink"
+      className={`flex items-center h-9 px-2.5 rounded-lg text-sm w-full hover:bg-hover hover:text-ink ${
+        active ? "bg-hover text-ink" : "text-body"
+      } ${selected ? "font-semibold" : ""}`}
     >
       <p>{label}</p>
     </div>

@@ -271,7 +271,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
                   setPageInputVal(String(pageNumber));
                 }
               }}
-              className="w-11 h-8 rounded-lg border border-control bg-surface text-center text-[13px] font-semibold text-ink tabular-nums outline-none focus:border-accent-bright"
+              className="w-11 h-8 rounded-lg border border-control-strong bg-surface text-center text-[13px] font-semibold text-ink tabular-nums outline-none focus:border-accent-bright"
               value={pageInputVal}
               onChange={(e) => {
                 const value = e.target.value.trim();
@@ -394,7 +394,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
                   className={cn(
                     "h-8 flex-1 rounded-lg text-[13px] font-semibold transition-colors",
                     pages === option.value
-                      ? "bg-surface text-ink shadow-[0_1px_2px_rgba(16,12,40,.1),0_0_0_0.5px_rgba(16,12,40,.06)]"
+                      ? "bg-surface text-ink shadow-xs ring-1 ring-control-strong"
                       : "text-subtle hover:text-ink",
                   )}
                 >
@@ -446,7 +446,7 @@ const PDFViewer: FC<Props> = ({ fileUrl, handleUploadPDF }) => {
               setIsHandWritten(!isHandWritten);
             }}
           >
-            <Checkbox checked={isHandWritten} />
+            <Checkbox checked={isHandWritten} readOnly aria-label="The file is handwritten" />
             <p className="text-sm text-body">
               Please select if the file is handwritten
             </p>

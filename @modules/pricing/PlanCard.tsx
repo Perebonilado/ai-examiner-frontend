@@ -78,7 +78,7 @@ const PlanCard: FC<Props> = ({
               return (
                 <div key={idx} className="flex items-center gap-2 text-sm">
                   {offer.isAvailable ? <CheckMark /> : <CancelIcon />}
-                  <p style={{ color: offer.isAvailable ? "black" : "#939393" }}>
+                  <p style={{ color: offer.isAvailable ? "black" : "#6B6B74" }}>
                     {offer.title}
                   </p>
                 </div>

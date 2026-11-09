@@ -21,7 +21,7 @@ const FileUpload: FC<Props> = ({
     <div>
       {file && (
         <div className="flex items-center gap-3">
-          <p className="font-semibold text-sm text-[#007bff]">{file.name}</p>
+          <p className="font-semibold text-sm text-accent">{file.name}</p>
 
           <button
             className="border-none outline-none p-0 m-0"

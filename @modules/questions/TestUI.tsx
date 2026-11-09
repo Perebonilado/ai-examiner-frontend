@@ -200,7 +200,7 @@ export const ActionBar: FC<PropsWithChildren> = ({ children }) => (
       "flex justify-end gap-2.5 mt-8",
       "max-md:sticky max-md:bottom-0 max-md:z-20 max-md:mt-6 max-md:-mx-4 max-md:-mb-12",
       "max-md:px-4 max-md:pt-3 max-md:pb-[calc(12px+env(safe-area-inset-bottom))]",
-      "max-md:bg-white/95 max-md:backdrop-blur-md max-md:border-t max-md:border-line",
+      "max-md:bg-surface-glass max-md:backdrop-blur-md max-md:border-t max-md:border-line",
       "max-md:[&>button]:flex-1"
     )}
   >

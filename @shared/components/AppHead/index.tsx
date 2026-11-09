@@ -10,9 +10,11 @@ interface Props {
 const AppHead: FC<PropsWithChildren<Props>> = ({ title, children }) => {
   return (
     <Head>
+      {/* Zoom stays allowed (WCAG 1.4.4). Text fields are 16px on phones so iOS doesn't zoom on focus. */}
       <meta
+        key="viewport"
         name="viewport"
-        content="minimum-scale=1, initial-scale=1, width=device-width, shrink-to-fit=no, user-scalable=no, viewport-fit=cover"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
       />
 
       <meta

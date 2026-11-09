@@ -66,7 +66,7 @@ const PageControls: FC<Props> = ({
     <div
       role="toolbar"
       aria-label={zoom ? "PDF controls" : "Page"}
-      className="absolute bottom-[18px] left-1/2 z-[5] inline-flex h-10 -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-ink px-1.5 text-[12.5px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,.45)] max-md:hidden"
+      className="absolute bottom-[18px] left-1/2 z-[5] inline-flex h-10 -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full bg-inverse px-1.5 text-[12.5px] font-semibold text-white shadow-[0_10px_30px_-10px_rgba(0,0,0,.45)] max-md:hidden"
     >
       {zoom && (
         <>

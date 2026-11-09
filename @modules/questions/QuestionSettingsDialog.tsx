@@ -120,6 +120,7 @@ const QuestionSettingsDialog: FC<Props> = ({
           </h5>
           <div className="w-[120px] -mt-1.5 tabular-nums">
             <DropDown
+              aria-label="Timer"
               options={[...calculateRecommendedTimes()]}
               openFromTop={true}
               onChange={(e) => {

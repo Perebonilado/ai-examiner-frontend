@@ -9,7 +9,7 @@ const GenericHeadRowComponent: FC<Props> = ({ headCellData }) => {
     <div className="flex w-full gap-6">
       {headCellData.map(({ title, flex }, idx) => {
         return (
-          <p className={`font-bold text-sm text-gray-600`} style={{ flex: flex }} key={idx}>
+          <p className={`font-bold text-sm text-subtle`} style={{ flex: flex }} key={idx}>
             {title.toUpperCase()}
           </p>
         );

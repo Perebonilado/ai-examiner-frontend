@@ -391,7 +391,7 @@ const UploadFileBox: FC<Props> = ({
             </p>
             <p className="mt-1.5 flex flex-wrap items-center justify-center gap-x-2 gap-y-0.5 text-[13px] text-muted">
               <span className="tabular-nums">Max size: {maxFileSizeMB}mb</span>
-              <span className="w-[3px] h-[3px] rounded-full bg-[#c4c3cb]" />
+              <span className="w-[3px] h-[3px] rounded-full bg-control" />
               <span>pdf, docx, pptx, ppt, png, jpg, txt</span>
             </p>
 

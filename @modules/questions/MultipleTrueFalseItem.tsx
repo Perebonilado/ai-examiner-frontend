@@ -76,17 +76,17 @@ const MultipleTrueFalseItem: FC<Props> = ({
     return cn(
       "w-10 h-10 rounded-full grid place-items-center p-0 border-[1.5px] transition-colors duration-150",
       !submitted && {
-        ["bg-accent border-accent text-white"]: isChosen,
-        ["bg-surface border-control text-muted hover:border-accent-300 hover:bg-accent-50 hover:text-accent-900"]:
+        ["bg-accent border-accent text-on-accent"]: isChosen,
+        ["bg-surface border-control-strong text-muted hover:border-accent-300 hover:bg-accent-50 hover:text-accent-900"]:
           !isChosen,
       },
       submitted && {
         ["cursor-default"]: true,
-        ["bg-success border-success text-white"]: isChosen && isCorrectValue,
-        ["bg-danger border-danger text-white"]: isChosen && !isCorrectValue,
+        ["bg-success border-success text-on-success"]: isChosen && isCorrectValue,
+        ["bg-danger border-danger text-on-danger"]: isChosen && !isCorrectValue,
         ["bg-surface border-success text-success border-dashed"]:
           !isChosen && isCorrectValue,
-        ["bg-transparent border-control text-faint opacity-70"]:
+        ["bg-transparent border-control-strong text-faint opacity-70"]:
           !isChosen && !isCorrectValue,
       }
     );

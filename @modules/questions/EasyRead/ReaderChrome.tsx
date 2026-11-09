@@ -2,6 +2,7 @@ import React, { FC, ReactNode } from "react";
 import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import LanguageChangeBar from "@/@shared/components/AppLayout/LanguageChangeBar";
+import ThemeToggleButton from "@/@shared/components/ThemeToggleButton";
 import ReaderSegmented from "./ReaderSegmented";
 import ReadingSettingsButton from "./ReadingSettingsButton";
 import { ReadingSettings } from "./useReadingSettings";
@@ -57,6 +58,7 @@ const ReaderChrome: FC<Props> = ({
       <div className="flex items-center justify-end gap-2">
         {timePill}
         <ReadingSettingsButton {...settings} />
+        <ThemeToggleButton variant="ghost" />
         <LanguageChangeBar />
       </div>
     </header>

@@ -6,7 +6,7 @@ interface Props {
 
 const TopicPill: FC<Props> = ({ title }) => {
   return (
-    <div className="w-fit border border-[#b8daff] p-4 py-2 text-xs rounded-full bg-[#f1f7fd] text-[#004085]">
+    <div className="w-fit border border-accent-200 p-4 py-2 text-xs rounded-full bg-accent-50 text-accent-900">
       {title}
     </div>
   );

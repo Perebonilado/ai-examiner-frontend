@@ -51,10 +51,10 @@ const ContactTeamMemberCard: FC<Props> = ({
           <a href={messageLink}>
             <Button
               title={actionText}
-              endicon={<ArrowDiagonalRightIcon fill="#1B8FF9" />}
+              endicon={<ArrowDiagonalRightIcon fill="#1366D6" />}
               variant="text"
               size="small"
-              className="!text-[#1B8FF9]"
+              className="!text-[#1366D6]"
             />
           </a>
         )}
@@ -63,10 +63,10 @@ const ContactTeamMemberCard: FC<Props> = ({
           <a href={`tel:${phone}`}>
             <Button
               title={actionText}
-              endicon={<ArrowDiagonalRightIcon fill="#1B8FF9" />}
+              endicon={<ArrowDiagonalRightIcon fill="#1366D6" />}
               variant="text"
               size="small"
-              className="!text-[#1B8FF9]"
+              className="!text-[#1366D6]"
             />
           </a>
         )}

@@ -20,9 +20,9 @@ const EditTextContainer: FC<Props> = ({
 }) => {
   return (
     <div className="flex-1 flex flex-col">
-      <div className="flex-1 flex flex-col border border-[#9E69E3] mb-3 rounded-2xl p-3 gap-3">
-        <p className="text-right text-[#9333EA] text-sm font-medium flex items-center justify-end gap-2">
-          <EditIcon width={15} height={15} fill="#9333EA" />
+      <div className="flex-1 flex flex-col border border-accent-300 mb-3 rounded-2xl p-3 gap-3">
+        <p className="text-right text-accent text-sm font-medium flex items-center justify-end gap-2">
+          <EditIcon width={15} height={15} fill="currentColor" />
           Edit text
         </p>
         <div className="flex-1">

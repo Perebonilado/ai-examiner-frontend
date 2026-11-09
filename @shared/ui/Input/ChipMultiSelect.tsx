@@ -51,9 +51,9 @@ const ChipMultiSelect: FC<Props> = ({
   }, [JSON.stringify(options)]);
 
   const chipContainerStyles = cn(
-    `border border-gray-300 min-h-[45px] px-4 py-3 rounded-md transition-all flex items-center justify-between gap-1 max-h-[150px] overflow-y-auto`,
+    `border border-control-strong min-h-[45px] px-4 py-3 rounded-md transition-all flex items-center justify-between gap-1 max-h-[150px] overflow-y-auto`,
     {
-      ["!border-[#2F004F]"]: isFocus,
+      ["!border-accent-bright"]: isFocus,
     }
   );
 
@@ -69,7 +69,7 @@ const ChipMultiSelect: FC<Props> = ({
     <div className="relative cursor-pointer">
       {label && (
         <label className="text-sm font-semibold block mb-2">
-          {label} {isRequired && <span className="text-rose-600">*</span>}
+          {label} {isRequired && <span className="text-danger">*</span>}
         </label>
       )}
       <div ref={containerRef}>
@@ -106,7 +106,7 @@ const ChipMultiSelect: FC<Props> = ({
           </div>
         </div>
         {optionsOpen && (
-          <div className="w-full absolute left-0 top-[calc(100%+5px)] px-4 bg-white rounded-md cursor-pointer shadow-md z-[300] max-h-[200px] overflow-y-auto">
+          <div className="w-full absolute left-0 top-[calc(100%+5px)] px-4 bg-surface border border-edge rounded-md cursor-pointer shadow-pop z-[300] max-h-[200px] overflow-y-auto">
             {optionsCopy.length ? (
               optionsCopy.map((opt, idx) => (
                 <DropDownItem
@@ -132,7 +132,7 @@ const ChipMultiSelect: FC<Props> = ({
                 />
               ))
             ) : (
-              <p className="text-center py-5 text-sm text-gray-400">
+              <p className="text-center py-5 text-sm text-muted">
                 No items to select
               </p>
             )}

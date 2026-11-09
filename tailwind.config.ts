@@ -5,6 +5,9 @@ import type { Config } from "tailwindcss";
 const v = (name: string) => `var(--${name})`;
 
 const config: Config = {
+  // `dark:` applies under <html data-theme="dark"> (ThemeContext sets it). Most colours need no
+  // `dark:` at all: the tokens below change value with the theme.
+  darkMode: ["selector", '[data-theme="dark"]'],
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./@modules/**/*.{js,ts,jsx,tsx,mdx}",
@@ -44,16 +47,23 @@ const config: Config = {
           300: v("accent-300"),
           900: v("accent-900"),
         },
+        "on-accent": v("on-accent"),
+        "on-success": v("on-success"),
+        "on-danger": v("on-danger"),
+        inverse: v("inverse"),
+        "on-inverse": v("on-inverse"),
+        "surface-glass": v("surface-glass"),
+        "control-strong": v("control-strong"),
         success: { DEFAULT: v("success"), strong: v("success-strong"), bg: v("success-bg"), line: v("success-line") },
         danger: { DEFAULT: v("danger"), strong: v("danger-strong"), bg: v("danger-bg"), line: v("danger-line") },
         warning: { DEFAULT: v("warning"), bg: v("warning-bg"), line: v("warning-line") },
       },
       boxShadow: {
-        xs: "0 1px 2px rgba(16, 12, 40, 0.06)",
-        soft: "0 1px 3px rgba(16, 12, 40, 0.08), 0 1px 2px rgba(16, 12, 40, 0.04)",
-        lift: "0 10px 28px -14px rgba(16, 12, 40, 0.22), 0 2px 6px -2px rgba(16, 12, 40, 0.06)",
-        pop: "0 18px 40px -18px rgba(15, 10, 40, 0.38), 0 4px 10px -4px rgba(15, 10, 40, 0.08)",
-        page: "0 1px 3px rgba(15, 10, 40, 0.16)",
+        xs: v("shadow-xs"),
+        soft: v("shadow-soft"),
+        lift: v("shadow-lift"),
+        pop: v("shadow-pop"),
+        page: v("page-shadow"),
       },
       transitionTimingFunction: {
         "out-expo": "cubic-bezier(0.16, 1, 0.3, 1)",

@@ -1,5 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
-import TopicItem from "./TopicItem";
+import TopicItem, { TopicStatus } from "./TopicItem";
+import TopicsSelectionBar from "./TopicsSelectionBar";
+import { AnimatePresence } from "framer-motion";
 import { useParams } from "next/navigation";
 import { useGetAllSavedDocumentTopicsV2Query } from "@/api-services/document-topic.service";
 import { DocumentTopicv2DTO } from "@/dto/document-topic.dto";
@@ -58,35 +60,25 @@ const TopicsContainer: FC<Props> = ({
   const [createReadingProgress] = useCreateReadingProgressMutation();
   const [deleteReadingProgress] = useDeleteReadingProgressMutation();
 
+  // Both show the change at once (the request updates the list before the server answers) and
+  // clear the selection straight away, so the bar can't send the same request twice.
   const handleMarkAsRead = async () => {
-    if (markedTopics.size > 0) {
-      const unreadTopicIds = Array.from(markedTopics.values())
-        .filter((v) => v.isRead === false)
-        .map((v) => v.id);
-      await createReadingProgress({
-        documentId: documentId!,
-        topicIds: unreadTopicIds,
-      });
-
-      setMarkedTopics((prev) => {
-        const emtpyMap: typeof prev = new Map();
-        return emtpyMap;
-      });
+    const unreadTopicIds = Array.from(markedTopics.values())
+      .filter((v) => !v.isRead)
+      .map((v) => v.id);
+    setMarkedTopics(new Map());
+    if (unreadTopicIds.length) {
+      await createReadingProgress({ documentId, topicIds: unreadTopicIds });
     }
   };
 
   const handleMarkAsUnread = async () => {
-    if (markedTopics.size > 0) {
-      const readTopicIds = Array.from(markedTopics.values())
-        .filter((v) => v.isRead)
-        .map((v) => v.id);
-      await deleteReadingProgress({
-        topicIds: readTopicIds,
-      });
-      setMarkedTopics((prev) => {
-        const emtpyMap: typeof prev = new Map();
-        return emtpyMap;
-      });
+    const readTopicIds = Array.from(markedTopics.values())
+      .filter((v) => v.isRead)
+      .map((v) => v.id);
+    setMarkedTopics(new Map());
+    if (readTopicIds.length) {
+      await deleteReadingProgress({ topicIds: readTopicIds });
     }
   };
 
@@ -144,6 +136,8 @@ const TopicsContainer: FC<Props> = ({
     if (onClose) onClose();
   };
 
+  const clearSelection = () => setMarkedTopics(new Map());
+
   const headerProps: TopicHeaderProps = {
     markedTopics,
     readingProgress,
@@ -153,6 +147,17 @@ const TopicsContainer: FC<Props> = ({
     handleMarkAsUnread,
     handleNewTest,
   };
+
+  const hasSelection = markedTopics.size > 0;
+  const nextIndex = topics ? topics.findIndex((t) => !t.isRead) : -1;
+  const statusOf = (idx: number): TopicStatus =>
+    topics?.[idx]?.isRead ? "read" : idx === nextIndex ? "next" : "todo";
+  // The line from topic i to i+1 is green when both are read, or when it leads from a read topic
+  // into "next". Topics read out of order (after a gap) get no green line into unread ones.
+  const lineDone = (idx: number) =>
+    !!topics?.[idx]?.isRead &&
+    !!topics?.[idx + 1] &&
+    (topics[idx + 1].isRead || idx + 1 === nextIndex);
 
   if (!showTopicsContainer) return null;
 
@@ -177,7 +182,7 @@ const TopicsContainer: FC<Props> = ({
   return (
     <div
       className={cn(
-        "flex min-h-0 flex-col bg-surface",
+        "relative flex min-h-0 flex-col bg-surface",
         easyReadView
           ? className
           : "overflow-hidden rounded-xl border border-line"
@@ -188,12 +193,15 @@ const TopicsContainer: FC<Props> = ({
 
       {!easyReadView && customHeader && customHeader(headerProps)}
 
-      {/* Scrollable list */}
+      {/* Scrollable list: the reading path */}
       {topics && (
         <ul
           aria-label="Topics"
-          className={cn("min-h-0 overflow-y-auto overscroll-contain", {
-            "flex-1 pb-16": easyReadView,
+          className={cn("min-h-0 overflow-y-auto overscroll-contain pt-1", {
+            "flex-1": easyReadView,
+            "pb-16": easyReadView && !hasSelection,
+            "pb-32": easyReadView && hasSelection,
+            "pb-20": !easyReadView && hasSelection,
           })}
           style={{
             maxHeight:
@@ -204,8 +212,13 @@ const TopicsContainer: FC<Props> = ({
         >
           {topics.map((topic, idx) => (
             <TopicItem
-              {...topic}
-              key={idx}
+              key={topic.id ?? idx}
+              topic={topic}
+              status={statusOf(idx)}
+              isFirst={idx === 0}
+              isLast={idx === topics.length - 1}
+              lineAboveDone={idx > 0 && lineDone(idx - 1)}
+              lineBelowDone={lineDone(idx)}
               isChecked={!!markedTopics.get(topic.id)}
               handleCheck={(id) => {
                 setMarkedTopics((prev) => {
@@ -222,6 +235,22 @@ const TopicsContainer: FC<Props> = ({
           ))}
         </ul>
       )}
+
+      <AnimatePresence>
+        {hasSelection && (
+          <TopicsSelectionBar
+            count={markedTopics.size}
+            total={topics?.length ?? 0}
+            compact={easyReadView}
+            hasUnreadSelected={Array.from(markedTopics.values()).some((t) => !t.isRead)}
+            onNewTest={handleNewTest}
+            onMarkAsRead={handleMarkAsRead}
+            onMarkAsUnread={handleMarkAsUnread}
+            onSelectAll={handleMarkAll}
+            onClear={clearSelection}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

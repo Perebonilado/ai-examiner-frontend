@@ -10,6 +10,7 @@ import {
   DeleteReadingProgressPayloadModel,
 } from "@/dto/reading-progress.dto";
 import { DocumentTopicService } from "./document-topic.service";
+import { toast } from "react-toastify";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: `${API_BASE_URL}/reading-progress`,
@@ -25,6 +26,35 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
+/**
+ * Shows topics as read (or unread) in every cached topics list straight away, before the server
+ * answers. Returns an undo for when the request fails.
+ */
+const setTopicsReadInCache = (
+  dispatch: (action: any) => any,
+  state: unknown,
+  topicIds: number[],
+  isRead: boolean
+) => {
+  const ids = new Set(topicIds);
+  const patches = DocumentTopicService.util
+    .selectCachedArgsForQuery(state as any, "getAllSavedDocumentTopicsV2")
+    .map((args) =>
+      dispatch(
+        DocumentTopicService.util.updateQueryData(
+          "getAllSavedDocumentTopicsV2",
+          args,
+          (topics) => {
+            for (const topic of topics) {
+              if (ids.has(topic.id)) topic.isRead = isRead;
+            }
+          }
+        )
+      )
+    );
+  return () => patches.forEach((patch) => patch.undo());
+};
+
 export const ReadingProgressService = createApi({
   reducerPath: "reading-progress",
   baseQuery: baseQueryWithLogoutOnTokenExpiration(baseQuery),
@@ -39,13 +69,22 @@ export const ReadingProgressService = createApi({
           body,
           method: "POST",
         }),
-        onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        // The list changes at once (no full-screen loader); a failed save is undone and toasted.
+        extraOptions: { triggerLoading: false, silentErrors: true },
+        onQueryStarted: async (
+          { topicIds },
+          { dispatch, getState, queryFulfilled }
+        ) => {
+          const undo = setTopicsReadInCache(dispatch, getState(), topicIds, true);
           try {
             await queryFulfilled;
             dispatch(
               DocumentTopicService.util.invalidateTags(["document-topics-v2"])
             );
-          } catch (error) {}
+          } catch (error) {
+            undo();
+            toast.error("Couldn't mark those topics as read. Try again.");
+          }
         },
       }),
       deleteReadingProgress: build.mutation<
@@ -57,13 +96,21 @@ export const ReadingProgressService = createApi({
           body,
           method: "DELETE",
         }),
-        onQueryStarted: async (_, { dispatch, queryFulfilled }) => {
+        extraOptions: { triggerLoading: false, silentErrors: true },
+        onQueryStarted: async (
+          { topicIds },
+          { dispatch, getState, queryFulfilled }
+        ) => {
+          const undo = setTopicsReadInCache(dispatch, getState(), topicIds, false);
           try {
             await queryFulfilled;
             dispatch(
               DocumentTopicService.util.invalidateTags(["document-topics-v2"])
             );
-          } catch (error) {}
+          } catch (error) {
+            undo();
+            toast.error("Couldn't mark those topics as unread. Try again.");
+          }
         },
       }),
     };

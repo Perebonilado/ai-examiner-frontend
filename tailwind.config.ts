@@ -72,6 +72,32 @@ const config: Config = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic": "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      // Tailwind Typography (`prose`, used for summaries, source text and chat) ships fixed light
+      // greys. Point every prose colour at the theme tokens so it reads in light and dark alike.
+      typography: {
+        DEFAULT: {
+          css: {
+            "--tw-prose-body": v("body"),
+            "--tw-prose-headings": v("ink"),
+            "--tw-prose-lead": v("subtle"),
+            "--tw-prose-links": v("accent"),
+            "--tw-prose-bold": v("ink"),
+            "--tw-prose-counters": v("muted"),
+            "--tw-prose-bullets": v("faint"),
+            "--tw-prose-hr": v("line"),
+            "--tw-prose-quotes": v("subtle"),
+            "--tw-prose-quote-borders": v("edge"),
+            "--tw-prose-captions": v("muted"),
+            "--tw-prose-kbd": v("ink"),
+            "--tw-prose-kbd-shadows": "128 128 128",
+            "--tw-prose-code": v("ink"),
+            "--tw-prose-pre-code": v("ink"),
+            "--tw-prose-pre-bg": v("well"),
+            "--tw-prose-th-borders": v("edge"),
+            "--tw-prose-td-borders": v("line"),
+          },
+        },
+      },
     },
   },
   plugins: [require("@tailwindcss/typography")],

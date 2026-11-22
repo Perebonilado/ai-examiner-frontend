@@ -46,7 +46,7 @@ const MobileAppNav: FC<Props> = ({
       {title ? (
         <span className="min-w-0 truncate text-[15px] font-semibold text-ink">{title}</span>
       ) : (
-        <AppMark className="!text-[15px]" />
+        <AppMark size={15} />
       )}
 
       <div className="ml-auto flex shrink-0 items-center gap-1">

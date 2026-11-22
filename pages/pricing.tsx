@@ -8,7 +8,7 @@ import React from "react";
 
 const Pricing: NextPage = () => {
   return (
-    <WebLayout backgroundColor="#fffff" paddingTopMd={false}>
+    <WebLayout>
       <AppHead />
       <PlanContainerV2 />
       {/* <PlanContainer /> */}

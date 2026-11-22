@@ -437,9 +437,10 @@ video {
 }
 
 /* Home page reviews: an endless row. The track holds two copies and slides left by one copy's
-   width, then repeats. Hover pauses it. With reduced motion it stays put and can be swiped. */
+   width, then repeats. Hover or keyboard focus pauses it. With reduced motion it stays put and can be swiped. */
 .reviews-marquee-track { animation: reviews-marquee 48s linear infinite; }
-.reviews-marquee:hover .reviews-marquee-track { animation-play-state: paused; }
+.reviews-marquee:hover .reviews-marquee-track,
+.reviews-marquee:focus-within .reviews-marquee-track { animation-play-state: paused; }
 @keyframes reviews-marquee { to { transform: translateX(-50%); } }
 @media (max-width: 767px) {
   .reviews-marquee-track { animation-duration: 40s; }

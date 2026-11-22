@@ -46,7 +46,13 @@ const HomeReviews: FC = () => (
       What our <span className="text-[var(--hp)]">users</span> say
     </h2>
 
-    <div className="reviews-marquee mt-12 overflow-hidden lg:mt-[56px]">
+    {/* Focusable so keyboard users can pause it (and, with reduced motion, scroll it with the arrow keys). */}
+    <div
+      role="region"
+      aria-label="Reviews"
+      tabIndex={0}
+      className="reviews-marquee mt-12 overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[var(--hp)] lg:mt-[56px]"
+    >
       <div className="reviews-marquee-track flex w-max">
         <ReviewList />
         <ReviewList copy />

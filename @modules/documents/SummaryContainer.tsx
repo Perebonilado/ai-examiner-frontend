@@ -36,7 +36,7 @@ const SummaryContainer: FC<Props> = ({ summary }) => {
             </div>
           </HighlightableText>
         ) : (
-          <div className="flex-1 w-full h-full flex items-center justify-center text-gray-500">
+          <div className="flex-1 w-full h-full flex items-center justify-center text-muted">
             Summary Unavailable
           </div>
         )}

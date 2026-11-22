@@ -5,7 +5,7 @@ import FileUploadSpinner from "../FileUploadSpinner";
 const ProcessingHandWrittenImagesLoader: FC = () => {
   return (
     <Modal>
-      <div className="w-full max-w-[400px] max-sm:max-w-[96vw] flex items-center justify-center p-6 h-[200px] max-sm:h-[230px] shadow-md bg-white border border-dashed rounded-3xl">
+      <div className="w-full max-w-[400px] max-sm:max-w-[96vw] flex items-center justify-center p-6 h-[200px] max-sm:h-[230px] shadow-md bg-surface border border-dashed border-edge rounded-3xl">
         <FileUploadSpinner
           title={`Processing your material`}
         />

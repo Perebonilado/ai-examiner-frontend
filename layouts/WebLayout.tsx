@@ -1,30 +1,19 @@
-import Footer from "@/@shared/components/Footer";
-import NavbarV2 from "@/@shared/components/Navbar/NavbarV2";
+import SiteHeader from "@/@shared/components/site/SiteHeader";
+import SiteFooter from "@/@shared/components/site/SiteFooter";
 import React, { FC, PropsWithChildren } from "react";
-import cn from "classnames";
 
 interface Props {
   backgroundColor?: string;
-  paddingTopMd?: boolean;
 }
 
-const WebLayout: FC<PropsWithChildren<Props>> = ({
-  children,
-  backgroundColor = "white",
-  paddingTopMd = true,
-}) => {
-  const className = cn({
-    ["max-md:pt-[150px]"]: paddingTopMd,
-  });
-  return (
-    <section>
-      <NavbarV2 />
-      <section className={className} style={{ backgroundColor }}>
-        {children}
-      </section>
-      <Footer />
-    </section>
-  );
-};
+/** Public pages (pricing, privacy policy, shared questions): the site header and footer from the
+ *  home page around the page's own content. */
+const WebLayout: FC<PropsWithChildren<Props>> = ({ children, backgroundColor = "white" }) => (
+  <div className="bg-white">
+    <SiteHeader />
+    <main style={{ backgroundColor }}>{children}</main>
+    <SiteFooter className="mt-16 lg:mt-24" />
+  </div>
+);
 
 export default WebLayout;

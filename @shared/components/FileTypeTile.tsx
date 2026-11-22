@@ -1,18 +1,20 @@
 import React, { FC } from "react";
 import cn from "classnames";
-import { FileText, LucideIcon, Presentation, Type } from "lucide-react";
+import { FileText, Image as ImageIcon, LucideIcon, Presentation, Type } from "lucide-react";
 
 /* A white paper card with a folded corner, a brand-coloured glyph and a type label.
    Used by the upload box (fan + file chip) and the Preparing test dialog.
    Brand colours as on today's upload icons; flat fills only. */
 
-export type FileTypeTileExt = "PDF" | "DOCX" | "PPTX" | "JPG" | "TXT";
+export type FileTypeTileExt = "PDF" | "DOCX" | "PPTX" | "PPT" | "JPG" | "PNG" | "TXT";
 
 const BRAND: Record<FileTypeTileExt, { color: string; icon?: LucideIcon }> = {
   PDF: { color: "#c8371f", icon: FileText },
   DOCX: { color: "#2b62c9", icon: Type },
   PPTX: { color: "#b5441a", icon: Presentation },
+  PPT: { color: "#b5441a", icon: Presentation },
   JPG: { color: "#24774a" },
+  PNG: { color: "#24774a" },
   TXT: { color: "#5c5c65", icon: FileText },
 };
 
@@ -51,7 +53,7 @@ const PhotoGlyph: FC<{ size: number; className?: string }> = ({
   </svg>
 );
 
-type Size = "sm" | "fan" | "lg";
+type Size = "sm" | "fan" | "lg" | "hero";
 
 const SIZES: Record<
   Size,
@@ -80,6 +82,14 @@ const SIZES: Record<
     label: "bottom-[7px] text-[8px]",
     stroke: 2,
   },
+  hero: {
+    box: "w-16 h-[84px] max-lg:w-[50px] max-lg:h-[66px] rounded-[10px] max-lg:rounded-[8px]",
+    corner: 16,
+    glyph: 24,
+    glyphShift: "-mt-[16px] max-lg:-mt-[13px] max-lg:scale-[0.82]",
+    label: "bottom-[11px] max-lg:bottom-[8px] text-[11px] max-lg:text-[9px]",
+    stroke: 2,
+  },
   lg: {
     box: "w-14 h-[68px] rounded-[11px]",
     corner: 16,
@@ -94,9 +104,16 @@ interface Props {
   ext: FileTypeTileExt;
   size?: Size;
   className?: string;
+  /** Extra classes for the type label (the home hero sets its rounded face here). */
+  labelClassName?: string;
 }
 
-const FileTypeTile: FC<Props> = ({ ext, size = "sm", className }) => {
+const FileTypeTile: FC<Props> = ({
+  ext,
+  size = "sm",
+  className,
+  labelClassName,
+}) => {
   const { color, icon: Icon } = BRAND[ext];
   const s = SIZES[size];
   const c = s.corner;
@@ -123,16 +140,20 @@ const FileTypeTile: FC<Props> = ({ ext, size = "sm", className }) => {
           clipPath: "polygon(0 0, 100% 100%, 0 100%)",
         }}
       />
-      {Icon ? (
+      {size === "hero" && !Icon ? (
+        <ImageIcon size={s.glyph} strokeWidth={s.stroke} className={s.glyphShift} />
+      ) : Icon ? (
         <Icon size={s.glyph} strokeWidth={s.stroke} className={s.glyphShift} />
       ) : (
         <PhotoGlyph size={s.glyph + 3} className={s.glyphShift} />
       )}
-      {size === "fan" ? (
+      {size === "fan" || size === "hero" ? (
         <b
           className={cn(
             "absolute left-1/2 -translate-x-1/2 px-[5px] pt-[2px] pb-[1.5px] rounded font-extrabold leading-none tracking-[0.06em] text-white",
-            s.label
+            size === "hero" && "px-[7px] pt-[4px] pb-[3px] rounded-[5px]",
+            s.label,
+            labelClassName
           )}
           style={{ background: color }}
         >

@@ -53,16 +53,29 @@ export const baseQueryWithLogoutOnTokenExpiration = (
         });
       } else if (extraOptions.silentErrors) {
         // The caller shows its own message (or none).
-      } else if ("status" in result.error) {
-        const { message } = result.error.data as { message: string };
-        toast.error(message);
       } else {
-        toast.error("Oops! Something went wrong");
+        toast.error(requestErrorMessage(result.error));
       }
     }
 
     return result;
   };
+};
+
+/**
+ * What to tell the user when a request fails. A server error carries `data.message` (a string, or
+ * a list of validation messages); a request that never reached the server (offline, server down,
+ * blocked) or timed out carries no data at all.
+ */
+const requestErrorMessage = (error: FetchBaseQueryError): string => {
+  if (error.status === "FETCH_ERROR" || error.status === "TIMEOUT_ERROR") {
+    return "We couldn't reach AI Examiner. Check your internet connection and try again.";
+  }
+  const data = "data" in error ? error.data : undefined;
+  const message = data && typeof data === "object" ? (data as { message?: unknown }).message : undefined;
+  if (typeof message === "string" && message.trim()) return message;
+  if (Array.isArray(message) && typeof message[0] === "string") return message[0];
+  return "Oops! Something went wrong";
 };
 
 export const getFileNameWithoutExtension = (name: string) => {

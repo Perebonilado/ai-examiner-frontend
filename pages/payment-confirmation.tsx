@@ -1,13 +1,12 @@
 import PaymentConfirmationContainer from "@/@modules/payment-confirmation/PaymentConfirmationContainer";
 import AppHead from "@/@shared/components/AppHead";
-import Footer from "@/@shared/components/Footer";
-import Navbar from "@/@shared/components/Navbar";
+import WebLayout from "@/layouts/WebLayout";
 import { NextPage } from "next";
 import React from "react";
 
 const PaymentConfirmation: NextPage = () => {
   return (
-    <>
+    <WebLayout>
       <AppHead title="Payment Confirmation">
         <script type="text/javascript">
           {`
@@ -15,10 +14,8 @@ const PaymentConfirmation: NextPage = () => {
           `}
         </script>
       </AppHead>
-      <Navbar />
       <PaymentConfirmationContainer />
-      <Footer />
-    </>
+    </WebLayout>
   );
 };
 

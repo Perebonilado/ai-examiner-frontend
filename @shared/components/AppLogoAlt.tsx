@@ -1,44 +1,13 @@
-import Image from "next/image";
-import Link from "next/link";
 import React, { FC } from "react";
-import cn from "classnames";
-import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
+import AppMark from "./AppLayout/AppMark";
 
 interface Props {
   size?: "md" | "sm" | "xs";
 }
 
-const AppLogoAlt: FC<Props> = ({ size = "md" }) => {
-  const rootClassName = cn(`relative`, {
-    "h-16 w-48": size === "md",
-    "h-9 w-44": size === "sm",
-    "h-8 w-42": size === "xs",
-  });
-  const { isLoggedIn } = useIsLoggedIn();
+const sizes = { md: 22, sm: 18, xs: 16 };
 
-  return (
-    <Link href={isLoggedIn ? "/new-document" : "/"}>
-      <div
-        className={cn(`relative`, {
-          "h-16 w-48": size === "md",
-          "h-9 w-48": size === "sm",
-          "h-8 w-42": size === "xs",
-        })}
-      >
-        {" "}
-        <Image
-          layout="fill"
-          objectFit="contain"
-          objectPosition="0% 50%"
-          style={{
-            cursor: "pointer",
-          }}
-          src={"/shared/logo-alt.png"}
-          alt="ai examiner logo"
-        />
-      </div>
-    </Link>
-  );
-};
+/** The logo for dark surfaces: white wordmark beside the purple "AI" square. */
+const AppLogoAlt: FC<Props> = ({ size = "md" }) => <AppMark tone="white" size={sizes[size]} />;
 
 export default AppLogoAlt;

@@ -55,15 +55,18 @@ const UpgradeAccountForm: FC<Props> = ({
       track("signed_up", { method: "guest_upgrade" });
       flush(true);
 
-      toast.info("We've sent you a link to confirm your email address.");
-      // Leave time to read it before the page reloads.
-      setTimeout(() => {
+      const go = () => {
         if (redirectToPricingOnSuccess) {
           window.location.pathname = "/pricing";
         } else {
           window.location.reload();
         }
-      }, 1800);
+      };
+      if ((data as { needsConfirmation?: boolean }).needsConfirmation) {
+        toast.info("We've sent you a link to confirm your email address.");
+        // Leave time to read it before the page reloads.
+        setTimeout(go, 1800);
+      } else go();
     }
   }, [data]);
   const { setModalContent } = useModalContext();

@@ -319,6 +319,8 @@ export interface AdminUserDetail {
     plan: UserPlan;
     /** e.g. "Quarterly" when known. */
     planName: string | null;
+    /** False while an email sign-up waits for its confirmation link to be opened. */
+    emailConfirmed?: boolean;
     createdOn: string | null;
     online: boolean;
     doing: string | null;

@@ -68,6 +68,11 @@ const Profile: FC<{ detail: AdminUserDetail; now: Date }> = ({ detail, now }) =>
           <Chip tone={plan.tone} size="md">
             {user.planName ?? plan.label}
           </Chip>
+          {user.emailConfirmed === false && (
+            <Chip tone="amber" size="md">
+              Email not confirmed
+            </Chip>
+          )}
         </div>
         <p className="break-words text-sm text-subtle">{facts.join(" · ")}</p>
         {user.online ? (

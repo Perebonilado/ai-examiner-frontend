@@ -13,6 +13,7 @@ import { useRouter } from "next/router";
 import { AppLogo } from "@/@shared/components/AppLogo";
 import MessageIcon from "@/icons/MessageIcon";
 import GoogleIcon from "@/icons/GoogleIcon";
+import { ResendLink } from "./CheckYourEmail";
 
 const initialValues = {
   email: "",
@@ -21,7 +22,11 @@ const initialValues = {
 
 const LoginForm: FC = () => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
-  const [login, { data }] = useLoginMutation();
+  const [login, { data, error }] = useLoginMutation();
+  const unconfirmed =
+    error && "data" in error && (error.data as { code?: string; email?: string } | undefined)?.code === "EMAIL_NOT_CONFIRMED"
+      ? ((error.data as { email?: string }).email ?? "")
+      : null;
   const router = useRouter();
   const { returnUrl } = router.query;
 
@@ -69,6 +74,18 @@ const LoginForm: FC = () => {
           Enter your credentials to access your account
         </p>
       </div>
+
+      {unconfirmed !== null && (
+        <div role="alert" className="mb-8 flex flex-col gap-4 rounded-2xl border border-line bg-surface p-5 text-center">
+          <div className="flex flex-col gap-1.5">
+            <p className="text-[15px] font-semibold text-ink">Confirm your email to log in</p>
+            <p className="text-[14px] leading-relaxed text-subtle">
+              We’ve sent a link to <b className="font-semibold text-ink break-all">{unconfirmed || formik.values.email}</b>. Tap it, then you can log in.
+            </p>
+          </div>
+          <ResendLink email={unconfirmed || formik.values.email} />
+        </div>
+      )}
 
       <FormikProvider value={formik}>
         <Form>

@@ -5,6 +5,7 @@ import {
   LoginDto,
   ResetPasswordDto,
   SignUpDto,
+  ConfirmEmailDto,
 } from "@/dto/auth.dto";
 import {
   ForgotPasswordPayload,
@@ -61,10 +62,21 @@ export const AuthService = createApi({
         body,
       }),
     }),
+    confirmEmail: build.mutation<ConfirmEmailDto, { token: string }>({
+      query: (body) => ({ url: "confirm-email", method: "POST", body }),
+      // The page shows its own message.
+      extraOptions: { triggerLoading: false, silentErrors: true },
+    }),
+    resendConfirmation: build.mutation<{ message: string }, { email: string }>({
+      query: (body) => ({ url: "resend-confirmation", method: "POST", body }),
+      extraOptions: { triggerLoading: false },
+    }),
   }),
 });
 
 export const {
+  useConfirmEmailMutation,
+  useResendConfirmationMutation,
   useLoginMutation,
   useSignUpMutation,
   useForgotPasswordMutation,

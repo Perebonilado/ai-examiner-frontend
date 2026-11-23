@@ -13,6 +13,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { setLoading, setLoadingMessage } from "@/features/loaderSlice";
 import { toast } from "react-toastify";
+import { track } from "@/@shared/analytics/track";
 import { parse } from "ppt-parser";
 
 export const baseQueryWithLogoutOnTokenExpiration = (
@@ -45,6 +46,12 @@ export const baseQueryWithLogoutOnTokenExpiration = (
     }
 
     if (result.error) {
+      if (result.error.status !== 401)
+        track("api_error", {
+          endpoint: typeof api?.endpoint === "string" ? api.endpoint : "unknown",
+          status: String(result.error.status),
+          shown: !extraOptions.silentErrors,
+        });
       if (result.error.status === 401) {
         logout(() => {
           if (!window.location.pathname.includes("/pricing")) {

@@ -9,6 +9,7 @@ import TopNav, { Crumb } from "@/@shared/components/AppLayout/TopNav";
 import MobileAppNav from "@/@shared/components/MobileAppNav";
 import MobileSidebar from "@/@shared/components/MobileSidebar";
 import { useIsLoggedIn } from "@/hooks/useIsLoggedIn";
+import { useHeartbeat } from "@/hooks/useHeartbeat";
 
 export type { Crumb };
 
@@ -103,6 +104,8 @@ const AppLayoutV2: FC<PropsWithChildren<Props>> = ({
     (state: RootState) => state.documentChatReducer
   );
   const { isLoggedIn } = useIsLoggedIn();
+  // "Who's online" for the admin dashboard (every signed-in page uses this layout, Easy Read too).
+  useHeartbeat(isLoggedIn);
 
   const isReader = variant === "reader";
   // The document page's own id is in the URL; only trust the stored title when it matches.

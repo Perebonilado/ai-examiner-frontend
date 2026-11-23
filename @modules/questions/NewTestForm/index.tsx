@@ -1,5 +1,7 @@
 import { DialogFrame } from "@/@modules/home/DialogFrame";
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useRef } from "react";
+import { flush, reasonOf, stopwatch, track } from "@/@shared/analytics/track";
+import TrackOnce from "@/@shared/analytics/TrackOnce";
 import CurrentStepIndicator from "./CurrentStepIndicator";
 import NavigationContainer from "./NavigationContainer";
 import TestFormat from "./Steps/TestFormat";
@@ -35,7 +37,11 @@ const NewTestForm: FC = () => {
   const [generateTest, { isLoading, error, data }] =
     useGenerateQuestionsV2Mutation();
 
+  const took = useRef<(() => number) | null>(null);
+
   const handleTestGeneration = () => {
+    took.current = stopwatch();
+    track("test_generate_started", { type: selectedTestFormat, count: totalQuestions, from: "new_test" });
     generateTest({
       documentId: documentId!,
       payload: {
@@ -54,6 +60,9 @@ const NewTestForm: FC = () => {
 
   useEffect(() => {
     if (data) {
+      track("test_generate_done", { type: data.type, testId: data.id, from: "new_test" }, took.current?.());
+      // The page reloads next: send it now.
+      flush(true);
       toast.success("Your test is ready!");
       window.location.href = `${window.location.origin}/questions/practise-questions/${data.type}/${data.id}`;
     }
@@ -61,6 +70,7 @@ const NewTestForm: FC = () => {
 
   useEffect(() => {
     if (error) {
+      track("test_generate_failed", { reason: reasonOf(error), from: "new_test" }, took.current?.());
       toast.error("Something went wrong while generating your test");
     }
   }, [error]);
@@ -69,6 +79,7 @@ const NewTestForm: FC = () => {
 
   return (
     <>
+      {isNewTestFormOpen && permissions.maxGenerationReached && <TrackOnce name="limit_hit" which="tests" />}
       {isNewTestFormOpen && (
         <Modal>
           {permissions.maxGenerationReached && (

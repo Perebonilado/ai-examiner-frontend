@@ -27,6 +27,8 @@ import { navigationSliceReducer } from "@/features/navigationSlice";
 import { newTestSliceReducer } from "@/features/newTestSlice";
 import { ReadingProgressService } from "@/api-services/reading-progress.service";
 import { EasyReadService } from "@/api-services/easy-read.service";
+import { AdminService, EmailPreferencesService } from "@/api-services/admin.service";
+import { FeedbackService } from "@/api-services/feedback.service";
 
 export const reduxStore = configureStore({
   reducer: {
@@ -52,6 +54,9 @@ export const reduxStore = configureStore({
     [PreferredLanguageService.reducerPath]: PreferredLanguageService.reducer,
     [EasyReadService.reducerPath]: EasyReadService.reducer,
     [ReadingProgressService.reducerPath]: ReadingProgressService.reducer,
+    [AdminService.reducerPath]: AdminService.reducer,
+    [EmailPreferencesService.reducerPath]: EmailPreferencesService.reducer,
+    [FeedbackService.reducerPath]: FeedbackService.reducer,
     permissionsState: PermissionsReducer,
     loadingAndErrorState: LoadingAndErrorReducer,
     documentChatReducer: documentChatReducer,
@@ -82,6 +87,9 @@ export const reduxStore = configureStore({
       PreferredLanguageService.middleware,
       ReadingProgressService.middleware,
       EasyReadService.middleware,
+      AdminService.middleware,
+      EmailPreferencesService.middleware,
+      FeedbackService.middleware,
     ]),
 });
 

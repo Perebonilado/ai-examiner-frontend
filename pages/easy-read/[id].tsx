@@ -1,5 +1,6 @@
 import { NextPage } from "next";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { track } from "@/@shared/analytics/track";
 import AppLayoutV2 from "@/layouts/AppLayoutV2";
 import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
@@ -26,6 +27,7 @@ import TopicsSheet from "@/@modules/questions/EasyRead/TopicsSheet";
 import ReadingSettingsSheet from "@/@modules/questions/EasyRead/ReadingSettingsSheet";
 import useReadingSettings from "@/@modules/questions/EasyRead/useReadingSettings";
 import useEasyReadTimer from "@/@modules/questions/EasyRead/useEasyReadTimer";
+import EasyReadRatingPrompt from "@/@modules/questions/EasyRead/EasyReadRatingPrompt";
 import useSimplifiedPages from "@/@modules/questions/EasyRead/useSimplifiedPages";
 import {
   EasyReadAllowanceBanner,
@@ -151,7 +153,13 @@ const EasyRead: NextPage = () => {
   const contentReady = !isLoading && !!originalFileUrl?.modifiedFile;
 
   // Counts down while the reader shows a document; the server's figure wins on every report.
-  const easyReadTimer = useEasyReadTimer({ allowance, running: contentReady });
+  const easyReadTimer = useEasyReadTimer({ allowance, running: contentReady, documentId });
+  const openedRef = useRef(false);
+  useEffect(() => {
+    if (!contentReady || openedRef.current) return;
+    openedRef.current = true;
+    track("easy_read_opened", { documentId });
+  }, [contentReady, documentId]);
   const [simplifiedBlocked, setSimplifiedBlocked] = useState(false);
   const blockedByServer = isEasyReadLimitError(urlError) || simplifiedBlocked;
   const outOfTime = noTimeAtOpen || easyReadTimer.outOfTime || blockedByServer;
@@ -272,6 +280,8 @@ const EasyRead: NextPage = () => {
               />
             </div>
           ) : null}
+
+          <EasyReadRatingPrompt documentId={documentId} reading={contentReady && !outOfTime} />
 
           <ReaderDock
             backHref={backHref}

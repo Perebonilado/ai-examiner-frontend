@@ -1,5 +1,6 @@
 import { QuestionOption, QuestionsModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
+import { useTestTracking } from "@/@shared/analytics/useTestTracking";
 import MCQItem from "./MCQItem";
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
@@ -203,6 +204,7 @@ const MCQItemContainer: FC<Props> = ({
   };
 
   const submitTest = () => {
+    testEvents.submitted(calculateScorePercentage());
     handleSubmitted(true);
 
     setCalculatedScore(calculateScorePercentage());
@@ -284,6 +286,15 @@ const MCQItemContainer: FC<Props> = ({
   const correctCount = questionAnswerMap
     ? Object.values(questionAnswerMap).filter((ans) => ans).length
     : 0;
+
+  const testEvents = useTestTracking({
+    type: "multiple-choice",
+    testId: questionId,
+    total: data?.length ?? 0,
+    answered: answeredCount,
+    ready: !!data && !!questionId && (!allowSaveProgress || !!progress),
+    alreadyDone: progress?.status === "submitted",
+  });
 
   const handleNewTest = () => {
     if (handleGenerateMoreQuestions) {

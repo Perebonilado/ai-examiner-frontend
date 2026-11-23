@@ -1,4 +1,5 @@
 import MaxGenerationModal from "@/@shared/components/MaxGenerationModal";
+import { track } from "@/@shared/analytics/track";
 import { RootState } from "@/config/redux-config";
 import { useModalContext } from "@/contexts/ModalContext";
 import { ArrowUp } from "lucide-react";
@@ -47,6 +48,7 @@ const NewMessageContainer: FC<Props> = ({
 
   const onSubmit = () => {
     if (!permissions.canDiscuss) {
+      track("limit_hit", { which: "chat" });
       setModalContent(
         <MaxGenerationModal
           title="Discussions only available on a paid plan!"

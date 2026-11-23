@@ -1,5 +1,6 @@
 import React, { ElementRef, FC, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { track } from "@/@shared/analytics/track";
 import TransitionUp from "@/transitions/TransitionUp";
 import AttachedFileInfo from "./AttachedFileInfo";
 import {
@@ -206,6 +207,13 @@ const UploadFileBox: FC<Props> = ({
           }
           return;
         } else {
+          track("upload_failed", {
+            reason: "too_large",
+            kb: Math.round(file.size / 1024),
+            limitMb: maxFileSizeMB,
+            type: (file.name.split(".").pop() || "").toLowerCase().slice(0, 8),
+          });
+          track("limit_hit", { which: "file_size" });
           toast.error(`File Size must be ${maxFileSizeMB}mb or less`);
         }
       }

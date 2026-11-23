@@ -2,6 +2,7 @@ import { useUpgradeUserAccountMutation } from "@/api-services/user.service";
 import { SignUpValidation } from "@/validation-schemas/SignUpValidation";
 import { Form, FormikProvider, useFormik } from "formik";
 import React, { FC, useEffect, useState } from "react";
+import { flush, track } from "@/@shared/analytics/track";
 import Button from "../ui/Button";
 import TextField from "../ui/Input/TextField";
 import { Eye, EyeOff, Mail, X } from "lucide-react";
@@ -50,6 +51,8 @@ const UpgradeAccountForm: FC<Props> = ({
         }
       );
       Cookies.remove(guestAccessToken);
+      track("signed_up", { method: "guest_upgrade" });
+      flush(true);
 
       if (redirectToPricingOnSuccess) {
         window.location.pathname = "/pricing";

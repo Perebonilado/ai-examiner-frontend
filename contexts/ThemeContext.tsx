@@ -14,7 +14,7 @@ export type ResolvedTheme = "light" | "dark";
 
 export const THEME_STORAGE_KEY = "aix-theme";
 /** Public marketing pages: designed around light imagery, so they stay light. */
-export const LIGHT_ONLY_ROUTES = ["/", "/pricing", "/privacy-policy", "/payment-confirmation"];
+export const LIGHT_ONLY_ROUTES = ["/", "/pricing", "/privacy-policy", "/payment-confirmation", "/unsubscribe"];
 
 /**
  * Runs in <head> before the first paint (see pages/_document.tsx), so a saved or system dark theme

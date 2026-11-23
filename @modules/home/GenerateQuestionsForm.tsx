@@ -3,7 +3,8 @@
 import dynamic from "next/dynamic";
 import { useGetEasyReadAllowanceQuery } from "@/api-services/easy-read.service";
 import { EasyReadLimitDialog } from "@/@modules/questions/EasyRead/EasyReadAllowance";
-import React, { FC, useState } from "react";
+import React, { FC, useRef, useState } from "react";
+import { reasonOf, stopwatch, track } from "@/@shared/analytics/track";
 import { Form, useFormik, FormikProvider } from "formik";
 import TextField from "@/@shared/ui/Input/TextField";
 import Button from "@/@shared/ui/Button";
@@ -142,6 +143,8 @@ const GenerateQuestionsForm: FC = () => {
   const allowedMimeTypes = ["docx", "doc", "pdf", "pptx", "txt", "ppt"];
 
   const [file, setFile] = useState<File | null>(null);
+  /** The upload in progress, for timing it. */
+  const upload = useRef<{ took: () => number; type: string; kb: number } | null>(null);
 
   const [documentTopics, setDocumentTopics] = useState<
     { label: string; value: string }[]
@@ -155,10 +158,16 @@ const GenerateQuestionsForm: FC = () => {
     }
 
     if (permissions && permissions.maxGenerationReached) {
+      track("limit_hit", { which: "tests" });
       setModalContent(<MaxGenerationModal />);
       return;
     }
 
+    track("test_generate_started", {
+      type: values.questionType ? Number(values.questionType) : 3,
+      count: values.questionCount ? Number(values.questionCount) : 5,
+      from: "upload",
+    });
     generateQuestionsV2({
       payload: {
         title: values.title || getFileNameWithoutExtension(file.name),
@@ -185,11 +194,24 @@ const GenerateQuestionsForm: FC = () => {
 
     formData.append("document", file);
 
+    upload.current = {
+      took: stopwatch(),
+      type: (file.name.split(".").pop() || "").toLowerCase().slice(0, 8),
+      kb: Math.round(file.size / 1024),
+    };
+    track("upload_started", { type: upload.current.type, kb: upload.current.kb, pages: pages ? "some" : "all" });
     uploadFileV2({ payload: formData, pages, start, end });
   };
 
   useEffect(() => {
     if (uploadFileDataV2) {
+      if (upload.current)
+        track(
+          "upload_done",
+          { type: upload.current.type, kb: upload.current.kb, topics: uploadFileDataV2.topics?.length ?? 0 },
+          upload.current.took()
+        );
+      upload.current = null;
       setFileId(uploadFileDataV2.fileId);
       setDocumentId(uploadFileDataV2.documentId);
       setUploadedDocumentId(uploadFileDataV2.documentId);
@@ -206,6 +228,14 @@ const GenerateQuestionsForm: FC = () => {
   }, [uploadFileDataV2]);
 
   useEffect(() => {
+    if (uploadFileError) {
+      track(
+        "upload_failed",
+        { reason: reasonOf(uploadFileError), type: upload.current?.type, kb: upload.current?.kb },
+        upload.current?.took()
+      );
+      upload.current = null;
+    }
     if (uploadFileError && "status" in uploadFileError) {
       if ("data" in uploadFileError) {
         const { message } = uploadFileError.data as { message: string };

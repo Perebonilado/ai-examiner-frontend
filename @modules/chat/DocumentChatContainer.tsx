@@ -7,6 +7,7 @@ import React, {
   useState,
 } from "react";
 import DocumentChatIcon from "./DocumentChatIcon";
+import { stopwatch, track } from "@/@shared/analytics/track";
 import DocumentChatMessagesContainer from "./DocumentChatMessagesContainer";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -73,6 +74,8 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
   const [isFetchingMessages, setIsFetchingMessages] = useState(false);
   const [isReplying, setIsReplying] = useState(false);
   /** The reply being written, so it can be stopped. */
+  /** Set when the student presses Stop, so that abort is counted as theirs. */
+  const stoppedRef = useRef(false);
   const activeRef = useRef<{ controller: AbortController; replyId: string } | null>(
     null
   );
@@ -152,6 +155,9 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
     };
 
     let wrote = false;
+    const took = stopwatch();
+    const mode = args.highlightToPrompt ? "highlight" : args.notSureQuestion ? "not_sure" : args.imageDescription ? "image" : "typed";
+    track("chat_sent", { mode, retry });
     const batcher = createTextBatcher((text) =>
       dispatch(appendToMessage({ id: replyId, text }))
     );
@@ -167,26 +173,31 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
           }
         },
         onDelta: (text) => {
+          if (!wrote) track("chat_first_text", { mode }, took());
           wrote = true;
           batcher.push(text);
         },
       });
       batcher.flush();
+      track("chat_done", { mode, status: result.status }, took());
       dispatch(
         updateMessage({
           id: replyId,
           changes:
             result.status === "refused"
-              ? { message: result.text ?? "", status: "done", phase: undefined }
+              ? { message: result.text ?? "", status: "done", phase: undefined, savedId: result.messageId }
               : {
                   status: result.status === "truncated" ? "truncated" : "done",
                   phase: undefined,
+                  savedId: result.messageId,
                 },
         })
       );
     } catch (error) {
       batcher.flush();
       if (controller.signal.aborted) {
+        if (stoppedRef.current) track("chat_stopped", { mode, wrote }, took());
+        stoppedRef.current = false;
         // Stopped: keep what was written; a reply with nothing in it goes.
         if (findMessage(replyId)?.message.trim()) {
           dispatch(
@@ -196,12 +207,22 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
           dispatch(removeMessage(replyId));
         }
       } else if (error instanceof ChatStreamError && error.kind === "unavailable") {
+        track("chat_failed", { mode, reason: "stream_unavailable" }, took());
         await replyWithoutStreaming(payload, replyId);
       } else if (error instanceof ChatStreamError && error.kind === "auth") {
         logout(() => {
           window.location.pathname = "/auth/login";
         });
       } else {
+        track(
+          "chat_failed",
+          {
+            mode,
+            reason: error instanceof ChatStreamError ? `${error.kind}${error.status ? ` ${error.status}` : ""}` : "network",
+            wrote,
+          },
+          took()
+        );
         dispatch(
           updateMessage({ id: replyId, changes: { status: "error", phase: undefined } })
         );
@@ -342,6 +363,8 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
   }, [route.pathname]);
 
   const stopReply = useCallback(() => {
+    // The student pressed Stop (other aborts, like a new question, aren't counted).
+    stoppedRef.current = true;
     activeRef.current?.controller.abort();
   }, []);
 
@@ -349,6 +372,7 @@ const DocumentChatContainer: FC<PropsWithChildren> = ({ children }) => {
     const args = sentWithRef.current.get(replyId);
     if (!args) return;
     dispatch(removeMessage(replyId));
+    track("chat_retry");
     getSystemResponse(args, true);
   };
 

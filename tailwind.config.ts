@@ -21,6 +21,8 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
         proxima: ['"Proxima Nova"', "sans-serif"],
+        // Figures and timestamps on the admin pages (set in AdminLayout).
+        mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
       },
       colors: {
         ink: v("ink"),

@@ -214,6 +214,7 @@ const MultipleTrueFalse: NextPage = () => {
             handleShowSubmissionModal={({ score, title }) => {
               setModalContent(
                 <SubmissionModal
+                    testId={id || undefined}
                   title={title}
                   scorePercentage={score}
                   handleScrollToTop={() => {

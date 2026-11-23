@@ -1,5 +1,6 @@
 import { MultipleTrueFalseQuestionModel } from "@/models/questions.model";
 import React, { FC, useEffect, useState } from "react";
+import { useTestTracking } from "@/@shared/analytics/useTestTracking";
 import MultipleTrueFalseCard from "./MultipleTrueFalseCard";
 import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
@@ -221,6 +222,7 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   };
 
   const submitTest = () => {
+    testEvents.submitted(calculateScorePercentage() ?? 0);
     handleSubmitted();
 
     setCalculatedScore(calculateScorePercentage());
@@ -332,6 +334,15 @@ const MultipleTrueFalseCardContainer: FC<Props> = ({
   const correctStatements = Array.from(statementResults.values()).filter(
     Boolean
   ).length;
+
+  const testEvents = useTestTracking({
+    type: "multiple-true-false",
+    testId: questionId,
+    total: data?.length ?? 0,
+    answered: questionAnswerMap ? Object.keys(questionAnswerMap).length : 0,
+    ready: !!data && !!questionId && (!allowSaveProgress || !!progress),
+    alreadyDone: progress?.status === "submitted",
+  });
 
   const handleNewTest = () => {
     if (handleGenerateMoreQuestions) {

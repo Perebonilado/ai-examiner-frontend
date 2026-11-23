@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import { flush, track } from "@/@shared/analytics/track";
 import GetMinutesInfoCard from "./GetMinutesInfoCard";
 import MinutesLeftCard from "./MinutesLeftCard";
 import {
@@ -52,6 +53,7 @@ const CallCreditsContainer: FC = () => {
 
   useEffect(() => {
     if (data) {
+      flush(true);
       window.location.assign(data.redirectUrl);
     }
   }, [data]);
@@ -118,6 +120,7 @@ const CallCreditsContainer: FC = () => {
             fullWidth
             onClick={() => {
               if (selectedCredit) {
+                track("checkout_started", { product: "viva_minutes", currency: selectedCredit.currency, amount: selectedCredit.amount });
                 purchaseCredits({
                   amount: selectedCredit.amount,
                   currency: selectedCredit.currency,

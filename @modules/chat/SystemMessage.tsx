@@ -5,6 +5,7 @@ import { ChevronDown, ChevronUp, CircleAlert, RotateCcw } from "lucide-react";
 import cn from "classnames";
 import { MessageStatus } from "@/features/documentChatSlice";
 import MessageLoader from "./MessageLoader";
+import RateThis from "@/@shared/components/RateThis";
 import { closeOpenMarkdown, linkPageCitations, readingLabel } from "./chatStreamUtils";
 
 interface Props {
@@ -16,6 +17,10 @@ interface Props {
   canJumpToPage?: boolean;
   onPageClick?: (page: number) => void;
   onRetry?: () => void;
+  /** The saved reply's id: shows thumbs up and down. */
+  rateId?: string;
+  /** The student's earlier rating of this reply. */
+  rating?: number;
 }
 
 // Long replies fold to this height behind "Show more".
@@ -45,6 +50,8 @@ const SystemMessage: FC<Props> = ({
   canJumpToPage = false,
   onPageClick,
   onRetry,
+  rateId,
+  rating,
 }) => {
   const streaming = status === "streaming";
   // Replies written while the student watched stay open; long replies from history fold.
@@ -136,6 +143,10 @@ const SystemMessage: FC<Props> = ({
             <ChevronDown size={15} strokeWidth={1.75} aria-hidden />
           )}
         </button>
+      )}
+
+      {rateId && !streaming && (
+        <RateThis kind="chat_answer" itemId={rateId} initial={rating} subject="this answer" className="-ml-1.5 mt-1" />
       )}
 
       {status === "stopped" && (

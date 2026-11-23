@@ -1,4 +1,5 @@
-import React, { ElementRef, FC } from "react";
+import React, { ElementRef, FC, useEffect } from "react";
+import { track } from "@/@shared/analytics/track";
 import Button from "../ui/Button";
 import useClickOutside from "@/hooks/useClickOutside";
 import { useModalContext } from "@/contexts/ModalContext";
@@ -23,6 +24,9 @@ const MaxGenerationModal: FC<Props> = ({
     setModalContent(null);
   });
   const router = useRouter();
+  useEffect(() => {
+    track("upgrade_shown", { prompt: title });
+  }, [title]);
   return (
     <Dialog ref={ref} handleClose={handleClose}>
       <div

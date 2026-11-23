@@ -13,6 +13,7 @@ import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState, useRef, ElementRef } from "react";
+import { stopwatch, track } from "@/@shared/analytics/track";
 import Vapi from "@vapi-ai/web";
 import { toast } from "react-toastify";
 import CallInitiatingModal from "@/@modules/questions/CallInitiatingModal";
@@ -39,6 +40,8 @@ import cn from "classnames";
 
 const VivaQuestion: NextPage = () => {
   const [id, setId] = useState("");
+  /** How long the viva call has run. */
+  const callTook = useRef<(() => number) | null>(null);
   const { data, isLoading, error, refetch } = useGetQuestionsByIdQuery(id, {
     skip: !id,
     refetchOnMountOrArgChange: true,
@@ -177,12 +180,16 @@ const VivaQuestion: NextPage = () => {
   // Setup Vapi event listeners
   useEffect(() => {
     vapi?.on("call-start", () => {
+      callTook.current = stopwatch();
+      track("test_opened", { type: "viva" });
       setCallInProgress(true);
       // Start microphone analysis when call starts
       initMicrophoneAnalysis();
     });
 
     vapi?.on("call-end", () => {
+      if (callTook.current) track("test_submitted", { type: "viva" }, callTook.current());
+      callTook.current = null;
       setCallInProgress(false);
       setSystemSpeaking(false);
       setUserSpeaking(false);
@@ -195,6 +202,8 @@ const VivaQuestion: NextPage = () => {
 
     vapi?.on("error", (e) => {
       console.error(e);
+      track("test_left", { type: "viva", reason: "call_error" }, callTook.current?.());
+      callTook.current = null;
       setSystemSpeaking(false);
       setUserSpeaking(false);
       reduxStore.dispatch(

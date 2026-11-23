@@ -219,6 +219,7 @@ const Practice: NextPage = () => {
               handleShowSubmissionModal={({ title, score }) => {
                 setModalContent(
                   <SubmissionModal
+                    testId={id || undefined}
                     title={title}
                     scorePercentage={score}
                     handleScrollToTop={() => {

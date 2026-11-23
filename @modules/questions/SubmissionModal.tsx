@@ -3,6 +3,7 @@ import Button from "@/@shared/ui/Button";
 import { useModalContext } from "@/contexts/ModalContext";
 import { generateDocumentCardColorFromScore } from "@/utils";
 import { X } from "lucide-react";
+import RateThis from "@/@shared/components/RateThis";
 
 interface Props {
   scorePercentage: number;
@@ -10,6 +11,8 @@ interface Props {
   handleScrollToTop: () => void;
   allowPerformanceOverview?: boolean;
   handlePerformanceOverview?: () => void;
+  /** The test's id: asks whether the test was useful. */
+  testId?: string;
 }
 
 const sentenceCase = (text?: string) =>
@@ -100,6 +103,17 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>(
           {plainText(color.subMessage)}
         </p>
 
+        {props.testId && (
+          <RateThis
+            kind="test"
+            itemId={props.testId}
+            question="Was this test useful?"
+            subject="this test"
+            align="center"
+            className="mt-4"
+          />
+        )}
+
         <div className="mt-[22px] flex flex-col gap-2.5">
           <Button
             title="Review answers"
@@ -124,5 +138,7 @@ const SubmissionModal = forwardRef<HTMLDivElement, Props>(
     );
   }
 );
+
+SubmissionModal.displayName = "SubmissionModal";
 
 export default SubmissionModal;

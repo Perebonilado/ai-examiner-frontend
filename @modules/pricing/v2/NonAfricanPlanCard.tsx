@@ -1,4 +1,5 @@
 import React, { FC, useEffect } from "react";
+import { flush, track } from "@/@shared/analytics/track";
 import CheckMark from "@/icons/CheckMark";
 import Button from "@/@shared/ui/Button";
 import { PlanModel } from "@/models/plan.model";
@@ -31,11 +32,13 @@ const NonAfricanPlanCard: FC<Props> = ({
   const { setModalContent } = useModalContext();
 
   const handlePayWithCard = () => {
+    track("checkout_started", { planId: `${planId}`, method: "card", region: "other" });
     inititateSubscription({ planId: `${planId}`, oneTimeSubscription: false });
   };
 
   useEffect(() => {
     if (data) {
+      flush(true);
       window.location.assign(data.redirectUrl);
     }
   }, [data]);

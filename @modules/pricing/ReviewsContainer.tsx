@@ -1,5 +1,6 @@
 import Container from "@/@shared/ui/Container";
 import React, { FC, useEffect } from "react";
+import { track } from "@/@shared/analytics/track";
 import ReviewItem from "./ReviewItem";
 import StatisticsContainer from "./StatisticsContainer";
 import Cookies from "js-cookie";
@@ -29,6 +30,7 @@ const ReviewsContainer: FC = () => {
         expires: 365,
         secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
       });
+      track("signed_up", { method: "guest" });
       router.push("/new-document");
     } else {
       createGuestAccount(undefined);

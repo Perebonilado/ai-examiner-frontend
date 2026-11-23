@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
+import { flush, track } from "@/@shared/analytics/track";
 import { useFormik, Form, FormikProvider } from "formik";
 import LoginValidation from "@/validation-schemas/LoginValidation";
 import TextField from "@/@shared/ui/Input/TextField";
@@ -29,6 +30,8 @@ const LoginForm: FC = () => {
   };
 
   const googleLogin = async () => {
+    track("signed_in", { method: "google" });
+    flush(true);
     window.location.href = `${process.env.NEXT_PUBLIC_BASE_URL}/auth/google`;
   };
 
@@ -44,6 +47,7 @@ const LoginForm: FC = () => {
         expires: 365, 
         secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes('localhost'),
       });
+      track("signed_in", { method: "email" });
 
       if (returnUrl) {
         router.push(decodeURIComponent(returnUrl as string));

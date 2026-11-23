@@ -1,5 +1,6 @@
 import DropDown from "@/@shared/ui/Input/DropDown";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useState, useRef } from "react";
+import { flush, reasonOf, stopwatch, track } from "@/@shared/analytics/track";
 import { useFormik, FormikProvider, Form } from "formik";
 import Button from "@/@shared/ui/Button";
 import {
@@ -83,14 +84,23 @@ const GenerateQuestionsForm: FC<Props> = ({
     { isLoading: focusAreasLoading, error: focusAreasError, data: focusAreas },
   ] = useGenerateDocumentTopicsMutation();
 
+  const took = useRef<(() => number) | null>(null);
+
   const formik = useFormik({
     initialValues,
     onSubmit: (values) => {
       if (permissions && permissions.maxGenerationReached) {
+        track("limit_hit", { which: "tests" });
         setModalContent(<MaxGenerationModal />);
         return;
       }
 
+      took.current = stopwatch();
+      track("test_generate_started", {
+        type: values.questionType ? Number(values.questionType) : 3,
+        count: values.questionCount ? Number(values.questionCount) : 5,
+        from: "document",
+      });
       generateQuestions({
         payload: {
           questionCount: values.questionCount
@@ -114,10 +124,17 @@ const GenerateQuestionsForm: FC<Props> = ({
 
   useEffect(() => {
     if (data) {
+      track("test_generate_done", { type: data.type, testId: data.id, from: "document" }, took.current?.());
+      flush(true);
       toast.success("Questions successfully generated");
       window.location.href = `${window.location.origin}/questions/practise-questions/${data.type}/${data.id}`;
     }
   }, [data]);
+
+  useEffect(() => {
+    if (generateQuestionsError)
+      track("test_generate_failed", { reason: reasonOf(generateQuestionsError), from: "document" }, took.current?.());
+  }, [generateQuestionsError]);
 
   useEffect(() => {
     if (isAdvanced) {

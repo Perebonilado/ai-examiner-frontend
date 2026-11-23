@@ -4,6 +4,7 @@ import { useGetSubscriptionDetailsQuery } from "@/api-services/subscription.serv
 import { useState, useEffect, useRef, FC } from "react";
 import Link from "next/link";
 import { CircleAlert, CircleCheck } from "lucide-react";
+import { track } from "@/@shared/analytics/track";
 
 const PaymentConfirmationContainer: FC = () => {
   const [isConfirmingPayment, setIsConfirmingPayment] = useState(true);
@@ -26,6 +27,7 @@ const PaymentConfirmationContainer: FC = () => {
 
   useEffect(() => {
     if (data && data.status === "active") {
+      if (!stopPolling) track("checkout_result", { status: "active" });
       setStopPolling(true);
       setIsConfirmingPayment(false);
       setPaymentConfirmationMessage(
@@ -39,8 +41,11 @@ const PaymentConfirmationContainer: FC = () => {
 
   useEffect(() => {
     if (subscriptionPollCount > maxPollCount) {
+      if (!stopPolling) track("checkout_result", { status: "not_confirmed" });
       setStopPolling(true);
       setPaymentError(true);
+      // Show the "check your email" message instead of waiting for ever.
+      setIsConfirmingPayment(false);
       setPaymentConfirmationMessage(
         "Please, check your email for further details or try again"
       );

@@ -5,6 +5,7 @@ import AppLayout from "@/layouts/AppLayout";
 import { NextPage } from "next";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
+import { track } from "@/@shared/analytics/track";
 import { useModalContext } from "@/contexts/ModalContext";
 import { useRouter } from "next/router";
 import Button from "@/@shared/ui/Button";
@@ -30,6 +31,9 @@ const FlashCards: NextPage = () => {
     skip: !id,
     refetchOnMountOrArgChange: true,
   });
+  useEffect(() => {
+    if (data && id) track("test_opened", { type: "flash-cards", testId: id, total: data.data?.length ?? 0 });
+  }, [data, id]);
 
   const { setModalContent } = useModalContext();
   const router = useRouter();

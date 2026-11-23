@@ -1,4 +1,5 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
+import { track } from "@/@shared/analytics/track";
 import cn from "classnames";
 import { useRouter } from "next/router";
 import { Clock, X } from "lucide-react";
@@ -85,6 +86,10 @@ export const EasyReadLimitDialog: FC<{
 }> = ({ resetsOn, secondaryLabel, onSecondary }) => {
   const router = useRouter();
   const resetDate = formatResetDate(resetsOn);
+  useEffect(() => {
+    track("limit_hit", { which: "easy_read" });
+    track("upgrade_shown", { prompt: "Easy Read time used up" });
+  }, []);
   return (
     <div
       role="alertdialog"

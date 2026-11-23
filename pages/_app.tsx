@@ -20,6 +20,7 @@ import GenerateQuestionsProvider from "@/contexts/GenerateQuestionsContext";
 import ImageSearchContainer from "@/@shared/components/ImageSearch/ImageSearchContainer";
 import NewTestForm from "@/@modules/questions/NewTestForm";
 import { Plus_Jakarta_Sans } from "next/font/google";
+import { usePageTracking } from "@/@shared/analytics/usePageTracking";
 
 // The app's face, shared with EasiRead.
 const jakarta = Plus_Jakarta_Sans({
@@ -36,6 +37,9 @@ declare global {
 }
 
 export default function App({ Component, pageProps }: AppProps) {
+  // Product events: page views, time on page and script errors (see @shared/analytics).
+  usePageTracking();
+
   useEffect(() => {
     if (typeof Promise.withResolvers === "undefined") {
       if (window)

@@ -10,6 +10,14 @@ import NoMessageInfo from "./NoMessageInfo";
 import RetrySendingMessageButton from "./RetrySendingMessageButton";
 import { capitalizeFirstLetterOfEachWord } from "@/utils";
 import { HighlightableText } from "@/@shared/components/HighlightableText";
+import { useGetMyRatingsQuery } from "@/api-services/feedback.service";
+import { MessageItem } from "@/features/documentChatSlice";
+
+/** The saved id of a finished reply: history has real ids, streamed replies get one at the end. */
+const savedIdOf = (m: MessageItem) =>
+  m.sender === "user" || !m.message.trim() || m.status === "streaming" || m.status === "error"
+    ? null
+    : m.savedId ?? (m.status === undefined ? m.id : null);
 
 interface Props {
   handleFetchOlderMessages: () => void;
@@ -49,6 +57,15 @@ const DocumentChatMessagesContainer: FC<Props> = ({
     (state: RootState) => state.documentChatReducer
   );
   const canJumpToPage = pageReaders > 0;
+  // The student's earlier thumbs on replies from history (the newest 60).
+  const historyIds = messages
+    .filter((m) => m.sender !== "user" && m.status === undefined)
+    .slice(-60)
+    .map((m) => m.id);
+  const { data: ratings } = useGetMyRatingsQuery(
+    { kind: "chat_answer", ids: historyIds },
+    { skip: !isChatOpen || historyIds.length === 0 }
+  );
   const [isExpanded, setIsExpanded] = useState(false);
   const documentTitle = capitalizeFirstLetterOfEachWord(documentTitleInView);
 
@@ -260,6 +277,8 @@ const DocumentChatMessagesContainer: FC<Props> = ({
                         canJumpToPage={canJumpToPage}
                         onPageClick={handlePageClick}
                         onRetry={() => onRetry(message.id)}
+                        rateId={savedIdOf(message) ?? undefined}
+                        rating={ratings?.[savedIdOf(message) ?? ""]}
                       />
                     );
                   })}

@@ -1,5 +1,6 @@
 import { EssayQuestionPayload, QuestionsModel } from "@/models/questions.model";
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
+import { stopwatch, track } from "@/@shared/analytics/track";
 import EssayItem from "./EssayItem";
 import { useSpeechToText } from "@/hooks/useSpeechToText";
 import Button from "@/@shared/ui/Button";
@@ -27,6 +28,12 @@ const EssayItemContainer: FC<Props> = ({
 }) => {
   const { speak } = useSpeechToText();
   const [questionAnswer, setQuestionAnswer] = useState<QuestionAnswer[]>([]);
+  const took = useRef(stopwatch());
+  useEffect(() => {
+    if (!questionId) return;
+    took.current = stopwatch();
+    track("test_opened", { type: "essay", testId: questionId });
+  }, [questionId]);
 
   useEffect(() => {
     if (data) {
@@ -95,6 +102,12 @@ const EssayItemContainer: FC<Props> = ({
               questionId,
               data,
             };
+            const written = questionAnswer.filter((qa) => (qa.answer ?? "").trim()).length;
+            track(
+              "test_submitted",
+              { type: "essay", testId: questionId, answered: written, total: questionAnswer.length, blank: written === 0 },
+              took.current()
+            );
             submitTest(payload);
           }}
         />

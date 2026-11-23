@@ -7,6 +7,7 @@ import { SignUpValidation } from "@/validation-schemas/SignUpValidation";
 import { Form, FormikProvider, useFormik } from "formik";
 import { useRouter } from "next/router";
 import React, { FC, useEffect, useState } from "react";
+import { track } from "@/@shared/analytics/track";
 import { accessToken } from "@/constants";
 import Cookies from "js-cookie";
 import { AppLogo } from "@/@shared/components/AppLogo";
@@ -41,6 +42,7 @@ const SignUpForm: FC = () => {
         expires: 365,
         secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
       });
+      track("signed_up", { method: "email" });
 
       if (returnUrl) {
         router.push(decodeURIComponent(returnUrl as string));

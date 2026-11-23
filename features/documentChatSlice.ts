@@ -23,6 +23,8 @@ export interface MessageItem {
   phase?: "reading" | "thinking";
   /** Pages the reply is reading (search mode only). */
   pages?: number[];
+  /** The saved reply's id once a streamed reply finishes (local ids aren't saved anywhere). */
+  savedId?: string;
 }
 
 export interface ImageDescription {

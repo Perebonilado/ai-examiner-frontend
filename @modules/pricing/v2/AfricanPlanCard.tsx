@@ -8,6 +8,7 @@ import CheckMark from "@/icons/CheckMark";
 import { PlanModel } from "@/models/plan.model";
 import { useRouter } from "next/router";
 import React, { FC, useEffect } from "react";
+import { flush, track } from "@/@shared/analytics/track";
 import PaymentMethodSelection from "../PaymentMethodSelection";
 
 interface Props extends PlanModel {
@@ -40,6 +41,7 @@ const AfricanPlanCard: FC<Props> = ({
 
   useEffect(() => {
     if (data) {
+      flush(true);
       window.location.assign(data.redirectUrl);
     }
   }, [data]);
@@ -47,10 +49,12 @@ const AfricanPlanCard: FC<Props> = ({
   const { setModalContent } = useModalContext();
 
   const handlePayWithCard = () => {
+    track("checkout_started", { planId: `${planId}`, method: "card", region: "africa" });
     inititateSubscription({ planId: `${planId}`, oneTimeSubscription: false });
   };
 
   const handlePayWithTransfer = () => {
+    track("checkout_started", { planId: `${planId}`, method: "transfer", region: "africa" });
     inititateSubscription({ planId: `${planId}`, oneTimeSubscription: true });
   };
   const { data: userData } = useGetUserProfileQuery("");

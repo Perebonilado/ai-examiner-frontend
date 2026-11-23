@@ -5,9 +5,10 @@ import { GenerateQuestionsDto } from "@/dto/questions.dto";
 import { clearMessages } from "@/features/documentChatSlice";
 import { hyphenateString } from "@/utils";
 import { useRouter } from "next/router";
-import React, { PropsWithChildren, useEffect, useState } from "react";
+import React, { PropsWithChildren, useEffect, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
+import { reasonOf, stopwatch, track } from "@/@shared/analytics/track";
 
 type GenerateQuestionsMutationTuple = ReturnType<
   typeof useGenerateQuestionsV2Mutation
@@ -38,6 +39,18 @@ const GenerateQuestionsProvider: React.FC<PropsWithChildren> = ({
   const [showSucessModal, setShowSuccessModal] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const took = useRef<(() => number) | null>(null);
+
+  // How long test generation takes, and whether it worked.
+  useEffect(() => {
+    if (isLoading) took.current = stopwatch();
+  }, [isLoading]);
+  useEffect(() => {
+    if (isSuccess && data) track("test_generate_done", { type: data.type, testId: data.id, from: "upload" }, took.current?.());
+  }, [isSuccess, data]);
+  useEffect(() => {
+    if (error) track("test_generate_failed", { reason: reasonOf(error), from: "upload" }, took.current?.());
+  }, [error]);
 
   useEffect(() => {
     if (isSuccess) {

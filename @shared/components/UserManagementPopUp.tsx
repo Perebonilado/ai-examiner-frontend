@@ -1,12 +1,13 @@
 import Link from "next/link";
 import React, { forwardRef } from "react";
-import { CreditCard, LogOut, UserRound } from "lucide-react";
+import { CreditCard, LayoutDashboard, LogOut, UserRound } from "lucide-react";
 import Button from "../ui/Button";
 import { logout } from "@/utils";
 import cn from "classnames";
 import { useModalContext } from "@/contexts/ModalContext";
 import UpgradeAccountForm from "./UpgradeAccountForm";
 import ThemeSwitcher from "./ThemeSwitcher";
+import { useGetAdminMeQuery } from "@/api-services/admin.service";
 
 interface Props {
   firstName: string;
@@ -46,6 +47,8 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
     );
 
     const { setModalContent } = useModalContext();
+    // Only the team sees the Admin link; the check is quiet and cached for the session.
+    const { data: adminMe } = useGetAdminMeQuery(undefined, { skip: isGuest });
     const initial = firstName?.trim().charAt(0).toUpperCase() || "U";
 
     return (
@@ -90,6 +93,12 @@ const UserManagementPopUp = forwardRef<HTMLDivElement, Props>(
           <Link href={"/account/settings"} className={itemClass}>
             <CreditCard size={16} strokeWidth={1.75} className={iconClass} />
             Manage your subscription
+          </Link>
+        )}
+        {!isGuest && adminMe?.isAdmin && (
+          <Link href={"/admin"} className={itemClass}>
+            <LayoutDashboard size={16} strokeWidth={1.75} className={iconClass} />
+            Admin
           </Link>
         )}
 

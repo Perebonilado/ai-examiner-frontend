@@ -31,7 +31,8 @@ export const EasyReadService = createApi({
       // opens and the server enforces the limit.
       extraOptions: { triggerLoading: false, silentErrors: true },
     }),
-    recordEasyReadUsage: build.mutation<EasyReadAllowanceModel, { seconds: number }>({
+    /** Reading time (every plan): spends the free allowance, and is kept per document for the team. */
+    recordEasyReadUsage: build.mutation<EasyReadAllowanceModel, { seconds: number; documentId?: string }>({
       query: (body) => ({ url: "/usage", method: "POST", body }),
       // Sent every 15s while reading: never show the loader (it would also close open dialogs)
       // or an error toast.
@@ -56,7 +57,7 @@ export const EasyReadService = createApi({
 });
 
 /** Sends unreported reading time when the page is hidden or closed (survives the unload). */
-export const flushEasyReadUsage = (seconds: number) => {
+export const flushEasyReadUsage = (seconds: number, documentId?: string) => {
   if (seconds <= 0) return;
   const token = Cookies.get(accessToken);
   try {
@@ -67,7 +68,7 @@ export const flushEasyReadUsage = (seconds: number) => {
         "Content-Type": "application/json",
         ...(token ? { authorization: `Bearer ${token}` } : {}),
       },
-      body: JSON.stringify({ seconds }),
+      body: JSON.stringify({ seconds, documentId }),
     }).catch(() => {});
   } catch {
     // Best effort: the server counts what it receives.

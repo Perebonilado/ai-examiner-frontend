@@ -46,6 +46,7 @@ export const config = {
     "/documents/:path*", // Fixed: added * for dynamic segments
     "/account/profile",
     "/account/settings",
+    "/admin/:path*", // Signed-in only; the pages check admin access themselves.
   ],
 };
 

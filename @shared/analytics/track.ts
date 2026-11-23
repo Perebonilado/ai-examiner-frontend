@@ -11,6 +11,7 @@ export type EventName =
   | "page_leave"
   | "signed_up"
   | "signed_in"
+  | "email_confirmed"
   | "upload_started"
   | "upload_done"
   | "upload_failed"

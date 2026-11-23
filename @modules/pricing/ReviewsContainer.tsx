@@ -37,12 +37,13 @@ const ReviewsContainer: FC = () => {
     }
   };
   useEffect(() => {
-    if (data) {
-      Cookies.set(guestAccessToken, data.data.token, {
+    const token = data?.data?.token;
+    if (token) {
+      Cookies.set(guestAccessToken, token, {
         expires: 365,
         secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
       });
-      Cookies.set(accessToken, data.data.token, {
+      Cookies.set(accessToken, token, {
         expires: 365,
         secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
       });

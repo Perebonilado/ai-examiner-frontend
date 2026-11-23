@@ -9,9 +9,19 @@ export interface LoginDto {
 export interface SignUpDto {
   status: number;
   data: {
-    token: string;
+    /** Only for accounts that don't need confirming (guests). */
+    token?: string;
+    /** Email sign-ups: the account opens once the address is confirmed. */
+    needsConfirmation?: boolean;
+    email?: string;
   };
   message: string;
+}
+
+export interface ConfirmEmailDto {
+  status: number;
+  message: string;
+  data: { token?: string; alreadyConfirmed?: boolean };
 }
 
 export interface ForgotPasswordDto {

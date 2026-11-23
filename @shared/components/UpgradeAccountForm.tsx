@@ -2,6 +2,7 @@ import { useUpgradeUserAccountMutation } from "@/api-services/user.service";
 import { SignUpValidation } from "@/validation-schemas/SignUpValidation";
 import { Form, FormikProvider, useFormik } from "formik";
 import React, { FC, useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import { flush, track } from "@/@shared/analytics/track";
 import Button from "../ui/Button";
 import TextField from "../ui/Input/TextField";
@@ -54,11 +55,15 @@ const UpgradeAccountForm: FC<Props> = ({
       track("signed_up", { method: "guest_upgrade" });
       flush(true);
 
-      if (redirectToPricingOnSuccess) {
-        window.location.pathname = "/pricing";
-      } else {
-        window.location.reload()
-      }
+      toast.info("We've sent you a link to confirm your email address.");
+      // Leave time to read it before the page reloads.
+      setTimeout(() => {
+        if (redirectToPricingOnSuccess) {
+          window.location.pathname = "/pricing";
+        } else {
+          window.location.reload();
+        }
+      }, 1800);
     }
   }, [data]);
   const { setModalContent } = useModalContext();

@@ -52,6 +52,8 @@ export const describe = (e: TimelineEvent): { text: string; tone: "plain" | "goo
       return { text: `Left ${pageName(String(p.page ?? e.path))} after ${duration(e.ms)}`, tone: "quiet" };
     case "signed_up":
       return { text: `Signed up${p.method ? ` (${String(p.method).replace("_", " ")})` : ""}`, tone: "good" };
+    case "email_confirmed":
+      return { text: "Confirmed their email", tone: "good" };
     case "signed_in":
       return { text: `Signed in${p.method ? ` (${p.method})` : ""}`, tone: "plain" };
     case "upload_started":

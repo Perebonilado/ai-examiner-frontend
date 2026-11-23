@@ -12,6 +12,7 @@ import { accessToken } from "@/constants";
 import Cookies from "js-cookie";
 import { AppLogo } from "@/@shared/components/AppLogo";
 import MessageIcon from "@/icons/MessageIcon";
+import CheckYourEmail from "./CheckYourEmail";
 
 const initialValues = {
   firstName: "",
@@ -22,7 +23,9 @@ const initialValues = {
 
 const SignUpForm: FC = () => {
   const [hidePassword, setHidePassword] = useState<boolean>(true);
-  const [signUp, { data }] = useSignUpMutation();
+  const [signUp, { data, reset }] = useSignUpMutation();
+  /** Set once an email sign-up worked: the account waits for the emailed link. */
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
   const router = useRouter();
   const { returnUrl } = router.query;
 
@@ -37,7 +40,12 @@ const SignUpForm: FC = () => {
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && !data.data?.token) {
+      track("signed_up", { method: "email" });
+      setPendingEmail(data.data?.email ?? formik.values.email);
+      return;
+    }
+    if (data?.data?.token) {
       Cookies.set(accessToken, data.data.token, {
         expires: 365,
         secure: !`${process.env.NEXT_PUBLIC_BASE_URL}`.includes("localhost"),
@@ -58,6 +66,17 @@ const SignUpForm: FC = () => {
         <AppLogo />
       </div>
 
+      {pendingEmail ? (
+        <CheckYourEmail
+          email={pendingEmail}
+          onUseAnotherEmail={() => {
+            setPendingEmail(null);
+            reset();
+            formik.setFieldValue("email", "");
+          }}
+        />
+      ) : (
+      <>
       <div className="text-center mx-auto mb-10">
         <h2 className="text-2xl font-bold">Create Account</h2>
         <p className="text-subtle mt-4">
@@ -134,6 +153,8 @@ const SignUpForm: FC = () => {
           </div>
         </Form>
       </FormikProvider>
+      </>
+      )}
     </div>
   );
 };
